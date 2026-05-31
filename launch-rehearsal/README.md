@@ -81,7 +81,9 @@ rehearse init https://your-app.com --auth -o configs/my-app.yaml
 rehearse backfill -o artifacts   # rebuild analysis.json for Frontend
 ```
 
-Home view: readiness per run, issue/delight counts, run history. Run detail: scorecard, step log, sitemap, screenshots, run diff.
+Home view: readiness per run, issue/delight counts, run history. Run detail: scorecard, step log, sitemap, screenshots, **run summary (NLU-1)**, run diff. Compare: side-by-side diff + **What changed (NLU-2)** when `DEEPSEEK_API_KEY` is set.
+
+**Dogfood self-test:** Init → Dogfood → `lr-self.yaml`, then Runner → **Run self-test** (LLM checkbox uses repo `.env`).
 
 ## LLM analysis (optional)
 
@@ -117,4 +119,6 @@ Env precedence: `REHEARSE_LLM_*` → `DEEPSEEK_*` → `NVIDIA_*` → `OPENAI_API
 
 See `examples/enterprise-saas.yaml`. Key sections: `run`, `crawl`, `auth`, `personas`, `journeys`, `budgets`.
 
-Platform UI spec (dashboard, agents page, alerts): `../enterprise_work_env_simulator_2026/MONITORING_PLATFORM_SPEC.md`
+Platform UI spec (dashboard, agents page, alerts): `../enterprise_work_env_simulator_2026/MONITORING_PLATFORM_SPEC.md`  
+Interpretability (narratives, compare, chat): `../enterprise_work_env_simulator_2026/INTERPRETABILITY.md`  
+Browser vs MCP parity: `../enterprise_work_env_simulator_2026/BROWSER_CAPABILITY_PARITY.md`

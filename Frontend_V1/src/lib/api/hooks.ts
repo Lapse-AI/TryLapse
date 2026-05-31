@@ -13,8 +13,16 @@ import {
   alertChannels as mockAlerts,
   backlogItems as mockBacklog,
   getRunBundle,
+  mockCommandDigest,
+  mockTrendsNarrative,
+  issueRecurrence as mockIssueRecurrence,
 } from "@/lib/mock-data";
+import { allowsMockFallback } from "@/lib/ui-mode";
 import { api, checkApiHealth } from "./client";
+
+function mockAllowed(live: boolean): boolean {
+  return !live && allowsMockFallback();
+}
 
 export const queryKeys = {
   health: ["rehearse", "health"] as const,
@@ -22,6 +30,7 @@ export const queryKeys = {
   bundle: (id: string) => ["rehearse", "bundle", id] as const,
   diff: (a: string, b: string) => ["rehearse", "diff", a, b] as const,
   trends: ["rehearse", "trends"] as const,
+  digest: (n: number) => ["rehearse", "digest", n] as const,
   search: (q: string) => ["rehearse", "search", q] as const,
   workspace: ["rehearse", "workspace"] as const,
   integrations: ["rehearse", "integrations"] as const,
@@ -49,10 +58,11 @@ export function useRunSummaries() {
     queryKey: queryKeys.summaries,
     queryFn: async () => {
       if (live) return api.summaries();
-      return mockSummaries;
+      if (mockAllowed(live)) return mockSummaries;
+      return [];
     },
-    enabled: health.isSuccess,
-    placeholderData: live ? undefined : mockSummaries,
+    enabled: health.isSuccess && (live || allowsMockFallback()),
+    placeholderData: live || !allowsMockFallback() ? undefined : mockSummaries,
   });
 }
 
@@ -60,7 +70,8 @@ export function useLatestRun(): RunSummary | undefined {
   const health = useApiHealth();
   const { data } = useRunSummaries();
   if (health.data === true) return data?.[0];
-  return data?.[0] ?? mockLatest();
+  if (allowsMockFallback()) return data?.[0] ?? mockLatest();
+  return data?.[0];
 }
 
 export function useRunBundle(runId: string) {
@@ -70,12 +81,15 @@ export function useRunBundle(runId: string) {
     queryKey: queryKeys.bundle(runId),
     queryFn: async (): Promise<RunBundle> => {
       if (live) return api.bundle(runId);
-      const mock = mockBundle(runId);
-      if (!mock) throw new Error("Run not found");
-      return mock;
+      if (mockAllowed(live)) {
+        const mock = mockBundle(runId);
+        if (!mock) throw new Error("Run not found");
+        return mock;
+      }
+      throw new Error("Run not found");
     },
-    enabled: !!runId && health.isSuccess,
-    placeholderData: live ? undefined : getRunBundle(runId),
+    enabled: !!runId && health.isSuccess && (live || allowsMockFallback()),
+    placeholderData: live || !allowsMockFallback() ? undefined : getRunBundle(runId),
   });
 }
 
@@ -85,11 +99,29 @@ export function useRunDiff(runA: string, runB: string) {
     queryKey: queryKeys.diff(runA, runB),
     queryFn: async (): Promise<RunDiff> => {
       if (health.data) return api.diff(runA, runB);
-      const mock = mockDiff(runA, runB);
-      if (!mock) throw new Error("Could not diff");
-      return mock;
+      if (mockAllowed(!!health.data)) {
+        const mock = mockDiff(runA, runB);
+        if (!mock) throw new Error("Could not diff");
+        return mock;
+      }
+      throw new Error("Could not diff");
     },
-    enabled: !!runA && !!runB && health.isSuccess,
+    enabled: !!runA && !!runB && health.isSuccess && (health.data || allowsMockFallback()),
+  });
+}
+
+export function useCommandDigest(n = 7) {
+  const health = useApiHealth();
+  const live = health.data === true;
+  return useQuery({
+    queryKey: queryKeys.digest(n),
+    queryFn: async () => {
+      if (live) return api.digest(n);
+      if (mockAllowed(live)) return mockCommandDigest;
+      throw new Error("Digest unavailable");
+    },
+    enabled: health.isSuccess && (live || allowsMockFallback()),
+    placeholderData: live || !allowsMockFallback() ? undefined : mockCommandDigest,
   });
 }
 
@@ -100,15 +132,23 @@ export function useTrends() {
     queryKey: queryKeys.trends,
     queryFn: async () => {
       if (live) return api.trends();
-      return {
-        readiness: mockReadinessTrend,
-        pages: mockCrawlTrend,
-        flakeRate: mockFlakeTrend,
-        runIds: mockSummaries.map((r) => r.id),
-        labels: mockSummaries.map((r) => r.startedAt.slice(0, 10)),
-      };
+      if (mockAllowed(live)) {
+        return {
+          readiness: mockReadinessTrend,
+          pages: mockCrawlTrend,
+          flakeRate: mockFlakeTrend,
+          runIds: mockSummaries.map((r) => r.id),
+          labels: mockSummaries.map((r) => r.startedAt.slice(0, 10)),
+          issueRecurrence: mockIssueRecurrence,
+          issuesOpened: 1,
+          issuesResolved: 1,
+          blockerCounts: [3, 2, 2, 3, 2, 2, 0, 4, 4],
+          narrative: mockTrendsNarrative,
+        };
+      }
+      return { readiness: [], pages: [], flakeRate: [], runIds: [], labels: [] };
     },
-    enabled: health.isSuccess,
+    enabled: health.isSuccess && (live || allowsMockFallback()),
   });
 }
 
@@ -125,9 +165,13 @@ export function useWorkspace() {
   const health = useApiHealth();
   return useQuery({
     queryKey: queryKeys.workspace,
-    queryFn: async () => (health.data ? api.workspace() : mockWorkspace),
-    enabled: health.isSuccess,
-    placeholderData: mockWorkspace,
+    queryFn: async () => {
+      if (health.data) return api.workspace();
+      if (mockAllowed(!!health.data)) return mockWorkspace;
+      throw new Error("Workspace unavailable");
+    },
+    enabled: health.isSuccess && (health.data || allowsMockFallback()),
+    placeholderData: allowsMockFallback() ? mockWorkspace : undefined,
   });
 }
 
@@ -143,9 +187,13 @@ export function useIntegrations() {
   const health = useApiHealth();
   return useQuery({
     queryKey: queryKeys.integrations,
-    queryFn: async () => (health.data ? api.integrations() : mockIntegrations),
-    enabled: health.isSuccess,
-    placeholderData: mockIntegrations,
+    queryFn: async () => {
+      if (health.data) return api.integrations();
+      if (mockAllowed(!!health.data)) return mockIntegrations;
+      return [];
+    },
+    enabled: health.isSuccess && (health.data || allowsMockFallback()),
+    placeholderData: allowsMockFallback() ? mockIntegrations : undefined,
   });
 }
 
@@ -153,9 +201,13 @@ export function useAlerts() {
   const health = useApiHealth();
   return useQuery({
     queryKey: queryKeys.alerts,
-    queryFn: async () => (health.data ? api.alerts() : mockAlerts),
-    enabled: health.isSuccess,
-    placeholderData: mockAlerts,
+    queryFn: async () => {
+      if (health.data) return api.alerts();
+      if (mockAllowed(!!health.data)) return mockAlerts;
+      return [];
+    },
+    enabled: health.isSuccess && (health.data || allowsMockFallback()),
+    placeholderData: allowsMockFallback() ? mockAlerts : undefined,
   });
 }
 
@@ -164,9 +216,13 @@ export function useBacklog() {
   const live = health.data === true;
   return useQuery({
     queryKey: queryKeys.backlog,
-    queryFn: async () => (live ? api.backlog() : mockBacklog),
-    enabled: health.isSuccess,
-    placeholderData: live ? undefined : mockBacklog,
+    queryFn: async () => {
+      if (live) return api.backlog();
+      if (mockAllowed(live)) return mockBacklog;
+      return [];
+    },
+    enabled: health.isSuccess && (live || allowsMockFallback()),
+    placeholderData: live || !allowsMockFallback() ? undefined : mockBacklog,
   });
 }
 

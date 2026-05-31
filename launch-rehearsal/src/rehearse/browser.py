@@ -2,17 +2,22 @@
 
 from __future__ import annotations
 
+import json
 import re
 import time
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
-from playwright.sync_api import Page, Response, sync_playwright
+from playwright.sync_api import Locator, Page, Response, sync_playwright
 
 from rehearse.dsl import AuthConfig, RunConfig, Step
 from rehearse.errors import ConfigError, PreflightError, classify_step_error
 from rehearse.evidence import StepSnapshot
+from rehearse.viewports import VIEWPORT_PROFILES, normalize_viewports
+from rehearse.web_vitals import collect_web_vitals
+
+NETWORK_LOG_MAX = 500
 
 ERROR_PHRASES = (
     "error",
@@ -66,10 +71,41 @@ def _collect_a11y_metrics(page: Page) -> dict[str, Any]:
     )
 
 
+_JOB_STATUS_FAILED = re.compile(r"job_[a-f0-9]+\s+\w+\s+failed", re.I)
+
+# Substrings where "error" is product/monitoring vocabulary, not a failure surface
+_ERROR_BENIGN_CONTEXT = (
+    "error rate",
+    "job queue",
+    "job_",
+    "resolved since",
+    "new issues in",
+    "changed steps",
+    "top blocker",
+    "readiness band",
+    "p0 ·",
+    "p1 ·",
+    "p2 ·",
+    "issues opened",
+    "issues resolved",
+)
+
+
 def _find_error_phrases(text: str) -> list[str]:
     lower = text.lower()
-    found = []
+    found: list[str] = []
+
+    if "failed" in lower:
+        job_failed = len(_JOB_STATUS_FAILED.findall(lower))
+        if lower.count("failed") > job_failed:
+            found.append("failed")
+
+    if "error" in lower and not any(ctx in lower for ctx in _ERROR_BENIGN_CONTEXT):
+        found.append("error")
+
     for phrase in ERROR_PHRASES:
+        if phrase in ("error", "failed"):
+            continue
         if phrase in lower:
             found.append(phrase)
     return found
@@ -147,21 +183,56 @@ def _perform_open_link(
     return note
 
 
-def _resolve_locator(page: Page, step: Step):
+def _compact_aria_tree(page: Page, *, max_nodes: int = 120) -> dict[str, Any]:
+    """Accessibility tree for evidence (MCP a11y snapshot equivalent)."""
+    try:
+        tree = page.accessibility.snapshot()
+        if not tree:
+            return {"role": "document", "children": []}
+
+        def trim(node: dict[str, Any], budget: list[int]) -> dict[str, Any]:
+            if budget[0] <= 0:
+                return {"role": node.get("role", "?"), "truncated": True}
+            budget[0] -= 1
+            out: dict[str, Any] = {"role": node.get("role", "?")}
+            if node.get("name"):
+                out["name"] = str(node["name"])[:120]
+            children = node.get("children") or []
+            if children and budget[0] > 0:
+                out["children"] = [trim(c, budget) for c in children[:12]]
+            return out
+
+        return trim(tree, [max_nodes])
+    except Exception as exc:
+        return {"error": str(exc)[:200]}
+
+
+def _save_aria_artifact(artifacts_dir: Path, step_id: str, tree: dict[str, Any]) -> str:
+    path = artifacts_dir / f"{_safe_filename(step_id)}-aria.json"
+    path.write_text(json.dumps(tree, indent=2)[:80000])
+    return str(path)
+
+
+def _resolve_locator(page: Page, step: Step) -> tuple[Locator, str]:
+    """Resolve element; return locator and human-readable resolution note."""
     if step.selector:
-        return page.locator(step.selector)
+        return page.locator(step.selector).first, f"selector={step.selector}"
+
     if step.intent:
-        for factory in (
-            lambda: page.get_by_role("button", name=step.intent, exact=False),
-            lambda: page.get_by_role("link", name=step.intent, exact=False),
-            lambda: page.get_by_label(step.intent, exact=False),
-            lambda: page.get_by_placeholder(step.intent, exact=False),
-            lambda: page.get_by_text(step.intent, exact=False),
-        ):
+        strategies: list[tuple[str, Any]] = [
+            ("getByRole(button)", lambda: page.get_by_role("button", name=step.intent, exact=False)),
+            ("getByRole(link)", lambda: page.get_by_role("link", name=step.intent, exact=False)),
+            ("getByLabel", lambda: page.get_by_label(step.intent, exact=False)),
+            ("getByPlaceholder", lambda: page.get_by_placeholder(step.intent, exact=False)),
+            ("getByRole(combobox)", lambda: page.get_by_role("combobox", name=step.intent, exact=False)),
+            ("getByText", lambda: page.get_by_text(step.intent, exact=False)),
+        ]
+        for label, factory in strategies:
             loc = factory()
             if loc.count() > 0:
-                return loc.first
-        return page.get_by_text(step.intent, exact=False).first
+                return loc.first, f"resolved={label}({step.intent!r})"
+        return page.get_by_text(step.intent, exact=False).first, f"fallback=getByText({step.intent!r})"
+
     raise PreflightError(f"Step requires selector or intent: {step.action}")
 
 
@@ -170,21 +241,35 @@ class BrowserSession:
         self.config = config
         self.artifacts_dir = artifacts_dir
         self.console_errors: list[str] = []
+        self.console_warnings: list[str] = []
         self.network_failures: list[str] = []
+        self.network_log: list[dict[str, Any]] = []
         self._pw = None
         self._browser = None
         self._context = None
         self.page: Page | None = None
+        self._viewport = "desktop"
 
     def __enter__(self) -> BrowserSession:
         self.artifacts_dir.mkdir(parents=True, exist_ok=True)
         self._pw = sync_playwright().start()
         self._browser = self._pw.chromium.launch(headless=True)
-        self._context = self._browser.new_context(viewport={"width": 1280, "height": 900})
+        first = normalize_viewports(self.config.viewports)[0]
+        self._context = self._browser.new_context(viewport=VIEWPORT_PROFILES[first])
         self.page = self._context.new_page()
+        self._viewport = first
         self.page.on("console", self._on_console)
         self.page.on("response", self._on_response)
         return self
+
+    def set_viewport(self, profile: str) -> None:
+        key = profile.strip().lower()
+        if key not in VIEWPORT_PROFILES:
+            key = "desktop"
+        self._viewport = key
+        page = self.page
+        assert page is not None
+        page.set_viewport_size(VIEWPORT_PROFILES[key])
 
     def __exit__(self, *args: object) -> None:
         if self._context:
@@ -195,16 +280,40 @@ class BrowserSession:
             self._pw.stop()
 
     def _on_console(self, msg: Any) -> None:
+        text = (msg.text or "")[:300]
         if msg.type == "error":
-            self.console_errors.append(msg.text[:300])
+            self.console_errors.append(text)
+        elif msg.type == "warning":
+            self.console_warnings.append(text)
 
     def _on_response(self, response: Response) -> None:
+        try:
+            req = response.request
+            if len(self.network_log) < NETWORK_LOG_MAX:
+                self.network_log.append(
+                    {
+                        "url": response.url[:500],
+                        "method": req.method,
+                        "status": response.status,
+                        "resourceType": req.resource_type,
+                    }
+                )
+        except Exception:
+            pass
         if response.status >= 400:
             self.network_failures.append(f"{response.status} {response.url}"[:300])
 
     def reset_run_errors(self) -> None:
         self.console_errors = []
+        self.console_warnings = []
         self.network_failures = []
+
+    def flush_network_log(self) -> str | None:
+        if not self.network_log:
+            return None
+        path = self.artifacts_dir / "network-log.json"
+        path.write_text(json.dumps(self.network_log, indent=2)[:2_000_000])
+        return str(path)
 
     def _auth_session_ok(self) -> bool:
         page = self.page
@@ -317,12 +426,14 @@ class BrowserSession:
         journey_id: str,
         journey_name: str,
         persona_id: str,
+        viewport: str | None = None,
     ) -> StepSnapshot:
         page = self.page
         assert page is not None
         timeout = self.config.budgets.step_timeout_ms
         self.reset_run_errors()
         started = time.perf_counter()
+        vp = viewport or self._viewport
         snap = StepSnapshot(
             step_id=step_id,
             journey_id=journey_id,
@@ -330,8 +441,10 @@ class BrowserSession:
             persona_id=persona_id,
             action=step.action,
             requested_url=step.url,
+            viewport=vp,
         )
         response: Response | None = None
+        resolution_note: str | None = None
 
         try:
             if step.action == "navigate":
@@ -344,17 +457,35 @@ class BrowserSession:
                 page.wait_for_timeout(ms)
             elif step.action == "fill":
                 value = step.resolve_value() if step.value else ""
-                loc = _resolve_locator(page, step)
+                loc, resolution_note = _resolve_locator(page, step)
                 loc.fill(value or "", timeout=timeout)
             elif step.action == "click":
-                loc = _resolve_locator(page, step)
-                target = loc.first
-                if target.is_disabled(timeout=3000):
+                loc, resolution_note = _resolve_locator(page, step)
+                if loc.is_disabled(timeout=3000):
                     snap.outcome = "partial"
                     snap.note = "Target control is disabled"
                 else:
-                    target.click(timeout=timeout)
+                    loc.click(timeout=timeout)
                     page.wait_for_load_state("domcontentloaded", timeout=timeout)
+            elif step.action == "hover":
+                loc, resolution_note = _resolve_locator(page, step)
+                loc.hover(timeout=timeout)
+            elif step.action == "scroll":
+                if step.intent or step.selector:
+                    loc, resolution_note = _resolve_locator(page, step)
+                    loc.scroll_into_view_if_needed(timeout=timeout)
+                else:
+                    page.mouse.wheel(0, int(step.value or "600"))
+            elif step.action == "select":
+                loc, resolution_note = _resolve_locator(page, step)
+                loc.select_option(step.value or "", timeout=timeout)
+            elif step.action == "press":
+                key = (step.value or "Enter").strip()
+                if step.selector or step.intent:
+                    loc, resolution_note = _resolve_locator(page, step)
+                    loc.press(key, timeout=timeout)
+                else:
+                    page.keyboard.press(key)
             elif step.action == "open_link":
                 fallback = step.value or "/database/profile"
                 link_note = _perform_open_link(
@@ -371,6 +502,39 @@ class BrowserSession:
                     snap.error_type = "BrowserNavigationFailed"
                     if not snap.note:
                         snap.note = f"open_link failed: expected '{fallback}' in URL"
+            elif step.action == "dismiss":
+                dismissed = False
+                for label in (
+                    "Accept all",
+                    "Accept",
+                    "Allow all",
+                    "Close",
+                    "Dismiss",
+                    "Got it",
+                    "OK",
+                    "Agree",
+                ):
+                    try:
+                        btn = page.get_by_role("button", name=label, exact=False)
+                        if btn.count() > 0:
+                            btn.first.click(timeout=min(timeout, 4000))
+                            snap.note = f"dismiss: {label}"
+                            dismissed = True
+                            break
+                    except Exception:
+                        continue
+                if not dismissed and (step.intent or step.selector):
+                    loc, resolution_note = _resolve_locator(page, step)
+                    loc.click(timeout=timeout)
+                    snap.note = resolution_note or "dismiss: intent click"
+                elif not dismissed:
+                    snap.outcome = "partial"
+                    snap.note = "dismiss: no banner matched"
+            elif step.action == "explore":
+                from rehearse.explore import run_explore_loop
+
+                max_rounds = int(step.value or self.config.budgets.explore_max_rounds)
+                run_explore_loop(self, step, snap, max_rounds=max_rounds)
             elif step.action == "assert_url_contains":
                 needle = step.value or step.url or ""
                 if needle not in page.url:
@@ -392,7 +556,21 @@ class BrowserSession:
             snap.labeled_input_count = int(metrics.get("labeledInputCount", 0))
             snap.error_phrases_found = _find_error_phrases(snap.body_text_excerpt)
             snap.console_errors = list(self.console_errors)
+            snap.console_warnings = list(self.console_warnings)
             snap.network_failures = list(self.network_failures)
+            if step.action == "navigate":
+                snap.web_vitals = collect_web_vitals(page)
+            if resolution_note:
+                snap.resolved_selector = resolution_note
+                snap.note = resolution_note if not snap.note else f"{snap.note}; {resolution_note}"
+
+            if step.action in ("navigate", "click", "fill", "select"):
+                aria_path = _save_aria_artifact(
+                    self.artifacts_dir,
+                    step_id,
+                    _compact_aria_tree(page),
+                )
+                snap.artifact_paths.append(aria_path)
 
             shot = self.artifacts_dir / f"{_safe_filename(step_id)}.png"
             page.screenshot(path=str(shot), full_page=True)

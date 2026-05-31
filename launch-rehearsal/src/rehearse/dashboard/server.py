@@ -10,7 +10,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from rehearse.dashboard.graphml import load_sitemap_graphml
-from rehearse.dashboard.jobs import enqueue_run, list_jobs
+from rehearse.dashboard.jobs import enqueue_run, list_jobs, mark_stale_running_jobs
 from rehearse.dashboard.store import (
     backfill_all,
     diff_runs,
@@ -21,6 +21,7 @@ from rehearse.dashboard.store import (
     get_integrations,
     get_journey_library,
     get_run_detail,
+    get_command_digest,
     get_trends,
     get_workspace,
     list_configs,
@@ -81,7 +82,10 @@ class _Handler(BaseHTTPRequestHandler):
         for k, v in _CORS.items():
             self.send_header(k, v)
         self.end_headers()
-        self.wfile.write(body)
+        try:
+            self.wfile.write(body)
+        except BrokenPipeError:
+            pass
 
     def _send_bytes(self, data: bytes, content_type: str) -> None:
         self.send_response(200)
@@ -123,6 +127,15 @@ class _Handler(BaseHTTPRequestHandler):
                 self._send_json(list_runs(root))
             return
 
+        if path.startswith("/api/runs/") and path.endswith("/chat"):
+            parts = path.strip("/").split("/")
+            if len(parts) >= 4:
+                run_id = parts[2]
+                from rehearse.dashboard.chat_store import load_chat_thread
+
+                self._send_json(load_chat_thread(root, run_id))
+                return
+
         if path.startswith("/api/runs/"):
             run_id = path.split("/")[-1]
             if run_id.endswith("/graphml"):
@@ -158,6 +171,11 @@ class _Handler(BaseHTTPRequestHandler):
 
         if path == "/api/trends":
             self._send_json(get_trends(root))
+            return
+
+        if path == "/api/digest":
+            n = int((qs.get("n") or ["7"])[0])
+            self._send_json(get_command_digest(root, limit=max(1, min(n, 20))))
             return
 
         if path == "/api/search":
@@ -269,12 +287,59 @@ class _Handler(BaseHTTPRequestHandler):
             if not url:
                 self._send_json({"error": "url required"}, status=400)
                 return
-            self._send_json(run_preflight(url))
+            self._send_json(run_preflight(url, allow_localhost=bool(body.get("allowLocalhost"))))
             return
 
         if path == "/api/workspace":
             body = self._read_json_body()
             self._send_json(save_workspace(root, body))
+            return
+
+        if path.startswith("/api/runs/") and path.endswith("/chat"):
+            parts = path.strip("/").split("/")
+            if len(parts) >= 4 and parts[-1] == "chat":
+                run_id = parts[2]
+                bundle = load_bundle(root, run_id)
+                if not bundle:
+                    self._send_json({"error": "run not found"}, status=404)
+                    return
+                body = self._read_json_body()
+                message = (body.get("message") or "").strip()
+                if not message:
+                    self._send_json({"error": "message required"}, status=400)
+                    return
+                from rehearse.dashboard.chat_store import (
+                    chat_history_for_llm,
+                    load_chat_thread,
+                    save_chat_turn,
+                )
+                from rehearse.llm import chat_about_run
+
+                thread = load_chat_thread(root, run_id)
+                history = chat_history_for_llm(thread)
+                if not history and isinstance(body.get("history"), list):
+                    history = body.get("history")
+                result = chat_about_run(bundle, message, history=history)
+                save_chat_turn(
+                    root,
+                    run_id,
+                    user_message=message,
+                    assistant_reply=result.get("reply", ""),
+                    source=result.get("source", "template"),
+                )
+                self._send_json({"runId": run_id, **result})
+                return
+
+        if path == "/api/recordings/compile":
+            body = self._read_json_body()
+            from rehearse.dashboard.recordings import compile_journey_yaml
+
+            out = compile_journey_yaml(
+                journey_id=str(body.get("journeyId") or "recorded-journey"),
+                journey_name=str(body.get("journeyName") or "Recorded journey"),
+                steps=body.get("steps") if isinstance(body.get("steps"), list) else [],
+            )
+            self._send_json(out)
             return
 
         if path == "/api/jobs":
@@ -325,6 +390,9 @@ class _Handler(BaseHTTPRequestHandler):
 
 def serve_dashboard(artifacts_root: Path, host: str = "127.0.0.1", port: int = 8765) -> None:
     artifacts_root = artifacts_root.resolve()
+    stale = mark_stale_running_jobs(artifacts_root)
+    if stale:
+        print(f"Marked {stale} stale running job(s) as failed (prior serve restart).")
     rebuilt = backfill_all(artifacts_root)
     if rebuilt:
         print(f"Backfilled analysis.json for {len(rebuilt)} run(s).")

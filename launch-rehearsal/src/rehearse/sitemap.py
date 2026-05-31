@@ -8,6 +8,8 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from urllib.parse import urlparse
 
+from rehearse.crawler import page_has_crawl_error
+
 
 @dataclass
 class SiteMap:
@@ -43,7 +45,7 @@ class SiteMap:
             if p.path != home and inbound.get(p.path, 0) == 0
         ]
         auth_gated = [p.path for p in pages if p.redirected_to_login]
-        error_paths = [p.path for p in pages if p.error_phrases or (p.status and p.status >= 400)]
+        error_paths = [p.path for p in pages if page_has_crawl_error(p)]
 
         return cls(
             origin=origin,

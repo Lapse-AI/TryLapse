@@ -39,3 +39,15 @@ def test_save_config_with_auth(tmp_path: Path) -> None:
     )
     data = _load_yaml_config(Path(result["path"]))
     assert "auth" in data
+
+
+def test_save_config_execute_all_personas_in_browser(tmp_path: Path) -> None:
+    result = save_config(
+        tmp_path,
+        {
+            "targetUrl": "https://app.example.com",
+            "executeAllPersonasInBrowser": True,
+        },
+    )
+    data = _load_yaml_config(Path(result["path"]))
+    assert data["run"]["execute_all_personas_in_browser"] is True

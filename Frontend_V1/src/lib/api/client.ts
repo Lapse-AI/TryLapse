@@ -4,6 +4,8 @@ import type {
   AlertChannel,
   Annotation,
   BacklogItem,
+  CommandDigest,
+  InsightNarrative,
   Integration,
   RunBundle,
   RunDiff,
@@ -53,16 +55,49 @@ export async function checkApiHealth(): Promise<boolean> {
 export const api = {
   summaries: () => apiFetch<RunSummary[]>("/api/summaries"),
   bundle: (runId: string) => apiFetch<RunBundle>(`/api/bundle/${runId}`),
+  chatRun: (runId: string, message: string) =>
+    apiFetch<{ runId: string; reply: string; source: string; llmError?: string }>(
+      `/api/runs/${encodeURIComponent(runId)}/chat`,
+      {
+        method: "POST",
+        body: JSON.stringify({ message }),
+      },
+    ),
+  chatThread: (runId: string) =>
+    apiFetch<{ runId: string; turns: { role: string; content: string; at?: string }[] }>(
+      `/api/runs/${encodeURIComponent(runId)}/chat`,
+    ),
   diff: (a: string, b: string) =>
     apiFetch<RunDiff>(`/api/diff?a=${encodeURIComponent(a)}&b=${encodeURIComponent(b)}`),
   trends: () =>
     apiFetch<{
-      readiness: number[];
+      readiness: (number | string)[];
       pages: number[];
       flakeRate: number[];
       runIds: string[];
       labels: string[];
+      issueRecurrence?: {
+        name: string;
+        runs: number;
+        status: string;
+        first: string;
+        runIds?: string[];
+      }[];
+      issuesOpened?: number;
+      issuesResolved?: number;
+      blockerCounts?: number[];
+      narrative?: InsightNarrative;
     }>("/api/trends"),
+  digest: (n = 7) => apiFetch<CommandDigest>(`/api/digest?n=${n}`),
+  compileRecording: (body: {
+    journeyId?: string;
+    journeyName?: string;
+    steps: { action: string; url?: string; intent?: string; value?: string }[];
+  }) =>
+    apiFetch<{ valid: boolean; yaml: string; errors: string[] }>("/api/recordings/compile", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
   search: (q: string) =>
     apiFetch<{ runs: RunSummary[]; issues: unknown[]; pages: unknown[]; query: string }>(
       `/api/search?q=${encodeURIComponent(q)}`,
@@ -111,10 +146,13 @@ export const api = {
       method: "POST",
       body: JSON.stringify(body),
     }),
-  preflight: (url: string) =>
+  preflight: (url: string, opts?: { allowLocalhost?: boolean }) =>
     apiFetch<{ ok: boolean; url?: string; status_code?: number; error?: string }>(
       "/api/preflight",
-      { method: "POST", body: JSON.stringify({ url }) },
+      {
+        method: "POST",
+        body: JSON.stringify({ url, allowLocalhost: opts?.allowLocalhost }),
+      },
     ),
   annotations: (runId: string) => apiFetch<Annotation[]>(`/api/annotations/${runId}`),
   addAnnotation: (runId: string, ann: Annotation) =>
@@ -127,6 +165,11 @@ export const api = {
     productName?: string;
     withAuth?: boolean;
     piiRedaction?: boolean;
+    allowLocalhost?: boolean;
+    selfTest?: boolean;
+    excludePathPrefixes?: string | string[];
+    viewports?: string | string[];
+    executeAllPersonasInBrowser?: boolean;
   }) =>
     apiFetch<{ id: string; path: string; name: string }>("/api/configs", {
       method: "POST",

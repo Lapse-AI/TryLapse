@@ -11,6 +11,7 @@ from rehearse.context import AgentReport, RunContext
 from rehearse.dsl import Journey, Step
 from rehearse.errors import RunBudgetExceeded
 from rehearse.evidence import StepSnapshot
+from rehearse.viewports import normalize_viewports
 
 
 def _replay_journey_from_start(
@@ -23,22 +24,22 @@ def _replay_journey_from_start(
     artifacts_root: Path,
     deadline: float,
     ctx: RunContext,
+    viewport: str,
 ) -> list[StepSnapshot]:
-    """Run all steps for one journey; return snapshots for this seed/loop."""
-    config = ctx.config
-    timeout = config.budgets.step_timeout_ms
+    """Run all steps for one journey; return snapshots for this seed/loop/viewport."""
     snaps: list[StepSnapshot] = []
 
     for i, step in enumerate(journey.steps):
         if time.perf_counter() > deadline:
             raise RunBudgetExceeded("max_run_seconds exceeded")
-        step_id = f"{journey.id}-{primary}-s{i+1}-seed{seed}-loop{loop}"
+        step_id = f"{journey.id}-{primary}-s{i+1}-{viewport}-seed{seed}-loop{loop}"
         snap = session.execute_step(
             step,
             step_id=step_id,
             journey_id=journey.id,
             journey_name=journey.name,
             persona_id=primary,
+            viewport=viewport,
         )
         snap.seed_index = seed
         snaps.append(snap)
@@ -102,9 +103,11 @@ class JourneyAgent(BaseAgent):
         primary: str,
         seed: int,
         loop: int,
+        viewport: str,
     ) -> list[StepSnapshot]:
         if seed > 1 or loop > 1:
             _navigate_journey_entry(self.session, journey)
+        self.session.set_viewport(viewport)
         return _replay_journey_from_start(
             self.session,
             journey,
@@ -114,6 +117,7 @@ class JourneyAgent(BaseAgent):
             artifacts_root=self.artifacts_root,
             deadline=self._deadline,
             ctx=ctx,
+            viewport=viewport,
         )
 
     def execute(self, ctx: RunContext) -> AgentReport:
@@ -123,15 +127,26 @@ class JourneyAgent(BaseAgent):
             summary="Journey execution",
         )
         self._deadline = ctx.metadata.get("deadline", time.perf_counter() + 9999)
-        primary = ctx.config.personas[0].id
         seeds = ctx.config.budgets.parallel_seeds
         loops = ctx.config.budgets.repeat_micro_loop
+        viewports = normalize_viewports(ctx.config.viewports)
+        personas_to_run = (
+            ctx.config.personas
+            if ctx.config.execute_all_personas_in_browser
+            else [ctx.config.personas[0]]
+        )
         executed = 0
         failed = 0
         flaky_count = 0
 
         for journey in ctx.config.journeys:
-            per_journey_budget = len(journey.steps) * seeds * loops
+            per_journey_budget = (
+                len(journey.steps)
+                * seeds
+                * loops
+                * len(viewports)
+                * len(personas_to_run)
+            )
             if per_journey_budget > ctx.config.budgets.max_steps_per_journey:
                 raise RunBudgetExceeded(
                     f"Journey {journey.id} exceeds step budget "
@@ -140,32 +155,54 @@ class JourneyAgent(BaseAgent):
 
         for journey in ctx.config.journeys:
             seed_runs: list[list[StepSnapshot]] = []
-            for loop in range(1, loops + 1):
-                for seed in range(1, seeds + 1):
-                    snaps = self._run_journey_once(ctx, journey, primary=primary, seed=seed, loop=loop)
-                    seed_runs.append(snaps)
-                    executed += len(snaps)
-                    failed += sum(1 for s in snaps if s.outcome == "fail")
+            persona_grades: dict[str, str] = {}
+            for persona in personas_to_run:
+                persona_runs: list[list[StepSnapshot]] = []
+                for loop in range(1, loops + 1):
+                    for seed in range(1, seeds + 1):
+                        for viewport in viewports:
+                            snaps = self._run_journey_once(
+                                ctx,
+                                journey,
+                                primary=persona.id,
+                                seed=seed,
+                                loop=loop,
+                                viewport=viewport,
+                            )
+                            persona_runs.append(snaps)
+                            seed_runs.append(snaps)
+                            executed += len(snaps)
+                            failed += sum(1 for s in snaps if s.outcome == "fail")
+                canonical = next(
+                    (run for run in persona_runs if run and run[0].viewport == "desktop"),
+                    persona_runs[0] if persona_runs else [],
+                )
+                persona_grades[persona.id] = _journey_status_from_snaps(canonical)
 
             _mark_flaky_steps(seed_runs)
             flaky_count += sum(1 for run in seed_runs for s in run if s.flaky)
 
-            # Grade journey from seed 1 loop 1 (canonical)
-            canonical = seed_runs[0] if seed_runs else []
-            journey_status = _journey_status_from_snaps(canonical)
             for persona in ctx.config.personas:
-                report.journey_grades.setdefault(journey.id, {})[persona.id] = journey_status
+                report.journey_grades.setdefault(journey.id, {})[persona.id] = (
+                    persona_grades.get(persona.id)
+                    or persona_grades.get(personas_to_run[0].id)
+                    or "pass"
+                )
 
         ctx.metadata["flaky_steps"] = flaky_count
         ctx.metadata["parallel_seeds"] = seeds
         report.summary = (
             f"Executed {executed} steps across {len(ctx.config.journeys)} journeys "
-            f"({failed} failures, {flaky_count} flaky steps, seeds={seeds})"
+            f"({failed} failures, {flaky_count} flaky steps, seeds={seeds}, "
+            f"viewports={viewports}, personas={len(personas_to_run)})"
         )
         report.metadata = {
             "steps_executed": executed,
             "step_failures": failed,
             "flaky_steps": flaky_count,
             "parallel_seeds": seeds,
+            "viewports": viewports,
+            "personas_executed": len(personas_to_run),
+            "execute_all_personas_in_browser": ctx.config.execute_all_personas_in_browser,
         }
         return report

@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader, Panel, Chip } from "@/components/ui-bits";
 import { personas, workspace, agentConfigDefaults, auditLog } from "@/lib/mock-data";
 import { useWorkspace, useSaveWorkspace } from "@/lib/api/hooks";
+import { VisionOnly } from "@/components/vision-only";
 
 export const Route = createFileRoute("/config")({
   head: () => ({ meta: [{ title: "Workspace — Launch Rehearsal" }] }),
@@ -104,6 +105,7 @@ function Config() {
           </Panel>
         </div>
 
+        <VisionOnly section="config.yamlEditor">
         <Panel className="overflow-hidden">
           <div className="p-4 border-b border-border flex items-center justify-between flex-wrap gap-2">
             <div className="text-xs text-muted-foreground">YAML editor · journey DSL validator</div>
@@ -127,7 +129,9 @@ function Config() {
             {yaml}
           </pre>
         </Panel>
+        </VisionOnly>
 
+        <VisionOnly section="config.personasEditor">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Panel className="p-5">
             <div className="text-xs text-muted-foreground mb-3">Personas · 3–7 configurable</div>
@@ -158,6 +162,7 @@ function Config() {
           </Panel>
 
           <Panel className="p-5 space-y-5">
+            <VisionOnly section="config.secretsVault">
             <div>
               <div className="text-xs text-muted-foreground mb-3">
                 Environment secrets · REHEARSE_*
@@ -179,6 +184,8 @@ function Config() {
                 ))}
               </div>
             </div>
+            </VisionOnly>
+            <VisionOnly section="config.agentToggles">
             <div>
               <div className="text-xs text-muted-foreground mb-2">Agent toggles</div>
               <div className="flex flex-wrap gap-1">
@@ -192,9 +199,12 @@ function Config() {
                 ))}
               </div>
             </div>
+            </VisionOnly>
           </Panel>
         </div>
+        </VisionOnly>
 
+        <VisionOnly section="config.auditLog">
         <Panel className="p-5">
           <div className="text-xs text-muted-foreground mb-3">Audit log · who ran, who viewed</div>
           <div className="divide-y divide-border text-sm font-mono">
@@ -208,6 +218,7 @@ function Config() {
             ))}
           </div>
         </Panel>
+        </VisionOnly>
       </div>
     </div>
   );

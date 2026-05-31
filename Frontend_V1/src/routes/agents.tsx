@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader, Panel, Chip } from "@/components/ui-bits";
 import { agentConfigDefaults, formatDuration } from "@/lib/mock-data";
 import { useLatestRun, useRunBundle } from "@/lib/api/hooks";
+import { VisionOnly } from "@/components/vision-only";
 import { ArrowRight, RotateCw, MessageSquare, Sliders } from "lucide-react";
 
 export const Route = createFileRoute("/agents")({
@@ -29,12 +30,14 @@ function Agents() {
         title="Agent control center"
         description="Each rehearsal is a chain of specialized agents. Inspect handoffs, replay stages, configure LLM persona agents."
         actions={
+          <VisionOnly section="agents.configurePanel">
           <button
             type="button"
             className="text-xs font-mono px-3 py-1.5 rounded-md border border-border hover:bg-surface-2 inline-flex items-center gap-1.5"
           >
             <Sliders className="size-3.5" /> configure
           </button>
+          </VisionOnly>
         }
       />
       <div className="p-8 max-w-[1400px] space-y-6">
@@ -72,6 +75,7 @@ function Agents() {
           </div>
         </Panel>
 
+        <VisionOnly section="agents.llmConfigDefaults">
         <Panel className="p-5 grid grid-cols-2 md:grid-cols-4 gap-4">
           <div>
             <div className="text-xs text-muted-foreground">LLM provider</div>
@@ -94,6 +98,7 @@ function Agents() {
             </div>
           </div>
         </Panel>
+        </VisionOnly>
 
         <Panel className="overflow-hidden">
           <div className="p-5 border-b border-border flex items-center justify-between">
@@ -144,6 +149,7 @@ function Agents() {
                       ${a.costUsd.toFixed(2)}
                     </div>
                     <div className="mt-2 flex gap-1 justify-end">
+                      <VisionOnly section="agents.replayFindings">
                       <button
                         type="button"
                         className="text-[11px] font-mono px-2 py-1 rounded border border-border hover:bg-surface-2 inline-flex items-center gap-1"
@@ -156,6 +162,7 @@ function Agents() {
                       >
                         <MessageSquare className="size-3" /> findings
                       </button>
+                      </VisionOnly>
                     </div>
                   </div>
                 </div>

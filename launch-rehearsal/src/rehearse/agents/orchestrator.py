@@ -7,6 +7,7 @@ from pathlib import Path
 from rehearse.agents.crawl_agent import CrawlAgent
 from rehearse.agents.journey_agent import JourneyAgent
 from rehearse.agents.llm_persona_agent import LLMPersonaAgent
+from rehearse.agents.performance_agent import PerformanceAgent
 from rehearse.agents.persona_agent import PersonaAgent
 from rehearse.agents.synthesizer import SynthesizerAgent
 from rehearse.agents.workflow_agent import WorkflowAgent
@@ -48,6 +49,9 @@ class AgentOrchestrator:
         self.ctx.agent_reports.append(self._journey_agent.execute(self.ctx))
 
     def run_analysis_phase(self) -> AnalysisResult:
+        self.ctx.agent_reports.append(
+            PerformanceAgent(self.artifacts_root).execute(self.ctx)
+        )
         for agent in self._persona_agents:
             self.ctx.agent_reports.append(agent.execute(self.ctx))
         for agent in self._llm_agents:

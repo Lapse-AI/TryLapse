@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 import time
 from dataclasses import dataclass, field
 from urllib.parse import urljoin, urlparse
@@ -9,6 +10,18 @@ from urllib.parse import urljoin, urlparse
 from playwright.sync_api import Page
 
 from rehearse.dsl import CrawlConfig
+
+# Title/H1 only — avoid flagging pages that mention "error" in issue/history copy
+_HEADING_ERROR_PATTERNS = (
+    "404",
+    "page not found",
+    "not found",
+    "500 internal",
+    "internal server error",
+    "access denied",
+    "forbidden",
+    "unauthorized",
+)
 
 
 @dataclass
@@ -42,6 +55,40 @@ def _normalize_url(base: str, href: str) -> str | None:
     full = urljoin(base, href)
     parsed = urlparse(full)
     return parsed._replace(fragment="").geturl()
+
+
+def _path_excluded(path: str, prefixes: list[str]) -> bool:
+    if not prefixes:
+        return False
+    norm = path if path.startswith("/") else f"/{path}"
+    for prefix in prefixes:
+        p = prefix if prefix.startswith("/") else f"/{prefix}"
+        if norm == p.rstrip("/") or norm.startswith(p):
+            return True
+    return False
+
+
+def _heading_error_signals(title: str, h1: str) -> list[str]:
+    head = f"{title} {h1}".lower().strip()
+    if not head:
+        return []
+    for pattern in _HEADING_ERROR_PATTERNS:
+        if pattern in head:
+            return [pattern]
+    if re.match(r"^(error|oops|something went wrong)\b", head):
+        return ["error_page_title"]
+    return []
+
+
+def page_has_crawl_error(page: CrawlPage) -> bool:
+    """True when the page is an HTTP or dedicated error surface (not body substring noise)."""
+    if page.status is not None and page.status >= 400:
+        return True
+    if page.error_phrases and any(
+        p.startswith("http_") or p.startswith("nav_failed") for p in page.error_phrases
+    ):
+        return True
+    return bool(_heading_error_signals(page.title, page.h1))
 
 
 def _extract_page_data(page: Page, url: str, depth: int, started: float) -> CrawlPage:
@@ -78,9 +125,8 @@ def _extract_page_data(page: Page, url: str, depth: int, started: float) -> Craw
         if norm:
             outbound.append(urlparse(norm).path or "/")
 
-    lower = body.lower()
-    errors = [p for p in ("error", "not found", "unauthorized", "forbidden") if p in lower]
     redirected = "/login" in page.url.lower() or "/signin" in page.url.lower()
+    status: int | None = None
 
     return CrawlPage(
         url=page.url,
@@ -95,7 +141,7 @@ def _extract_page_data(page: Page, url: str, depth: int, started: float) -> Craw
         word_count=words,
         outbound_paths=sorted(set(outbound)),
         redirected_to_login=redirected and path not in ("/login", "/signin"),
-        error_phrases=errors,
+        error_phrases=[],
         duration_ms=int((time.perf_counter() - started) * 1000),
     )
 
@@ -110,6 +156,7 @@ def crawl_site(
     origin = start_url.rstrip("/")
     parsed = urlparse(start_url)
     seed = f"{origin}{parsed.path or '/'}"
+    excludes = list(config.exclude_path_prefixes)
 
     queue: list[tuple[str, int]] = [(seed, 0)]
     seen: set[str] = set()
@@ -119,7 +166,7 @@ def crawl_site(
         url, depth = queue.pop(0)
         norm = urlparse(url)
         key = (norm.path or "/").rstrip("/") or "/"
-        if key in seen:
+        if key in seen or _path_excluded(key, excludes):
             continue
         seen.add(key)
 
@@ -129,6 +176,9 @@ def crawl_site(
             page.wait_for_load_state("networkidle", timeout=min(timeout_ms, 12000))
             cp = _extract_page_data(page, url, depth, started)
             cp.status = resp.status if resp else None
+            cp.error_phrases = _heading_error_signals(cp.title, cp.h1)
+            if cp.status is not None and cp.status >= 400:
+                cp.error_phrases = [f"http_{cp.status}", *cp.error_phrases]
         except Exception as exc:
             cp = CrawlPage(
                 url=url,
@@ -138,7 +188,7 @@ def crawl_site(
                 status=None,
                 duration_ms=int((time.perf_counter() - started) * 1000),
             )
-            cp.error_phrases.append(str(exc)[:80])
+            cp.error_phrases = [f"nav_failed:{str(exc)[:60]}"]
             pages.append(cp)
             continue
 
@@ -147,6 +197,8 @@ def crawl_site(
         if depth >= config.max_depth:
             continue
         for href in cp.outbound_paths:
+            if _path_excluded(href, excludes):
+                continue
             full = urljoin(origin, href)
             if config.same_origin_only and not _same_origin(origin, full):
                 continue

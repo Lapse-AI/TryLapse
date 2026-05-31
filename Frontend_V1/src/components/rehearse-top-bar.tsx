@@ -18,6 +18,7 @@ import {
   useTriggerJob,
   useWorkspace,
 } from "@/lib/api/hooks";
+import { uiModeLabel } from "@/lib/ui-mode";
 
 const ENVS = [
   { id: "prod-canary", label: "prod-canary", hint: "Production canary slice" },
@@ -52,7 +53,10 @@ export function RehearseTopBar() {
         <span>/</span>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded border border-border bg-surface-2 hover:bg-surface-3 text-foreground">
+            <button
+              aria-label={`Environment: ${env}`}
+              className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded border border-border bg-surface-2 hover:bg-surface-3 text-foreground"
+            >
               {env} <ChevronDown className="size-3 opacity-60" />
             </button>
           </DropdownMenuTrigger>
@@ -78,7 +82,14 @@ export function RehearseTopBar() {
         </DropdownMenu>
         <span>/</span>
         <span className="text-foreground">{host}</span>
-        {live && <span className="text-ready text-[10px]">· API live</span>}
+        {live ? (
+          <span className="text-ready text-[10px]">· API live</span>
+        ) : (
+          <span className="text-warn text-[10px]">· mock data</span>
+        )}
+        <span className="text-[10px] px-1.5 py-0.5 rounded border border-violet/30 text-violet">
+          Vision UI · {uiModeLabel()}
+        </span>
       </div>
 
       <div className="flex-1 max-w-md relative">

@@ -39,7 +39,7 @@ journeys:
   - {id: j5, name: J5, steps: [{action: navigate, url: "https://example.com"}]}
 """
     )
-    with pytest.raises(ConfigError, match="Expected 3 personas"):
+    with pytest.raises(ConfigError, match="Expected at least 3 personas"):
         load_config(path)
 
 

@@ -29,16 +29,21 @@ def build_config(
     run_id_prefix: str | None = None,
     with_auth: bool = False,
     crawl_enabled: bool = True,
+    exclude_path_prefixes: list[str] | None = None,
+    viewports: list[str] | None = None,
 ) -> dict:
     base = target_url.rstrip("/")
     prefix = run_id_prefix or _slug_from_url(base)
     product = _product_name(base, product_name)
+
+    from rehearse.viewports import normalize_viewports
 
     cfg: dict = {
         "run": {
             "target_url": base,
             "run_id_prefix": prefix,
             "product_name": product,
+            "viewports": normalize_viewports(viewports or ["desktop"]),
         },
         "crawl": {
             "enabled": crawl_enabled,
@@ -46,7 +51,10 @@ def build_config(
             "max_pages": 30,
             "supplement_journeys": True,
         },
-        "personas": [
+    }
+    if exclude_path_prefixes:
+        cfg["crawl"]["exclude_path_prefixes"] = list(exclude_path_prefixes)
+    cfg["personas"] = [
             {
                 "id": "p1-evaluator",
                 "name": "First-time evaluator",
@@ -65,8 +73,8 @@ def build_config(
                 "role": "IT admin",
                 "goals": ["Verify access boundaries and trust signals"],
             },
-        ],
-        "journeys": [
+    ]
+    cfg["journeys"] = [
             {
                 "id": "j1-land",
                 "name": "Land on primary surface",
@@ -92,12 +100,11 @@ def build_config(
                 "name": "Admin or settings boundary",
                 "steps": [{"action": "navigate", "url": f"{base}/admin"}, {"action": "wait", "value": "1500"}],
             },
-        ],
-        "budgets": {
-            "max_steps_per_journey": 12,
-            "max_run_seconds": 1200,
-            "step_timeout_ms": 45000,
-        },
+    ]
+    cfg["budgets"] = {
+        "max_steps_per_journey": 12,
+        "max_run_seconds": 1200,
+        "step_timeout_ms": 45000,
     }
 
     if with_auth:
@@ -114,6 +121,82 @@ def build_config(
             {"action": "wait", "value": "2000"},
         ]
 
+    return cfg
+
+
+def build_self_dashboard_config(
+    target_url: str = "http://127.0.0.1:8081",
+    *,
+    product_name: str = "Launch Rehearsal Dashboard",
+) -> dict:
+    """Config for dogfooding: crawl + journey the monitoring UI itself."""
+    base = target_url.rstrip("/")
+    cfg = build_config(
+        base,
+        product_name=product_name,
+        run_id_prefix="lr-self",
+        crawl_enabled=True,
+    )
+    cfg["run"]["allow_localhost"] = True
+    cfg["crawl"]["max_pages"] = 24
+    cfg["crawl"]["max_depth"] = 2
+    cfg["crawl"]["exclude_path_prefixes"] = ["/runs/", "/api/"]
+    cfg["run"]["viewports"] = ["desktop", "tablet", "mobile"]
+    cfg["budgets"]["max_steps_per_journey"] = 48
+    cfg["journeys"] = [
+        {
+            "id": "j1-command-center",
+            "name": "Command center",
+            "steps": [
+                {"action": "navigate", "url": f"{base}/"},
+                {"action": "wait", "value": "2500"},
+            ],
+        },
+        {
+            "id": "j2-runs",
+            "name": "Runs list",
+            "steps": [
+                {"action": "navigate", "url": f"{base}/runs"},
+                {"action": "wait", "value": "2000"},
+            ],
+        },
+        {
+            "id": "j3-compare",
+            "name": "Compare runs",
+            "steps": [
+                {"action": "navigate", "url": f"{base}/compare"},
+                {"action": "wait", "value": "2000"},
+            ],
+        },
+        {
+            "id": "j4-init-dogfood",
+            "name": "Init dogfood flow",
+            "steps": [
+                {"action": "navigate", "url": f"{base}/init"},
+                {"action": "wait", "value": "1500"},
+                {"action": "click", "intent": f"Use {base}"},
+                {"action": "click", "intent": "Preflight HEAD"},
+                {"action": "wait", "value": "1500"},
+            ],
+        },
+        {
+            "id": "j5-runner",
+            "name": "Runner page (observe only — no self-trigger)",
+            "steps": [
+                {"action": "navigate", "url": f"{base}/runner"},
+                {"action": "wait", "value": "2000"},
+                {"action": "assert_url_contains", "value": "/runner"},
+            ],
+        },
+        {
+            "id": "j6-trends",
+            "name": "Trends monitoring",
+            "steps": [
+                {"action": "navigate", "url": f"{base}/trends"},
+                {"action": "wait", "value": "2000"},
+            ],
+        },
+    ]
     return cfg
 
 

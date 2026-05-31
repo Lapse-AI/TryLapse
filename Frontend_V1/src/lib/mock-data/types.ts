@@ -108,6 +108,15 @@ export type StepSnapshot = {
   consoleErrors?: string[];
   networkFailures?: string[];
   artifactPaths?: string[];
+  exploreLog?: {
+    round: number;
+    url?: string;
+    rationale?: string | null;
+    done?: boolean;
+    error?: string | null;
+    actions?: { action: string; intent?: string; outcome: string; error?: string }[];
+  }[];
+  exploreSummary?: string | null;
 };
 
 export type AgentNode = {
@@ -179,11 +188,43 @@ export type Annotation = {
   at: string;
 };
 
+export type InsightNarrative = {
+  headline: string;
+  forFounders: string;
+  forEngineering: string;
+  verdict: string;
+  suggestedQuestions?: string[];
+  source: string;
+  llmNote?: string;
+};
+
+export type CommandDigest = {
+  headline: string;
+  bullets: string[];
+  readinessTrend: string;
+  source: string;
+  latestRunId?: string;
+  runCount?: number;
+  llmNote?: string;
+};
+
+export type CompareNarrative = {
+  headline: string;
+  forFounders: string;
+  forEngineering: string;
+  verdict: string;
+  readinessDelta?: string;
+  suggestedQuestions: string[];
+  source: string;
+  llmNote?: string;
+};
+
 export type RunDiff = {
   runA: string;
   runB: string;
   readinessA: ReadinessBand;
   readinessB: ReadinessBand;
+  narrative?: CompareNarrative;
   issuesA: number;
   issuesB: number;
   pagesA: number;
@@ -203,6 +244,19 @@ export type RunDiff = {
   newIssues: string[];
 };
 
+export type RunNarrative = {
+  executiveSummary: string;
+  forFounders: string;
+  forEngineering: string;
+  suggestedQuestions: string[];
+  source: string;
+  readinessBand?: string;
+  issueCount?: number;
+  delightCount?: number;
+  chatReadySummary?: string;
+  llmNote?: string;
+};
+
 export type RunBundle = {
   summary: RunSummary;
   steps: StepSnapshot[];
@@ -211,6 +265,7 @@ export type RunBundle = {
   agents: AgentNode[];
   matrix: MatrixCell[];
   dimensions: DimensionScore[];
+  narrative?: RunNarrative;
   scorecardMd: string;
   sitemapMd: string;
   sitemapPages: SitemapPage[];

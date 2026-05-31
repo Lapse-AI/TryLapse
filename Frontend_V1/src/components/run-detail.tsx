@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Panel, Chip, SeverityChip } from "@/components/ui-bits";
 import type { Annotation, Issue, RunBundle, StepSnapshot } from "@/lib/mock-data";
@@ -173,10 +173,10 @@ export function StepsTable({
         </thead>
         <tbody>
           {steps.map((s) => (
+            <Fragment key={s.stepId}>
             <tr
-              key={s.stepId}
               id={`step-${s.stepId}`}
-              className={`border-b border-border last:border-0 hover:bg-surface-2/30 ${
+              className={`border-b border-border hover:bg-surface-2/30 ${
                 highlightStepId === s.stepId ? "bg-primary/10 ring-1 ring-primary/30" : ""
               }`}
             >
@@ -189,7 +189,14 @@ export function StepsTable({
                 )}
               </td>
               <td className="px-5 py-3 text-xs">{s.journeyId}</td>
-              <td className="px-5 py-3">{s.action}</td>
+              <td className="px-5 py-3">
+                <div>{s.action}</div>
+                {s.action === "explore" && s.exploreSummary && (
+                  <p className="text-xs text-muted-foreground mt-1 max-w-md whitespace-pre-wrap">
+                    {s.exploreSummary}
+                  </p>
+                )}
+              </td>
               <td className="px-5 py-3">
                 <Chip
                   tone={
@@ -212,12 +219,36 @@ export function StepsTable({
                 {(s.finalUrl ?? s.requestedUrl ?? "—").slice(0, 60)}
               </td>
             </tr>
+            {s.action === "explore" && (s.exploreLog?.length || s.exploreSummary) ? (
+              <tr key={`${s.stepId}-explore`} className="border-b border-border last:border-0">
+                <td colSpan={6} className="px-5 py-3 bg-surface-2/40 text-xs space-y-2">
+                  {s.exploreSummary && (
+                    <p className="text-sm leading-relaxed">{s.exploreSummary}</p>
+                  )}
+                  {s.exploreLog?.map((rnd) => (
+                    <div key={rnd.round} className="font-mono text-[11px] text-muted-foreground">
+                      Round {rnd.round}
+                      {rnd.rationale ? ` — ${rnd.rationale}` : ""}
+                      {(rnd.actions ?? []).map((a, i) => (
+                        <span key={i} className="ml-2">
+                          [{a.outcome}] {a.action}
+                          {a.intent ? `: ${a.intent}` : ""}
+                        </span>
+                      ))}
+                    </div>
+                  ))}
+                </td>
+              </tr>
+            ) : null}
+            </Fragment>
           ))}
         </tbody>
       </table>
     </div>
   );
 }
+
+export { RunNarrativePanel } from "./run-detail/RunNarrativePanel";
 
 export function ScorecardPanel({ markdown }: { markdown: string }) {
   return (
@@ -282,8 +313,32 @@ export function DiffPanel({ runA, runB }: { runA: string; runB: string }) {
       </div>
     );
   }
+  const cn = diff.narrative;
+
   return (
     <div className="p-5 space-y-4">
+      {cn && (
+        <Panel className="p-4 md:p-5 space-y-3 border-primary/20 bg-primary/5">
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className="font-display font-semibold">What changed</div>
+            <Chip tone={cn.verdict === "improved" ? "ready" : cn.verdict === "regressed" ? "danger" : "warn"}>
+              {cn.verdict}
+            </Chip>
+            <Chip tone="neutral">{cn.source === "llm+template" ? "AI + rules" : "Rules"}</Chip>
+          </div>
+          <p className="text-sm leading-relaxed">{cn.headline}</p>
+          <div className="grid md:grid-cols-2 gap-3 text-sm">
+            <div>
+              <div className="text-xs text-muted-foreground mb-1">For founders</div>
+              <p className="whitespace-pre-wrap">{cn.forFounders}</p>
+            </div>
+            <div>
+              <div className="text-xs text-muted-foreground mb-1">For engineering</div>
+              <p className="whitespace-pre-wrap">{cn.forEngineering}</p>
+            </div>
+          </div>
+        </Panel>
+      )}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <Panel className="p-3">
           <div className="text-xs text-muted-foreground">Readiness</div>

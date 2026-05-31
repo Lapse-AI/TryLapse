@@ -183,6 +183,31 @@ def _step_flaky(step: StepSnapshot, all_steps: list[StepSnapshot]) -> bool:
     return False
 
 
+def _performance_dimension_bump_from_steps(steps: list) -> tuple[int, str]:
+    from rehearse.web_vitals import vitals_issues
+
+    avg = sum(s.duration_ms for s in steps) / max(len(steps), 1)
+    bump = -10 if avg > 3000 else 5
+    poor = 0
+    lcp_samples: list[float] = []
+    for s in steps:
+        vitals = getattr(s, "web_vitals", None) or {}
+        if vitals:
+            lcp = vitals.get("lcp")
+            if lcp is not None:
+                lcp_samples.append(float(lcp))
+            if vitals_issues(vitals):
+                poor += 1
+    if poor:
+        bump -= min(25, 12 * poor)
+    signal = f"~{int(avg)}ms avg step"
+    if lcp_samples:
+        signal += f"; LCP ~{int(sum(lcp_samples) / len(lcp_samples))}ms (lab)"
+    if poor:
+        signal += f"; {poor} journey(s) over vitals threshold"
+    return bump, signal
+
+
 def _expand_dimensions(raw: dict[str, tuple[int, str]], evidence: RunEvidence) -> list[dict[str, Any]]:
     name_map = {"Information clarity": "Information"}
     items: list[dict[str, Any]] = []
@@ -194,9 +219,9 @@ def _expand_dimensions(raw: dict[str, tuple[int, str]], evidence: RunEvidence) -
     base = sum(i["score"] for i in items) / len(items)
     for extra in EXTRA_DIMENSIONS:
         bump = 0
+        signal = "Phase 2 heuristic from step evidence"
         if extra == "Performance":
-            avg = sum(s.duration_ms for s in evidence.steps) / max(len(evidence.steps), 1)
-            bump = -10 if avg > 3000 else 5
+            bump, signal = _performance_dimension_bump_from_steps(evidence.steps)
         elif extra == "Accessibility":
             unlabeled = sum(s.unlabeled_button_count for s in evidence.steps)
             bump = -15 if unlabeled > 5 else 0
@@ -206,8 +231,8 @@ def _expand_dimensions(raw: dict[str, tuple[int, str]], evidence: RunEvidence) -
             {
                 "name": extra,
                 "score": max(20, min(95, int(base + bump))),
-                "signal": f"Phase 2 heuristic from step evidence",
-                "automated": False,
+                "signal": signal,
+                "automated": extra == "Performance" and bool(evidence.steps),
             }
         )
     return items
@@ -240,9 +265,13 @@ def _serialize_steps(evidence: RunEvidence, artifacts_root: Path, output_dir: Pa
                 "errorType": s.error_type,
                 "flaky": _step_flaky(s, evidence.steps),
                 "consoleErrors": s.console_errors,
+                "consoleWarnings": getattr(s, "console_warnings", None) or [],
                 "networkFailures": s.network_failures,
+                "webVitals": getattr(s, "web_vitals", None) or {},
                 "bodyTextExcerpt": s.body_text_excerpt[:200] if s.body_text_excerpt else None,
                 "artifactPaths": rel_shots,
+                "exploreLog": getattr(s, "explore_log", None) or [],
+                "exploreSummary": getattr(s, "explore_summary", None),
             }
         )
     return out
@@ -513,6 +542,9 @@ def build_run_bundle(
             "crawlEnabled": crawl_enabled,
             "orphans": len(ctx.sitemap.orphan_paths) if ctx and ctx.sitemap else 0,
             "authGated": len(ctx.sitemap.auth_gated_paths) if ctx and ctx.sitemap else 0,
+            "networkLogPath": evidence.network_log_path
+            or (ctx.metadata.get("network_log_path") if ctx else None),
+            "webVitalsPath": (ctx.metadata.get("web_vitals_path") if ctx else None),
         },
         "steps": steps,
         "issues": issues,
@@ -530,6 +562,7 @@ def build_run_bundle(
         "journeys": journeys,
         "workflows": _serialize_workflows(ctx),
         "suggestedJourneys": (ctx.workflows.suggested_journeys if ctx and ctx.workflows else []),
+        "narrative": (ctx.metadata.get("narrative") if ctx else None),
     }
 
 
@@ -651,6 +684,11 @@ def rebuild_bundle_from_artifacts(output_dir: Path, run_id: str) -> dict[str, An
     scorecard_md = scorecard_path.read_text() if scorecard_path.is_file() else None
     crawl_on = sitemap is not None
 
+    from rehearse.narrative import build_run_narrative
+
+    ctx.metadata["narrative"] = build_run_narrative(
+        config, evidence, analysis, ctx=ctx, use_llm=False
+    )
     bundle = build_run_bundle(
         config,
         evidence,

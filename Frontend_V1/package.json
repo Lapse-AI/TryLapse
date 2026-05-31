@@ -4,10 +4,15 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "dev": "vite dev",
-    "build": "vite build",
-    "build:dev": "vite build --mode development",
+    "dev": "vite dev --mode dev",
+    "dev:deliverable": "vite dev --mode dev",
+    "dev:vision": "vite dev --mode vision",
+    "build": "vite build --mode dev",
+    "build:dev": "vite build --mode dev",
+    "build:deliverable": "vite build --mode dev",
+    "build:vision": "vite build --mode vision",
     "preview": "vite preview",
+    "preview:deliverable": "vite preview --mode dev",
     "lint": "eslint .",
     "format": "prettier --write ."
   },

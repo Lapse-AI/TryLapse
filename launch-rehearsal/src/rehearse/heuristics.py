@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from urllib.parse import urlparse
 
@@ -57,8 +58,18 @@ def _pick_personas(config: RunConfig, *keywords: str) -> list[str]:
 
 
 def _canonical_steps(steps: list[StepSnapshot]) -> list[StepSnapshot]:
-    """Seed 1 only — avoids triple-counting parallel seed replays in matrix/heuristics."""
-    return [s for s in steps if s.seed_index == 1]
+    """Seed 1 + desktop viewport — avoids seed/viewport replays in matrix/heuristics."""
+    seed1 = [s for s in steps if s.seed_index == 1]
+    by_key: dict[tuple[str, int], StepSnapshot] = {}
+    for s in seed1:
+        m = re.search(r"-s(\d+)-", s.step_id)
+        ord_ = int(m.group(1)) if m else 0
+        key = (s.journey_id, ord_)
+        vp = getattr(s, "viewport", None) or "desktop"
+        prev = by_key.get(key)
+        if prev is None or (getattr(prev, "viewport", "desktop") != "desktop" and vp == "desktop"):
+            by_key[key] = s
+    return sorted(by_key.values(), key=lambda x: x.step_id)
 
 
 def _journey_status(steps: list[StepSnapshot]) -> str:
@@ -101,6 +112,8 @@ def analyze_run(
         _analyze_step(config, step, result, seen_titles, issue_counter, delight_counter)
         issue_counter = len(result.issues)
         delight_counter = len(result.delights)
+
+    _analyze_console_spike(config, canonical_steps, result, seen_titles)
 
     flaky_seen: set[str] = set()
     for step in canonical_steps:
@@ -295,6 +308,54 @@ def _analyze_step(
             "Page includes headings and substantive body copy for first-time evaluators.",
             p_first,
         )
+
+    if step.console_errors:
+        add_issue(
+            "P2",
+            "Console errors on page",
+            f"{len(step.console_errors)} console error(s): {step.console_errors[0][:120]}",
+            p_power,
+        )
+
+    warnings = getattr(step, "console_warnings", None) or []
+    if len(warnings) >= 2:
+        add_issue(
+            "P3",
+            "Console warnings on page",
+            f"{len(warnings)} warning(s): {warnings[0][:120]}",
+            p_power,
+        )
+
+
+def _analyze_console_spike(
+    config: RunConfig,
+    steps: list[StepSnapshot],
+    result: AnalysisResult,
+    seen: set[str],
+) -> None:
+    """Run-level console spike — attributed to operator persona (BRW-B3)."""
+    total_errors = sum(len(s.console_errors) for s in steps)
+    total_warnings = sum(len(getattr(s, "console_warnings", None) or []) for s in steps)
+    if total_errors < 3 and total_warnings < 8:
+        return
+    title = "Console noise spike across run"
+    if title in seen:
+        return
+    seen.add(title)
+    result.issues.append(
+        Finding(
+            id=f"I{len(result.issues)+1}",
+            severity="P2",
+            title=title,
+            detail=(
+                f"Captured {total_errors} console error(s) and {total_warnings} warning(s) "
+                "across canonical steps — review network-log and step artifacts."
+            ),
+            persona_ids=_pick_personas(config, "operator", "power", "daily"),
+            step_id=steps[0].step_id if steps else "run-console",
+            confidence="high",
+        )
+    )
 
 
 def _analyze_sitemap(

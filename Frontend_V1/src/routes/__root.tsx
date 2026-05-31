@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppSidebar } from "../components/app-sidebar";
 import { RehearseTopBar } from "../components/rehearse-top-bar";
+import { ApiRequiredBanner } from "../components/api-required-banner";
 import { Toaster } from "../components/ui/sonner";
 
 function NotFoundComponent() {
@@ -119,6 +120,7 @@ function RootComponent() {
         </div>
         <div className="flex-1 flex flex-col min-w-0">
           <RehearseTopBar />
+          <ApiRequiredBanner />
           <main className="flex-1 min-w-0 overflow-x-hidden">
             <Outlet />
           </main>

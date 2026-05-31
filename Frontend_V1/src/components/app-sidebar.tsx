@@ -66,7 +66,11 @@ export function AppSidebar() {
         </div>
         <div className="leading-tight">
           <div className="font-display font-semibold text-[15px] tracking-tight">Rehearsal</div>
-          <div className="text-[11px] text-muted-foreground">Monitor</div>
+          <div className="text-[11px] text-muted-foreground">
+            <span className="px-1 py-px rounded bg-surface-2 border border-border text-[10px] font-mono">
+              Monitor
+            </span>
+          </div>
         </div>
       </div>
 

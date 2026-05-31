@@ -17,6 +17,7 @@ import {
   useRunBundle,
   useRunSummaries,
   useTrends,
+  useCommandDigest,
   useTriggerJob,
   useApiHealth,
   useJobs,
@@ -43,6 +44,7 @@ function Index() {
   const { data: bundle, isLoading } = useRunBundle(latest?.id ?? "");
   const { data: runSummaries = [] } = useRunSummaries();
   const { data: trends } = useTrends();
+  const { data: digest } = useCommandDigest(7);
   const { data: live } = useApiHealth();
   const { data: jobs } = useJobs();
   const trigger = useTriggerJob();
@@ -120,6 +122,22 @@ function Index() {
       />
 
       <div className="p-4 md:p-8 space-y-8 max-w-[1400px]">
+        {digest && (
+          <Panel className="p-5 md:p-6 space-y-3 border-primary/20 bg-primary/5">
+            <div className="flex items-center gap-2 flex-wrap">
+              <Sparkles className="size-4 text-primary" />
+              <h2 className="font-display text-lg font-semibold">Command center digest</h2>
+              <Chip tone="neutral">{digest.source === "llm+template" ? "AI + rules" : "Rules"}</Chip>
+              <Chip tone="info">{digest.readinessTrend}</Chip>
+            </div>
+            <p className="text-sm leading-relaxed">{digest.headline}</p>
+            <ul className="text-sm space-y-1.5 list-disc pl-5">
+              {digest.bullets.map((b) => (
+                <li key={b}>{b}</li>
+              ))}
+            </ul>
+          </Panel>
+        )}
         {/* Quick actions */}
         <div className="flex flex-wrap gap-2">
           <button
@@ -266,6 +284,7 @@ function Index() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-4">
             {bundle.dimensions.map((d) => {
               const tone = d.score >= 85 ? "ready" : d.score >= 75 ? "warn" : "danger";
+              const relatedCount = bundle.issues.filter((i) => i.dimension === d.name).length;
               return (
                 <div key={d.name}>
                   <div className="flex items-center justify-between mb-1.5">
@@ -278,6 +297,16 @@ function Index() {
                     </span>
                   </div>
                   <Bar value={d.score} tone={tone} />
+                  {relatedCount > 0 && (
+                    <Link
+                      to="/runs/$runId"
+                      params={{ runId: latest.id }}
+                      search={{ dimension: d.name }}
+                      className="text-[10px] text-primary mt-1 inline-block hover:underline"
+                    >
+                      View {relatedCount} related findings →
+                    </Link>
+                  )}
                 </div>
               );
             })}
