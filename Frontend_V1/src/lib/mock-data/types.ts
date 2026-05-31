@@ -44,6 +44,17 @@ export type Issue = {
   similarIssueIds?: string[];
   suggestion?: string;
   screenshotPath?: string;
+  focusRegion?: FocusRegion | null;
+};
+
+export type FocusRegion = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  viewportWidth: number;
+  viewportHeight: number;
+  label?: string;
 };
 
 export type Delight = {
@@ -124,6 +135,7 @@ export type StepSnapshot = {
     actions?: { action: string; intent?: string; outcome: string; error?: string }[];
   }[];
   exploreSummary?: string | null;
+  focusRegion?: FocusRegion | null;
 };
 
 export type AgentNode = {
@@ -244,6 +256,24 @@ export type RunDiff = {
     outcomeB: StepOutcome;
     urlA?: string;
     urlB?: string;
+    screenshotPathA?: string | null;
+    screenshotPathB?: string | null;
+    focusRegionA?: FocusRegion | null;
+    focusRegionB?: FocusRegion | null;
+    journeyId?: string;
+    action?: string;
+  }[];
+  visualDiffs?: {
+    stepId: string;
+    journeyId?: string;
+    action?: string;
+    outcomeA?: string | null;
+    outcomeB?: string | null;
+    screenshotPathA?: string | null;
+    screenshotPathB?: string | null;
+    focusRegionA?: FocusRegion | null;
+    focusRegionB?: FocusRegion | null;
+    onlyInB?: boolean;
   }[];
   stepsOnlyInA: string[];
   stepsOnlyInB: string[];

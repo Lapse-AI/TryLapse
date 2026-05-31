@@ -164,6 +164,7 @@ Self-test on `http://127.0.0.1:8081` passes Phase A/B when:
 - [x] Mobile/tablet/desktop viewports complete with artifacts
 - [x] Scorecard issues are **actionable** (job queue serialized; stale jobs marked on serve restart)
 - [x] Compare run selectors covered by labeled combobox + NLU-2 “What changed” panel
+- [x] Compare visual step diff with focus region overlays on screenshots (L2-UI-18 v1)
 
 Use **Browser MCP in Cursor only** to validate new BRW-* features during development; partner-facing proof is always `rehearse run` + dashboard.
 

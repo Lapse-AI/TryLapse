@@ -272,6 +272,7 @@ def _serialize_steps(evidence: RunEvidence, artifacts_root: Path, output_dir: Pa
                 "artifactPaths": rel_shots,
                 "exploreLog": getattr(s, "explore_log", None) or [],
                 "exploreSummary": getattr(s, "explore_summary", None),
+                "focusRegion": getattr(s, "focus_region", None),
             }
         )
     return out
@@ -306,6 +307,8 @@ def _serialize_issues(config: RunConfig, evidence: RunEvidence, analysis: Analys
             }
         if step and step.error_type:
             issue["errorType"] = step.error_type
+        if step and getattr(step, "focus_region", None):
+            issue["focusRegion"] = step.focus_region
         issues.append(issue)
     return issues
 
