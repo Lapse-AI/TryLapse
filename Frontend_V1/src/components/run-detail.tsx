@@ -4,7 +4,7 @@ import { Panel, Chip, SeverityChip } from "@/components/ui-bits";
 import type { Annotation, Issue, RunBundle, StepSnapshot } from "@/lib/mock-data";
 import { formatDurationMs } from "@/lib/mock-data";
 import { artifactUrl } from "@/lib/api/client";
-import { useRunDiff } from "@/lib/api/hooks";
+import { useAddAnnotation, useRunDiff } from "@/lib/api/hooks";
 import {
   copyReproToClipboard,
   downloadArtifact,
@@ -336,7 +336,13 @@ export function DiffPanel({ runA, runB }: { runA: string; runB: string }) {
   );
 }
 
-export function AnnotationsPanel({ annotations }: { annotations: Annotation[] }) {
+export function AnnotationsPanel({
+  runId: _runId,
+  annotations,
+}: {
+  runId: string;
+  annotations: Annotation[];
+}) {
   if (!annotations.length) {
     return (
       <div className="p-8 text-center text-sm text-muted-foreground">
@@ -372,6 +378,79 @@ export function AnnotationsPanel({ annotations }: { annotations: Annotation[] })
             {a.at.slice(0, 10)}
           </span>
         </div>
+      ))}
+    </div>
+  );
+}
+
+type AnnotationAction = Extract<Annotation["action"], "agreed" | "disagree" | "false positive">;
+
+const ANNOTATION_ACTIONS: {
+  action: AnnotationAction;
+  label: string;
+  tone: "ready" | "info" | "warn";
+}[] = [
+  { action: "agreed", label: "Agree", tone: "ready" },
+  { action: "disagree", label: "Disagree", tone: "info" },
+  { action: "false positive", label: "False positive", tone: "warn" },
+];
+
+export function IssueAnnotationActions({
+  runId,
+  issue,
+  existing,
+}: {
+  runId: string;
+  issue: Issue;
+  existing?: Annotation;
+}) {
+  const addAnnotation = useAddAnnotation(runId);
+
+  const submit = (action: AnnotationAction) => {
+    const ann: Annotation = {
+      id: `ann_${Date.now()}`,
+      runId,
+      targetType: "issue",
+      targetId: issue.id,
+      action,
+      author: "operator",
+      at: new Date().toISOString(),
+    };
+    addAnnotation.mutate(ann, {
+      onSuccess: () => toast.success(`Marked ${action}`),
+      onError: () => toast.error("Could not save annotation"),
+    });
+  };
+
+  if (existing) {
+    return (
+      <Chip
+        tone={
+          existing.action === "agreed"
+            ? "ready"
+            : existing.action === "false positive"
+              ? "warn"
+              : "info"
+        }
+      >
+        {existing.action}
+      </Chip>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-1 shrink-0">
+      {ANNOTATION_ACTIONS.map(({ action, label, tone }) => (
+        <button
+          key={action}
+          type="button"
+          disabled={addAnnotation.isPending}
+          onClick={() => submit(action)}
+          className="text-[10px] font-mono px-2 py-1 rounded-md border border-border hover:bg-surface-2 disabled:opacity-50"
+          style={{ color: `var(--${tone})` }}
+        >
+          {label}
+        </button>
       ))}
     </div>
   );

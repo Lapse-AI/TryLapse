@@ -20,6 +20,7 @@ import {
   ScreenshotGallery,
   DiffPanel,
   AnnotationsPanel,
+  IssueAnnotationActions,
   ExportMenu,
 } from "@/components/run-detail";
 import {
@@ -437,39 +438,53 @@ function RunDetail() {
                     No findings match the active filters.
                   </div>
                 ) : (
-                  filtered.map((i) => (
-                    <div key={i.id} className="p-5 hover:bg-surface-2/30">
-                      <div className="flex items-start gap-3">
-                        <SeverityChip s={i.severity} />
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <h3 className="font-medium">{i.title}</h3>
-                            <Chip>{i.dimension}</Chip>
-                            <Chip tone={i.confidence === "high" ? "info" : "warn"}>
-                              {i.confidence}
-                            </Chip>
-                            <Chip>owner · {i.owner}</Chip>
-                            {i.recurring > 1 && <Chip tone="danger">recurring ×{i.recurring}</Chip>}
+                  filtered.map((i) => {
+                    const issueAnnotation = bundle.annotations.find(
+                      (a) => a.targetType === "issue" && a.targetId === i.id,
+                    );
+                    return (
+                      <div key={i.id} className="p-5 hover:bg-surface-2/30">
+                        <div className="flex items-start gap-3">
+                          <SeverityChip s={i.severity} />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <h3 className="font-medium">{i.title}</h3>
+                              <Chip>{i.dimension}</Chip>
+                              <Chip tone={i.confidence === "high" ? "info" : "warn"}>
+                                {i.confidence}
+                              </Chip>
+                              <Chip>owner · {i.owner}</Chip>
+                              {i.recurring > 1 && (
+                                <Chip tone="danger">recurring ×{i.recurring}</Chip>
+                              )}
+                            </div>
+                            <p className="text-sm text-muted-foreground mt-2 font-mono">
+                              {i.evidence}
+                            </p>
+                            <div className="text-xs text-muted-foreground mt-2">
+                              {i.persona} · {i.journey} ·{" "}
+                              <span className="font-mono">{i.stepId}</span>
+                            </div>
                           </div>
-                          <p className="text-sm text-muted-foreground mt-2 font-mono">
-                            {i.evidence}
-                          </p>
-                          <div className="text-xs text-muted-foreground mt-2">
-                            {i.persona} · {i.journey} ·{" "}
-                            <span className="font-mono">{i.stepId}</span>
+                          <div className="flex flex-col items-end gap-2 shrink-0">
+                            <IssueAnnotationActions
+                              runId={run.id}
+                              issue={i}
+                              existing={issueAnnotation}
+                            />
+                            <EvidenceDialog issue={i} runId={run.id}>
+                              <button
+                                type="button"
+                                className="text-[11px] text-muted-foreground hover:text-foreground inline-flex items-center gap-1 px-2 py-1 rounded-md border border-border hover:bg-surface-2"
+                              >
+                                <ImageIcon className="size-3" /> Evidence
+                              </button>
+                            </EvidenceDialog>
                           </div>
                         </div>
-                        <EvidenceDialog issue={i} runId={run.id}>
-                          <button
-                            type="button"
-                            className="text-[11px] text-muted-foreground hover:text-foreground inline-flex items-center gap-1 px-2 py-1 rounded-md border border-border hover:bg-surface-2 shrink-0"
-                          >
-                            <ImageIcon className="size-3" /> Evidence
-                          </button>
-                        </EvidenceDialog>
                       </div>
-                    </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
             </Panel>
@@ -588,7 +603,7 @@ function RunDetail() {
           </TabsContent>
           <TabsContent value="annotations">
             <Panel className="overflow-hidden">
-              <AnnotationsPanel annotations={bundle.annotations} />
+              <AnnotationsPanel runId={run.id} annotations={bundle.annotations} />
             </Panel>
           </TabsContent>
         </Tabs>
