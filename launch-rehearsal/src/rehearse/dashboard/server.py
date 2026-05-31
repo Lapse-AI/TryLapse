@@ -29,6 +29,7 @@ from rehearse.dashboard.store import (
     load_bundle,
     run_preflight,
     save_annotation,
+    save_config,
     save_workspace,
     search_artifacts,
 )
@@ -251,6 +252,16 @@ class _Handler(BaseHTTPRequestHandler):
         parsed = urllib.parse.urlparse(self.path)
         path = parsed.path.rstrip("/") or "/"
         root = self.server.artifacts_root
+
+        if path == "/api/configs":
+            body = self._read_json_body()
+            try:
+                result = save_config(root, body)
+            except ValueError as exc:
+                self._send_json({"error": str(exc)}, status=400)
+                return
+            self._send_json(result, status=201)
+            return
 
         if path == "/api/preflight":
             body = self._read_json_body()

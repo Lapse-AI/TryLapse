@@ -18,6 +18,7 @@ import {
   useTrends,
   useTriggerJob,
   useApiHealth,
+  useJobs,
 } from "@/lib/api/hooks";
 import {
   ArrowRight,
@@ -42,7 +43,12 @@ function Index() {
   const { data: runSummaries = [] } = useRunSummaries();
   const { data: trends } = useTrends();
   const { data: live } = useApiHealth();
+  const { data: jobs } = useJobs();
   const trigger = useTriggerJob();
+
+  const jobsRunning = (jobs ?? []).some((j) => j.status === "running" || j.status === "queued");
+  const liveChipTone = jobsRunning ? "info" : live ? "ready" : "warn";
+  const liveChipLabel = jobsRunning ? "running" : live ? "live" : "offline";
 
   if (!latest || isLoading || !bundle) {
     return (
@@ -95,8 +101,11 @@ function Index() {
         description={`Live rollup of every persona × journey rehearsal against ${latest.target}. Evidence-bound, no auto-fix.`}
         actions={
           <>
-            <Chip tone="ready">
-              <span className="size-1.5 rounded-full bg-ready pulse-dot" /> live
+            <Chip tone={liveChipTone}>
+              <span
+                className={`size-1.5 rounded-full ${live ? "bg-ready pulse-dot" : "bg-warn"}`}
+              />{" "}
+              {liveChipLabel}
             </Chip>
             <Link
               to="/runs"

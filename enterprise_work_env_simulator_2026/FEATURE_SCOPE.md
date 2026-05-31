@@ -56,7 +56,7 @@ Partner runs + capture     →  Phase 1 tail (budgets, cost)
 |--------|------|--------------|---------|
 | **Sprint 1** | Now | L2-UI-08–11, L2-UI-17 | Post-call async: export, compare, repro |
 | **Sprint 2** | After 1+ partner call | L2-UI-12, L2-UI-29–30, L2-UI-52, L2-UI-01–04 | ✅ Live data on home/workflows; annotations |
-| **Sprint 3** | Before self-serve marketing | L2-UI-63, L2-MCK-01, L2-UI-50 | Init writes YAML; retire Acme; Linear export |
+| **Sprint 3** | Before self-serve marketing | L2-UI-63, L2-MCK-01, L2-UI-50 | ✅ Init writes YAML; retire Acme; Linear export |
 | **Phase 1 tail** | Parallel / low urgency | Run budgets + named errors; cost estimate in bundle | CEO Phase 1 #11–13 |
 
 ### Concierge vs self-serve

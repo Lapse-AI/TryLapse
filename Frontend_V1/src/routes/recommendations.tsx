@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageHeader, Panel, Chip, SeverityChip } from "@/components/ui-bits";
 import { useLatestRun, useBacklog, useRunBundle } from "@/lib/api/hooks";
+import { exportBacklogToLinear } from "@/lib/linear-export";
 import { Download, Rocket, Target } from "lucide-react";
 
 export const Route = createFileRoute("/recommendations")({
@@ -26,6 +27,9 @@ function Recommendations() {
         actions={
           <button
             type="button"
+            onClick={() =>
+              exportBacklogToLinear(backlogItems, bundle?.issues ?? [], { runId: latest.id })
+            }
             className="text-xs px-3 py-1.5 rounded-md bg-primary text-primary-foreground inline-flex items-center gap-1.5"
           >
             <Download className="size-3.5" /> Export to Linear

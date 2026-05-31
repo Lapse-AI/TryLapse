@@ -95,6 +95,7 @@ export const api = {
       defaults: Record<string, unknown>;
       configs: { id: string; path: string; name: string }[];
       cliHint: string;
+      writeHint?: string;
     }>("/api/init"),
   jobs: () =>
     apiFetch<{ id: string; mode: string; status: string; runId?: string; error?: string }[]>(
@@ -120,6 +121,16 @@ export const api = {
     apiFetch<Annotation[]>(`/api/annotations/${runId}`, {
       method: "POST",
       body: JSON.stringify(ann),
+    }),
+  saveConfig: (body: {
+    targetUrl: string;
+    productName?: string;
+    withAuth?: boolean;
+    piiRedaction?: boolean;
+  }) =>
+    apiFetch<{ id: string; path: string; name: string }>("/api/configs", {
+      method: "POST",
+      body: JSON.stringify(body),
     }),
   graphmlUrl: (runId: string) => `${API_BASE}/api/sitemap/${runId}/graphml`,
 };

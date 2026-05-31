@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader, Panel, Chip } from "@/components/ui-bits";
-import { useInitWizard, useApiHealth } from "@/lib/api/hooks";
+import { useInitWizard, useApiHealth, useSaveConfig } from "@/lib/api/hooks";
 import { useState } from "react";
 import { api } from "@/lib/api/client";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/init")({
   head: () => ({ meta: [{ title: "Init wizard — Launch Rehearsal" }] }),
@@ -12,7 +13,10 @@ export const Route = createFileRoute("/init")({
 function InitPage() {
   const { data: live } = useApiHealth();
   const { data: wizard } = useInitWizard();
+  const saveConfig = useSaveConfig();
   const [targetUrl, setTargetUrl] = useState("");
+  const [productName, setProductName] = useState("");
+  const [withAuth, setWithAuth] = useState(false);
   const [preflight, setPreflight] = useState<{
     ok: boolean;
     status_code?: number;
@@ -24,6 +28,26 @@ function InitPage() {
     if (!targetUrl) return;
     const result = await api.preflight(targetUrl);
     setPreflight(result);
+  };
+
+  const handleGenerate = () => {
+    if (!targetUrl || !live) return;
+    saveConfig.mutate(
+      {
+        targetUrl,
+        productName: productName || undefined,
+        withAuth,
+        piiRedaction,
+      },
+      {
+        onSuccess: (result) => {
+          toast.success(`Config written to ${result.path}`);
+        },
+        onError: (err) => {
+          toast.error(err instanceof Error ? err.message : "Failed to write config");
+        },
+      },
+    );
   };
 
   const steps = wizard?.steps ?? [
@@ -51,6 +75,15 @@ function InitPage() {
               onChange={(e) => setTargetUrl(e.target.value)}
             />
           </div>
+          <div>
+            <label className="text-xs text-muted-foreground">Product name (optional)</label>
+            <input
+              className="mt-1 w-full bg-surface border border-border rounded-md px-3 py-2 text-sm"
+              placeholder="Auto-derived from URL"
+              value={productName}
+              onChange={(e) => setProductName(e.target.value)}
+            />
+          </div>
           <div className="flex items-center gap-3">
             <button
               type="button"
@@ -66,6 +99,14 @@ function InitPage() {
               </Chip>
             )}
           </div>
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={withAuth}
+              onChange={(e) => setWithAuth(e.target.checked)}
+            />
+            Include auth block (REHEARSE_EMAIL / REHEARSE_PASSWORD)
+          </label>
           <label className="flex items-center gap-2 text-sm">
             <input
               type="checkbox"
@@ -108,6 +149,23 @@ function InitPage() {
             </ul>
           </Panel>
         )}
+
+        <Panel className="p-6 flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <div className="font-medium">Generate & write YAML</div>
+            <div className="text-sm text-muted-foreground mt-1">
+              {wizard?.writeHint ?? "POST /api/configs — writes artifacts/configs/{slug}.yaml"}
+            </div>
+          </div>
+          <button
+            type="button"
+            disabled={!live || !targetUrl.trim() || saveConfig.isPending}
+            onClick={handleGenerate}
+            className="text-xs px-4 py-2 rounded-md bg-primary text-primary-foreground font-medium disabled:opacity-50"
+          >
+            {saveConfig.isPending ? "Writing…" : "Generate & write YAML"}
+          </button>
+        </Panel>
       </div>
     </div>
   );
