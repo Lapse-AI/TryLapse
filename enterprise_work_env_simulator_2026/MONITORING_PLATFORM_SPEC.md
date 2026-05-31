@@ -2,9 +2,9 @@
 
 **Purpose:** Inventory of everything needed for the **monitoring, analysis, suggestion, and agent** experience when using Launch Rehearsal at enterprise scale.  
 **Scope:** Product surface (dashboard + CLI + API) — not fixes to target applications under test.  
-**Date:** May 29, 2026 · **Updated:** May 30, 2026 (CLI + partial dashboard shipped)
+**Date:** May 29, 2026 · **Updated:** May 31, 2026 (CLI + dashboard; dual UI lines)
 
-**Related:** `FEATURE_SCOPE.md` (L1/L2/L3) · `DESIGN_PARTNER_CHECKLIST.md` (outreach + demo gates)
+**Related:** `FEATURE_SCOPE.md` (L1/L2/L3) · `UI_PRODUCT_LINES.md` (Vision vs Deliverable) · `DESIGN_PARTNER_CHECKLIST.md` (outreach + demo gates)
 
 ---
 
@@ -17,6 +17,14 @@
 | Persona × journey E2E | Matrix is mandatory; not a page checklist |
 | Multi-agent collaboration | Crawler, workflow, journey, persona, synthesizer agents |
 | Enterprise-agnostic | Any URL, any stack; config-driven |
+
+---
+
+## 1.1 Dashboard UI (locked 2026-05-31)
+
+**Dev and Vision both run the newest Vision-level UI** at http://127.0.0.1:8081/ — same routes and chrome. Badge differs (`Dev` vs `Vision`) only.
+
+[`UI_PRODUCT_LINES.md`](UI_PRODUCT_LINES.md)
 
 ---
 

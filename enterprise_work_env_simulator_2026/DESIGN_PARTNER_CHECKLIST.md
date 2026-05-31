@@ -1,7 +1,7 @@
 # Design partner outreach — Phase 1 checklist
 
 *Authority: `CEO_DECISIONS.md` · Target: **3 would-pay** design partners by Sep 30, 2026*  
-*Last updated: 2026-05-31 · Scope: `FEATURE_SCOPE.md` · UI review: `.cursor/gstack/launch-rehearsal/design-reviews/live-2026-05-29-followup.md`*
+*Last updated: 2026-05-31 · **Agent entry:** `AGENT_BRIEF.md` · Scope: `FEATURE_SCOPE.md` · UI: `UI_PRODUCT_LINES.md` · Review: `live-2026-05-31.md`*
 
 ---
 
@@ -72,15 +72,28 @@ Priority order from `FEATURE_SCOPE.md`:
 
 ---
 
+## UI product lines
+
+> **Dev + Vision = same newest UI** at http://127.0.0.1:8081/ — [`UI_PRODUCT_LINES.md`](UI_PRODUCT_LINES.md)
+
+| Command | Badge |
+|---------|-------|
+| `npm run dev` | Dev |
+| `npm run dev:vision` | Vision (same UI) |
+
+Partner demos: `./rehearse serve` + `npm run dev` + real run IDs.
+
+---
+
 ## Live demo stack (use this on calls)
 
 ```bash
 # Terminal 1 — API + artifact serving
 ./rehearse serve -o launch-rehearsal/artifacts
 
-# Terminal 2 — Frontend (proxies /api and /files → :8765)
+# Terminal 2 — Dev UI (current :8081)
 cd Frontend_V1 && npm run dev
-# → http://localhost:8081
+# → http://127.0.0.1:8081/
 ```
 
 **Demo flow (20 min):**
@@ -223,6 +236,7 @@ For each partner, log in tracking table + optional note file `results/design-par
 
 | Doc | Purpose |
 |-----|---------|
+| `UI_PRODUCT_LINES.md` | **Vision vs Deliverable** — which UI for which audience |
 | `CEO_DECISIONS.md` | Authority, gates, would-pay metric |
 | `FEATURE_SCOPE.md` | L1/L2/L3 — what’s real vs mock |
 | `PRODUCT.md` | Positioning, timeline |

@@ -12,10 +12,23 @@ import yaml
 
 from rehearse.errors import ConfigError
 
-REQUIRED_PERSONAS = 3
-REQUIRED_JOURNEYS = 5
+MIN_PERSONAS = 3
+MIN_JOURNEYS = 5
 ALLOWED_ACTIONS = frozenset(
-    {"navigate", "click", "fill", "wait", "assert_url_contains", "open_link"}
+    {
+        "navigate",
+        "click",
+        "fill",
+        "wait",
+        "hover",
+        "scroll",
+        "select",
+        "press",
+        "assert_url_contains",
+        "open_link",
+        "explore",
+        "dismiss",
+    }
 )
 
 _ENV_PATTERN = re.compile(r"\$\{([A-Z0-9_]+)\}")
@@ -73,6 +86,7 @@ class CrawlConfig:
     same_origin_only: bool = True
     supplement_journeys: bool = True
     strict_enterprise: bool = False
+    exclude_path_prefixes: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -82,6 +96,7 @@ class Budgets:
     step_timeout_ms: int = 30000
     parallel_seeds: int = 1
     repeat_micro_loop: int = 1
+    explore_max_rounds: int = 3
 
 
 @dataclass
@@ -94,6 +109,9 @@ class RunConfig:
     budgets: Budgets = field(default_factory=Budgets)
     auth: AuthConfig | None = None
     crawl: CrawlConfig | None = field(default_factory=CrawlConfig)
+    allow_localhost: bool = False
+    viewports: list[str] = field(default_factory=lambda: ["desktop"])
+    execute_all_personas_in_browser: bool = False
 
     def materialize_steps(self) -> None:
         base = self.target_url.rstrip("/")
@@ -140,10 +158,10 @@ def load_config(path: Path) -> RunConfig:
 
     personas_raw = data.get("personas") or []
     journeys_raw = data.get("journeys") or []
-    if len(personas_raw) != REQUIRED_PERSONAS:
-        raise ConfigError(f"Expected {REQUIRED_PERSONAS} personas, got {len(personas_raw)}")
-    if len(journeys_raw) != REQUIRED_JOURNEYS:
-        raise ConfigError(f"Expected {REQUIRED_JOURNEYS} journeys, got {len(journeys_raw)}")
+    if len(personas_raw) < MIN_PERSONAS:
+        raise ConfigError(f"Expected at least {MIN_PERSONAS} personas, got {len(personas_raw)}")
+    if len(journeys_raw) < MIN_JOURNEYS:
+        raise ConfigError(f"Expected at least {MIN_JOURNEYS} journeys, got {len(journeys_raw)}")
 
     personas = [
         Persona(
@@ -170,6 +188,7 @@ def load_config(path: Path) -> RunConfig:
         step_timeout_ms=int(b.get("step_timeout_ms", 30000)),
         parallel_seeds=max(1, int(b.get("parallel_seeds", 1))),
         repeat_micro_loop=max(1, int(b.get("repeat_micro_loop", 1))),
+        explore_max_rounds=max(1, int(b.get("explore_max_rounds", 3))),
     )
 
     auth_raw = data.get("auth")
@@ -194,7 +213,10 @@ def load_config(path: Path) -> RunConfig:
             same_origin_only=bool(crawl_raw.get("same_origin_only", True)),
             supplement_journeys=bool(crawl_raw.get("supplement_journeys", True)),
             strict_enterprise=bool(crawl_raw.get("strict_enterprise", False)),
+            exclude_path_prefixes=list(crawl_raw.get("exclude_path_prefixes") or []),
         )
+
+    from rehearse.viewports import normalize_viewports
 
     cfg = RunConfig(
         target_url=str(target_url).rstrip("/"),
@@ -205,6 +227,9 @@ def load_config(path: Path) -> RunConfig:
         budgets=budgets,
         auth=auth,
         crawl=crawl,
+        allow_localhost=bool(run.get("allow_localhost", False)),
+        viewports=normalize_viewports(run.get("viewports")),
+        execute_all_personas_in_browser=bool(run.get("execute_all_personas_in_browser", False)),
     )
     cfg.materialize_steps()
     return cfg

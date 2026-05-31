@@ -69,7 +69,17 @@ def run_rehearsal(
         orchestrator = AgentOrchestrator(ctx, session, artifacts_root, use_llm=use_llm)
         orchestrator.run_crawl_phase()
         orchestrator.run_journey_phase()
+        net_path = session.flush_network_log()
+        if net_path:
+            evidence.network_log_path = net_path
+            ctx.metadata["network_log_path"] = net_path
         analysis = orchestrator.run_analysis_phase()
+
+        from rehearse.narrative import build_run_narrative
+
+        ctx.metadata["narrative"] = build_run_narrative(
+            config, evidence, analysis, ctx=ctx, use_llm=use_llm
+        )
 
     evidence.finished_at = datetime.now(timezone.utc).isoformat()
     evidence.duration_ms = int((time.perf_counter() - started) * 1000)

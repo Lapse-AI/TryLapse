@@ -32,6 +32,14 @@ _BLOCKED_HOSTNAMES = frozenset(
     }
 )
 
+# Dogfood / self-test only — opt in via run.allow_localhost in config or API flag
+_LOCALHOST_HOSTS = frozenset({"localhost", "127.0.0.1", "::1"})
+
+
+def _is_localhost_host(host: str) -> bool:
+    h = host.lower().strip("[]")
+    return h in _LOCALHOST_HOSTS
+
 
 def _is_blocked_ip(addr: ipaddress.IPv4Address | ipaddress.IPv6Address) -> bool:
     for net in _BLOCKED_NETWORKS:
@@ -40,13 +48,15 @@ def _is_blocked_ip(addr: ipaddress.IPv4Address | ipaddress.IPv6Address) -> bool:
     return addr.is_private or addr.is_loopback or addr.is_link_local
 
 
-def assert_url_allowed(url: str) -> urlparse:
+def assert_url_allowed(url: str, *, allow_localhost: bool = False) -> urlparse:
     parsed = urlparse(url)
     if parsed.scheme not in ("http", "https"):
         raise SSRFBlockedError(f"Only http/https allowed, got: {parsed.scheme!r}")
     if not parsed.hostname:
         raise PreflightError(f"Missing hostname in URL: {url}")
-    host = parsed.hostname.lower()
+    host = parsed.hostname.lower().strip("[]")
+    if allow_localhost and _is_localhost_host(host):
+        return parsed
     if host in _BLOCKED_HOSTNAMES or host.endswith(".local"):
         raise SSRFBlockedError(f"Blocked hostname: {host}")
 
@@ -70,15 +80,17 @@ def assert_url_allowed(url: str) -> urlparse:
             ip = ipaddress.ip_address(resolved)
         except ValueError:
             continue
+        if allow_localhost and _is_localhost_host(resolved):
+            continue
         if _is_blocked_ip(ip):
             raise SSRFBlockedError(f"Hostname {host} resolves to blocked address {resolved}")
 
     return parsed
 
 
-def preflight_head(url: str, timeout: float = 15.0) -> dict:
+def preflight_head(url: str, timeout: float = 15.0, *, allow_localhost: bool = False) -> dict:
     """HEAD/GET probe after SSRF checks. Returns status metadata."""
-    assert_url_allowed(url)
+    assert_url_allowed(url, allow_localhost=allow_localhost)
     with httpx.Client(follow_redirects=True, timeout=timeout) as client:
         try:
             resp = client.head(url)

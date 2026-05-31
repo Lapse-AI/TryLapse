@@ -145,7 +145,24 @@ function CliPage() {
   sitemaps/<run_id>-sitemap.json
   sitemaps/<run_id>-sitemap.md
   artifacts/<run_id>/*.png    # screenshots
-  analysis/<run_id>.json     # structured issues (Phase 2 API)`}</pre>
+  analysis/<run_id>.json     # structured issues + narrative
+  chats/<run_id>.json        # persistent run chat threads`}</pre>
+        </Panel>
+
+        <Panel className="p-5">
+          <div className="text-xs text-muted-foreground mb-3">Dashboard API (rehearse serve)</div>
+          <ul className="text-sm font-mono space-y-2">
+            <li>GET /api/trends — readiness/pages/flake + narrative insight</li>
+            <li>GET /api/digest?n=7 — command center digest</li>
+            <li>GET/POST /api/runs/&#123;id&#125;/chat — run Q&amp;A thread</li>
+            <li>GET /api/diff?a=&amp;b= — compare runs + “What changed” narrative</li>
+            <li>POST /api/recordings/compile — journey recorder → YAML fragment</li>
+            <li>
+              POST /api/configs — init wizard YAML write (viewports,
+              execute_all_personas_in_browser)
+            </li>
+            <li>POST /api/jobs — background run/crawl (llm flag supported)</li>
+          </ul>
         </Panel>
       </div>
     </div>

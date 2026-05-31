@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader, Panel, Chip } from "@/components/ui-bits";
 import { useAlerts } from "@/lib/api/hooks";
+import { VisionOnly } from "@/components/vision-only";
 import { Slack, Mail, Webhook, Bell as BellIcon } from "lucide-react";
 
 export const Route = createFileRoute("/alerts")({
@@ -50,12 +51,14 @@ function Alerts() {
                 {alertChannels.length} configured
               </div>
             </div>
-            <button
-              type="button"
-              className="text-xs font-mono px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:opacity-90"
-            >
-              + add channel
-            </button>
+            <VisionOnly section="alerts.addChannel">
+              <button
+                type="button"
+                className="text-xs font-mono px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:opacity-90"
+              >
+                + add channel
+              </button>
+            </VisionOnly>
           </div>
           <div className="divide-y divide-border">
             {alertChannels.map((c) => {
@@ -84,23 +87,25 @@ function Alerts() {
           </div>
         </Panel>
 
-        <Panel className="overflow-hidden">
-          <div className="p-4 border-b border-border flex items-center gap-2">
-            <BellIcon className="size-4 text-primary" />
-            <div className="font-display font-semibold">Recent alerts</div>
-          </div>
-          <div className="divide-y divide-border">
-            {recent.map((r, i) => (
-              <div key={i} className="p-4">
-                <div className="flex items-center gap-2 mb-1">
-                  <Chip tone={r.tone}>{r.env}</Chip>
-                  <span className="text-[11px] text-muted-foreground font-mono">{r.when}</span>
+        <VisionOnly section="alerts.recentFeed">
+          <Panel className="overflow-hidden">
+            <div className="p-4 border-b border-border flex items-center gap-2">
+              <BellIcon className="size-4 text-primary" />
+              <div className="font-display font-semibold">Recent alerts</div>
+            </div>
+            <div className="divide-y divide-border">
+              {recent.map((r, i) => (
+                <div key={i} className="p-4">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Chip tone={r.tone}>{r.env}</Chip>
+                    <span className="text-[11px] text-muted-foreground font-mono">{r.when}</span>
+                  </div>
+                  <div className="text-sm">{r.title}</div>
                 </div>
-                <div className="text-sm">{r.title}</div>
-              </div>
-            ))}
-          </div>
-        </Panel>
+              ))}
+            </div>
+          </Panel>
+        </VisionOnly>
       </div>
     </div>
   );

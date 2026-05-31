@@ -22,6 +22,7 @@ import {
   AnnotationsPanel,
   IssueAnnotationActions,
   ExportMenu,
+  RunNarrativePanel,
 } from "@/components/run-detail";
 import {
   formatDuration,
@@ -33,7 +34,12 @@ import {
   type Severity,
   type Issue,
 } from "@/lib/mock-data";
-import { flakyStepsHint, formatAgentCostDisplay, READINESS_BAND_HELP } from "@/lib/run-metrics";
+import {
+  flakyStepsHint,
+  formatAgentCostDisplay,
+  READINESS_BAND_HELP,
+  displayAgentSummary,
+} from "@/lib/run-metrics";
 import { useRunBundle, useRunSummaries } from "@/lib/api/hooks";
 import {
   Dialog,
@@ -58,6 +64,7 @@ import {
 const searchSchema = z.object({
   tab: z.string().optional(),
   step: z.string().optional(),
+  dimension: z.string().optional(),
 });
 
 export const Route = createFileRoute("/runs/$runId")({
@@ -147,7 +154,7 @@ function MatrixCellDialog({
 
 function RunDetail() {
   const { runId } = Route.useParams();
-  const { tab: tabSearch, step: highlightStepId } = Route.useSearch();
+  const { tab: tabSearch, step: highlightStepId, dimension: dimensionFilter } = Route.useSearch();
   const navigate = Route.useNavigate();
   const { data: bundle, isLoading } = useRunBundle(runId);
   const { data: runSummaries = [] } = useRunSummaries();
@@ -171,7 +178,11 @@ function RunDetail() {
   const run = bundle.summary;
   const runPersonas = bundlePersonas(bundle);
   const runJourneys = bundleJourneys(bundle);
-  const filtered = bundle.issues.filter((i) => active.has(i.severity));
+  const filtered = bundle.issues.filter((i) => {
+    if (!active.has(i.severity)) return false;
+    if (dimensionFilter && i.dimension !== dimensionFilter) return false;
+    return true;
+  });
   const band = bandFromIssues(bundle.issues);
   const blockerCount = countBlockers(bundle.issues);
 
@@ -303,6 +314,7 @@ function RunDetail() {
           </TabsList>
 
           <TabsContent value="overview" className="space-y-8 mt-0">
+            <RunNarrativePanel runId={run.id} bundle={bundle} />
             <Panel className="p-4 md:p-6 overflow-x-auto">
               <div className="flex items-end justify-between mb-5 gap-3 flex-wrap">
                 <div>
@@ -310,6 +322,11 @@ function RunDetail() {
                   <h2 className="font-display text-xl font-semibold mt-1">
                     {runPersonas.length} personas × {runJourneys.length} journeys
                   </h2>
+                  <p className="text-[11px] text-muted-foreground mt-2 max-w-xl">
+                    Browser steps run as the first persona (evaluator) only. P2 and P3 columns
+                    reflect the same technical journey outcome through persona-specific findings,
+                    not separate browser sessions.
+                  </p>
                 </div>
                 <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
                   <span className="inline-flex items-center gap-1.5">
@@ -373,6 +390,8 @@ function RunDetail() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-4">
                 {bundle.dimensions.map((d) => {
                   const tone = d.score >= 85 ? "ready" : d.score >= 75 ? "warn" : "danger";
+                  const relatedCount = bundle.issues.filter((i) => i.dimension === d.name).length;
+                  const isActive = dimensionFilter === d.name;
                   return (
                     <div key={d.name}>
                       <div className="flex items-center justify-between mb-1.5">
@@ -393,6 +412,22 @@ function RunDetail() {
                       {d.signal && (
                         <div className="text-[10px] text-muted-foreground mt-1">{d.signal}</div>
                       )}
+                      {relatedCount > 0 && (
+                        <Link
+                          to="/runs/$runId"
+                          params={{ runId: run.id }}
+                          search={(prev) => ({
+                            ...prev,
+                            tab: undefined,
+                            dimension: isActive ? undefined : d.name,
+                          })}
+                          className={`text-[10px] mt-1 inline-block hover:underline ${isActive ? "text-primary font-medium" : "text-primary"}`}
+                        >
+                          {isActive
+                            ? `Showing ${relatedCount} related findings`
+                            : `View ${relatedCount} related findings →`}
+                        </Link>
+                      )}
                     </div>
                   );
                 })}
@@ -407,6 +442,19 @@ function RunDetail() {
                   </div>
                   <h2 className="font-display text-lg font-semibold mt-0.5">
                     {filtered.length} of {bundle.issues.length} findings
+                    {dimensionFilter && (
+                      <span className="text-sm font-normal text-muted-foreground ml-2">
+                        · {dimensionFilter}
+                        <Link
+                          to="/runs/$runId"
+                          params={{ runId: run.id }}
+                          search={(prev) => ({ ...prev, dimension: undefined })}
+                          className="ml-2 text-primary hover:underline text-xs"
+                        >
+                          Clear
+                        </Link>
+                      </span>
+                    )}
                   </h2>
                 </div>
                 <div className="flex items-center gap-1 flex-wrap">
@@ -562,7 +610,9 @@ function RunDetail() {
                         <span>{formatDuration(a.durationSec)}</span>
                         <span>${a.costUsd.toFixed(2)}</span>
                       </div>
-                      <p className="text-xs mt-2 text-foreground/80">{a.lastSummary}</p>
+                      <p className="text-xs mt-2 text-foreground/80">
+                        {displayAgentSummary(a.lastSummary)}
+                      </p>
                     </div>
                   ))}
               </div>

@@ -30,12 +30,18 @@ class StepSnapshot:
     labeled_input_count: int = 0
     error_phrases_found: list[str] = field(default_factory=list)
     console_errors: list[str] = field(default_factory=list)
+    console_warnings: list[str] = field(default_factory=list)
     network_failures: list[str] = field(default_factory=list)
+    web_vitals: dict[str, float | None] = field(default_factory=dict)
     artifact_paths: list[str] = field(default_factory=list)
     note: str | None = None
     error_type: str | None = None
     flaky: bool = False
     seed_index: int = 1
+    viewport: str = "desktop"
+    resolved_selector: str | None = None
+    explore_log: list[dict[str, Any]] = field(default_factory=list)
+    explore_summary: str | None = None
 
 
 @dataclass
@@ -50,6 +56,7 @@ class RunEvidence:
     auth_outcome: str | None = None
     steps: list[StepSnapshot] = field(default_factory=list)
     outcome: str = "running"
+    network_log_path: str | None = None
 
     def add_step(self, record: StepSnapshot) -> None:
         self.steps.append(record)

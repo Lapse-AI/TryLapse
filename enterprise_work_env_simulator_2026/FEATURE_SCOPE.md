@@ -16,6 +16,7 @@
 | [§3 L2 UI backlog](#3-l2--ui-present-backend-missing-or-partial) | UI gaps, **prioritized** then catalogued by area |
 | [§4 L3 Future](#4-l3--not-present-future--spec) | Spec’d future work (mostly later) |
 | [§5 Indexes](#5-indexes--cross-refs) | Concern map, demo readiness, file paths |
+| [UI product lines](UI_PRODUCT_LINES.md) | **Vision vs Deliverable** — locked dual-UI policy |
 
 ### Level legend
 
@@ -68,6 +69,17 @@ Partner runs + capture     →  Phase 1 tail (budgets, cost)
 | **Marketing / PLG** | ❌ Later | §1 Deferred + 3 verbal would-pay |
 
 **Demo runs (API live):** `argyle-20260531-000517`, `enterprise-20260530-234231` — not mock `run_8s7d2`.
+
+### UI product lines — see [UI_PRODUCT_LINES.md](UI_PRODUCT_LINES.md)
+
+**Dev and Vision = same newest UI** at `:8081`. No reduced dev chrome.
+
+| Script | Label |
+|--------|-------|
+| `npm run dev` | Dev |
+| `npm run dev:vision` | Vision (identical UI) |
+
+Mock fallback when API down in **both**. Partner demos: API live + real run IDs.
 
 ---
 
@@ -275,6 +287,25 @@ Partner runs + capture     →  Phase 1 tail (budgets, cost)
 | L1-LLM-03 | JSON-only response contract | issues, delights, journey_grades |
 | L1-LLM-04 | Retry / timeout / JSON extraction fallback | |
 | L1-LLM-05 | `llm_to_findings()` merge into synthesis | |
+| L1-LLM-06 | Run + compare narrative LLM enrichment | ✅ `narrative.py`, `llm.py`; JSON brace fallback |
+
+### L1.9b Interpretability (NLU) — shipped 2026-05-31
+
+| ID | Feature | Notes |
+|----|---------|-------|
+| L1-NLU-01 | Run narrative (executive / founder / engineering) | ✅ `analysis/{run_id}.json` + bundle; `source: llm+template` |
+| L1-NLU-02 | Run chat Q&A | ✅ `POST /api/runs/{runId}/chat`; Overview panel |
+| L1-NLU-03 | Compare narrative on diff | ✅ `GET /api/diff`; Compare **What changed** panel |
+| L1-NLU-04 | Jobs pass `llm` + load repo `.env` | ✅ Runner checkbox; serialized job queue |
+
+| L1-NLU-05 | Trends narrative | ✅ `GET /api/trends` |
+| L1-NLU-06 | Command digest | ✅ `GET /api/digest` |
+| L1-NLU-07 | Persistent chat | ✅ `artifacts/chats/{run_id}.json` |
+| L1-BRW-C01 | `explore` / `dismiss` actions | ✅ Phase C |
+| L1-BRW-C02 | Journey recorder API | ✅ `POST /api/recordings/compile` |
+| L1-BRW-C03 | Multi-persona browser | ✅ `execute_all_personas_in_browser` |
+
+| L1-NLU-08 | Explore evidence export | ✅ `exploreLog`, `exploreSummary`, artifact JSON |
 
 ### L1.10 Scorecard & artifacts
 
@@ -311,7 +342,7 @@ Partner runs + capture     →  Phase 1 tail (budgets, cost)
 | L1-API-02 | GET `/api/summaries` | Run summary cards |
 | L1-API-03 | GET `/api/bundle/{run_id}` | Full analysis bundle |
 | L1-API-04 | GET `/api/runs`, GET `/api/runs/{id}` | Legacy detail format |
-| L1-API-05 | GET `/api/diff?a=&b=` | Readiness, issues, pages, steps, new/resolved issues |
+| L1-API-05 | GET `/api/diff?a=&b=` | Readiness, issues, pages, steps, new/resolved issues, **compare narrative** |
 | L1-API-06 | GET `/api/trends` | Readiness, pages, flake rate time series |
 | L1-API-07 | GET `/api/search?q=` | Runs, issues, pages |
 | L1-API-08 | GET/PUT/POST `/api/workspace` | workspace.json persistence |
@@ -434,7 +465,8 @@ Partner runs + capture     →  Phase 1 tail (budgets, cost)
 
 | ID | Feature | Notes |
 |----|---------|-------|
-| L2-UI-17 | Compare page run A/B `<select>` | Sprint 1 |
+| L2-UI-17 | Compare page run A/B `<select>` | ✅ Sprint 1 |
+| L2-UI-17b | Compare **What changed** narrative panel | ✅ NLU-2; `AI + rules` badge |
 | L2-UI-18 | Side-by-side step screenshot diff | Not implemented |
 | L2-UI-19 | Visual sitemap diff highlight | Diff API has new/removed pages; UI does not graph diff |
 
@@ -733,8 +765,9 @@ See full gates: `DESIGN_PARTNER_CHECKLIST.md`.
 
 | Mode | Verdict |
 |------|---------|
-| Concierge | ✅ Ready — start outreach in parallel with Sprint 1 |
-| Self-serve | ⚠️ Sprint 1–3 L2 |
+| Concierge | ✅ Ready — G1–G13 (2026-05-31) |
+| Self-serve | ✅ Sprint 1–3 shipped |
+| UI for partner calls | **Dev** at `:8081` — `npm run dev` + `./rehearse serve` |
 | Do not promise | §1 Deferred later |
 
 ### 5.3 File references
@@ -751,6 +784,7 @@ See full gates: `DESIGN_PARTNER_CHECKLIST.md`.
 | API hooks | `Frontend_V1/src/lib/api/hooks.ts` |
 | Spec north star | `enterprise_work_env_simulator_2026/MONITORING_PLATFORM_SPEC.md` |
 | Design partner outreach | `enterprise_work_env_simulator_2026/DESIGN_PARTNER_CHECKLIST.md` |
+| UI Vision vs Deliverable | `enterprise_work_env_simulator_2026/UI_PRODUCT_LINES.md` |
 | CEO decisions | `enterprise_work_env_simulator_2026/CEO_DECISIONS.md` |
 | GitHub org | https://github.com/orgs/Lapse-AI/repositories |
 

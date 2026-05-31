@@ -1,6 +1,6 @@
 # TODOS — Launch Rehearsal
 
-*CEO authority: `enterprise_work_env_simulator_2026/CEO_DECISIONS.md` · Last updated: May 30, 2026*
+*CEO authority: `enterprise_work_env_simulator_2026/CEO_DECISIONS.md` · Last updated: May 31, 2026*
 
 ## Hard gates
 
@@ -38,15 +38,13 @@
 - [ ] ~~Product B~~ → Mar 2027 gate
 - [ ] ~~Full 8-dimension automation~~ → Phase 2 partial
 
-## Design partner demo readiness (May 30, 2026)
+## Design partner demo readiness (May 31, 2026)
 
-*Checklist: `enterprise_work_env_simulator_2026/DESIGN_PARTNER_CHECKLIST.md` · Scope: `FEATURE_SCOPE.md`*
+*Checklist: `DESIGN_PARTNER_CHECKLIST.md` · Scope: `FEATURE_SCOPE.md` · UI: `UI_PRODUCT_LINES.md`*
 
-- [x] Concierge demo stack (`./rehearse serve` + Frontend_V1)
-- [x] Real runs + scorecards in dashboard (13+ backfilled)
-- [x] Trust loop: evidence dialog, matrix drill-down, band/P0 consistency (design review follow-up)
-- [ ] Close L2 export/compare before self-serve partner handoff
-- [ ] Close L2 command-center KPIs (use run detail + trends on calls until fixed)
+- [x] Concierge + self-serve demo stack (Sprints 1–3, PRs #13–#15)
+- [x] G1–G13 design partner gates ✅ (`live-2026-05-31.md`)
+- [x] Dual UI modes: **Dev** (`:8081`, `npm run dev`) + **Vision reference** (`npm run dev:vision`) — `UI_PRODUCT_LINES.md`
 - [ ] List 10 warm targets + send 5 intros (`DESIGN_PARTNER_CHECKLIST.md`)
 
 ## Phase 2+ (unchanged targets)
@@ -68,4 +66,5 @@
 - [x] Wire Frontend_V1 to live API + backfill analysis bundles
 - [x] Publish `FEATURE_SCOPE.md` (L1/L2/L3)
 - [x] Update `DESIGN_PARTNER_CHECKLIST.md` with demo gates + live stack
+- [x] Document Vision vs Deliverable UI (`UI_PRODUCT_LINES.md`)
 - [ ] Design partner outreach: 10 targets, 5 intros, 2 booked calls

@@ -47,8 +47,12 @@ function ComparePage() {
       <div className="p-8 max-w-[1400px] space-y-6">
         <Panel className="p-5 flex flex-wrap items-center gap-4">
           <div>
-            <div className="text-xs text-muted-foreground mb-1">Run A (baseline)</div>
+            <label htmlFor="compare-run-a" className="text-xs text-muted-foreground mb-1 block">
+              Run A (baseline)
+            </label>
             <select
+              id="compare-run-a"
+              aria-label="Run A baseline"
               className="bg-surface border border-border rounded-md px-3 py-1.5 text-sm font-mono min-w-[240px]"
               value={runA}
               onChange={(e) => setRunA(e.target.value)}
@@ -63,14 +67,19 @@ function ComparePage() {
           <button
             type="button"
             onClick={swapRuns}
+            aria-label="Swap run A and run B"
             className="text-xs px-2 py-1 rounded-md border border-border hover:bg-surface-2 text-muted-foreground"
             title="Swap A and B"
           >
             ⇄
           </button>
           <div>
-            <div className="text-xs text-muted-foreground mb-1">Run B (current)</div>
+            <label htmlFor="compare-run-b" className="text-xs text-muted-foreground mb-1 block">
+              Run B (current)
+            </label>
             <select
+              id="compare-run-b"
+              aria-label="Run B current"
               className="bg-surface border border-border rounded-md px-3 py-1.5 text-sm font-mono min-w-[240px]"
               value={runB}
               onChange={(e) => setRunB(e.target.value)}

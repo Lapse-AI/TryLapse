@@ -10,7 +10,7 @@ from typing import Any
 from urllib.parse import urlparse
 
 from rehearse.analysis_export import rebuild_bundle_from_artifacts
-from rehearse.init_config import build_config, write_config
+from rehearse.init_config import build_config, build_self_dashboard_config, write_config
 from rehearse.preflight import preflight_head
 
 READINESS_SCORE = {"Green": 85, "Amber": 72, "Red": 38}
@@ -291,7 +291,10 @@ def diff_runs(artifacts_root: Path, run_a: str, run_b: str) -> dict[str, Any]:
         new_issues = sorted(titles_b - titles_a)
         resolved_issues = sorted(titles_a - titles_b)
 
-    return {
+    from rehearse.llm import llm_enabled
+    from rehearse.narrative import build_compare_narrative
+
+    result: dict[str, Any] = {
         "run_a": run_a,
         "run_b": run_b,
         "runA": run_a,
@@ -321,6 +324,60 @@ def diff_runs(artifacts_root: Path, run_a: str, run_b: str) -> dict[str, Any]:
         "newIssues": new_issues,
         "resolvedIssues": resolved_issues,
     }
+    result["narrative"] = build_compare_narrative(
+        result,
+        bundle_a=bundle_a if isinstance(bundle_a, dict) else None,
+        bundle_b=bundle_b if isinstance(bundle_b, dict) else None,
+        use_llm=llm_enabled(),
+    )
+    return result
+
+
+def _build_issue_recurrence(artifacts_root: Path, summaries: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Aggregate issue titles across runs (newest-first summaries)."""
+    if not summaries:
+        return []
+    chron = list(reversed(summaries))
+    title_runs: dict[str, list[str]] = {}
+    title_first: dict[str, str] = {}
+    title_last: dict[str, str] = {}
+
+    for s in chron:
+        bundle = load_bundle(artifacts_root, s["id"], rebuild=False)
+        if not bundle:
+            continue
+        seen_titles: set[str] = set()
+        for issue in bundle.get("issues", []):
+            title = (issue.get("title") or "").strip()
+            if not title or title in seen_titles:
+                continue
+            seen_titles.add(title)
+            title_runs.setdefault(title, []).append(s["id"])
+            if title not in title_first:
+                started = s.get("startedAt") or s["id"]
+                title_first[title] = started[:10] if isinstance(started, str) else str(started)
+            title_last[title] = s["id"]
+
+    latest_id = summaries[0]["id"]
+    items: list[dict[str, Any]] = []
+    for title, run_ids in sorted(title_runs.items(), key=lambda x: len(x[1]), reverse=True):
+        count = len(run_ids)
+        if count >= 2 and title_last.get(title) == latest_id:
+            status = "regression" if run_ids[-2] != latest_id else "open"
+        elif count == 1 and run_ids[0] == latest_id:
+            status = "new"
+        else:
+            status = "open"
+        items.append(
+            {
+                "name": title,
+                "runs": count,
+                "status": status,
+                "first": title_first.get(title, ""),
+                "runIds": run_ids,
+            }
+        )
+    return items[:15]
 
 
 def get_trends(artifacts_root: Path) -> dict[str, Any]:
@@ -329,21 +386,57 @@ def get_trends(artifacts_root: Path) -> dict[str, Any]:
     readiness = [s["readiness"] for s in summaries]
     pages = [s["pages"] for s in summaries]
     flake_rates: list[float] = []
+    blocker_counts: list[int] = []
     for s in summaries:
         bundle = load_bundle(artifacts_root, s["id"], rebuild=False)
         if bundle:
             flaky = sum(1 for step in bundle.get("steps", []) if step.get("flaky"))
             total = len(bundle.get("steps", [])) or 1
             flake_rates.append(round(flaky / total * 100, 1))
+            blockers = sum(
+                1
+                for issue in bundle.get("issues", [])
+                if issue.get("severity") in ("P0", "P1")
+            )
+            blocker_counts.append(blockers)
         else:
             flake_rates.append(0.0)
-    return {
+            blocker_counts.append(int(s.get("blockers") or s.get("issues") or 0))
+
+    recurrence = _build_issue_recurrence(artifacts_root, list_run_summaries(artifacts_root))
+    issues_opened = sum(1 for r in recurrence if r["status"] == "new")
+    issues_resolved = 0
+    if len(summaries) >= 2:
+        latest = load_bundle(artifacts_root, summaries[-1]["id"], rebuild=False)
+        prior = load_bundle(artifacts_root, summaries[-2]["id"], rebuild=False)
+        if latest and prior:
+            prior_titles = {i["title"] for i in prior.get("issues", [])}
+            latest_titles = {i["title"] for i in latest.get("issues", [])}
+            issues_resolved = len(prior_titles - latest_titles)
+
+    payload = {
         "readiness": readiness,
         "pages": pages,
         "flakeRate": flake_rates,
         "runIds": [s["id"] for s in summaries],
         "labels": [s["startedAt"][:10] if s.get("startedAt") else s["id"] for s in summaries],
+        "issueRecurrence": recurrence,
+        "issuesOpened": issues_opened,
+        "issuesResolved": issues_resolved,
+        "blockerCounts": blocker_counts,
     }
+    from rehearse.llm import llm_enabled
+    from rehearse.narrative import build_trends_narrative
+
+    payload["narrative"] = build_trends_narrative(payload, use_llm=llm_enabled())
+    return payload
+
+
+def get_command_digest(artifacts_root: Path, *, limit: int = 7) -> dict[str, Any]:
+    from rehearse.llm import llm_enabled
+    from rehearse.narrative import build_command_digest
+
+    return build_command_digest(artifacts_root, limit=limit, use_llm=llm_enabled())
 
 
 def search_artifacts(artifacts_root: Path, query: str) -> dict[str, Any]:
@@ -414,11 +507,49 @@ def save_config(artifacts_root: Path, body: dict[str, Any]) -> dict[str, Any]:
     if not target_url:
         raise ValueError("targetUrl required")
 
-    config = build_config(
-        target_url,
-        product_name=body.get("productName"),
-        with_auth=bool(body.get("withAuth")),
-    )
+    self_test = bool(body.get("selfTest"))
+    allow_localhost = bool(body.get("allowLocalhost")) or self_test
+    from rehearse.viewports import normalize_viewports
+
+    exclude_raw = body.get("excludePathPrefixes")
+    exclude_prefixes: list[str] | None = None
+    if exclude_raw is not None:
+        if isinstance(exclude_raw, str):
+            exclude_prefixes = [p.strip() for p in exclude_raw.split(",") if p.strip()]
+        elif isinstance(exclude_raw, list):
+            exclude_prefixes = [str(p).strip() for p in exclude_raw if str(p).strip()]
+
+    viewport_raw = body.get("viewports")
+    viewport_list: list[str] | None = None
+    if viewport_raw is not None:
+        if isinstance(viewport_raw, str):
+            viewport_list = normalize_viewports(
+                [v.strip() for v in viewport_raw.split(",") if v.strip()]
+            )
+        elif isinstance(viewport_raw, list):
+            viewport_list = normalize_viewports([str(v) for v in viewport_raw])
+
+    if self_test:
+        config = build_self_dashboard_config(
+            target_url,
+            product_name=body.get("productName") or "Launch Rehearsal Dashboard",
+        )
+    else:
+        config = build_config(
+            target_url,
+            product_name=body.get("productName"),
+            with_auth=bool(body.get("withAuth")),
+            exclude_path_prefixes=exclude_prefixes,
+            viewports=viewport_list,
+        )
+        if allow_localhost:
+            config["run"]["allow_localhost"] = True
+    if exclude_prefixes is not None:
+        config.setdefault("crawl", {})["exclude_path_prefixes"] = exclude_prefixes
+    if viewport_list is not None:
+        config["run"]["viewports"] = viewport_list
+    if bool(body.get("executeAllPersonasInBrowser")):
+        config["run"]["execute_all_personas_in_browser"] = True
     slug = config["run"]["run_id_prefix"]
     cfg_dir = artifacts_root / "configs"
     path = cfg_dir / f"{slug}.yaml"
@@ -507,7 +638,12 @@ def get_init_wizard(artifacts_root: Path) -> dict[str, Any]:
         },
         "configs": configs,
         "cliHint": "rehearse init -c config.yaml && rehearse run -c config.yaml",
-        "writeHint": "POST /api/configs with { targetUrl, productName?, withAuth?, piiRedaction? }",
+        "writeHint": "POST /api/configs with { targetUrl, productName?, withAuth?, piiRedaction?, allowLocalhost?, selfTest? }",
+        "dogfood": {
+            "targetUrl": "http://127.0.0.1:8081",
+            "configId": "lr-self",
+            "hint": "Paste this dashboard URL to rehearse Launch Rehearsal with Launch Rehearsal (sets allow_localhost).",
+        },
     }
 
 
@@ -532,9 +668,9 @@ def get_alerts(artifacts_root: Path) -> list[dict[str, Any]]:
     ]
 
 
-def run_preflight(url: str) -> dict[str, Any]:
+def run_preflight(url: str, *, allow_localhost: bool = False) -> dict[str, Any]:
     try:
-        result = preflight_head(url)
+        result = preflight_head(url, allow_localhost=allow_localhost)
         return {"ok": True, **result}
     except Exception as exc:
         return {"ok": False, "error": str(exc), "url": url}

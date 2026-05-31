@@ -44,6 +44,34 @@ def test_canonical_steps_filters_seeds():
     assert _canonical_steps(steps)[0].step_id == "a"
 
 
+def test_canonical_steps_prefers_desktop_viewport():
+    steps = [
+        StepSnapshot(
+            "j1-p-s1-mobile-seed1",
+            "j1",
+            "J",
+            "p1",
+            "navigate",
+            seed_index=1,
+            viewport="mobile",
+            outcome="fail",
+        ),
+        StepSnapshot(
+            "j1-p-s1-desktop-seed1",
+            "j1",
+            "J",
+            "p1",
+            "navigate",
+            seed_index=1,
+            viewport="desktop",
+            outcome="pass",
+        ),
+    ]
+    canon = _canonical_steps(steps)
+    assert len(canon) == 1
+    assert canon[0].viewport == "desktop"
+
+
 def test_analyze_run_flaky_finding():
     config = _cfg()
     evidence = RunEvidence(

@@ -59,7 +59,7 @@ def run_cmd(config: Path, output: Path, dry_run: bool, no_crawl: bool, llm: bool
             click.echo(f"LLM provider: {llm_provider()}")
         if no_crawl and cfg.crawl:
             cfg.crawl.enabled = False
-        probe = preflight_head(cfg.target_url)
+        probe = preflight_head(cfg.target_url, allow_localhost=cfg.allow_localhost)
         click.echo(f"Preflight OK: {probe['url']} ({probe['status_code']})")
 
         if dry_run:
@@ -108,7 +108,7 @@ def crawl_cmd(config: Path, output: Path) -> None:
         cfg = load_config(config)
         if not cfg.crawl:
             cfg.crawl = __import__("rehearse.dsl", fromlist=["CrawlConfig"]).CrawlConfig()
-        preflight_head(cfg.target_url)
+        preflight_head(cfg.target_url, allow_localhost=cfg.allow_localhost)
         run_id = new_run_id(cfg.run_id_prefix)
         artifacts = output / "artifacts" / run_id
         started = time.perf_counter()

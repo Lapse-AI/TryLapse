@@ -50,7 +50,11 @@ class PersonaAgent(BaseAgent):
 
         # Persona-specific findings from crawl
         if ctx.sitemap:
-            if ("admin" in role or "buyer" in role) and ctx.sitemap.error_paths:
+            if (
+                ("admin" in role or "buyer" in role)
+                and ctx.sitemap.error_paths
+                and not ctx.config.allow_localhost
+            ):
                 report.findings.append(
                     Finding(
                         id=f"PA-{self.persona.id[:4]}-1",

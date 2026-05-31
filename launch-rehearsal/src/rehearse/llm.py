@@ -170,6 +170,12 @@ def _build_evidence_bundle(ctx: RunContext, persona: Persona) -> dict[str, Any]:
     return {
         "product": ctx.config.product_name,
         "target_url": ctx.config.target_url,
+        "allow_localhost": ctx.config.allow_localhost,
+        "dogfood_note": (
+            "Localhost dogfood run: missing login/SSO is expected; do not flag as P1."
+            if ctx.config.allow_localhost
+            else None
+        ),
         "persona": {
             "id": persona.id,
             "name": persona.name,
@@ -192,6 +198,8 @@ Rules:
 - Required: at least 0 issues and 0 delights if none found; prefer quality over quantity.
 - Evaluate from the given persona's goals and role.
 - Do not invent URLs or step_ids not in the bundle.
+- If dogfood_note is set: job queue rows showing "failed" are historical CLI jobs, not page errors.
+- If dogfood_note is set: do not report missing authentication as an issue.
 
 Respond with JSON only:
 {
@@ -323,3 +331,288 @@ def llm_to_findings(data: dict[str, Any], persona_id: str) -> tuple[list[Finding
         if status in ("pass", "partial", "fail"):
             grades[jid] = status
     return findings, delights, grades
+
+
+NARRATIVE_SYSTEM_PROMPT = """You are a launch-readiness storyteller for Launch Rehearsal.
+Turn structured rehearsal evidence into plain language for founders and engineers.
+You NEVER recommend code changes or deployments — only interpret monitoring results.
+
+Rules:
+- Be concise, specific, and cite journey names or issue titles from the evidence.
+- Do not invent issues or URLs not in the input.
+- If dogfood_note is set, ignore job-queue "failed" rows and missing SSO as blockers.
+
+Respond with JSON only:
+{
+  "executiveSummary": "2-3 sentences for any stakeholder",
+  "forFounders": "short markdown bullets for GTM/founder readout",
+  "forEngineering": "short markdown bullets for eng triage",
+  "suggestedQuestions": ["3-5 questions to ask in a launch review meeting"],
+  "chatReadySummary": "one dense paragraph a chatbot can use as system context"
+}
+"""
+
+CHAT_SYSTEM_PROMPT = """You answer questions about a single Launch Rehearsal run.
+Use ONLY the run context provided. If unsure, say what evidence is missing.
+Never suggest modifying code. Cite issue titles or journey names when relevant.
+Keep answers under 200 words unless the user asks for detail.
+"""
+
+
+def _llm_json_call(system: str, user: str, *, max_tokens: int = 2048) -> dict[str, Any] | None:
+    key = _api_key()
+    if not key:
+        return None
+    payload: dict[str, Any] = {
+        "model": _model(),
+        "messages": [
+            {"role": "system", "content": system},
+            {"role": "user", "content": user},
+        ],
+        "temperature": 0.3,
+        "max_tokens": max_tokens,
+    }
+    if os.environ.get("REHEARSE_LLM_JSON_MODE", "1") not in ("0", "false", "no"):
+        payload["response_format"] = {"type": "json_object"}
+    try:
+        with httpx.Client(timeout=_http_timeout()) as client:
+            resp = _post_chat(client, payload)
+            resp.raise_for_status()
+            content = resp.json()["choices"][0]["message"]["content"]
+        try:
+            parsed = json.loads(content)
+        except json.JSONDecodeError:
+            match = re.search(r"\{[\s\S]*\}", content or "")
+            if match:
+                parsed = json.loads(match.group())
+            else:
+                raise
+        if isinstance(parsed, dict):
+            return parsed
+    except Exception as exc:
+        return {"error": str(exc)[:300]}
+    return None
+
+
+def _narrative_context(
+    config: RunConfig,
+    evidence: RunEvidence,
+    analysis: AnalysisResult,
+    *,
+    ctx: RunContext | None,
+    template: dict[str, Any],
+) -> dict[str, Any]:
+    from rehearse.heuristics import _canonical_steps
+
+    steps = _canonical_steps(evidence.steps)
+    return {
+        "product": config.product_name,
+        "target_url": config.target_url,
+        "run_id": evidence.run_id,
+        "readiness": analysis.readiness,
+        "template_narrative": template,
+        "top_blocker": analysis.top_blocker,
+        "top_delight": analysis.top_delight,
+        "issues": [
+            {
+                "severity": i.severity,
+                "title": i.title,
+                "detail": i.detail[:300],
+                "step_id": i.step_id,
+            }
+            for i in analysis.issues[:20]
+        ],
+        "delights": [
+            {"title": d.title, "detail": d.detail[:200], "step_id": d.step_id}
+            for d in analysis.delights[:10]
+        ],
+        "journey_matrix": analysis.journey_matrix,
+        "step_outcomes": {
+            "pass": sum(1 for s in steps if s.outcome == "pass"),
+            "partial": sum(1 for s in steps if s.outcome == "partial"),
+            "fail": sum(1 for s in steps if s.outcome == "fail"),
+            "total": len(steps),
+        },
+        "dogfood_note": (
+            "Localhost dogfood — job queue failures are not page errors."
+            if config.allow_localhost
+            else None
+        ),
+        "sitemap_pages": len(ctx.sitemap.pages) if ctx and ctx.sitemap else 0,
+    }
+
+
+def generate_run_narrative_llm(
+    config: RunConfig,
+    evidence: RunEvidence,
+    analysis: AnalysisResult,
+    *,
+    ctx: RunContext | None = None,
+    template: dict[str, Any] | None = None,
+) -> dict[str, Any] | None:
+    from rehearse.narrative import build_template_narrative
+
+    base = template or build_template_narrative(config, evidence, analysis, ctx=ctx)
+    ctx_blob = _narrative_context(config, evidence, analysis, ctx=ctx, template=base)
+    user_msg = f"Write narratives for this rehearsal:\n{json.dumps(ctx_blob, indent=2)}"
+    return _llm_json_call(NARRATIVE_SYSTEM_PROMPT, user_msg, max_tokens=2048)
+
+
+COMPARE_NARRATIVE_PROMPT = """You compare two Launch Rehearsal runs for stakeholders.
+Use only the diff and optional run narratives provided. No code-change advice.
+
+Respond with JSON only:
+{
+  "headline": "one sentence comparing older vs newer run",
+  "forFounders": "2-4 short bullets for GTM",
+  "forEngineering": "2-4 short bullets for triage",
+  "verdict": "improved|regressed|neutral|mixed",
+  "suggestedQuestions": ["2-4 review questions"]
+}
+"""
+
+
+def generate_compare_narrative_llm(
+    diff: dict[str, Any],
+    *,
+    bundle_a: dict[str, Any] | None = None,
+    bundle_b: dict[str, Any] | None = None,
+    template: dict[str, Any] | None = None,
+) -> dict[str, Any] | None:
+    blob = {
+        "diff": diff,
+        "run_a_narrative": (bundle_a or {}).get("narrative"),
+        "run_b_narrative": (bundle_b or {}).get("narrative"),
+        "template": template,
+    }
+    return _llm_json_call(
+        COMPARE_NARRATIVE_PROMPT,
+        f"Compare these two rehearsal runs:\n{json.dumps(blob, indent=2)[:12000]}",
+        max_tokens=1024,
+    )
+
+
+TRENDS_NARRATIVE_PROMPT = """You interpret Launch Rehearsal trend time series for stakeholders.
+Use only the trends JSON (readiness bands, flake rates, recurrence, issue open/resolve counts).
+
+Respond with JSON only:
+{
+  "headline": "one sentence on overall trajectory",
+  "forFounders": "2-4 bullets",
+  "forEngineering": "2-4 bullets",
+  "verdict": "improved|regressed|neutral|mixed",
+  "suggestedQuestions": ["2-4 questions"]
+}
+"""
+
+
+def generate_trends_narrative_llm(
+    trends: dict[str, Any],
+    *,
+    template: dict[str, Any] | None = None,
+) -> dict[str, Any] | None:
+    blob = {"trends": trends, "template": template}
+    return _llm_json_call(
+        TRENDS_NARRATIVE_PROMPT,
+        f"Summarize rehearsal trends:\n{json.dumps(blob, indent=2)[:10000]}",
+        max_tokens=1024,
+    )
+
+
+DIGEST_NARRATIVE_PROMPT = """You write a command-center digest across the last N rehearsal runs.
+Use summaries and optional latest narratives only.
+
+Respond with JSON only:
+{
+  "headline": "one sentence",
+  "bullets": ["3-5 short bullets for the home page"],
+  "readinessTrend": "improving|stable|softening|unknown"
+}
+"""
+
+
+def generate_command_digest_llm(
+    summaries: list[dict[str, Any]],
+    *,
+    bundles: list[dict[str, Any]] | None = None,
+    template: dict[str, Any] | None = None,
+) -> dict[str, Any] | None:
+    blob = {
+        "summaries": summaries[:7],
+        "narratives": [(b or {}).get("narrative") for b in (bundles or [])[:3]],
+        "template": template,
+    }
+    return _llm_json_call(
+        DIGEST_NARRATIVE_PROMPT,
+        f"Command center digest:\n{json.dumps(blob, indent=2)[:10000]}",
+        max_tokens=768,
+    )
+
+
+def chat_about_run(
+    bundle: dict[str, Any],
+    message: str,
+    history: list[dict[str, str]] | None = None,
+) -> dict[str, Any]:
+    """Answer a natural-language question about a run bundle."""
+    from rehearse.narrative import narrative_from_bundle, template_chat_reply
+
+    narrative = narrative_from_bundle(bundle) or {}
+    summary = bundle.get("summary") or {}
+    compact = {
+        "run_id": summary.get("id"),
+        "product": summary.get("productName"),
+        "readiness_band": summary.get("readinessBand"),
+        "readiness_score": summary.get("readiness"),
+        "blockers": summary.get("blockers"),
+        "issues_count": summary.get("issues"),
+        "narrative": {
+            "executiveSummary": narrative.get("executiveSummary"),
+            "forFounders": narrative.get("forFounders"),
+            "chatReadySummary": narrative.get("chatReadySummary"),
+        },
+        "issues": [
+            {"severity": i.get("severity"), "title": i.get("title"), "detail": (i.get("detail") or "")[:200]}
+            for i in (bundle.get("issues") or [])[:15]
+        ],
+        "delights": [
+            {"title": d.get("title"), "detail": (d.get("detail") or "")[:150]}
+            for d in (bundle.get("delights") or [])[:8]
+        ],
+    }
+
+    key = _api_key()
+    if not key:
+        return {
+            "reply": template_chat_reply(bundle, message),
+            "source": "template",
+        }
+
+    messages: list[dict[str, str]] = [
+        {"role": "system", "content": CHAT_SYSTEM_PROMPT + "\n\nRun context:\n" + json.dumps(compact)},
+    ]
+    for turn in (history or [])[-6:]:
+        role = turn.get("role", "user")
+        content = str(turn.get("content", ""))[:2000]
+        if role in ("user", "assistant") and content:
+            messages.append({"role": role, "content": content})
+    messages.append({"role": "user", "content": message[:4000]})
+
+    payload: dict[str, Any] = {
+        "model": _model(),
+        "messages": messages,
+        "temperature": 0.35,
+        "max_tokens": int(os.environ.get("REHEARSE_CHAT_MAX_TOKENS", "800")),
+    }
+    try:
+        with httpx.Client(timeout=_http_timeout()) as client:
+            resp = _post_chat(client, payload)
+            resp.raise_for_status()
+            reply = resp.json()["choices"][0]["message"]["content"].strip()
+        return {"reply": reply, "source": "llm"}
+    except Exception as exc:
+        return {
+            "reply": template_chat_reply(bundle, message),
+            "source": "template",
+            "llmError": str(exc)[:200],
+        }

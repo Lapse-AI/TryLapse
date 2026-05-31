@@ -1,0 +1,12 @@
+{
+  "name": "launch-rehearsal-ui-dev",
+  "private": true,
+  "description": "Dev UI at :8081 — runs Frontend_V1 in deliverable mode (current shipped UI)",
+  "scripts": {
+    "dev": "cd ../Frontend_V1 && npm run dev",
+    "build": "cd ../Frontend_V1 && npm run build",
+    "preview": "cd ../Frontend_V1 && npm run preview",
+    "dev:vision": "cd ../Frontend_V1 && npm run dev:vision",
+    "install:deps": "cd ../Frontend_V1 && npm install"
+  }
+}

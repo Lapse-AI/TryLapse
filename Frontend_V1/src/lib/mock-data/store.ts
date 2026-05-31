@@ -3,7 +3,10 @@ import type {
   AlertChannel,
   Annotation,
   BacklogItem,
+  CommandDigest,
+  CompareNarrative,
   DimensionScore,
+  InsightNarrative,
   Integration,
   Issue,
   Journey,
@@ -11,6 +14,7 @@ import type {
   Persona,
   RunBundle,
   RunDiff,
+  RunNarrative,
   RunSummary,
   SitemapEdge,
   SitemapPage,
@@ -81,6 +85,105 @@ export const calJourneys: Journey[] = [
   { id: "j4-pricing", name: "Pricing transparency", steps: 1, category: "pricing" },
   { id: "j5-return-nav", name: "Return navigation", steps: 2, category: "dashboard" },
 ];
+
+// ─── NLU mock narratives (offline / both UI modes) ─────────────────────────────
+
+const ACME_RUN_NARRATIVE: RunNarrative = {
+  executiveSummary:
+    "Acme SaaS run run_8s7d2 scored readiness 82 with 8 issues (4 blockers) and 4 delights. SSO callback failure on Safari 17 is the critical P0; pricing CTA mismatch blocks evaluator conversion.",
+  forFounders:
+    "Strong product moments (pricing calculator, Cmd-K) offset by trust-breaking auth and CTA issues. Do not launch to Safari-heavy segments until SSO is fixed.",
+  forEngineering:
+    "39 steps across 6 journeys; 2 flaky. Priority: Set-Cookie on SSO callback, CTA href alignment, invite form state on 422.",
+  suggestedQuestions: [
+    "What blocked launch readiness on Safari?",
+    "Which persona × journey pairs failed hardest?",
+    "Are recurring SSO failures new or a regression?",
+  ],
+  source: "template",
+  readinessBand: "Red",
+  issueCount: 8,
+  delightCount: 4,
+};
+
+export const mockTrendsNarrative: InsightNarrative = {
+  headline:
+    "Readiness climbed from 62 to 82 over 9 runs, but the P0 SSO issue persists across Safari sessions.",
+  forFounders:
+    "Launch is closer — readiness improved +20 points — yet one cross-browser auth blocker still blocks enterprise evaluators.",
+  forEngineering:
+    "Flake rate dropped from 5.2% to 3.1%. Resolve SSO callback and pricing CTA mismatch before the next canary deploy.",
+  verdict: "mixed",
+  suggestedQuestions: [
+    "Is the Safari SSO fix on the release train?",
+    "Should we gate prod-canary until CTA routing is fixed?",
+  ],
+  source: "template",
+};
+
+export const mockCommandDigest: CommandDigest = {
+  headline:
+    "Acme SaaS readiness is trending up — 4 blockers need attention before a confident launch.",
+  bullets: [
+    "Latest run run_8s7d2: readiness 82 (Red band — P0 present)",
+    "SSO callback issue recurring in 3 of the last 9 runs",
+    "Pricing CTA mismatch is new in the latest run",
+    "Flake rate stable at 3.1% over the last 7 runs",
+  ],
+  readinessTrend: "improving",
+  source: "template",
+  latestRunId: "run_8s7d2",
+  runCount: 9,
+};
+
+const MOCK_COMPARE_NARRATIVE: CompareNarrative = {
+  headline:
+    "Readiness score rose 74 → 82, but band shifted Amber → Red because a new P0 SSO issue surfaced.",
+  forFounders:
+    "Net quality improved on paper, yet a launch-blocking auth regression appeared — treat as a hold until Safari SSO is verified.",
+  forEngineering:
+    "1 new P0 (SSO callback), 1 resolved cosmetic (footer year). Step flake unchanged; crawl size +4 pages.",
+  verdict: "mixed",
+  readinessDelta: "+8 points, band regressed (P0)",
+  suggestedQuestions: [
+    "Did the SSO regression ship between staging and prod-canary?",
+    "Which changed steps correlate with the new P0?",
+  ],
+  source: "template",
+};
+
+export const mockChatThreads: Record<string, { role: "user" | "assistant"; content: string }[]> = {
+  run_8s7d2: [
+    { role: "user", content: "What are the blockers?" },
+    {
+      role: "assistant",
+      content:
+        "P0: SSO callback drops session on Safari 17 — blocks authenticated journeys for Safari users. P1: Pricing CTA reads 'Get started' but routes to /demo; invite flow loses role on validation error.",
+    },
+  ],
+};
+
+export function getMockChatThread(runId: string) {
+  return mockChatThreads[runId] ?? [];
+}
+
+export function mockChatReply(message: string, bundle: RunBundle): string {
+  const lower = message.toLowerCase();
+  if (lower.includes("blocker") || lower.includes("p0") || lower.includes("launch")) {
+    const blockers = bundle.issues.filter((i) => i.severity === "P0" || i.severity === "P1");
+    if (blockers.length === 0) return "No P0/P1 blockers in this run.";
+    return blockers.map((i) => `${i.severity}: ${i.title} — ${i.detail}`).join(" ");
+  }
+  if (lower.includes("delight") || lower.includes("positive")) {
+    return bundle.delights.length
+      ? bundle.delights.map((d) => d.title).join("; ")
+      : "No delights recorded for this run.";
+  }
+  const top = bundle.issues[0];
+  return top
+    ? `Offline demo — start rehearse serve for live LLM chat. Top issue: ${top.severity} ${top.title}.`
+    : "Offline demo — start rehearse serve for live LLM chat.";
+}
 
 const ALL_DIMENSIONS: DimensionScore[] = [
   { name: "Functionality", score: 78, signal: "17% steps pass", automated: true },
@@ -639,6 +742,7 @@ const acmeBundle: RunBundle = {
     stepId: i.stepId,
     label: i.title,
   })),
+  narrative: ACME_RUN_NARRATIVE,
   annotations: [
     {
       id: "ann_1",
@@ -1142,6 +1246,12 @@ function cloneAcmeForSummary(s: RunSummary): RunBundle {
     issues: acmeBundle.issues.map((i) => ({ ...i, runId: s.id, id: `${s.id}_${i.id}` })),
     delights: acmeBundle.delights.map((d) => ({ ...d, runId: s.id, id: `${s.id}_${d.id}` })),
     agents: acmeBundle.agents.map((a) => ({ ...a, runId: s.id })),
+    narrative: acmeBundle.narrative
+      ? {
+          ...acmeBundle.narrative,
+          executiveSummary: acmeBundle.narrative.executiveSummary.replace("run_8s7d2", s.id),
+        }
+      : undefined,
     annotations: [],
   };
 }
@@ -1198,6 +1308,7 @@ export function diffRuns(runA: string, runB: string): RunDiff | null {
     stepsOnlyInB: [...stepsB.keys()].filter((k) => !stepsA.has(k)),
     resolvedIssues: ["Footer year still reads 2024"],
     newIssues: ["SSO callback drops session on Safari 17"],
+    narrative: MOCK_COMPARE_NARRATIVE,
   };
 }
 
@@ -1426,7 +1537,7 @@ export const issueRecurrence = [
     runIds: ["run_8s7d2"],
   },
   {
-    name: "Invite role lost on validation error",
+    name: "Invite role lost on form validation",
     runs: 2,
     status: "regression" as const,
     first: "May 27",
