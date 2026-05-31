@@ -54,7 +54,7 @@
 
 | Phase | Deliverable |
 |-------|-------------|
-| — | (next: landing page, partner packaging — see `LANDING_PAGE_PLAN.md`) |
+| — | Product UI: Phase B observability on run detail + compare sitemap diff; see `BROWSER_CAPABILITY_PARITY.md` |
 
 ---
 

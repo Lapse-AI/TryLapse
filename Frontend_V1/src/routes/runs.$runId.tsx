@@ -19,6 +19,7 @@ import {
   SitemapPanel,
   ScreenshotGallery,
   DiffPanel,
+  RunObservabilityPanel,
   AnnotationsPanel,
   IssueAnnotationActions,
   ExportMenu,
@@ -334,6 +335,7 @@ function RunDetail() {
 
           <TabsContent value="overview" className="space-y-8 mt-0">
             <RunNarrativePanel runId={run.id} bundle={bundle} />
+            <RunObservabilityPanel bundle={bundle} />
             <Panel className="p-4 md:p-6 overflow-x-auto">
               <div className="flex items-end justify-between mb-5 gap-3 flex-wrap">
                 <div>

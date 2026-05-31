@@ -91,6 +91,10 @@ export type RunSummary = {
   crawlEnabled?: boolean;
   orphans?: number;
   authGated?: number;
+  pagesCrawled?: number;
+  agentsRun?: number;
+  networkLogPath?: string | null;
+  webVitalsPath?: string | null;
 };
 
 export type StepSnapshot = {
@@ -104,9 +108,12 @@ export type StepSnapshot = {
   outcome: StepOutcome;
   durationMs: number;
   note?: string | null;
+  errorType?: string | null;
   flaky?: boolean;
   consoleErrors?: string[];
+  consoleWarnings?: string[];
   networkFailures?: string[];
+  webVitals?: Record<string, number | null>;
   artifactPaths?: string[];
   exploreLog?: {
     round: number;
