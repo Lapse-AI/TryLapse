@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, type ElementType, type ReactNode } from "react";
 import type { Status, Severity } from "@/lib/mock-data";
 import { formatRel } from "@/lib/mock-data";
 
@@ -23,7 +23,13 @@ export function StatusDot({ status, className = "" }: { status: Status; classNam
   return <span className={`inline-block size-2 rounded-full ${map[status]} ${className}`} />;
 }
 
-export function Chip({ children, tone = "neutral" }: { children: ReactNode; tone?: Status | "info" | "violet" }) {
+export function Chip({
+  children,
+  tone = "neutral",
+}: {
+  children: ReactNode;
+  tone?: Status | "info" | "violet";
+}) {
   const tones: Record<string, string> = {
     ready: "text-ready border-ready/25 bg-ready/8",
     warn: "text-warn border-warn/25 bg-warn/8",
@@ -33,7 +39,9 @@ export function Chip({ children, tone = "neutral" }: { children: ReactNode; tone
     neutral: "text-muted-foreground border-border bg-surface-2",
   };
   return (
-    <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium border ${tones[tone]}`}>
+    <span
+      className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium border ${tones[tone]}`}
+    >
       {children}
     </span>
   );
@@ -49,11 +57,27 @@ export function SeverityChip({ s }: { s: Severity }) {
   return <Chip tone={tone[s]}>{s}</Chip>;
 }
 
-export function Panel({ children, className = "", as: As = "div" }: { children: ReactNode; className?: string; as?: any }) {
+export function Panel({
+  children,
+  className = "",
+  as: As = "div",
+}: {
+  children: ReactNode;
+  className?: string;
+  as?: ElementType;
+}) {
   return <As className={`panel ${className}`}>{children}</As>;
 }
 
-export function SectionTitle({ eyebrow, title, action }: { eyebrow?: string; title: string; action?: ReactNode }) {
+export function SectionTitle({
+  eyebrow,
+  title,
+  action,
+}: {
+  eyebrow?: string;
+  title: string;
+  action?: ReactNode;
+}) {
   return (
     <div className="flex items-end justify-between mb-4">
       <div>
@@ -65,14 +89,28 @@ export function SectionTitle({ eyebrow, title, action }: { eyebrow?: string; tit
   );
 }
 
-export function PageHeader({ eyebrow, title, description, actions }: { eyebrow: string; title: string; description?: ReactNode; actions?: ReactNode }) {
+export function PageHeader({
+  eyebrow,
+  title,
+  description,
+  actions,
+}: {
+  eyebrow: string;
+  title: string;
+  description?: ReactNode;
+  actions?: ReactNode;
+}) {
   return (
     <div className="border-b border-border bg-surface">
       <div className="px-4 md:px-8 py-7 flex items-start justify-between gap-6 flex-wrap">
         <div>
           <div className="text-xs text-primary/80 mb-2 font-medium">{eyebrow}</div>
           <h1 className="font-display text-[28px] font-semibold tracking-tight">{title}</h1>
-          {description && <p className="text-muted-foreground mt-1.5 max-w-2xl text-sm leading-relaxed">{description}</p>}
+          {description && (
+            <p className="text-muted-foreground mt-1.5 max-w-2xl text-sm leading-relaxed">
+              {description}
+            </p>
+          )}
         </div>
         {actions && <div className="flex items-center gap-2 flex-wrap">{actions}</div>}
       </div>
@@ -80,7 +118,17 @@ export function PageHeader({ eyebrow, title, description, actions }: { eyebrow: 
   );
 }
 
-export function Stat({ label, value, hint, tone }: { label: string; value: ReactNode; hint?: string; tone?: Status }) {
+export function Stat({
+  label,
+  value,
+  hint,
+  tone,
+}: {
+  label: string;
+  value: ReactNode;
+  hint?: string;
+  tone?: Status;
+}) {
   return (
     <div className="panel p-4">
       <div className="text-xs text-muted-foreground">{label}</div>
@@ -93,7 +141,15 @@ export function Stat({ label, value, hint, tone }: { label: string; value: React
   );
 }
 
-export function Sparkline({ values, color = "var(--ready)", height = 36 }: { values: number[]; color?: string; height?: number }) {
+export function Sparkline({
+  values,
+  color = "var(--ready)",
+  height = 36,
+}: {
+  values: number[];
+  color?: string;
+  height?: number;
+}) {
   const safe = values.filter((v) => Number.isFinite(v));
   if (safe.length === 0) {
     return <svg width={120} height={height} aria-hidden />;
@@ -133,11 +189,16 @@ export function ReadinessGauge({ value, band }: { value: number; band?: Status }
   const bandLabel = tone === "ready" ? "Green" : tone === "warn" ? "Amber" : "Red";
 
   return (
-    <div className="relative size-[200px] flex items-center justify-center" title={`Score ${value}/100 · Band ${bandLabel} (derived from blocker severity, not the score)`}>
+    <div
+      className="relative size-[200px] flex items-center justify-center"
+      title={`Score ${value}/100 · Band ${bandLabel} (derived from blocker severity, not the score)`}
+    >
       <svg viewBox="0 0 200 200" className="-rotate-90 absolute inset-0">
         <circle cx="100" cy="100" r={radius} stroke="var(--border)" strokeWidth="6" fill="none" />
         <circle
-          cx="100" cy="100" r={radius}
+          cx="100"
+          cy="100"
+          r={radius}
           stroke={color}
           strokeWidth="6"
           strokeLinecap="round"
@@ -147,18 +208,33 @@ export function ReadinessGauge({ value, band }: { value: number; band?: Status }
         />
       </svg>
       <div className="text-center z-10">
-        <div className="font-display text-5xl font-semibold tabular-nums" style={{ color }}>{value}</div>
+        <div className="font-display text-5xl font-semibold tabular-nums" style={{ color }}>
+          {value}
+        </div>
         <div className="text-xs text-muted-foreground mt-1">Readiness · /100</div>
-        <div className="mt-2"><Chip tone={tone}>{bandLabel}</Chip></div>
+        <div className="mt-2">
+          <Chip tone={tone}>{bandLabel}</Chip>
+        </div>
       </div>
     </div>
   );
 }
 
-export function Bar({ value, max = 100, tone = "ready" }: { value: number; max?: number; tone?: "ready" | "warn" | "danger" | "info" | "violet" }) {
+export function Bar({
+  value,
+  max = 100,
+  tone = "ready",
+}: {
+  value: number;
+  max?: number;
+  tone?: "ready" | "warn" | "danger" | "info" | "violet";
+}) {
   return (
     <div className="h-1.5 w-full rounded-full bg-surface-3 overflow-hidden">
-      <div className="h-full rounded-full" style={{ width: `${(value / max) * 100}%`, background: `var(--${tone})` }} />
+      <div
+        className="h-full rounded-full"
+        style={{ width: `${(value / max) * 100}%`, background: `var(--${tone})` }}
+      />
     </div>
   );
 }

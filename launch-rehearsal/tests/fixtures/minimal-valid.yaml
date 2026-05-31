@@ -1,0 +1,52 @@
+run:
+  target_url: https://example.com
+  run_id_prefix: test
+  product_name: Test App
+
+personas:
+  - id: p1
+    name: Evaluator
+    role: prospect
+    goals: [explore]
+  - id: p2
+    name: Operator
+    role: power user
+    goals: [operate]
+  - id: p3
+    name: Admin
+    role: admin
+    goals: [administer]
+
+journeys:
+  - id: j1
+    name: Landing
+    steps:
+      - action: navigate
+        url: "{target_url}/"
+  - id: j2
+    name: List
+    steps:
+      - action: navigate
+        url: "{target_url}/list"
+  - id: j3
+    name: Detail
+    steps:
+      - action: navigate
+        url: "{target_url}/item/1"
+  - id: j4
+    name: Settings
+    steps:
+      - action: navigate
+        url: "{target_url}/settings"
+  - id: j5
+    name: Help
+    steps:
+      - action: navigate
+        url: "{target_url}/help"
+
+budgets:
+  max_steps_per_journey: 10
+  parallel_seeds: 1
+
+crawl:
+  enabled: false

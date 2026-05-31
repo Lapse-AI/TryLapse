@@ -1,0 +1,15 @@
+# Default owner
+* @0sparsh2
+
+# Launch Rehearsal engine
+/launch-rehearsal/ @0sparsh2
+/rehearse @0sparsh2
+
+# Dashboard UI
+/Frontend_V1/ @0sparsh2
+
+# Product authority docs
+/enterprise_work_env_simulator_2026/ @0sparsh2
+
+# CI/CD and repo hygiene
+/.github/ @0sparsh2

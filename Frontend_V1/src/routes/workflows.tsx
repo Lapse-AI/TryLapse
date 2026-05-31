@@ -34,11 +34,18 @@ function Workflows() {
                   <Chip tone={tone}>{w.coverage}% covered</Chip>
                 </div>
                 <div className="mt-3 h-1.5 w-full rounded-full bg-surface-3 overflow-hidden">
-                  <div className="h-full rounded-full" style={{ width: `${w.coverage}%`, background: `var(--${tone})` }} />
+                  <div
+                    className="h-full rounded-full"
+                    style={{ width: `${w.coverage}%`, background: `var(--${tone})` }}
+                  />
                 </div>
-                <div className="mt-3 text-[11px] font-mono text-muted-foreground truncate">{w.paths.join(" · ")}</div>
+                <div className="mt-3 text-[11px] font-mono text-muted-foreground truncate">
+                  {w.paths.join(" · ")}
+                </div>
                 <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground font-mono">
-                  <span>{w.journeys} journey{w.journeys === 1 ? "" : "s"}</span>
+                  <span>
+                    {w.journeys} journey{w.journeys === 1 ? "" : "s"}
+                  </span>
                   {w.suggested > 0 && <span className="text-warn">+{w.suggested} suggested</span>}
                 </div>
               </Panel>
@@ -47,17 +54,23 @@ function Workflows() {
         </div>
 
         <Panel className="p-6">
-          <div className="text-xs text-muted-foreground mb-4">Active journeys · from rehearse.yaml</div>
+          <div className="text-xs text-muted-foreground mb-4">
+            Active journeys · from rehearse.yaml
+          </div>
           <div className="divide-y divide-border">
             {journeys.map((j) => (
               <div key={j.id} className="py-3 flex items-center justify-between">
                 <div>
                   <div className="font-medium">{j.name}</div>
-                  <div className="text-[11px] font-mono text-muted-foreground mt-0.5">{j.id} · {j.steps} steps</div>
+                  <div className="text-[11px] font-mono text-muted-foreground mt-0.5">
+                    {j.id} · {j.steps} steps
+                  </div>
                 </div>
                 <div className="flex items-center gap-2">
                   <Chip>{j.category}</Chip>
-                  <Chip tone="ready"><CheckCircle2 className="size-3" /> active</Chip>
+                  <Chip tone="ready">
+                    <CheckCircle2 className="size-3" /> active
+                  </Chip>
                 </div>
               </div>
             ))}
@@ -68,19 +81,31 @@ function Workflows() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <div className="text-xs text-muted-foreground">Suggested journeys</div>
-              <h2 className="font-display text-lg font-semibold mt-0.5">From workflow agent · accept → add to config</h2>
+              <h2 className="font-display text-lg font-semibold mt-0.5">
+                From workflow agent · accept → add to config
+              </h2>
             </div>
           </div>
           <div className="space-y-3">
             {suggestedJourneys.map((s) => (
-              <div key={s.id} className="border border-border rounded-lg p-4 flex items-start justify-between gap-4">
+              <div
+                key={s.id}
+                className="border border-border rounded-lg p-4 flex items-start justify-between gap-4"
+              >
                 <div>
                   <div className="font-medium">{s.title}</div>
                   <div className="text-xs text-muted-foreground mt-1">{s.reason}</div>
                   <Chip tone="info">{s.category}</Chip>
-                  <span className="text-[10px] font-mono text-muted-foreground ml-2">from {s.sourceRunId}</span>
+                  <span className="text-[10px] font-mono text-muted-foreground ml-2">
+                    from {s.sourceRunId}
+                  </span>
                 </div>
-                <button type="button" className="text-xs font-mono px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:opacity-90 inline-flex items-center gap-1.5 shrink-0"><Plus className="size-3.5" /> add to config</button>
+                <button
+                  type="button"
+                  className="text-xs font-mono px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:opacity-90 inline-flex items-center gap-1.5 shrink-0"
+                >
+                  <Plus className="size-3.5" /> add to config
+                </button>
               </div>
             ))}
           </div>

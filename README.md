@@ -1,6 +1,11 @@
 # TryLapse — Launch Rehearsal
 
+[![CI](https://github.com/Lapse-AI/TryLapse/actions/workflows/ci.yml/badge.svg)](https://github.com/Lapse-AI/TryLapse/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/github/license/Lapse-AI/TryLapse)](LICENSE)
+
 Enterprise-agnostic **monitoring, feedback, and testing** for web apps before launch. Observe and score only — no auto-fix, no deploy.
+
+**Org:** https://github.com/Lapse-AI · **Contributing:** [CONTRIBUTING.md](CONTRIBUTING.md) · **Changelog:** [CHANGES.md](CHANGES.md)
 
 ## Quick start
 
@@ -27,6 +32,15 @@ cd Frontend_V1 && npm run dev
 - [DESIGN_PARTNER_CHECKLIST.md](enterprise_work_env_simulator_2026/DESIGN_PARTNER_CHECKLIST.md) — outreach + demo gates
 - [CEO_DECISIONS.md](enterprise_work_env_simulator_2026/CEO_DECISIONS.md) — locked scope gates
 
+## Development workflow (GitHub Flow)
+
+1. Branch from `main`: `feat/…`, `fix/…`, or `chore/…`
+2. Open a PR — CI runs Python tests + Frontend build
+3. Squash merge to `main`
+4. Release: bump `launch-rehearsal/pyproject.toml` version, update `CHANGES.md`, tag `v*.*.*`
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for full conventions.
+
 ## Organization
 
-https://github.com/Lapse-AI
+https://github.com/Lapse-AI/TryLapse

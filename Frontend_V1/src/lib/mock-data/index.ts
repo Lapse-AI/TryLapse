@@ -37,7 +37,10 @@ export const formatDurationMs = (ms: number) => formatDuration(Math.round(ms / 1
 import type { RunBundle } from "./types";
 import { getJourneysForRun, getPersonasForRun } from "./store";
 
-export const bundlePersonas = (bundle: RunBundle) => bundle.personas ?? getPersonasForRun(bundle.summary.id);
-export const bundleJourneys = (bundle: RunBundle) => bundle.journeys ?? getJourneysForRun(bundle.summary.id);
+export const bundlePersonas = (bundle: RunBundle) =>
+  bundle.personas ?? getPersonasForRun(bundle.summary.id);
+export const bundleJourneys = (bundle: RunBundle) =>
+  bundle.journeys ?? getJourneysForRun(bundle.summary.id);
 export const cellGrade = (bundle: RunBundle, personaId: string, journeyId: string) =>
-  bundle.matrix.find((c) => c.personaId === personaId && c.journeyId === journeyId)?.grade ?? "pass";
+  bundle.matrix.find((c) => c.personaId === personaId && c.journeyId === journeyId)?.grade ??
+  "pass";

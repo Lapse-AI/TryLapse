@@ -184,7 +184,13 @@ export type RunDiff = {
   pagesB: number;
   newPages: string[];
   removedPages: string[];
-  changedSteps: { stepId: string; outcomeA: StepOutcome; outcomeB: StepOutcome; urlA?: string; urlB?: string }[];
+  changedSteps: {
+    stepId: string;
+    outcomeA: StepOutcome;
+    outcomeB: StepOutcome;
+    urlA?: string;
+    urlB?: string;
+  }[];
   stepsOnlyInA: string[];
   stepsOnlyInB: string[];
   resolvedIssues: string[];
@@ -207,7 +213,13 @@ export type RunBundle = {
   annotations: Annotation[];
   personas?: Persona[];
   journeys?: Journey[];
-  workflows?: { category: string; path: string; title: string; confidence: number; signals: string[] }[];
+  workflows?: {
+    category: string;
+    path: string;
+    title: string;
+    confidence: number;
+    signals: string[];
+  }[];
   suggestedJourneys?: SuggestedJourney[];
 };
 

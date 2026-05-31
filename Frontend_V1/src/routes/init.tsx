@@ -13,7 +13,11 @@ function InitPage() {
   const { data: live } = useApiHealth();
   const { data: wizard } = useInitWizard();
   const [targetUrl, setTargetUrl] = useState("");
-  const [preflight, setPreflight] = useState<{ ok: boolean; status_code?: number; error?: string } | null>(null);
+  const [preflight, setPreflight] = useState<{
+    ok: boolean;
+    status_code?: number;
+    error?: string;
+  } | null>(null);
   const [piiRedaction, setPiiRedaction] = useState(false);
 
   const runPreflight = async () => {
@@ -48,7 +52,12 @@ function InitPage() {
             />
           </div>
           <div className="flex items-center gap-3">
-            <button type="button" disabled={!live} onClick={runPreflight} className="text-xs px-3 py-1.5 rounded-md border border-border disabled:opacity-50">
+            <button
+              type="button"
+              disabled={!live}
+              onClick={runPreflight}
+              className="text-xs px-3 py-1.5 rounded-md border border-border disabled:opacity-50"
+            >
               Preflight HEAD
             </button>
             {preflight && (
@@ -58,7 +67,11 @@ function InitPage() {
             )}
           </div>
           <label className="flex items-center gap-2 text-sm">
-            <input type="checkbox" checked={piiRedaction} onChange={(e) => setPiiRedaction(e.target.checked)} />
+            <input
+              type="checkbox"
+              checked={piiRedaction}
+              onChange={(e) => setPiiRedaction(e.target.checked)}
+            />
             PII redaction in scorecards (Phase 2 toggle)
           </label>
         </Panel>

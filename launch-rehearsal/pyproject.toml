@@ -26,3 +26,17 @@ packages = ["src/rehearse"]
 
 [tool.hatch.build]
 packages = ["src/rehearse"]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+  "pytest-cov>=5.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.coverage.run]
+source = ["src/rehearse"]
+omit = ["*/dashboard/static/*"]
