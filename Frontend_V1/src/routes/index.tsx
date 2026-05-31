@@ -7,9 +7,9 @@ import {
   Stat,
   Chip,
   StatusDot,
-  Bar,
   ClientTime,
 } from "@/components/ui-bits";
+import { DimensionRollupGrid } from "@/components/dimension-rollup";
 import { formatDuration, bandFromIssues, countBlockers } from "@/lib/mock-data";
 import { formatAgentCostDisplay, READINESS_BAND_HELP } from "@/lib/run-metrics";
 import {
@@ -283,36 +283,12 @@ function Index() {
             </div>
             <Chip>Evaluation rubric</Chip>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-4">
-            {bundle.dimensions.map((d) => {
-              const tone = d.score >= 85 ? "ready" : d.score >= 75 ? "warn" : "danger";
-              const relatedCount = bundle.issues.filter((i) => i.dimension === d.name).length;
-              return (
-                <div key={d.name}>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-sm">{d.name}</span>
-                    <span
-                      className="font-mono text-sm tabular-nums"
-                      style={{ color: `var(--${tone})` }}
-                    >
-                      {d.score}
-                    </span>
-                  </div>
-                  <Bar value={d.score} tone={tone} />
-                  {relatedCount > 0 && (
-                    <Link
-                      to="/runs/$runId"
-                      params={{ runId: latest.id }}
-                      search={{ dimension: d.name }}
-                      className="text-[10px] text-primary mt-1 inline-block hover:underline"
-                    >
-                      View {relatedCount} related findings →
-                    </Link>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+          <DimensionRollupGrid
+            dimensions={bundle.dimensions}
+            issues={bundle.issues}
+            runId={latest.id}
+            mode="navigate"
+          />
         </Panel>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

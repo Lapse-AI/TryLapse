@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Dimension rollup grid component on command center and run detail (clickable dimension filters with breakdown banner)
 - NLU narrative disk cache (`artifacts/narratives/`) for digest, trends, and compare — LLM runs once per stable run set; `?refresh=true` to regenerate; UI 30m stale time without refetch on focus
 - **NLU-1:** Run narratives (template + optional LLM), Run summary + chat on run Overview, `POST /api/runs/{runId}/chat`
 - **NLU-2:** Compare narratives on `GET /api/diff` and Compare page “What changed” panel

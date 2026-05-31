@@ -8,10 +8,10 @@ import {
   StatusDot,
   SeverityChip,
   Stat,
-  Bar,
   ClientTime,
 } from "@/components/ui-bits";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DimensionRollupGrid, DimensionBreakdownBanner } from "@/components/dimension-rollup";
 import {
   EvidenceDialog,
   StepsTable,
@@ -167,6 +167,24 @@ function RunDetail() {
   }, [tabSearch]);
 
   useEffect(() => {
+    if (!dimensionFilter) return;
+    const el = document.getElementById("dimension-breakdown");
+    el?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [dimensionFilter, bundle?.summary.id]);
+
+  const selectDimension = (name: string) => {
+    const next = dimensionFilter === name ? undefined : name;
+    void navigate({
+      search: (prev) => ({ ...prev, dimension: next }),
+      hash: next ? "dimension-breakdown" : undefined,
+    });
+  };
+
+  const activeDimensionMeta = dimensionFilter
+    ? bundle?.dimensions.find((d) => d.name === dimensionFilter)
+    : undefined;
+
+  useEffect(() => {
     if (!highlightStepId || activeTab !== "steps") return;
     const el = document.getElementById(`step-${highlightStepId}`);
     el?.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -175,6 +193,7 @@ function RunDetail() {
   if (isLoading || !bundle) {
     return <div className="p-12 text-center text-muted-foreground">Loading run…</div>;
   }
+
   const run = bundle.summary;
   const runPersonas = bundlePersonas(bundle);
   const runJourneys = bundleJourneys(bundle);
@@ -387,54 +406,32 @@ function RunDetail() {
               <p className="text-[11px] text-muted-foreground mb-4 max-w-2xl">
                 {READINESS_BAND_HELP}
               </p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-4">
-                {bundle.dimensions.map((d) => {
-                  const tone = d.score >= 85 ? "ready" : d.score >= 75 ? "warn" : "danger";
-                  const relatedCount = bundle.issues.filter((i) => i.dimension === d.name).length;
-                  const isActive = dimensionFilter === d.name;
-                  return (
-                    <div key={d.name}>
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-sm">
-                          {d.name}
-                          {!d.automated && (
-                            <span className="text-[10px] text-muted-foreground ml-1">(P2)</span>
-                          )}
-                        </span>
-                        <span
-                          className="font-mono tabular-nums"
-                          style={{ color: `var(--${tone})` }}
-                        >
-                          {d.score}
-                        </span>
-                      </div>
-                      <Bar value={d.score} tone={tone} />
-                      {d.signal && (
-                        <div className="text-[10px] text-muted-foreground mt-1">{d.signal}</div>
-                      )}
-                      {relatedCount > 0 && (
-                        <Link
-                          to="/runs/$runId"
-                          params={{ runId: run.id }}
-                          search={(prev) => ({
-                            ...prev,
-                            tab: undefined,
-                            dimension: isActive ? undefined : d.name,
-                          })}
-                          className={`text-[10px] mt-1 inline-block hover:underline ${isActive ? "text-primary font-medium" : "text-primary"}`}
-                        >
-                          {isActive
-                            ? `Showing ${relatedCount} related findings`
-                            : `View ${relatedCount} related findings →`}
-                        </Link>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
+              <DimensionRollupGrid
+                dimensions={bundle.dimensions}
+                issues={bundle.issues}
+                runId={run.id}
+                activeDimension={dimensionFilter}
+                mode="filter"
+                onSelect={selectDimension}
+              />
             </Panel>
 
-            <Panel className="overflow-hidden">
+            {activeDimensionMeta && (
+              <DimensionBreakdownBanner
+                dimension={activeDimensionMeta}
+                relatedCount={
+                  bundle.issues.filter((i) => i.dimension === activeDimensionMeta.name).length
+                }
+                onClear={() =>
+                  void navigate({
+                    search: (prev) => ({ ...prev, dimension: undefined }),
+                    hash: undefined,
+                  })
+                }
+              />
+            )}
+
+            <Panel className="overflow-hidden" id="findings">
               <div className="p-5 border-b border-border flex items-center justify-between flex-wrap gap-3">
                 <div>
                   <div className="text-xs text-muted-foreground inline-flex items-center gap-1.5">
@@ -442,19 +439,6 @@ function RunDetail() {
                   </div>
                   <h2 className="font-display text-lg font-semibold mt-0.5">
                     {filtered.length} of {bundle.issues.length} findings
-                    {dimensionFilter && (
-                      <span className="text-sm font-normal text-muted-foreground ml-2">
-                        · {dimensionFilter}
-                        <Link
-                          to="/runs/$runId"
-                          params={{ runId: run.id }}
-                          search={(prev) => ({ ...prev, dimension: undefined })}
-                          className="ml-2 text-primary hover:underline text-xs"
-                        >
-                          Clear
-                        </Link>
-                      </span>
-                    )}
                   </h2>
                 </div>
                 <div className="flex items-center gap-1 flex-wrap">
