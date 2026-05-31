@@ -40,6 +40,7 @@ class StepSnapshot:
     seed_index: int = 1
     viewport: str = "desktop"
     resolved_selector: str | None = None
+    focus_region: dict[str, Any] | None = None
     explore_log: list[dict[str, Any]] = field(default_factory=list)
     explore_summary: str | None = None
 

@@ -28,6 +28,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Camera } from "lucide-react";
+import { AnnotatedScreenshot, CompareVisualDiffPanel } from "@/components/annotated-screenshot";
 
 export function EvidenceDialog({
   issue,
@@ -73,10 +74,11 @@ export function EvidenceDialog({
         <div className="space-y-4">
           <div className="aspect-video rounded-md border border-border bg-surface-2 overflow-hidden">
             {issue.screenshotPath ? (
-              <img
-                src={artifactUrl(issue.screenshotPath)}
+              <AnnotatedScreenshot
+                src={issue.screenshotPath}
+                region={issue.focusRegion}
                 alt={`Screenshot for ${issue.stepId}`}
-                className="w-full h-full object-contain bg-black/5"
+                className="h-full min-h-[200px]"
               />
             ) : (
               <div className="h-full grid-bg flex items-center justify-center text-muted-foreground">
@@ -360,13 +362,8 @@ export function ScreenshotGallery({
           key={s.stepId}
           className="border border-border rounded-lg overflow-hidden bg-surface-2/30"
         >
-          <div className="aspect-video bg-black/5">
-            <img
-              src={artifactUrl(s.path)}
-              alt={s.stepId}
-              className="w-full h-full object-contain"
-              loading="lazy"
-            />
+          <div className="aspect-video">
+            <AnnotatedScreenshot src={s.path} alt={s.stepId} className="h-full" />
           </div>
           <figcaption className="p-2 text-[11px] text-muted-foreground border-t border-border">
             <div className="font-medium text-foreground truncate">{s.label}</div>
@@ -468,6 +465,17 @@ export function DiffPanel({ runA, runB }: { runA: string; runB: string }) {
           </ul>
         </div>
       )}
+      {(diff.visualDiffs?.length ?? 0) > 0 && (
+        <div className="space-y-3">
+          <div className="font-display font-semibold text-sm">Visual step diff</div>
+          <p className="text-xs text-muted-foreground">
+            Side-by-side screenshots for changed steps. Boxes show the control that was clicked,
+            filled, or selected (new runs only).
+          </p>
+          <CompareVisualDiffPanel items={diff.visualDiffs ?? []} />
+        </div>
+      )}
+
       {(diff.newPages.length > 0 || diff.removedPages.length > 0) && (
         <Panel className="p-4 space-y-3">
           <div className="text-xs text-muted-foreground">Sitemap diff</div>

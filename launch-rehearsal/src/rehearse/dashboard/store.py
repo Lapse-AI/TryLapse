@@ -209,6 +209,42 @@ def get_run_detail(artifacts_root: Path, run_id: str) -> dict[str, Any] | None:
     }
 
 
+def _step_primary_screenshot(step: dict[str, Any]) -> str | None:
+    for path in step.get("artifactPaths") or []:
+        if path.endswith(".png") and "-error" not in path:
+            return path.replace("\\", "/")
+    return None
+
+
+def _step_focus_region(step: dict[str, Any]) -> dict[str, Any] | None:
+    return step.get("focusRegion") or step.get("focus_region")
+
+
+def _diff_changed_step_entry(sa: dict[str, Any], sb: dict[str, Any], sid: str) -> dict[str, Any]:
+    out_a = sa.get("outcome")
+    out_b = sb.get("outcome")
+    url_a = sa.get("finalUrl") or sa.get("final_url")
+    url_b = sb.get("finalUrl") or sb.get("final_url")
+    return {
+        "step_id": sid,
+        "stepId": sid,
+        "journeyId": sa.get("journeyId") or sb.get("journeyId"),
+        "action": sa.get("action") or sb.get("action"),
+        "outcome_a": out_a,
+        "outcome_b": out_b,
+        "outcomeA": out_a,
+        "outcomeB": out_b,
+        "url_a": url_a,
+        "url_b": url_b,
+        "urlA": url_a,
+        "urlB": url_b,
+        "screenshotPathA": _step_primary_screenshot(sa),
+        "screenshotPathB": _step_primary_screenshot(sb),
+        "focusRegionA": _step_focus_region(sa),
+        "focusRegionB": _step_focus_region(sb),
+    }
+
+
 def diff_runs(artifacts_root: Path, run_a: str, run_b: str, *, refresh: bool = False) -> dict[str, Any]:
     detail_a = get_run_detail(artifacts_root, run_a)
     detail_b = get_run_detail(artifacts_root, run_b)
@@ -244,20 +280,26 @@ def diff_runs(artifacts_root: Path, run_a: str, run_b: str, *, refresh: bool = F
         url_a = sa.get("finalUrl") or sa.get("final_url")
         url_b = sb.get("finalUrl") or sb.get("final_url")
         if out_a != out_b or url_a != url_b:
-            changed.append(
-                {
-                    "step_id": sid,
-                    "stepId": sid,
-                    "outcome_a": out_a,
-                    "outcome_b": out_b,
-                    "outcomeA": out_a,
-                    "outcomeB": out_b,
-                    "url_a": url_a,
-                    "url_b": url_b,
-                    "urlA": url_a,
-                    "urlB": url_b,
-                }
-            )
+            changed.append(_diff_changed_step_entry(sa, sb, sid))
+
+    visual_diffs: list[dict[str, Any]] = list(changed)
+    for sid in only_b:
+        sb = steps_b[sid]
+        visual_diffs.append(
+            {
+                "step_id": sid,
+                "stepId": sid,
+                "journeyId": sb.get("journeyId"),
+                "action": sb.get("action"),
+                "outcomeA": None,
+                "outcomeB": sb.get("outcome"),
+                "screenshotPathA": None,
+                "screenshotPathB": _step_primary_screenshot(sb),
+                "focusRegionA": None,
+                "focusRegionB": _step_focus_region(sb),
+                "onlyInB": True,
+            }
+        )
 
     pages_a = set()
     pages_b = set()
@@ -321,6 +363,7 @@ def diff_runs(artifacts_root: Path, run_a: str, run_b: str, *, refresh: bool = F
         "stepsOnlyInB": only_b,
         "changed_steps": changed,
         "changedSteps": changed,
+        "visualDiffs": visual_diffs,
         "newIssues": new_issues,
         "resolvedIssues": resolved_issues,
     }

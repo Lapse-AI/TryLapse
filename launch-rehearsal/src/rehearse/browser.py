@@ -34,6 +34,32 @@ def _safe_filename(text: str) -> str:
     return re.sub(r"[^a-zA-Z0-9_-]+", "-", text).strip("-")[:80] or "step"
 
 
+def capture_focus_region(
+    page: Page,
+    locator: Locator,
+    *,
+    label: str | None = None,
+) -> dict[str, Any] | None:
+    """Viewport-relative box for UI overlays on full-page screenshots."""
+    try:
+        box = locator.first.bounding_box()
+        if not box or box.get("width", 0) < 2 or box.get("height", 0) < 2:
+            return None
+        vp = page.viewport_size or {"width": 1280, "height": 900}
+        text_label = (label or "").strip()[:120] or "focus"
+        return {
+            "x": round(float(box["x"]), 1),
+            "y": round(float(box["y"]), 1),
+            "width": round(float(box["width"]), 1),
+            "height": round(float(box["height"]), 1),
+            "viewportWidth": int(vp["width"]),
+            "viewportHeight": int(vp["height"]),
+            "label": text_label,
+        }
+    except Exception:
+        return None
+
+
 def _body_excerpt(page: Page, limit: int = 2000) -> str:
     try:
         text = page.locator("body").inner_text(timeout=5000)
@@ -445,6 +471,7 @@ class BrowserSession:
         )
         response: Response | None = None
         resolution_note: str | None = None
+        focus_locator: Locator | None = None
 
         try:
             if step.action == "navigate":
@@ -458,9 +485,11 @@ class BrowserSession:
             elif step.action == "fill":
                 value = step.resolve_value() if step.value else ""
                 loc, resolution_note = _resolve_locator(page, step)
+                focus_locator = loc
                 loc.fill(value or "", timeout=timeout)
             elif step.action == "click":
                 loc, resolution_note = _resolve_locator(page, step)
+                focus_locator = loc
                 if loc.is_disabled(timeout=3000):
                     snap.outcome = "partial"
                     snap.note = "Target control is disabled"
@@ -469,20 +498,24 @@ class BrowserSession:
                     page.wait_for_load_state("domcontentloaded", timeout=timeout)
             elif step.action == "hover":
                 loc, resolution_note = _resolve_locator(page, step)
+                focus_locator = loc
                 loc.hover(timeout=timeout)
             elif step.action == "scroll":
                 if step.intent or step.selector:
                     loc, resolution_note = _resolve_locator(page, step)
+                    focus_locator = loc
                     loc.scroll_into_view_if_needed(timeout=timeout)
                 else:
                     page.mouse.wheel(0, int(step.value or "600"))
             elif step.action == "select":
                 loc, resolution_note = _resolve_locator(page, step)
+                focus_locator = loc
                 loc.select_option(step.value or "", timeout=timeout)
             elif step.action == "press":
                 key = (step.value or "Enter").strip()
                 if step.selector or step.intent:
                     loc, resolution_note = _resolve_locator(page, step)
+                    focus_locator = loc
                     loc.press(key, timeout=timeout)
                 else:
                     page.keyboard.press(key)
@@ -525,6 +558,7 @@ class BrowserSession:
                         continue
                 if not dismissed and (step.intent or step.selector):
                     loc, resolution_note = _resolve_locator(page, step)
+                    focus_locator = loc
                     loc.click(timeout=timeout)
                     snap.note = resolution_note or "dismiss: intent click"
                 elif not dismissed:
@@ -563,6 +597,13 @@ class BrowserSession:
             if resolution_note:
                 snap.resolved_selector = resolution_note
                 snap.note = resolution_note if not snap.note else f"{snap.note}; {resolution_note}"
+
+            if focus_locator is not None:
+                snap.focus_region = capture_focus_region(
+                    page,
+                    focus_locator,
+                    label=step.intent or step.selector or step.action,
+                )
 
             if step.action in ("navigate", "click", "fill", "select"):
                 aria_path = _save_aria_artifact(

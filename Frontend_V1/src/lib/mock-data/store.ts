@@ -1283,13 +1283,45 @@ export function diffRuns(runA: string, runB: string): RunDiff | null {
   const changedSteps = [...stepsA.keys()]
     .filter((id) => stepsB.has(id))
     .filter((id) => stepsA.get(id)!.outcome !== stepsB.get(id)!.outcome)
-    .map((stepId) => ({
-      stepId,
-      outcomeA: stepsA.get(stepId)!.outcome,
-      outcomeB: stepsB.get(stepId)!.outcome,
-      urlA: stepsA.get(stepId)!.finalUrl ?? undefined,
-      urlB: stepsB.get(stepId)!.finalUrl ?? undefined,
-    }));
+    .map((stepId) => {
+      const sa = stepsA.get(stepId)!;
+      const sb = stepsB.get(stepId)!;
+      const shotA = sa.artifactPaths?.find((p) => p.endsWith(".png"));
+      const shotB = sb.artifactPaths?.find((p) => p.endsWith(".png"));
+      return {
+        stepId,
+        journeyId: sa.journeyId,
+        action: sa.action,
+        outcomeA: sa.outcome,
+        outcomeB: sb.outcome,
+        urlA: sa.finalUrl ?? undefined,
+        urlB: sb.finalUrl ?? undefined,
+        screenshotPathA: shotA ?? null,
+        screenshotPathB: shotB ?? null,
+        focusRegionA: sa.focusRegion ?? null,
+        focusRegionB: sb.focusRegion ?? null,
+      };
+    });
+  const visualDiffs = [
+    ...changedSteps,
+    ...[...stepsB.keys()]
+      .filter((k) => !stepsA.has(k))
+      .map((stepId) => {
+        const sb = stepsB.get(stepId)!;
+        return {
+          stepId,
+          journeyId: sb.journeyId,
+          action: sb.action,
+          outcomeA: null,
+          outcomeB: sb.outcome,
+          screenshotPathA: null,
+          screenshotPathB: sb.artifactPaths?.find((p) => p.endsWith(".png")) ?? null,
+          focusRegionA: null,
+          focusRegionB: sb.focusRegion ?? null,
+          onlyInB: true,
+        };
+      }),
+  ];
   const pagesA = new Set(a.sitemapPages.map((p) => p.path));
   const pagesB = new Set(b.sitemapPages.map((p) => p.path));
   return {
@@ -1304,6 +1336,7 @@ export function diffRuns(runA: string, runB: string): RunDiff | null {
     newPages: [...pagesB].filter((p) => !pagesA.has(p)),
     removedPages: [...pagesA].filter((p) => !pagesB.has(p)),
     changedSteps,
+    visualDiffs,
     stepsOnlyInA: [...stepsA.keys()].filter((k) => !stepsB.has(k)),
     stepsOnlyInB: [...stepsB.keys()].filter((k) => !stepsA.has(k)),
     resolvedIssues: ["Footer year still reads 2024"],

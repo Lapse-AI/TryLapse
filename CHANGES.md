@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Compare visual step diff: side-by-side screenshots with focus box + label on click/fill/select steps
 - Run detail observability: Web Vitals per step, console warnings, network-log / web-vitals exports, agents-run summary
 - Compare diff: sitemap new/removed pages panel (L2-UI-19)
 - Dimension rollup grid component on command center and run detail (clickable dimension filters with breakdown banner)
