@@ -44,34 +44,38 @@ export function useApiHealth() {
 
 export function useRunSummaries() {
   const health = useApiHealth();
+  const live = health.data === true;
   return useQuery({
     queryKey: queryKeys.summaries,
     queryFn: async () => {
-      if (health.data) return api.summaries();
+      if (live) return api.summaries();
       return mockSummaries;
     },
     enabled: health.isSuccess,
-    placeholderData: mockSummaries,
+    placeholderData: live ? undefined : mockSummaries,
   });
 }
 
 export function useLatestRun(): RunSummary | undefined {
+  const health = useApiHealth();
   const { data } = useRunSummaries();
+  if (health.data === true) return data?.[0];
   return data?.[0] ?? mockLatest();
 }
 
 export function useRunBundle(runId: string) {
   const health = useApiHealth();
+  const live = health.data === true;
   return useQuery({
     queryKey: queryKeys.bundle(runId),
     queryFn: async (): Promise<RunBundle> => {
-      if (health.data) return api.bundle(runId);
+      if (live) return api.bundle(runId);
       const mock = mockBundle(runId);
       if (!mock) throw new Error("Run not found");
       return mock;
     },
     enabled: !!runId && health.isSuccess,
-    placeholderData: getRunBundle(runId),
+    placeholderData: live ? undefined : getRunBundle(runId),
   });
 }
 
@@ -91,10 +95,11 @@ export function useRunDiff(runA: string, runB: string) {
 
 export function useTrends() {
   const health = useApiHealth();
+  const live = health.data === true;
   return useQuery({
     queryKey: queryKeys.trends,
     queryFn: async () => {
-      if (health.data) return api.trends();
+      if (live) return api.trends();
       return {
         readiness: mockReadinessTrend,
         pages: mockCrawlTrend,
@@ -156,11 +161,12 @@ export function useAlerts() {
 
 export function useBacklog() {
   const health = useApiHealth();
+  const live = health.data === true;
   return useQuery({
     queryKey: queryKeys.backlog,
-    queryFn: async () => (health.data ? api.backlog() : mockBacklog),
+    queryFn: async () => (live ? api.backlog() : mockBacklog),
     enabled: health.isSuccess,
-    placeholderData: mockBacklog,
+    placeholderData: live ? undefined : mockBacklog,
   });
 }
 
@@ -206,6 +212,17 @@ export function useConfigs() {
     queryKey: queryKeys.configs,
     queryFn: () => api.configs(),
     enabled: health.data === true,
+  });
+}
+
+export function useSaveConfig() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: api.saveConfig,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: queryKeys.configs });
+      qc.invalidateQueries({ queryKey: queryKeys.init });
+    },
   });
 }
 

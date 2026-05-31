@@ -10,6 +10,7 @@ from typing import Any
 from urllib.parse import urlparse
 
 from rehearse.analysis_export import rebuild_bundle_from_artifacts
+from rehearse.init_config import build_config, write_config
 from rehearse.preflight import preflight_head
 
 READINESS_SCORE = {"Green": 85, "Amber": 72, "Red": 38}
@@ -408,6 +409,34 @@ def save_annotation(artifacts_root: Path, run_id: str, annotation: dict[str, Any
     return existing
 
 
+def save_config(artifacts_root: Path, body: dict[str, Any]) -> dict[str, Any]:
+    target_url = (body.get("targetUrl") or "").strip()
+    if not target_url:
+        raise ValueError("targetUrl required")
+
+    config = build_config(
+        target_url,
+        product_name=body.get("productName"),
+        with_auth=bool(body.get("withAuth")),
+    )
+    slug = config["run"]["run_id_prefix"]
+    cfg_dir = artifacts_root / "configs"
+    path = cfg_dir / f"{slug}.yaml"
+    write_config(path, config)
+
+    if "piiRedaction" in body:
+        ws = get_workspace(artifacts_root)
+        ws["piiRedaction"] = bool(body["piiRedaction"])
+        ws["targetUrl"] = target_url
+        save_workspace(artifacts_root, ws)
+
+    return {
+        "id": path.stem,
+        "path": str(path.resolve()),
+        "name": config["run"]["product_name"],
+    }
+
+
 def list_configs(artifacts_root: Path) -> list[dict[str, Any]]:
     items: list[dict[str, Any]] = []
     cfg_dir = artifacts_root / "configs"
@@ -478,6 +507,7 @@ def get_init_wizard(artifacts_root: Path) -> dict[str, Any]:
         },
         "configs": configs,
         "cliHint": "rehearse init -c config.yaml && rehearse run -c config.yaml",
+        "writeHint": "POST /api/configs with { targetUrl, productName?, withAuth?, piiRedaction? }",
     }
 
 
