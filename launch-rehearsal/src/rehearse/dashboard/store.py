@@ -209,7 +209,7 @@ def get_run_detail(artifacts_root: Path, run_id: str) -> dict[str, Any] | None:
     }
 
 
-def diff_runs(artifacts_root: Path, run_a: str, run_b: str) -> dict[str, Any]:
+def diff_runs(artifacts_root: Path, run_a: str, run_b: str, *, refresh: bool = False) -> dict[str, Any]:
     detail_a = get_run_detail(artifacts_root, run_a)
     detail_b = get_run_detail(artifacts_root, run_b)
     if not detail_a or not detail_b:
@@ -324,12 +324,26 @@ def diff_runs(artifacts_root: Path, run_a: str, run_b: str) -> dict[str, Any]:
         "newIssues": new_issues,
         "resolvedIssues": resolved_issues,
     }
-    result["narrative"] = build_compare_narrative(
-        result,
-        bundle_a=bundle_a if isinstance(bundle_a, dict) else None,
-        bundle_b=bundle_b if isinstance(bundle_b, dict) else None,
-        use_llm=llm_enabled(),
+    from rehearse.dashboard.narrative_cache import (
+        diff_fingerprint,
+        load_cached,
+        save_cached,
     )
+
+    fp = diff_fingerprint(run_a, run_b)
+    cache_name = f"diff-{run_a}--{run_b}"
+    cached_narr = None if refresh else load_cached(artifacts_root, cache_name, fp)
+    if cached_narr:
+        result["narrative"] = cached_narr
+    else:
+        result["narrative"] = build_compare_narrative(
+            result,
+            bundle_a=bundle_a if isinstance(bundle_a, dict) else None,
+            bundle_b=bundle_b if isinstance(bundle_b, dict) else None,
+            use_llm=llm_enabled(),
+        )
+        if result["narrative"].get("source") == "llm+template":
+            save_cached(artifacts_root, cache_name, fp, result["narrative"])
     return result
 
 
@@ -380,7 +394,7 @@ def _build_issue_recurrence(artifacts_root: Path, summaries: list[dict[str, Any]
     return items[:15]
 
 
-def get_trends(artifacts_root: Path) -> dict[str, Any]:
+def get_trends(artifacts_root: Path, *, refresh: bool = False) -> dict[str, Any]:
     summaries = list_run_summaries(artifacts_root)
     summaries = list(reversed(summaries))
     readiness = [s["readiness"] for s in summaries]
@@ -425,18 +439,45 @@ def get_trends(artifacts_root: Path) -> dict[str, Any]:
         "issuesResolved": issues_resolved,
         "blockerCounts": blocker_counts,
     }
+    from rehearse.dashboard.narrative_cache import (
+        load_cached,
+        save_cached,
+        trends_fingerprint,
+    )
     from rehearse.llm import llm_enabled
     from rehearse.narrative import build_trends_narrative
 
-    payload["narrative"] = build_trends_narrative(payload, use_llm=llm_enabled())
+    all_summaries = list_run_summaries(artifacts_root)
+    fp = trends_fingerprint(all_summaries)
+    cached_narr = None if refresh else load_cached(artifacts_root, "trends", fp)
+    if cached_narr:
+        payload["narrative"] = cached_narr
+    else:
+        payload["narrative"] = build_trends_narrative(payload, use_llm=llm_enabled())
+        if payload["narrative"].get("source") == "llm+template":
+            save_cached(artifacts_root, "trends", fp, payload["narrative"])
     return payload
 
 
-def get_command_digest(artifacts_root: Path, *, limit: int = 7) -> dict[str, Any]:
+def get_command_digest(artifacts_root: Path, *, limit: int = 7, refresh: bool = False) -> dict[str, Any]:
+    from rehearse.dashboard.narrative_cache import (
+        digest_fingerprint,
+        load_cached,
+        save_cached,
+    )
     from rehearse.llm import llm_enabled
     from rehearse.narrative import build_command_digest
 
-    return build_command_digest(artifacts_root, limit=limit, use_llm=llm_enabled())
+    summaries = list_run_summaries(artifacts_root)[:limit]
+    fp = digest_fingerprint(summaries, limit=limit)
+    if not refresh:
+        cached = load_cached(artifacts_root, "command-digest", fp)
+        if cached:
+            return cached
+    digest = build_command_digest(artifacts_root, limit=limit, use_llm=llm_enabled())
+    if digest.get("source") == "llm+template":
+        save_cached(artifacts_root, "command-digest", fp, digest)
+    return digest
 
 
 def search_artifacts(artifacts_root: Path, query: str) -> dict[str, Any]:
