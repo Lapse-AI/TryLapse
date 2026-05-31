@@ -48,7 +48,7 @@ Record verbatim answers. Secondary: *“Would you pay ~$49/mo for this on every 
 | **G9** Export / Diff / Compare fully functional | ✅ | Sprint 1 shipped in PR #13 — export, compare, evidence repro |
 | **G10** Command-center KPIs from live data | ✅ | Sprint 2 — home KPIs wired from live run/bundle data (PR #13) |
 | **G11** Init wizard writes config from UI | ✅ | Sprint 3 merged (PR #14) — `POST /api/configs` + Init wizard button |
-| **G12** Lovable badge removed in production build | ⚠️ | Dismiss before screen share |
+| **G12** Lovable badge removed in production build | ✅ | CSS hides dev tagger; verify on share |
 | **G13** Design review pass (live stack) | ✅ | `.cursor/gstack/launch-rehearsal/design-reviews/live-2026-05-31.md` — 8.2/10 partner-ready |
 
 **Verdict (2026-05-31):** **Concierge + self-serve onboarding ready** (export, compare, KPIs, init wizard, Linear backlog download). **Marketing/PLG** still gated per `CEO_DECISIONS.md` (3 would-pay partners first).
