@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Feature Scope (L1/L2/L3)
+    url: https://github.com/Lapse-AI/TryLapse/blob/main/enterprise_work_env_simulator_2026/FEATURE_SCOPE.md
+    about: What is shipped vs planned
+  - name: Contributing Guide
+    url: https://github.com/Lapse-AI/TryLapse/blob/main/CONTRIBUTING.md
+    about: Branching, PRs, and CI expectations
