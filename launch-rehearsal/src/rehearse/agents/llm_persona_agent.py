@@ -40,10 +40,21 @@ class LLMPersonaAgent(BaseAgent):
         report.summary = data.get("summary", f"LLM analysis for {self.persona.name}")
         from rehearse.llm import _model, llm_provider
 
+        usage = data.pop("_usage", None) or {}
+        input_tokens = int(usage.get("prompt_tokens") or 0)
+        output_tokens = int(usage.get("completion_tokens") or 0)
+        total_tokens = input_tokens + output_tokens
+        # Rough USD estimate (DeepSeek-class pricing ~$0.14/$0.28 per 1M tokens)
+        cost_usd = (input_tokens * 0.14 + output_tokens * 0.28) / 1_000_000 if total_tokens else 0.0
         report.metadata = {
             "provider": llm_provider(),
             "model": _model(),
             "issues": len(findings),
             "delights": len(delights),
+            "input_tokens": input_tokens,
+            "output_tokens": output_tokens,
+            "total_tokens": total_tokens,
+            "cost_usd": round(cost_usd, 6),
+            "duration_sec": 0,
         }
         return report

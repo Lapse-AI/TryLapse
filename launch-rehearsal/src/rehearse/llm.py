@@ -237,6 +237,7 @@ def analyze_persona_llm(ctx: RunContext, persona: Persona) -> dict[str, Any] | N
     timeout = _http_timeout()
     last_exc: Exception | None = None
     content: str | None = None
+    usage: dict[str, Any] | None = None
 
     for attempt in range(_max_retries() + 1):
         try:
@@ -250,7 +251,9 @@ def analyze_persona_llm(ctx: RunContext, persona: Persona) -> dict[str, Any] | N
                     payload_retry = {k: v for k, v in payload.items() if k != "response_format"}
                     resp = _post_chat(client, payload_retry)
                 resp.raise_for_status()
-                content = resp.json()["choices"][0]["message"]["content"]
+                body = resp.json()
+                content = body["choices"][0]["message"]["content"]
+                usage = body.get("usage")
                 break
         except (httpx.ReadTimeout, httpx.ConnectTimeout, httpx.WriteTimeout) as exc:
             last_exc = exc
@@ -273,12 +276,16 @@ def analyze_persona_llm(ctx: RunContext, persona: Persona) -> dict[str, Any] | N
         return {"error": str(last_exc), "summary": f"LLM analysis failed: {last_exc}"}
 
     try:
-        return json.loads(content)
+        parsed = json.loads(content)
     except json.JSONDecodeError:
         match = re.search(r"\{[\s\S]*\}", content)
         if match:
-            return json.loads(match.group())
-        return {"error": "invalid_json", "summary": "LLM returned non-JSON"}
+            parsed = json.loads(match.group())
+        else:
+            return {"error": "invalid_json", "summary": "LLM returned non-JSON"}
+    if usage:
+        parsed["_usage"] = usage
+    return parsed
 
 
 def llm_to_findings(data: dict[str, Any], persona_id: str) -> tuple[list[Finding], list[Delight], dict[str, str]]:

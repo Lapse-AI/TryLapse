@@ -17,6 +17,101 @@ from rehearse.workflows import WorkflowGraph
 READINESS_SCORE = {"Green": 85, "Amber": 72, "Red": 38}
 STATUS_MAP = {"Green": "ready", "Amber": "warn", "Red": "danger"}
 EXTRA_DIMENSIONS = ["Performance", "Accessibility", "Trust", "Onboarding", "Recovery"]
+# Heuristic run cost when LLM token usage is unavailable (USD)
+_HEURISTIC_BASE_USD = 0.05
+_HEURISTIC_PER_AGENT_USD = 0.02
+_HEURISTIC_PER_MINUTE_USD = 0.08
+_HEURISTIC_LLM_PERSONA_USD = 0.12
+
+
+def _agents_run_count(ctx: RunContext | None) -> int:
+    if not ctx:
+        return 0
+    return len(ctx.agent_reports)
+
+
+def _compute_cost_estimate(
+    ctx: RunContext | None,
+    evidence: RunEvidence,
+    *,
+    llm_enabled: bool,
+    persona_count: int,
+) -> dict[str, Any]:
+    """Derive run cost from agent token metadata when present, else duration/heuristic."""
+    agent_cost = 0.0
+    input_tokens = 0
+    output_tokens = 0
+    source = "heuristic"
+
+    if ctx:
+        for report in ctx.agent_reports:
+            meta = report.metadata or {}
+            agent_cost += float(meta.get("cost_usd") or 0)
+            input_tokens += int(meta.get("input_tokens") or 0)
+            output_tokens += int(meta.get("output_tokens") or 0)
+
+    total_tokens = input_tokens + output_tokens
+    if total_tokens > 0:
+        source = "llm_tokens"
+    elif agent_cost > 0:
+        source = "agent_metadata"
+
+    if source == "heuristic":
+        duration_min = max(evidence.duration_ms, 0) / 60_000
+        agents = _agents_run_count(ctx)
+        agent_cost = (
+            _HEURISTIC_BASE_USD
+            + agents * _HEURISTIC_PER_AGENT_USD
+            + duration_min * _HEURISTIC_PER_MINUTE_USD
+            + (persona_count * _HEURISTIC_LLM_PERSONA_USD if llm_enabled else 0)
+        )
+
+    return {
+        "usd": round(agent_cost, 4),
+        "source": source,
+        "inputTokens": input_tokens or None,
+        "outputTokens": output_tokens or None,
+        "totalTokens": total_tokens or None,
+        "durationSec": evidence.duration_ms // 1000,
+        "agentsRun": _agents_run_count(ctx),
+    }
+
+
+def _named_error_issues(
+    config: RunConfig, evidence: RunEvidence, existing_step_ids: set[str]
+) -> list[dict[str, Any]]:
+    """Surface failed steps with named error types as bundle issues."""
+    issues: list[dict[str, Any]] = []
+    idx = len(existing_step_ids) + 1
+    for step in evidence.steps:
+        if step.outcome != "fail" or not step.error_type or step.step_id in existing_step_ids:
+            continue
+        issues.append(
+            {
+                "id": f"E{idx}",
+                "runId": evidence.run_id,
+                "severity": "P1" if step.error_type in ("BrowserStepTimeout", "RunBudgetExceeded") else "P2",
+                "title": f"{step.error_type}: {step.journey_name}",
+                "detail": step.note or f"Step failed with {step.error_type}",
+                "persona": _persona_name(config, step.persona_id),
+                "personaId": step.persona_id,
+                "journey": step.journey_name,
+                "journeyId": step.journey_id,
+                "stepId": step.step_id,
+                "dimension": "Functionality",
+                "confidence": "high",
+                "owner": _owner_heuristic(step.error_type, step.note or ""),
+                "recurring": 1,
+                "evidence": step.note or step.error_type,
+                "errorType": step.error_type,
+                "severityReason": f"Named error {step.error_type}",
+                "suggestion": None,
+                "screenshotPath": f"artifacts/{evidence.run_id}/{step.step_id}.png",
+            }
+        )
+        existing_step_ids.add(step.step_id)
+        idx += 1
+    return issues
 
 
 def _config_hash(config: RunConfig) -> str:
@@ -142,6 +237,7 @@ def _serialize_steps(evidence: RunEvidence, artifacts_root: Path, output_dir: Pa
                 "outcome": s.outcome,
                 "durationMs": s.duration_ms,
                 "note": s.note,
+                "errorType": s.error_type,
                 "flaky": _step_flaky(s, evidence.steps),
                 "consoleErrors": s.console_errors,
                 "networkFailures": s.network_failures,
@@ -159,8 +255,7 @@ def _serialize_issues(config: RunConfig, evidence: RunEvidence, analysis: Analys
         pid = f.persona_ids[0] if f.persona_ids else config.personas[0].id
         step = next((s for s in evidence.steps if s.step_id == f.step_id), None)
         jid = step.journey_id if step else "unknown"
-        issues.append(
-            {
+        issue: dict[str, Any] = {
                 "id": f.id or f"I{i+1}",
                 "runId": evidence.run_id,
                 "severity": sev,
@@ -180,7 +275,9 @@ def _serialize_issues(config: RunConfig, evidence: RunEvidence, analysis: Analys
                 "suggestion": None,
                 "screenshotPath": f"artifacts/{evidence.run_id}/{f.step_id}.png",
             }
-        )
+        if step and step.error_type:
+            issue["errorType"] = step.error_type
+        issues.append(issue)
     return issues
 
 
@@ -335,9 +432,19 @@ def build_run_bundle(
     band = analysis.readiness
     status = STATUS_MAP.get(band, "neutral")
     issues = _serialize_issues(config, evidence, analysis)
+    issue_step_ids = {i["stepId"] for i in issues if i.get("stepId")}
+    issues.extend(_named_error_issues(config, evidence, issue_step_ids))
     delights = _serialize_delights(config, evidence, analysis)
     sitemap_pages, sitemap_edges, sitemap_md = _serialize_sitemap(
         ctx.sitemap if ctx else None, evidence.run_id, ctx.workflows if ctx else None
+    )
+    pages_crawled = len(sitemap_pages)
+    agents_run = _agents_run_count(ctx)
+    cost_estimate = _compute_cost_estimate(
+        ctx,
+        evidence,
+        llm_enabled=llm_enabled,
+        persona_count=len(config.personas),
     )
     steps = _serialize_steps(evidence, output_dir / "artifacts" / evidence.run_id, output_dir)
     screenshots = []
@@ -372,11 +479,14 @@ def build_run_bundle(
             "blockers": _blockers(issues),
             "issues": len(issues),
             "delights": len(delights),
-            "pages": len(sitemap_pages),
+            "pages": pages_crawled,
+            "pagesCrawled": pages_crawled,
             "stepCount": len(steps),
-            "agentCost": 0.0,
+            "agentCost": cost_estimate["usd"],
+            "costEstimate": cost_estimate,
             "outcome": evidence.outcome,
             "configHash": _config_hash(config),
+            "agentsRun": agents_run,
             "authAttempted": evidence.auth_attempted,
             "authOutcome": evidence.auth_outcome,
             "llmEnabled": llm_enabled,
@@ -488,6 +598,7 @@ def load_evidence_from_run_json(path: Path) -> RunEvidence:
         payload.setdefault("action", "navigate")
         payload.setdefault("step_id", s.get("step_id", "unknown"))
         payload.setdefault("journey_id", "unknown")
+        payload.setdefault("error_type", s.get("error_type"))
         steps.append(StepSnapshot(**payload))
     ev.steps = steps
     return ev
