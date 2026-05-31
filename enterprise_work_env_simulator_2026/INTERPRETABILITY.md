@@ -48,6 +48,7 @@
 | ID | Deliverable |
 |----|-------------|
 | **NLU-6** | Explore steps export `exploreLog`, `exploreSummary`, `explore-{step_id}.json` artifact; bundle + Steps timeline UI |
+| **NLU-cache** | Command digest, trends, and compare LLM narratives cached under `artifacts/narratives/`; invalidated when run list changes. `?refresh=true` to regenerate. UI: 30m React Query stale time, no refetch on window focus. |
 
 ## Roadmap
 

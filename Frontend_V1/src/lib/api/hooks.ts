@@ -24,6 +24,9 @@ function mockAllowed(live: boolean): boolean {
   return !live && allowsMockFallback();
 }
 
+/** Client cache for aggregate NLU endpoints (server also caches LLM output on disk). */
+const NARRATIVE_STALE_MS = 30 * 60 * 1000;
+
 export const queryKeys = {
   health: ["rehearse", "health"] as const,
   summaries: ["rehearse", "summaries"] as const,
@@ -107,6 +110,8 @@ export function useRunDiff(runA: string, runB: string) {
       throw new Error("Could not diff");
     },
     enabled: !!runA && !!runB && health.isSuccess && (health.data || allowsMockFallback()),
+    staleTime: NARRATIVE_STALE_MS,
+    refetchOnWindowFocus: false,
   });
 }
 
@@ -122,6 +127,8 @@ export function useCommandDigest(n = 7) {
     },
     enabled: health.isSuccess && (live || allowsMockFallback()),
     placeholderData: live || !allowsMockFallback() ? undefined : mockCommandDigest,
+    staleTime: NARRATIVE_STALE_MS,
+    refetchOnWindowFocus: false,
   });
 }
 
@@ -149,6 +156,8 @@ export function useTrends() {
       return { readiness: [], pages: [], flakeRate: [], runIds: [], labels: [] };
     },
     enabled: health.isSuccess && (live || allowsMockFallback()),
+    staleTime: NARRATIVE_STALE_MS,
+    refetchOnWindowFocus: false,
   });
 }
 

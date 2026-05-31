@@ -166,16 +166,19 @@ class _Handler(BaseHTTPRequestHandler):
             if not run_a or not run_b:
                 self._send_json({"error": "query params a and b required"}, status=400)
                 return
-            self._send_json(diff_runs(root, run_a, run_b))
+            refresh = (qs.get("refresh") or [""])[0].lower() in ("1", "true", "yes")
+            self._send_json(diff_runs(root, run_a, run_b, refresh=refresh))
             return
 
         if path == "/api/trends":
-            self._send_json(get_trends(root))
+            refresh = (qs.get("refresh") or [""])[0].lower() in ("1", "true", "yes")
+            self._send_json(get_trends(root, refresh=refresh))
             return
 
         if path == "/api/digest":
             n = int((qs.get("n") or ["7"])[0])
-            self._send_json(get_command_digest(root, limit=max(1, min(n, 20))))
+            refresh = (qs.get("refresh") or [""])[0].lower() in ("1", "true", "yes")
+            self._send_json(get_command_digest(root, limit=max(1, min(n, 20)), refresh=refresh))
             return
 
         if path == "/api/search":
