@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader, Panel, Chip } from "@/components/ui-bits";
 import { useInitWizard, useApiHealth, useSaveConfig } from "@/lib/api/hooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "@/lib/api/client";
 import { toast } from "sonner";
 
@@ -23,6 +23,13 @@ function InitPage() {
     error?: string;
   } | null>(null);
   const [piiRedaction, setPiiRedaction] = useState(false);
+
+  useEffect(() => {
+    const defaultUrl = wizard?.defaults?.targetUrl;
+    if (typeof defaultUrl === "string" && defaultUrl && !targetUrl) {
+      setTargetUrl(defaultUrl);
+    }
+  }, [wizard?.defaults?.targetUrl, targetUrl]);
 
   const runPreflight = async () => {
     if (!targetUrl) return;

@@ -71,9 +71,13 @@ export function AppSidebar() {
       </div>
 
       <div className="px-3 py-3 border-b border-sidebar-border">
-        <button className="w-full flex items-center justify-between px-2.5 py-2 rounded-md bg-sidebar-accent hover:bg-sidebar-accent/70 border border-sidebar-border text-left transition-colors">
-          <div>
-            <div className="text-sm font-medium">{workspace?.name ?? "Workspace"}</div>
+        <button
+          type="button"
+          aria-label={workspace?.name ?? "Workspace"}
+          className="w-full flex items-center justify-between px-2.5 py-2 rounded-md bg-sidebar-accent hover:bg-sidebar-accent/70 border border-sidebar-border text-left transition-colors"
+        >
+          <div className="min-w-0">
+            <div className="text-sm font-medium truncate">{workspace?.name ?? "Workspace"}</div>
             <div className="text-[11px] text-muted-foreground font-mono truncate">
               {workspace?.targetUrl?.replace(/^https?:\/\//, "") ?? "—"}
             </div>

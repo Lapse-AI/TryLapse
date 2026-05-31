@@ -1,3 +1,10 @@
+/* G12: hide Lovable dev tagger badge during partner screen shares */
+[data-lovable-tagger],
+#lovable-badge,
+.lovable-badge {
+  display: none !important;
+}
+
 @import url("https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@400;450;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
 @import "tailwindcss" source(none);
 @import "tw-animate-css";

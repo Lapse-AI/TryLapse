@@ -33,6 +33,7 @@ export function EvidenceDialog({
   runId: string;
   children: React.ReactNode;
 }) {
+  const [open, setOpen] = useState(false);
   const [copying, setCopying] = useState(false);
 
   const handleCopyRepro = async () => {
@@ -48,8 +49,10 @@ export function EvidenceDialog({
   };
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild onClick={() => setOpen(true)}>
+        {children}
+      </DialogTrigger>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <div className="flex items-center gap-2 mb-1 flex-wrap">
@@ -329,9 +332,14 @@ export function DiffPanel({ runA, runB }: { runA: string; runB: string }) {
           </ul>
         </div>
       )}
-      <pre className="text-[11px] font-mono bg-surface-2 border border-border rounded-lg p-4 overflow-x-auto">
-        {JSON.stringify(diff, null, 2)}
-      </pre>
+      <details className="group">
+        <summary className="text-xs text-muted-foreground cursor-pointer hover:text-foreground">
+          Advanced · raw diff JSON
+        </summary>
+        <pre className="mt-2 text-[11px] font-mono bg-surface-2 border border-border rounded-lg p-4 overflow-x-auto">
+          {JSON.stringify(diff, null, 2)}
+        </pre>
+      </details>
     </div>
   );
 }

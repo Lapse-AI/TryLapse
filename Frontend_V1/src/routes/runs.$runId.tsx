@@ -33,6 +33,7 @@ import {
   type Severity,
   type Issue,
 } from "@/lib/mock-data";
+import { flakyStepsHint, formatAgentCostDisplay, READINESS_BAND_HELP } from "@/lib/run-metrics";
 import { useRunBundle, useRunSummaries } from "@/lib/api/hooks";
 import {
   Dialog,
@@ -236,13 +237,15 @@ function RunDetail() {
             value={run.readiness}
             tone={band}
             hint={`Band: ${run.readinessBand}`}
+            title={READINESS_BAND_HELP}
           />
           <Stat label="Blockers" value={blockerCount} hint="P0 + P1" tone="danger" />
           <Stat label="Delights" value={run.delights} tone="ready" />
           <Stat
             label="Steps"
             value={run.stepCount}
-            hint={`${bundle.steps.filter((s) => s.flaky).length} flaky`}
+            hint={flakyStepsHint(bundle.steps)}
+            title="Flaky = same step outcome varied across parallel seeds"
           />
           <Stat
             label="Pages"
@@ -360,10 +363,13 @@ function RunDetail() {
             </Panel>
 
             <Panel className="p-6">
-              <div className="text-xs text-muted-foreground mb-4">
+              <div className="text-xs text-muted-foreground mb-2">
                 Dimension rollup · {bundle.dimensions.filter((d) => d.automated).length} automated ·{" "}
                 {bundle.dimensions.filter((d) => !d.automated).length} Phase 2
               </div>
+              <p className="text-[11px] text-muted-foreground mb-4 max-w-2xl">
+                {READINESS_BAND_HELP}
+              </p>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-4">
                 {bundle.dimensions.map((d) => {
                   const tone = d.score >= 85 ? "ready" : d.score >= 75 ? "warn" : "danger";
@@ -517,8 +523,11 @@ function RunDetail() {
                 <div>
                   <div className="text-xs text-muted-foreground">Agent participation</div>
                   <h2 className="font-display text-lg font-semibold mt-0.5">
-                    {bundle.agents.filter((a) => a.status !== "idle").length} agents · $
-                    {bundle.agents.reduce((s, a) => s + a.costUsd, 0).toFixed(2)}
+                    {bundle.agents.filter((a) => a.status !== "idle").length} agents ·{" "}
+                    {formatAgentCostDisplay(bundle).value}{" "}
+                    <span className="text-muted-foreground font-normal text-xs">
+                      ({formatAgentCostDisplay(bundle).hint})
+                    </span>
                     {run.llmEnabled && <Chip tone="violet">LLM on</Chip>}
                   </h2>
                 </div>

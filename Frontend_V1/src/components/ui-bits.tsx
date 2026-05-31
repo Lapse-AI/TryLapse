@@ -123,14 +123,16 @@ export function Stat({
   value,
   hint,
   tone,
+  title,
 }: {
   label: string;
   value: ReactNode;
   hint?: string;
   tone?: Status;
+  title?: string;
 }) {
   return (
-    <div className="panel p-4">
+    <div className="panel p-4" title={title}>
       <div className="text-xs text-muted-foreground">{label}</div>
       <div className="mt-1 flex items-baseline gap-2">
         <div className="font-display text-2xl font-semibold tracking-tight">{value}</div>

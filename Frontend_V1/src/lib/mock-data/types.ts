@@ -77,6 +77,12 @@ export type RunSummary = {
   pages: number;
   stepCount: number;
   agentCost: number;
+  costEstimate?: {
+    usd: number;
+    source?: string;
+    inputTokens?: number;
+    outputTokens?: number;
+  };
   outcome: "complete" | "dry_run_complete" | "failed";
   configHash: string;
   authAttempted?: boolean;

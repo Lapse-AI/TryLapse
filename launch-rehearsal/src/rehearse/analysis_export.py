@@ -302,6 +302,25 @@ def _serialize_delights(config: RunConfig, evidence: RunEvidence, analysis: Anal
     return out
 
 
+def _sync_agent_flaky_summary(agents: list[dict[str, Any]], flaky_step_count: int) -> list[dict[str, Any]]:
+    import re
+
+    for agent in agents:
+        if agent.get("phase") != "journey" and "journey" not in str(agent.get("id", "")):
+            continue
+        summary = agent.get("lastSummary") or ""
+        if "flaky steps" in summary:
+            agent["lastSummary"] = re.sub(
+                r"\d+ flaky steps",
+                f"{flaky_step_count} flaky steps",
+                summary,
+                count=1,
+            )
+        elif summary and flaky_step_count:
+            agent["lastSummary"] = f"{summary.rstrip('.')}; {flaky_step_count} flaky steps in bundle."
+    return agents
+
+
 def _serialize_agents(ctx: RunContext | None, evidence: RunEvidence) -> list[dict[str, Any]]:
     agents: list[dict[str, Any]] = []
     if not ctx:
@@ -447,6 +466,7 @@ def build_run_bundle(
         persona_count=len(config.personas),
     )
     steps = _serialize_steps(evidence, output_dir / "artifacts" / evidence.run_id, output_dir)
+    flaky_step_count = sum(1 for s in steps if s.get("flaky"))
     screenshots = []
     for s in steps:
         for p in s.get("artifactPaths") or []:
@@ -497,7 +517,7 @@ def build_run_bundle(
         "steps": steps,
         "issues": issues,
         "delights": delights,
-        "agents": _serialize_agents(ctx, evidence),
+        "agents": _sync_agent_flaky_summary(_serialize_agents(ctx, evidence), flaky_step_count),
         "matrix": _serialize_matrix(config, analysis),
         "dimensions": _expand_dimensions(analysis.dimensions, evidence),
         "scorecardMd": scorecard_md or "",

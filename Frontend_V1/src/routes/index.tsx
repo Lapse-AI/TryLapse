@@ -11,6 +11,7 @@ import {
   ClientTime,
 } from "@/components/ui-bits";
 import { formatDuration, bandFromIssues, countBlockers } from "@/lib/mock-data";
+import { formatAgentCostDisplay, READINESS_BAND_HELP } from "@/lib/run-metrics";
 import {
   useLatestRun,
   useRunBundle,
@@ -60,6 +61,7 @@ function Index() {
   }
   const band = bandFromIssues(bundle.issues);
   const blockerCount = countBlockers(bundle.issues);
+  const agentCost = formatAgentCostDisplay(bundle);
   const topBlocker = bundle.issues.find((i) => i.severity === "P0") ?? bundle.issues[0];
   const topDelight = bundle.delights[0];
 
@@ -242,8 +244,8 @@ function Index() {
           />
           <Stat
             label="Agent cost / run"
-            value={`$${latest.agentCost.toFixed(2)}`}
-            hint={`${bundle.agents.filter((a) => a.status !== "idle").length} agents · ${formatDuration(latest.durationSec)}`}
+            value={agentCost.value}
+            hint={`${agentCost.hint} · ${bundle.agents.filter((a) => a.status !== "idle").length} agents`}
           />
         </div>
 
@@ -252,6 +254,12 @@ function Index() {
             <div>
               <div className="text-xs text-muted-foreground">Dimension rollup</div>
               <h2 className="font-display text-xl font-semibold mt-1">8-axis evaluation</h2>
+              <p
+                className="text-[11px] text-muted-foreground mt-1 max-w-xl"
+                title={READINESS_BAND_HELP}
+              >
+                {READINESS_BAND_HELP}
+              </p>
             </div>
             <Chip>Evaluation rubric</Chip>
           </div>
