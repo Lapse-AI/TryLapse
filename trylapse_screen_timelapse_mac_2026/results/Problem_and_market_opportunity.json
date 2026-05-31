@@ -1,0 +1,19 @@
+{
+  "name": "Problem and market opportunity",
+  "category": "Market",
+  "official_url": "https://gohustl.co/",
+  "summary": "Creators and builders want to show work-in-progress without the storage cost and editing tax of full-frame screen recording. Timelapse-native tools compress hours of screen activity into short, shareable process videos by capturing at low effective frame rates or screenshot intervals, then encoding directly to sped-up output. The category is niche but durable: design speedpaints, coding sessions, UI builds, and course B-roll all map to the same job — document the process, not the meeting.",
+  "key_findings": "Full-speed recording can reach ~7 GB/hour at high quality per TimeLapze marketing; Post-speed-up in editors adds 30–45+ minutes for polished tutorial workflows per Screen Studio ecosystem commentary; Hustl and Lapse position as zero-edit timelapse from menu bar; Setapp and BetaList list multiple timelapse SKUs proving ongoing demand; macOS ScreenCaptureKit (12.3+) lowered capture overhead vs legacy APIs",
+  "implications_for_trylapse": "Anchor on reliability and instant export over feature breadth; Target makers who post process content to X/YouTube/Behance; Avoid competing on auto-zoom polish — that is a different category; Size opportunity as indie/SMB tool not enterprise",
+  "evidence_strength": "high",
+  "strengths": "Clear job-to-be-done; Low ongoing cloud cost if local-first; Native macOS APIs mature enough for solo/small team",
+  "weaknesses": "Niche TAM vs general screen recorders; Users may conflate with Screen Studio and expect editing; Hard to measure exact market size without paid incumbent revenue disclosure",
+  "metrics_or_signals": "TimeLapze ~819 GitHub stars; OpenScreen ~37k stars (adjacent, not timelapse); Hustl on Setapp; Lapse on BetaList cross-platform",
+  "primary_sources": [
+    {"title": "Hustl — timelapse of your screen", "url": "https://gohustl.co/"},
+    {"title": "TimeLapze (ScreenTimeLapse) README", "url": "https://github.com/wkaisertexas/ScreenTimeLapse"},
+    {"title": "Screen Studio review — editing time tax", "url": "https://scribehow.com/page/Screen_Studio_Review_2026_I_Tested_the_Auto-Zoom_Mac_Recorder_for_90_Days__Heres_the_Truth__0R7wu5TiSvqYAK3TzdygdQ"},
+    {"title": "Lapse on BetaList", "url": "https://betalist.com/startups/lapse"}
+  ],
+  "uncertain": []
+}

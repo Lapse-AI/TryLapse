@@ -1,0 +1,104 @@
+# Argyle faculty dashboard — authenticated E2E (Phase 0 manual paths → automated)
+run:
+  target_url: https://faculty-dashboard-eight.vercel.app
+  run_id_prefix: argyle
+  product_name: Argyle Faculty Dashboard
+
+auth:
+  login_path: /login
+  email_env: REHEARSE_EMAIL
+  password_env: REHEARSE_PASSWORD
+  email_label: Email Address
+  password_label: Password
+  submit_label: Login
+
+crawl:
+  enabled: false
+
+personas:
+  - id: p1-evaluator
+    name: First-time evaluator
+    role: prospect / new user
+    goals:
+      - Reach database from deep link and open a candidate profile
+  - id: p2-operator
+    name: Daily operator
+    role: power user
+    goals:
+      - Filter candidates and paginate efficiently
+  - id: p3-admin
+    name: Admin / buyer
+    role: IT admin
+    goals:
+      - Verify analytics, admin boundaries, and trust signals
+
+journeys:
+  - id: j1-deep-link
+    name: Deep link and pagination at scale
+    steps:
+      - action: navigate
+        url: "{target_url}/database"
+      - action: wait
+        value: "3000"
+      - action: click
+        intent: Next
+      - action: wait
+        value: "2000"
+
+  - id: j2-primary-list
+    name: Keyword and city filters
+    steps:
+      - action: navigate
+        url: "{target_url}/database"
+      - action: wait
+        value: "2500"
+      - action: fill
+        intent: Keyword
+        value: Alefiya
+      - action: wait
+        value: "2000"
+      - action: fill
+        intent: Search Cities
+        value: Mumbai
+      - action: wait
+        value: "2000"
+
+  - id: j3-profile
+    name: View candidate profile
+    steps:
+      - action: navigate
+        url: "{target_url}/database"
+      - action: wait
+        value: "2000"
+      - action: fill
+        intent: Keyword
+        value: Alefiya
+      - action: wait
+        value: "2000"
+      - action: click
+        intent: View Profile
+      - action: wait
+        value: "3000"
+      - action: assert_url_contains
+        value: "/database/profile"
+
+  - id: j4-analytics
+    name: Analytics overview
+    steps:
+      - action: navigate
+        url: "{target_url}/analytics"
+      - action: wait
+        value: "2000"
+
+  - id: j5-admin-boundary
+    name: Admin boundary check
+    steps:
+      - action: navigate
+        url: "{target_url}/admin"
+      - action: wait
+        value: "2000"
+
+budgets:
+  max_steps_per_journey: 12
+  max_run_seconds: 1200
+  step_timeout_ms: 45000

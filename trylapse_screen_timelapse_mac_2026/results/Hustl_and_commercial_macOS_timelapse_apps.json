@@ -1,0 +1,20 @@
+{
+  "name": "Hustl and commercial macOS timelapse apps",
+  "category": "Competition",
+  "official_url": "https://gohustl.co/",
+  "summary": "Hustl is the incumbent commercial native app: rewritten Hustl 2 in Swift, app-only capture, pause/resume, idle removal, up to 8K export, Setapp distribution. Screen Timelapse lite (App Store) adds smart recording, blacklist apps, multi-monitor, customizable intervals. Lapse (getlapseapp/BetaList) sells cross-platform menubar with format and speed controls. Commercial layer proves willingness to pay; reviews expose reliability gaps TryLapse can target.",
+  "key_findings": "Hustl 2 claims minimal performance impact and M1 optimization; Setapp reviews report fullscreen capture bugs, dark overlay on non-recorded screens, export playback issues in Preview (VLC needed); Screen Timelapse lite emphasizes smart recording and blacklist; Lapse BetaList: instant download on stop, MP4/MKV/webm/AVI, 144p–8K",
+  "implications_for_trylapse": "Differentiate on export correctness (Quick Look playable MP4), honest fullscreen/multi-monitor UX, no dark-overlay surprise; Consider Setapp/Mac App Store later — direct sale or freemium first; Idle detection and app-scoped capture are table stakes for paid tier",
+  "evidence_strength": "high",
+  "strengths": "Established brand; Rich feature marketing; Distribution via Setapp",
+  "weaknesses": "Documented export and fullscreen bugs in user reviews; Multi-screen timelapse limitations per reviews; Premium pricing opaque without public transparent tier on site scrape",
+  "metrics_or_signals": "Hustl 2 announcement 2021-era rewrite; Setapp subscription bundle distribution",
+  "primary_sources": [
+    {"title": "Hustl homepage", "url": "https://gohustl.co/"},
+    {"title": "Introducing Hustl 2", "url": "https://gohustl.co/announcements/introducing-hustl-2/"},
+    {"title": "Hustl Setapp reviews", "url": "https://setapp.com/apps/hustl/customer-reviews"},
+    {"title": "Screen Timelapse lite App Store", "url": "https://apps.apple.com/us/app/screen-timelapse-lite/id1452228487"},
+    {"title": "Lapse BetaList", "url": "https://betalist.com/startups/lapse"}
+  ],
+  "uncertain": ["metrics_or_signals"]
+}

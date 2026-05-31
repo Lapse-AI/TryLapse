@@ -1,0 +1,19 @@
+{
+  "name": "Adjacent category polished screen recorders",
+  "category": "Competition",
+  "official_url": "https://github.com/siddharthvaddem/openscreen",
+  "summary": "Screen Studio ($9/mo annual positioning in reviews), OpenScreen (free OSS Screen Studio alternative), and Reframed (native Swift editor + capture) solve polished demos with auto-zoom, captions, and cursor choreography — not long-running timelapse. Users may compare TryLapse to these; positioning must stress zero-edit process video at tiny file size, not cinematic tutorial output.",
+  "key_findings": "Screen Studio review: recording 5 min, editing 45 min problem; OpenScreen 37k+ stars, Electron, macOS 13+; Reframed 2026-native Swift, .frm projects, 120Hz cursor metadata; Web recorders cannot match cross-app cursor tracking per DEV analysis",
+  "implications_for_trylapse": "Do not build auto-zoom timeline in v1; Optional export to MP4 for import into OpenScreen/Reframed; Marketing language: timelapse ≠ screen studio; Partner/integration story possible later",
+  "evidence_strength": "high",
+  "strengths": "Adjacent tools validate screen-content monetization; Clear category boundary if messaging is disciplined",
+  "weaknesses": "User confusion risk; Screen Studio brand dominates polished demo niche",
+  "metrics_or_signals": "OpenScreen ~37.5k GitHub stars; Reframed 110 stars but rapid releases in 2026",
+  "primary_sources": [
+    {"title": "OpenScreen GitHub", "url": "https://github.com/siddharthvaddem/openscreen"},
+    {"title": "Reframed", "url": "https://github.com/jkuri/reframed"},
+    {"title": "Why web cannot beat Screen Studio", "url": "https://dev.to/sachindas246/why-the-web-cannot-beat-screenstudio-40kl"},
+    {"title": "Screen Studio review 2026", "url": "https://scribehow.com/page/Screen_Studio_Review_2026_I_Tested_the_Auto-Zoom_Mac_Recorder_for_90_Days__Heres_the_Truth__0R7wu5TiSvqYAK3TzdygdQ"}
+  ],
+  "uncertain": []
+}

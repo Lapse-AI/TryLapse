@@ -1,0 +1,14 @@
+{
+  "name": "Recommended wedge and MVP scope",
+  "category": "Strategy",
+  "summary": "PRIMARY beachhead (updated): Pre-customer product validation — founders and builders evaluate THEIR OWN SaaS/tool/website using synthetic company context and persona agents before real users exist. The evaluated artifact is always the builder's product; Slack/Jira/CRM are supporting context. SECONDARY: B2B SaaS SE pre-POC rehearsal. MVP v0 (4 weeks): browser journeys + 3 personas + 5 flows + markdown scorecard on one staging URL; no MiroFish, no full enterprise twin required. v1 adds integration mocks (VEI-style) if needed.",
+  "key_findings": "Easier to test than SE: builder is buyer; dogfood any URL; PLG possible; Veris/VEI adjacent not headline; UserTesting/Maze compete on human feedback not synthetic company; Week 1 test = one URL session with agent",
+  "implications": "Category: Product Rehearsal or Synthetic Beta; GTM: founders on X, indie hackers, YC apps; Price low initially; SE wedge after 10 paying builders; First design partners: 5 pre-launch founders not SE leaders",
+  "evidence_strength": "medium",
+  "primary_sources": [
+    {"title": "VEI Overview (adjacent twin tech)", "url": "https://github.com/strangeloopcanon/vei/blob/main/docs/OVERVIEW.md"},
+    {"title": "Veris FAQs (adjacent agent gym)", "url": "https://veris.ai/faqs"},
+    {"title": "User conversation refinement 2026-05-28", "url": "internal"}
+  ],
+  "uncertain": ["metrics_or_signals"]
+}

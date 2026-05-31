@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Launch Rehearsal — Monitoring</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --surface: #1a2332;
+      --border: #2d3a4f;
+      --text: #e7ecf3;
+      --muted: #8b9cb3;
+      --green: #3dd68c;
+      --amber: #f5a623;
+      --red: #ff6b6b;
+      --accent: #5b9cf5;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "SF Pro Text", system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    header {
+      padding: 1.25rem 2rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface);
+    }
+    header h1 { margin: 0; font-size: 1.25rem; font-weight: 600; }
+    header p { margin: 0.25rem 0 0; color: var(--muted); font-size: 0.875rem; }
+    main { display: grid; grid-template-columns: 340px 1fr; min-height: calc(100vh - 72px); }
+    aside {
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      padding: 1rem;
+    }
+    section { padding: 1.5rem 2rem; overflow-y: auto; }
+    .run-card {
+      padding: 0.875rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+      background: var(--surface);
+      transition: border-color 0.15s;
+    }
+    .run-card:hover, .run-card.active { border-color: var(--accent); }
+    .run-card h3 { margin: 0 0 0.25rem; font-size: 0.9375rem; }
+    .run-card .meta { font-size: 0.75rem; color: var(--muted); }
+    .badge {
+      display: inline-block;
+      padding: 0.125rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .badge.green { background: rgba(61,214,140,0.15); color: var(--green); }
+    .badge.amber { background: rgba(245,166,35,0.15); color: var(--amber); }
+    .badge.red { background: rgba(255,107,107,0.15); color: var(--red); }
+    .badge.gray { background: rgba(139,156,179,0.15); color: var(--muted); }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .stat {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+    .stat label { display: block; font-size: 0.75rem; color: var(--muted); margin-bottom: 0.25rem; }
+    .stat value { font-size: 1.5rem; font-weight: 600; }
+    .tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+    .tab {
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.875rem;
+    }
+    .tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    pre, .md {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      overflow-x: auto;
+      font-size: 0.8125rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
+    th, td { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); }
+    th { color: var(--muted); font-weight: 500; }
+    .shots { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.75rem; }
+    .shots img {
+      width: 100%;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+    }
+    .shots figcaption { font-size: 0.6875rem; color: var(--muted); margin-top: 0.25rem; }
+    .empty { color: var(--muted); padding: 2rem; text-align: center; }
+    .compare-bar {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .compare-bar select, .compare-bar button {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.875rem;
+    }
+    .compare-bar button { background: var(--accent); border-color: var(--accent); cursor: pointer; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Launch Rehearsal</h1>
+      <p>Monitoring dashboard — observe, score, report</p>
+    </div>
+    <button class="tab" onclick="loadRuns()">Refresh</button>
+  </header>
+  <main>
+    <aside id="run-list"><div class="empty">Loading runs…</div></aside>
+    <section id="detail">
+      <div class="empty">Select a run to view scorecard, sitemap, and artifacts.</div>
+    </section>
+  </main>
+  <script>
+    let runs = [];
+    let selectedId = null;
+
+    function readinessBadge(r) {
+      if (!r) return '<span class="badge gray">—</span>';
+      const cls = r.toLowerCase();
+      return `<span class="badge ${cls}">${r}</span>`;
+    }
+
+    function fmtDate(iso) {
+      if (!iso) return '—';
+      return new Date(iso).toLocaleString();
+    }
+
+    async function loadRuns() {
+      const res = await fetch('/api/runs');
+      runs = await res.json();
+      const el = document.getElementById('run-list');
+      if (!runs.length) {
+        el.innerHTML = '<div class="empty">No runs yet.<br><br>Run <code>rehearse run -c config.yaml -o artifacts</code></div>';
+        return;
+      }
+      el.innerHTML = runs.map(r => `
+        <div class="run-card ${r.run_id === selectedId ? 'active' : ''}" data-id="${r.run_id}" onclick="selectRun('${r.run_id}')">
+          <h3>${r.product_name || r.run_id}</h3>
+          <div class="meta">${r.run_id} · ${fmtDate(r.started_at)}</div>
+          <div style="margin-top:0.5rem">${readinessBadge(r.readiness)} 
+            <span class="meta">${r.issues ?? '?'} issues · ${r.delights ?? '?'} delights</span>
+          </div>
+        </div>
+      `).join('');
+      if (!selectedId && runs.length) selectRun(runs[0].run_id);
+    }
+
+    async function selectRun(id) {
+      selectedId = id;
+      document.querySelectorAll('.run-card').forEach(c => c.classList.toggle('active', c.dataset.id === id));
+      const detail = document.getElementById('detail');
+      detail.innerHTML = '<div class="empty">Loading…</div>';
+      const res = await fetch(`/api/runs/${id}`);
+      const data = await res.json();
+      const r = data.run;
+      const summary = runs.find(x => x.run_id === id) || {};
+
+      detail.innerHTML = `
+        <div class="stats">
+          <div class="stat"><label>Readiness</label><value>${readinessBadge(summary.readiness)}</value></div>
+          <div class="stat"><label>Duration</label><value>${Math.round((r.duration_ms||0)/1000)}s</value></div>
+          <div class="stat"><label>Steps</label><value>${(r.steps||[]).length}</value></div>
+          <div class="stat"><label>Pages crawled</label><value>${summary.pages_crawled ?? '—'}</value></div>
+        </div>
+        <p style="color:var(--muted);font-size:0.875rem;margin-bottom:1rem">
+          <strong>${r.product_name}</strong> · <a href="${r.target_url}" style="color:var(--accent)" target="_blank">${r.target_url}</a>
+        </p>
+        <div class="compare-bar">
+          <span style="color:var(--muted);font-size:0.875rem">Compare with:</span>
+          <select id="compare-select">${runs.filter(x => x.run_id !== id).map(x => `<option value="${x.run_id}">${x.run_id}</option>`).join('')}</select>
+          <button onclick="compareRuns('${id}')">Diff</button>
+        </div>
+        <div class="tabs">
+          <button class="tab active" onclick="showTab('scorecard')">Scorecard</button>
+          <button class="tab" onclick="showTab('steps')">Steps</button>
+          <button class="tab" onclick="showTab('sitemap')">Sitemap</button>
+          <button class="tab" onclick="showTab('shots')">Screenshots</button>
+          <button class="tab" onclick="showTab('diff')">Diff</button>
+        </div>
+        <div id="panel-scorecard" class="panel active"><pre class="md">${esc(data.scorecard_md || 'No scorecard generated.')}</pre></div>
+        <div id="panel-steps" class="panel">
+          <table><thead><tr><th>Step</th><th>Journey</th><th>Action</th><th>Outcome</th><th>URL</th></tr></thead>
+          <tbody>${(r.steps||[]).map(s => `<tr>
+            <td><code>${s.step_id}</code></td><td>${s.journey_id}</td><td>${s.action}</td>
+            <td>${s.outcome}</td><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis">${(s.final_url||s.requested_url||'—').slice(0,60)}</td>
+          </tr>`).join('')}</tbody></table>
+        </div>
+        <div id="panel-sitemap" class="panel"><pre class="md">${esc(data.sitemap_md || 'No sitemap (crawl disabled or not run).')}</pre></div>
+        <div id="panel-shots" class="panel"><div class="shots">${(data.screenshots||[]).map(p => {
+          const name = p.split('/').pop();
+          return `<figure><img src="/files/${p}" alt="${name}" loading="lazy" onclick="window.open('/files/${p}')"><figcaption>${name}</figcaption></figure>`;
+        }).join('') || '<div class="empty">No screenshots</div>'}</div></div>
+        <div id="panel-diff" class="panel"><pre id="diff-output" class="md">Select a run and click Diff.</pre></div>
+      `;
+    }
+
+    function showTab(name) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('panel-' + name).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    async function compareRuns(a) {
+      const b = document.getElementById('compare-select')?.value;
+      if (!b) return;
+      const res = await fetch(`/api/diff?a=${encodeURIComponent(a)}&b=${encodeURIComponent(b)}`);
+      const data = await res.json();
+      document.getElementById('diff-output').textContent = JSON.stringify(data, null, 2);
+      showTab('diff');
+      document.querySelectorAll('.tabs .tab').forEach((t,i) => t.classList.toggle('active', t.textContent === 'Diff'));
+    }
+
+    function esc(s) {
+      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    loadRuns();
+  </script>
+</body>
+</html>

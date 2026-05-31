@@ -1,0 +1,22 @@
+[
+  {
+    "id": "job_af399512",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/enterprise-20260530-234231.yaml",
+    "status": "done",
+    "startedAt": "2026-05-30T23:44:59.129899+00:00",
+    "finishedAt": "2026-05-30T23:45:44.837222+00:00",
+    "runId": null,
+    "error": null
+  },
+  {
+    "id": "job_f84c1425",
+    "mode": "crawl",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/enterprise-20260530-234231.yaml",
+    "status": "done",
+    "startedAt": "2026-05-30T23:44:57.934129+00:00",
+    "finishedAt": "2026-05-30T23:45:14.470857+00:00",
+    "runId": null,
+    "error": null
+  }
+]

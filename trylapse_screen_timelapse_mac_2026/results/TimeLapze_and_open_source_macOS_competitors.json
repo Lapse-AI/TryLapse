@@ -1,0 +1,18 @@
+{
+  "name": "TimeLapze and open-source macOS competitors",
+  "category": "Competition",
+  "official_url": "https://github.com/wkaisertexas/ScreenTimeLapse",
+  "summary": "TimeLapze (ScreenTimeLapse) is the strongest open-source native benchmark: SwiftUI + ScreenCaptureKit + AVFoundation, menu bar UX, color-accurate capture, hardware encoding, per-window/app capture, camera timelapse, App Store distribution. It sets a high bar for any macOS-only entrant on technical credibility and price (free + optional paid App Store).",
+  "key_findings": "~819 GitHub stars; MIT license; Last release v1.2.2 Dec 2024 with active pushes into 2026; HN launch clarified timelapse vs OBS; Requires macOS 13+; Color accuracy marketed as differentiator vs washed-out SCK captures; Homebrew cask available",
+  "implications_for_trylapse": "Forking is possible (MIT) but brand and UX differentiation required; Competing head-on without a wedge (smart idle, multi-display reliability, export fixes) is weak; Study their color pipeline and entitlement handling; Open-source community goodwill favors contributing upstream vs clone",
+  "evidence_strength": "high",
+  "strengths": "Mature SCK integration; Active maintenance; App Store + brew distribution; Strong technical marketing",
+  "weaknesses": "HN reports some M1 Max install failures; Feature set may not include community/social layer Makerlapse teased; Timelapse-only — no tutorial polish",
+  "metrics_or_signals": "819 stars; 9 open issues; 5 contributors",
+  "primary_sources": [
+    {"title": "ScreenTimeLapse GitHub", "url": "https://github.com/wkaisertexas/ScreenTimeLapse"},
+    {"title": "TimeLapze Hacker News", "url": "https://news.ycombinator.com/item?id=39648259"},
+    {"title": "Timelapze App Store", "url": "https://apps.apple.com/us/app/timelapze/id6473860445"}
+  ],
+  "uncertain": []
+}

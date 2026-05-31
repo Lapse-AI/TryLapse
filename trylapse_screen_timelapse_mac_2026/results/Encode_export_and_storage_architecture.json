@@ -1,0 +1,18 @@
+{
+  "name": "Encode export and storage architecture",
+  "category": "Technology",
+  "official_url": "https://github.com/wkaisertexas/ScreenTimeLapse",
+  "summary": "Two dominant architectures: (A) stream sparse frames through AVFoundation hardware encoder into timelapse-speed MP4, (B) write screenshot sequence then FFmpeg stitch. TimeLapze uses AVFoundation + CoreMedia with hardware acceleration. Segmented recording (chunk files) reduces data loss on crash — pattern from ScreenSage. Export must produce Quick Look-compatible H.264/AAC MP4; Hustl reviews suggest some exports fail standard preview.",
+  "key_findings": "Direct timelapse encode avoids 7GB/hour full capture problem; FFmpeg skills ecosystem large for post-stitch; Incremental encode during capture lowers peak disk use vs thousands of PNGs; GIF export optional for social but secondary",
+  "implications_for_trylapse": "Default: AVFoundation VideoToolbox H.264; Background export queue with progress in menu bar; Segment every N minutes to temp dir; Validate export with AVAssetReader smoke test before showing Done; Optional FFmpeg CLI for power users",
+  "evidence_strength": "medium",
+  "strengths": "Hardware encode on Apple Silicon; Predictable MP4 output",
+  "weaknesses": "HDR/wide-gamut color accuracy still differentiator hard problem; Long sessions need disk budget planning",
+  "metrics_or_signals": "TimeLapze markets color-accurate pipeline",
+  "primary_sources": [
+    {"title": "TimeLapze tech stack", "url": "https://github.com/wkaisertexas/ScreenTimeLapse"},
+    {"title": "Hustl export review issues", "url": "https://setapp.com/apps/hustl/customer-reviews"},
+    {"title": "Makerlapse screenshot-to-video", "url": "https://github.com/IliasHad/makerlapse-app"}
+  ],
+  "uncertain": []
+}

@@ -1,0 +1,64 @@
+# Authenticated enterprise app — configure auth + journeys for your product.
+run:
+  target_url: https://faculty-dashboard-eight.vercel.app
+  run_id_prefix: enterprise
+  product_name: Enterprise Dashboard (example)
+
+auth:
+  login_path: /login
+  email_env: REHEARSE_EMAIL
+  password_env: REHEARSE_PASSWORD
+  email_label: Email Address
+  password_label: Password
+  submit_label: Login
+
+personas:
+  - id: p1-evaluator
+    name: First-time evaluator
+    role: prospect / new user
+    goals:
+      - Reach primary workflow from a shared link
+  - id: p2-operator
+    name: Daily operator
+    role: power user
+    goals:
+      - Filter and navigate data efficiently
+  - id: p3-admin
+    name: Admin / buyer
+    role: IT admin
+    goals:
+      - Verify access boundaries and trust signals
+
+journeys:
+  - id: j1-deep-link
+    name: Deep link to primary surface
+    steps:
+      - action: navigate
+        url: "{target_url}/database"
+  - id: j2-primary-list
+    name: Browse primary data view
+    steps:
+      - action: navigate
+        url: "{target_url}/database"
+      - action: wait
+        value: "2000"
+  - id: j3-secondary-module
+    name: Secondary module
+    steps:
+      - action: navigate
+        url: "{target_url}/analytics"
+  - id: j4-search-surface
+    name: Search or AI surface
+    steps:
+      - action: navigate
+        url: "{target_url}/ai-search"
+  - id: j5-admin-boundary
+    name: Admin boundary check
+    steps:
+      - action: navigate
+        url: "{target_url}/admin"
+
+budgets:
+  max_steps_per_journey: 10
+  max_run_seconds: 1200
+  step_timeout_ms: 45000

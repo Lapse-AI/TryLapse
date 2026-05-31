@@ -1,0 +1,19 @@
+{
+  "name": "User personas and jobs to be done",
+  "category": "Market",
+  "official_url": "https://setapp.com/apps/hustl",
+  "summary": "Primary personas: (1) visual creators doing speedpaints/UI in Figma or Photoshop, (2) developers documenting build sessions, (3) indie founders showing product iteration, (4) educators packaging lecture or demo B-roll. The job is always outcome-oriented: produce a short, watchable artifact that proves effort and skill without revealing sensitive windows or wasting viewer time.",
+  "key_findings": "Hustl emphasizes speedpaint and logo design plus coding sessions; Lapse/BetaList targets social sharing on YouTube/Instagram; TimeLapze adds camera timelapse for face+craft combo; App-only capture and blacklist/smart recording appear in premium macOS SKUs for privacy and idle trimming; Multi-monitor support is a recurring review theme",
+  "implications_for_trylapse": "Ship app-scoped capture and idle-skip early — high leverage for dev/design personas; One-click export presets for 1080p/4K vertical and 16:9; Optional webcam PiP only if it does not bloat MVP; Onboarding must explain menu-bar lifecycle (Setapp reviews cite confusion)",
+  "evidence_strength": "high",
+  "strengths": "Personas align with tools already charging money; Clear distribution via social platforms",
+  "weaknesses": "Persona needs may split MVP (creators want music/speed control; devs want app filter); Enterprise compliance buyers are poor fit",
+  "metrics_or_signals": "Hustl Setapp reviews mention fullscreen bugs and export issues",
+  "primary_sources": [
+    {"title": "Hustl on Setapp", "url": "https://setapp.com/apps/hustl"},
+    {"title": "Hustl customer reviews", "url": "https://setapp.com/apps/hustl/customer-reviews"},
+    {"title": "Makerlapse positioning", "url": "https://makerlapse.netlify.app/"},
+    {"title": "Lapse BetaList", "url": "https://betalist.com/startups/lapse"}
+  ],
+  "uncertain": []
+}

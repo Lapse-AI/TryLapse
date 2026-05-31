@@ -1,0 +1,37 @@
+topic: "TryLapse — macOS screen timelapse recorder (market, tech, wedge, MVP) — 2026"
+items:
+  - name: Problem and market opportunity
+    category: Market
+    description: Why screen timelapse exists, pain vs full recording + speed-up, TAM signals.
+  - name: User personas and jobs to be done
+    category: Market
+    description: Designers, developers, educators, indie makers; what outcome they buy.
+  - name: TimeLapze and open-source macOS competitors
+    category: Competition
+    description: ScreenTimeLapse, feature gaps, maintenance, licensing.
+  - name: Hustl and commercial macOS timelapse apps
+    category: Competition
+    description: Hustl, Screen Timelapse lite, Lapse (BetaList), pricing and reviews.
+  - name: Cross-platform and screenshot-first alternatives
+    category: Competition
+    description: Makerlapse, Lapse menubar, Electron paths, community features.
+  - name: Adjacent category polished screen recorders
+    category: Competition
+    description: Screen Studio, OpenScreen, Reframed — overlap and non-overlap with timelapse.
+  - name: Capture stack ScreenCaptureKit and permissions
+    category: Technology
+    description: APIs, frame interval, entitlements, silent-failure pitfalls.
+  - name: Encode export and storage architecture
+    category: Technology
+    description: AVFoundation vs FFmpeg, incremental encode, file size, crash safety.
+  - name: TryLapse differentiation and wedge hypotheses
+    category: Strategy
+    description: Where a new entrant can win vs incumbents in 2026.
+  - name: MVP scope monetization and risks
+    category: Strategy
+    description: Minimum shippable product, pricing models, failure modes.
+
+execution:
+  batch_size: 3
+  items_per_agent: 1
+  output_dir: "./trylapse_screen_timelapse_mac_2026/results"

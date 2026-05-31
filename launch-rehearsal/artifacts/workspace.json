@@ -1,0 +1,14 @@
+{
+  "id": "ws_default",
+  "name": "Faculty-Dashboard-Eight Workspace",
+  "slug": "faculty-dashboard-eight-vercel-app",
+  "targetUrl": "https://faculty-dashboard-eight.vercel.app",
+  "members": 1,
+  "products": 1,
+  "configVersion": "1.0",
+  "configHash": "000000",
+  "strictEnterpriseMode": true,
+  "retentionDays": 90,
+  "piiRedaction": false,
+  "env": "staging"
+}

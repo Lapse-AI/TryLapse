@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Run Launch Rehearsal CLI from TryLapse repo root (any terminal / venv).
+set -euo pipefail
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+CLI="$ROOT/launch-rehearsal/.venv/bin/rehearse"
+
+# Load repo .env before CLI (credentials + NIM keys)
+if [[ -f "$ROOT/.env" ]]; then
+  set -a
+  # shellcheck disable=SC1091
+  source "$ROOT/.env"
+  set +a
+fi
+
+if [[ ! -x "$CLI" ]]; then
+  echo "rehearse not installed. Run once:" >&2
+  echo "  cd launch-rehearsal && python -m venv .venv && source .venv/bin/activate" >&2
+  echo "  pip install -e . && playwright install chromium" >&2
+  exit 1
+fi
+
+# From repo root, default artifacts dir unless -o/--output is passed
+if [[ "$PWD" == "$ROOT" ]] && [[ "${1:-}" =~ ^(run|crawl|serve|diff|scorecard|backfill)$ ]]; then
+  has_output=false
+  for arg in "$@"; do
+    if [[ "$arg" == "-o" || "$arg" == "--output" ]]; then
+      has_output=true
+      break
+    fi
+  done
+  if ! $has_output; then
+    exec "$CLI" "$1" -o "$ROOT/launch-rehearsal/artifacts" "${@:2}"
+  fi
+fi
+
+exec "$CLI" "$@"

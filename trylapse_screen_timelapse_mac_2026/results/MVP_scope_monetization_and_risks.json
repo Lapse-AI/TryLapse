@@ -1,0 +1,18 @@
+{
+  "name": "MVP scope monetization and risks",
+  "category": "Strategy",
+  "official_url": "https://betalist.com/startups/lapse",
+  "summary": "Recommended MVP (macOS 13+, Apple Silicon first): menu bar start/stop; capture full screen OR frontmost app; interval + output speed presets; hardware H.264 MP4 export with segment recovery; screen recording permission UX. v2: idle skip, blacklist, multi-display, webcam PiP. Monetization: one-time license $19–29 or freemium (watermark free / Pro unlimited length + 4K) — mirrors Lapse BetaList promo patterns and avoids Screen Studio subscription fatigue.",
+  "key_findings": "Building cross-platform doubles QA surface; App Store notarization and entitlements are launch gates; Commoditization risk from free TimeLapze; Support burden from OS updates; Privacy incidents if capture leaks wrong window",
+  "implications_for_trylapse": "8-week MVP scope: 3 capture modes, 2 presets, export validator, signed DMG; Dogfood with own build streams; Launch on HN/Product Hunt with color-accuracy or reliability story; Measure retention via second export within 7 days",
+  "evidence_strength": "medium",
+  "strengths": "Small team shippable scope with SCK; Clear upgrade path",
+  "weaknesses": "Crowded niche; Free OSS ceiling on price; macOS-only limits TAM",
+  "metrics_or_signals": "Lapse BetaList 50% promo indicates paid cross-platform exists",
+  "primary_sources": [
+    {"title": "Lapse BetaList pricing signal", "url": "https://betalist.com/startups/lapse"},
+    {"title": "TimeLapze free OSS", "url": "https://github.com/wkaisertexas/ScreenTimeLapse"},
+    {"title": "Screen Studio pricing critique", "url": "https://scribehow.com/page/Screen_Studio_Review_2026_I_Tested_the_Auto-Zoom_Mac_Recorder_for_90_Days__Heres_the_Truth__0R7wu5TiSvqYAK3TzdygdQ"}
+  ],
+  "uncertain": []
+}

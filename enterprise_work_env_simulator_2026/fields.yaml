@@ -1,0 +1,41 @@
+field_categories:
+  - category: Basic Info
+    fields:
+      - name: name
+        description: Research item name
+        detail_level: brief
+        required: true
+      - name: category
+        description: Bucket
+        detail_level: brief
+        required: true
+
+  - category: Analysis
+    fields:
+      - name: summary
+        description: Core findings
+        detail_level: detailed
+        required: true
+      - name: key_findings
+        description: Semicolon-separated facts
+        detail_level: detailed
+        required: true
+      - name: implications
+        description: What to do with this for the product
+        detail_level: detailed
+        required: true
+      - name: evidence_strength
+        description: high medium low
+        detail_level: brief
+        required: true
+
+  - category: Sources
+    fields:
+      - name: primary_sources
+        description: title url list
+        detail_level: detailed
+        required: true
+      - name: uncertain
+        description: uncertain field names
+        detail_level: brief
+        required: false

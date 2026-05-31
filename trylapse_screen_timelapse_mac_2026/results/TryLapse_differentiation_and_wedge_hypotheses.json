@@ -1,0 +1,18 @@
+{
+  "name": "TryLapse differentiation and wedge hypotheses",
+  "category": "Strategy",
+  "official_url": null,
+  "summary": "Because the Claude share content was not readable, wedges are inferred for a TryLapse macOS timelapse recorder. Strongest hypotheses ranked: (1) Reliability wedge — export always plays in Quick Look, segmented capture, clear recording state in menu bar; (2) Trust wedge — app-only + sensitive-app blacklist + auto-pause on password managers; (3) Workflow wedge — presets for dev/design (15s interval, 30x speed, 1080p) and one-click share; (4) Brand wedge — TryLapse name aligns with try/demo narrative for indie builders; (5) Open-core wedge — MIT core with paid Pro for 4K/8K and smart idle.",
+  "key_findings": "Incumbents leave UX bugs in reviews; TimeLapze covers technical OSS baseline; No dominant timelapse-native community platform shipped (Makerlapse teased); AI auto-edit is adjacent not core unless share proposed AI highlights",
+  "implications_for_trylapse": "Pick ONE wedge for v1 — recommend Reliability + app-scoped capture; Name reinforces trial/build-in-public positioning; Avoid feature parity with Hustl 8K on day one",
+  "evidence_strength": "medium",
+  "strengths": "Clear gaps from review mining; Name differentiation vs TimeLapze/Lapse",
+  "weaknesses": "Exact product intent from Claude share unknown — wedges may mismatch user vision",
+  "metrics_or_signals": "[uncertain] until share content confirmed",
+  "primary_sources": [
+    {"title": "Hustl Setapp reviews", "url": "https://setapp.com/apps/hustl/customer-reviews"},
+    {"title": "TimeLapze GitHub", "url": "https://github.com/wkaisertexas/ScreenTimeLapse"},
+    {"title": "Makerlapse community teaser", "url": "https://makerlapse.netlify.app/"}
+  ],
+  "uncertain": ["summary", "implications_for_trylapse", "metrics_or_signals"]
+}

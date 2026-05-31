@@ -1,0 +1,18 @@
+{
+  "name": "Cross-platform and screenshot-first alternatives",
+  "category": "Competition",
+  "official_url": "https://github.com/IliasHad/makerlapse-app",
+  "summary": "Makerlapse uses screenshot bursts stitched to video (Electron cross-platform), emphasizing light files and optional soundtrack — Mac build historically weak on Catalina+. Lapse targets Mac+Windows menubar with direct timelapse encode. Cross-platform expands TAM but increases capture complexity (Windows Graphics Capture, Linux PipeWire) versus a focused macOS SCK product.",
+  "key_findings": "Makerlapse roadmap included merge-while-recording; Community sharing was marketed coming soon on makerlapse.netlify.app; Screenshot-first avoids huge intermediate video but needs robust stitch pipeline; Windows timelapse menubar exists via Lapse per BetaList",
+  "implications_for_trylapse": "If Claude share emphasized cross-platform, phase 2 product after macOS PMF; Screenshot pipeline is valid MVP path for crash safety (segmented JPEG + ffmpeg stitch); Soundtrack is nice-to-have not wedge",
+  "evidence_strength": "medium",
+  "strengths": "Cross-platform reach; Simpler mental model (photos → video)",
+  "weaknesses": "Makerlapse Mac stability called out in README; Less integrated with macOS permissions UX; Competing with Lapse on Windows without differentiation is hard",
+  "metrics_or_signals": "Makerlapse GitHub releases v1.2.6 era",
+  "primary_sources": [
+    {"title": "Makerlapse site", "url": "https://makerlapse.netlify.app/"},
+    {"title": "makerlapse-app GitHub", "url": "https://github.com/IliasHad/makerlapse-app"},
+    {"title": "Lapse BetaList", "url": "https://betalist.com/startups/lapse"}
+  ],
+  "uncertain": []
+}

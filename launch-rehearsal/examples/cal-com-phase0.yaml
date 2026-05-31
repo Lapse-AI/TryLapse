@@ -1,0 +1,67 @@
+# Public SaaS marketing surface — generic rehearsal template
+run:
+  target_url: https://cal.com
+  run_id_prefix: cal
+  product_name: Cal.com (practice target)
+
+personas:
+  - id: p1-evaluator
+    name: First-time evaluator
+    role: prospect / founder
+    goals:
+      - Grasp product value in one scroll
+  - id: p2-operator
+    name: Daily operator
+    role: power user
+    goals:
+      - Find pricing and signup quickly on repeat visits
+  - id: p3-admin
+    name: Admin / buyer
+    role: team admin
+    goals:
+      - Compare plans and enterprise signals
+
+journeys:
+  - id: j1-land
+    name: Land and grasp value
+    steps:
+      - action: navigate
+        url: "{target_url}/"
+  - id: j2-signup-path
+    name: Start signup path
+    steps:
+      - action: navigate
+        url: "{target_url}/"
+      - action: click
+        intent: Sign up
+  - id: j3-product-depth
+    name: Explore product depth
+    steps:
+      - action: navigate
+        url: "{target_url}/"
+      - action: click
+        intent: Enterprise
+  - id: j4-pricing
+    name: Pricing evaluation
+    steps:
+      - action: navigate
+        url: "{target_url}/pricing"
+  - id: j5-return-nav
+    name: Return visitor navigation
+    steps:
+      - action: navigate
+        url: "{target_url}/pricing"
+      - action: navigate
+        url: "{target_url}/"
+
+budgets:
+  max_steps_per_journey: 15
+  max_run_seconds: 900
+  step_timeout_ms: 45000
+
+crawl:
+  enabled: true
+  max_depth: 2
+  max_pages: 25
+  same_origin_only: true
+  supplement_journeys: true

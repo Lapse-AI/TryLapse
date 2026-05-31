@@ -1,0 +1,28 @@
+topic: "Enterprise agentic work environment simulator — competitive, technical, GTM (2026)"
+items:
+  - name: Problem validation and buyer urgency
+    category: Market
+    description: Evidence enterprise evaluation and agent deployment pain is acute and budgeted.
+  - name: MiroFish and OASIS architecture fit
+    category: Technology
+    description: What MiroFish actually does vs enterprise work simulation; reuse patterns.
+  - name: VEI and Veris direct competitors
+    category: Competition
+    description: Stateful twins, determinism, funding, positioning gaps.
+  - name: Demo sandbox and POC infrastructure adjacent players
+    category: Competition
+    description: Demostack, MagicDemo, CloudShare — vendor GTM overlap.
+  - name: Process digital twin adjacent Celonis Ikigai
+    category: Competition
+    description: Process intelligence simulation vs tool evaluation.
+  - name: Recommended wedge and MVP scope
+    category: Strategy
+    description: Sharpest beachhead, 90-day build, what to defer.
+  - name: Tool stack tool-discovery synthesis
+    category: Technology
+    description: LangGraph, VEI fork, GraphRAG, sandboxes — primary and fallback.
+
+execution:
+  batch_size: 3
+  items_per_agent: 1
+  output_dir: "./enterprise_work_env_simulator_2026/results"

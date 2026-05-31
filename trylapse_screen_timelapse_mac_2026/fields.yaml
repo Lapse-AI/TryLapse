@@ -1,0 +1,60 @@
+field_categories:
+  - category: Basic Info
+    fields:
+      - name: name
+        description: Display name of the research item
+        detail_level: brief
+        required: true
+      - name: category
+        description: Segment bucket from outline
+        detail_level: brief
+        required: true
+      - name: official_url
+        description: Primary reference URL when applicable
+        detail_level: brief
+        required: false
+
+  - category: Analysis
+    fields:
+      - name: summary
+        description: Core findings regarding TryLapse research topic
+        detail_level: detailed
+        required: true
+      - name: key_findings
+        description: Bullet-style facts separated by semicolons
+        detail_level: detailed
+        required: true
+      - name: implications_for_trylapse
+        description: What TryLapse should do based on this item
+        detail_level: detailed
+        required: true
+      - name: evidence_strength
+        description: high, medium, or low based on source quality
+        detail_level: brief
+        required: true
+
+  - category: Competitive or Technical Detail
+    fields:
+      - name: strengths
+        description: Strengths of incumbent approach or technology
+        detail_level: detailed
+        required: true
+      - name: weaknesses
+        description: Gaps, bugs, or limitations observed
+        detail_level: detailed
+        required: true
+      - name: metrics_or_signals
+        description: Stars, pricing, review themes, API notes
+        detail_level: brief
+        required: false
+
+  - category: Sources
+    fields:
+      - name: primary_sources
+        description: List of title and url evidence objects
+        detail_level: detailed
+        required: true
+      - name: uncertain
+        description: Field names marked uncertain when evidence thin
+        detail_level: brief
+        required: false

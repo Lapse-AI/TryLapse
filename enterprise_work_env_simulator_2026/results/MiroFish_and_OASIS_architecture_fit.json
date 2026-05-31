@@ -1,0 +1,14 @@
+{
+  "name": "MiroFish and OASIS architecture fit",
+  "category": "Technology",
+  "summary": "MiroFish is a high-traction OSS prediction engine (60k+ GitHub stars, v0.1.2, AGPL) that builds GraphRAG knowledge graphs from seed documents, spawns many LLM agents with memory, and runs parallel social simulations via CAMEL-AI OASIS (Twitter/Reddit-like platforms). It is NOT an enterprise operational twin for Slack/Jira/Salesforce workflows. Reuse it for parallel agent orchestration and graph construction patterns; do NOT position it as the enterprise work-environment backbone.",
+  "key_findings": "Pipeline: Graph Building → Environment Setup → Dual-Platform Simulation → ReportAgent; OASIS supports up to 1M agents and 23 social actions; MiroFish early v0.1.x; Zep/memory mentioned in ecosystem articles; Enterprise work simulation is better served by VEI/Veris deterministic enterprise mocks",
+  "implications": "Fork or integrate OASIS only for persona swarm layers; Build or fork VEI-class enterprise surface simulator for tool state; Keep GraphRAG ingest as your differentiator; Legal review AGPL before embedding MiroFish code commercially",
+  "evidence_strength": "high",
+  "primary_sources": [
+    {"title": "MiroFish GitHub", "url": "https://github.com/666ghj/MiroFish"},
+    {"title": "OASIS GitHub", "url": "https://github.com/camel-ai/oasis"},
+    {"title": "MiroFish DEV overview", "url": "https://dev.to/arshtechpro/mirofish-the-open-source-ai-engine-that-builds-digital-worlds-to-predict-the-future-ki8"}
+  ],
+  "uncertain": []
+}

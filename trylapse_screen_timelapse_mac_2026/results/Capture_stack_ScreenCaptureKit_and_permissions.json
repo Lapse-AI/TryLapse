@@ -1,0 +1,19 @@
+{
+  "name": "Capture stack ScreenCaptureKit and permissions",
+  "category": "Technology",
+  "official_url": "https://developer.apple.com/documentation/screencapturekit/scstreamconfiguration/minimumframeinterval",
+  "summary": "Modern macOS timelapse should build on ScreenCaptureKit (12.3+) with SCStreamConfiguration.minimumFrameInterval to throttle capture rate (CMTime reciprocal of FPS). macOS 14+ adds SCScreenshotManager for sparse stills; macOS 15+ adds recording output APIs. Production pitfalls: missing com.apple.security.screen-recording entitlement causes silent empty capture outside Xcode; Swift 6 @MainActor constraints for UI; SCK edge cases (3821 errors, sub-window on secondary displays) documented by native recorder builders.",
+  "key_findings": "minimumFrameInterval CMTime controls max frame rate — e.g. 1 fps = value 1 timescale 1; Entitlement omission fails quietly in signed .app bundles; ScreenSage/FatBobMan documents SCK vs legacy tradeoffs; Recall.ai notes SCK lacks meeting detection — irrelevant for timelapse but shows API scope",
+  "implications_for_trylapse": "Swift/SwiftUI native menu bar app; Test signed .app from day one; Implement Legacy fallback path if SCK errors; App-scoped capture via SCContentFilter; Document permission flow in onboarding",
+  "evidence_strength": "high",
+  "strengths": "Low CPU GPU zero-copy path; Native window/app isolation; System audio on 13+ if needed later",
+  "weaknesses": "Steep API surface; OS-version gating for features; Silent failures frustrate users",
+  "metrics_or_signals": "macOS 13+ baseline aligns with TimeLapze and OpenScreen",
+  "primary_sources": [
+    {"title": "Apple minimumFrameInterval", "url": "https://developer.apple.com/documentation/screencapturekit/scstreamconfiguration/minimumframeinterval"},
+    {"title": "ScreenSage architecture post", "url": "https://fatbobman.com/en/posts/screensage-from-pixel-to-meta/"},
+    {"title": "Swift 6 ScreenCaptureKit pitfalls", "url": "https://dev.to/combba/swift-6-screencapturekit-and-why-my-app-worked-in-xcode-but-not-as-a-app-3p5a"},
+    {"title": "Recall.ai macOS capture guide", "url": "https://www.recall.ai/blog/macos-screencapture-api"}
+  ],
+  "uncertain": []
+}

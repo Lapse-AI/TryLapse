@@ -1,0 +1,30 @@
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+.venv-research/
+launch-rehearsal/.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Node
+node_modules/
+Frontend_V1/dist/
+Frontend_V1/.output/
+
+# Run artifacts (large; regenerate via rehearse)
+launch-rehearsal/artifacts/artifacts/
+launch-rehearsal/artifacts/runs/
+launch-rehearsal/artifacts/analysis/
+launch-rehearsal/artifacts/scorecards/
+launch-rehearsal/artifacts/sitemaps/
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
