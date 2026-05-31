@@ -127,7 +127,9 @@ function Index() {
             <div className="flex items-center gap-2 flex-wrap">
               <Sparkles className="size-4 text-primary" />
               <h2 className="font-display text-lg font-semibold">Command center digest</h2>
-              <Chip tone="neutral">{digest.source === "llm+template" ? "AI + rules" : "Rules"}</Chip>
+              <Chip tone="neutral">
+                {digest.source === "llm+template" ? "AI + rules" : "Rules"}
+              </Chip>
               <Chip tone="info">{digest.readinessTrend}</Chip>
             </div>
             <p className="text-sm leading-relaxed">{digest.headline}</p>

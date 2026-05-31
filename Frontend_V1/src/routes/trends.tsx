@@ -153,39 +153,39 @@ function Trends() {
         </Panel>
 
         <VisionOnly section="trends.scheduledRuns">
-        <Panel className="p-6">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="text-xs text-muted-foreground">
-              Scheduled runs · rehearse schedule (planned CLI)
-            </div>
-            <Chip tone="neutral">Phase 2</Chip>
-          </div>
-          <div className="space-y-2 mb-4">
-            {scheduledRuns.map((s, i) => (
-              <div
-                key={i}
-                className="flex items-center justify-between text-sm font-mono border border-border rounded-md px-3 py-2"
-              >
-                <span>{s.cron}</span>
-                <Chip tone={s.enabled ? "ready" : "neutral"}>{s.env}</Chip>
-                <span className="text-xs text-muted-foreground">next {s.next.slice(0, 10)}</span>
+          <Panel className="p-6">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="text-xs text-muted-foreground">
+                Scheduled runs · rehearse schedule (planned CLI)
               </div>
-            ))}
-          </div>
-          <div className="grid grid-cols-7 gap-2">
-            {Array.from({ length: 14 }).map((_, i) => {
-              const has = [0, 1, 3, 5, 6, 8, 10, 12, 13].includes(i);
-              return (
+              <Chip tone="neutral">Phase 2</Chip>
+            </div>
+            <div className="space-y-2 mb-4">
+              {scheduledRuns.map((s, i) => (
                 <div
                   key={i}
-                  className={`aspect-square rounded border ${has ? "bg-primary/20 border-primary/40" : "bg-surface-2 border-border"} flex items-center justify-center text-xs font-mono`}
+                  className="flex items-center justify-between text-sm font-mono border border-border rounded-md px-3 py-2"
                 >
-                  {i + 1}
+                  <span>{s.cron}</span>
+                  <Chip tone={s.enabled ? "ready" : "neutral"}>{s.env}</Chip>
+                  <span className="text-xs text-muted-foreground">next {s.next.slice(0, 10)}</span>
                 </div>
-              );
-            })}
-          </div>
-        </Panel>
+              ))}
+            </div>
+            <div className="grid grid-cols-7 gap-2">
+              {Array.from({ length: 14 }).map((_, i) => {
+                const has = [0, 1, 3, 5, 6, 8, 10, 12, 13].includes(i);
+                return (
+                  <div
+                    key={i}
+                    className={`aspect-square rounded border ${has ? "bg-primary/20 border-primary/40" : "bg-surface-2 border-border"} flex items-center justify-center text-xs font-mono`}
+                  >
+                    {i + 1}
+                  </div>
+                );
+              })}
+            </div>
+          </Panel>
         </VisionOnly>
       </div>
     </div>

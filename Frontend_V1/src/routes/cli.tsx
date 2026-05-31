@@ -157,7 +157,10 @@ function CliPage() {
             <li>GET/POST /api/runs/&#123;id&#125;/chat — run Q&amp;A thread</li>
             <li>GET /api/diff?a=&amp;b= — compare runs + “What changed” narrative</li>
             <li>POST /api/recordings/compile — journey recorder → YAML fragment</li>
-            <li>POST /api/configs — init wizard YAML write (viewports, execute_all_personas_in_browser)</li>
+            <li>
+              POST /api/configs — init wizard YAML write (viewports,
+              execute_all_personas_in_browser)
+            </li>
             <li>POST /api/jobs — background run/crawl (llm flag supported)</li>
           </ul>
         </Panel>

@@ -52,12 +52,12 @@ function Alerts() {
               </div>
             </div>
             <VisionOnly section="alerts.addChannel">
-            <button
-              type="button"
-              className="text-xs font-mono px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:opacity-90"
-            >
-              + add channel
-            </button>
+              <button
+                type="button"
+                className="text-xs font-mono px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:opacity-90"
+              >
+                + add channel
+              </button>
             </VisionOnly>
           </div>
           <div className="divide-y divide-border">
@@ -88,23 +88,23 @@ function Alerts() {
         </Panel>
 
         <VisionOnly section="alerts.recentFeed">
-        <Panel className="overflow-hidden">
-          <div className="p-4 border-b border-border flex items-center gap-2">
-            <BellIcon className="size-4 text-primary" />
-            <div className="font-display font-semibold">Recent alerts</div>
-          </div>
-          <div className="divide-y divide-border">
-            {recent.map((r, i) => (
-              <div key={i} className="p-4">
-                <div className="flex items-center gap-2 mb-1">
-                  <Chip tone={r.tone}>{r.env}</Chip>
-                  <span className="text-[11px] text-muted-foreground font-mono">{r.when}</span>
+          <Panel className="overflow-hidden">
+            <div className="p-4 border-b border-border flex items-center gap-2">
+              <BellIcon className="size-4 text-primary" />
+              <div className="font-display font-semibold">Recent alerts</div>
+            </div>
+            <div className="divide-y divide-border">
+              {recent.map((r, i) => (
+                <div key={i} className="p-4">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Chip tone={r.tone}>{r.env}</Chip>
+                    <span className="text-[11px] text-muted-foreground font-mono">{r.when}</span>
+                  </div>
+                  <div className="text-sm">{r.title}</div>
                 </div>
-                <div className="text-sm">{r.title}</div>
-              </div>
-            ))}
-          </div>
-        </Panel>
+              ))}
+            </div>
+          </Panel>
         </VisionOnly>
       </div>
     </div>

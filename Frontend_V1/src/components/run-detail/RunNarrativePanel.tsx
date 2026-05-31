@@ -10,13 +10,7 @@ import { toast } from "sonner";
 
 type ChatTurn = { role: "user" | "assistant"; content: string };
 
-export function RunNarrativePanel({
-  runId,
-  bundle,
-}: {
-  runId: string;
-  bundle: RunBundle;
-}) {
+export function RunNarrativePanel({ runId, bundle }: { runId: string; bundle: RunBundle }) {
   const narrative: RunNarrative | undefined = bundle.narrative;
   const { data: live } = useApiHealth();
   const [message, setMessage] = useState("");

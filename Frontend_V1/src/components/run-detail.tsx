@@ -174,72 +174,72 @@ export function StepsTable({
         <tbody>
           {steps.map((s) => (
             <Fragment key={s.stepId}>
-            <tr
-              id={`step-${s.stepId}`}
-              className={`border-b border-border hover:bg-surface-2/30 ${
-                highlightStepId === s.stepId ? "bg-primary/10 ring-1 ring-primary/30" : ""
-              }`}
-            >
-              <td className="px-5 py-3 font-mono text-xs">
-                {s.stepId}
-                {s.flaky && (
-                  <span className="ml-2">
-                    <Chip tone="warn">flaky</Chip>
-                  </span>
-                )}
-              </td>
-              <td className="px-5 py-3 text-xs">{s.journeyId}</td>
-              <td className="px-5 py-3">
-                <div>{s.action}</div>
-                {s.action === "explore" && s.exploreSummary && (
-                  <p className="text-xs text-muted-foreground mt-1 max-w-md whitespace-pre-wrap">
-                    {s.exploreSummary}
-                  </p>
-                )}
-              </td>
-              <td className="px-5 py-3">
-                <Chip
-                  tone={
-                    s.outcome === "pass"
-                      ? "ready"
-                      : s.outcome === "partial"
-                        ? "warn"
-                        : s.outcome === "fail"
-                          ? "danger"
-                          : "neutral"
-                  }
-                >
-                  {s.outcome}
-                </Chip>
-              </td>
-              <td className="px-5 py-3 font-mono text-xs text-muted-foreground">
-                {formatDurationMs(s.durationMs)}
-              </td>
-              <td className="px-5 py-3 font-mono text-xs max-w-[200px] truncate text-muted-foreground">
-                {(s.finalUrl ?? s.requestedUrl ?? "—").slice(0, 60)}
-              </td>
-            </tr>
-            {s.action === "explore" && (s.exploreLog?.length || s.exploreSummary) ? (
-              <tr key={`${s.stepId}-explore`} className="border-b border-border last:border-0">
-                <td colSpan={6} className="px-5 py-3 bg-surface-2/40 text-xs space-y-2">
-                  {s.exploreSummary && (
-                    <p className="text-sm leading-relaxed">{s.exploreSummary}</p>
+              <tr
+                id={`step-${s.stepId}`}
+                className={`border-b border-border hover:bg-surface-2/30 ${
+                  highlightStepId === s.stepId ? "bg-primary/10 ring-1 ring-primary/30" : ""
+                }`}
+              >
+                <td className="px-5 py-3 font-mono text-xs">
+                  {s.stepId}
+                  {s.flaky && (
+                    <span className="ml-2">
+                      <Chip tone="warn">flaky</Chip>
+                    </span>
                   )}
-                  {s.exploreLog?.map((rnd) => (
-                    <div key={rnd.round} className="font-mono text-[11px] text-muted-foreground">
-                      Round {rnd.round}
-                      {rnd.rationale ? ` — ${rnd.rationale}` : ""}
-                      {(rnd.actions ?? []).map((a, i) => (
-                        <span key={i} className="ml-2">
-                          [{a.outcome}] {a.action}
-                          {a.intent ? `: ${a.intent}` : ""}
-                        </span>
-                      ))}
-                    </div>
-                  ))}
+                </td>
+                <td className="px-5 py-3 text-xs">{s.journeyId}</td>
+                <td className="px-5 py-3">
+                  <div>{s.action}</div>
+                  {s.action === "explore" && s.exploreSummary && (
+                    <p className="text-xs text-muted-foreground mt-1 max-w-md whitespace-pre-wrap">
+                      {s.exploreSummary}
+                    </p>
+                  )}
+                </td>
+                <td className="px-5 py-3">
+                  <Chip
+                    tone={
+                      s.outcome === "pass"
+                        ? "ready"
+                        : s.outcome === "partial"
+                          ? "warn"
+                          : s.outcome === "fail"
+                            ? "danger"
+                            : "neutral"
+                    }
+                  >
+                    {s.outcome}
+                  </Chip>
+                </td>
+                <td className="px-5 py-3 font-mono text-xs text-muted-foreground">
+                  {formatDurationMs(s.durationMs)}
+                </td>
+                <td className="px-5 py-3 font-mono text-xs max-w-[200px] truncate text-muted-foreground">
+                  {(s.finalUrl ?? s.requestedUrl ?? "—").slice(0, 60)}
                 </td>
               </tr>
-            ) : null}
+              {s.action === "explore" && (s.exploreLog?.length || s.exploreSummary) ? (
+                <tr key={`${s.stepId}-explore`} className="border-b border-border last:border-0">
+                  <td colSpan={6} className="px-5 py-3 bg-surface-2/40 text-xs space-y-2">
+                    {s.exploreSummary && (
+                      <p className="text-sm leading-relaxed">{s.exploreSummary}</p>
+                    )}
+                    {s.exploreLog?.map((rnd) => (
+                      <div key={rnd.round} className="font-mono text-[11px] text-muted-foreground">
+                        Round {rnd.round}
+                        {rnd.rationale ? ` — ${rnd.rationale}` : ""}
+                        {(rnd.actions ?? []).map((a, i) => (
+                          <span key={i} className="ml-2">
+                            [{a.outcome}] {a.action}
+                            {a.intent ? `: ${a.intent}` : ""}
+                          </span>
+                        ))}
+                      </div>
+                    ))}
+                  </td>
+                </tr>
+              ) : null}
             </Fragment>
           ))}
         </tbody>
@@ -321,7 +321,11 @@ export function DiffPanel({ runA, runB }: { runA: string; runB: string }) {
         <Panel className="p-4 md:p-5 space-y-3 border-primary/20 bg-primary/5">
           <div className="flex items-center gap-2 flex-wrap">
             <div className="font-display font-semibold">What changed</div>
-            <Chip tone={cn.verdict === "improved" ? "ready" : cn.verdict === "regressed" ? "danger" : "warn"}>
+            <Chip
+              tone={
+                cn.verdict === "improved" ? "ready" : cn.verdict === "regressed" ? "danger" : "warn"
+              }
+            >
               {cn.verdict}
             </Chip>
             <Chip tone="neutral">{cn.source === "llm+template" ? "AI + rules" : "Rules"}</Chip>

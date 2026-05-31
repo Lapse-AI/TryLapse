@@ -34,7 +34,12 @@ import {
   type Severity,
   type Issue,
 } from "@/lib/mock-data";
-import { flakyStepsHint, formatAgentCostDisplay, READINESS_BAND_HELP, displayAgentSummary } from "@/lib/run-metrics";
+import {
+  flakyStepsHint,
+  formatAgentCostDisplay,
+  READINESS_BAND_HELP,
+  displayAgentSummary,
+} from "@/lib/run-metrics";
 import { useRunBundle, useRunSummaries } from "@/lib/api/hooks";
 import {
   Dialog,
@@ -605,7 +610,9 @@ function RunDetail() {
                         <span>{formatDuration(a.durationSec)}</span>
                         <span>${a.costUsd.toFixed(2)}</span>
                       </div>
-                      <p className="text-xs mt-2 text-foreground/80">{displayAgentSummary(a.lastSummary)}</p>
+                      <p className="text-xs mt-2 text-foreground/80">
+                        {displayAgentSummary(a.lastSummary)}
+                      </p>
                     </div>
                   ))}
               </div>

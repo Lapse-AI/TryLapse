@@ -146,9 +146,7 @@ function InitPage() {
   const handleGenerate = (opts?: { dogfood?: boolean }) => {
     if (!targetUrl || !live) return;
     const dogfood = opts?.dogfood ?? selfTest;
-    const selectedViewports = (
-      Object.entries(viewports) as [keyof typeof viewports, boolean][]
-    )
+    const selectedViewports = (Object.entries(viewports) as [keyof typeof viewports, boolean][])
       .filter(([, on]) => on)
       .map(([name]) => name);
     saveConfig.mutate(
@@ -337,7 +335,9 @@ function InitPage() {
             />
           </div>
           <fieldset className="space-y-2">
-            <legend className="text-xs text-muted-foreground">Viewport profiles (browser replay)</legend>
+            <legend className="text-xs text-muted-foreground">
+              Viewport profiles (browser replay)
+            </legend>
             {(["desktop", "tablet", "mobile"] as const).map((vp) => (
               <label key={vp} htmlFor={`init-vp-${vp}`} className="flex items-center gap-2 text-sm">
                 <input

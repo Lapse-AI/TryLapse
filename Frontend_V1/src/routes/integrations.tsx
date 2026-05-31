@@ -52,12 +52,12 @@ function IntegrationsPage() {
               <div className="flex items-center gap-2 shrink-0">
                 <Chip tone={tone}>{it.status}</Chip>
                 <VisionOnly section="integrations.connectButtons">
-                <button
-                  type="button"
-                  className="text-xs font-mono px-3 py-1.5 rounded border border-border hover:bg-surface-2"
-                >
-                  {it.status === "connected" ? "manage" : "connect"}
-                </button>
+                  <button
+                    type="button"
+                    className="text-xs font-mono px-3 py-1.5 rounded border border-border hover:bg-surface-2"
+                  >
+                    {it.status === "connected" ? "manage" : "connect"}
+                  </button>
                 </VisionOnly>
               </div>
             </Panel>

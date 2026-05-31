@@ -18,8 +18,7 @@ function RunnerPage() {
   const [useLlm, setUseLlm] = useState(true);
 
   const selfConfig =
-    configs.find((c) => c.id === "lr-self") ??
-    configs.find((c) => c.id === "self-dashboard");
+    configs.find((c) => c.id === "lr-self") ?? configs.find((c) => c.id === "self-dashboard");
 
   const runSelfTest = () => {
     if (!selfConfig) {
@@ -55,46 +54,46 @@ function RunnerPage() {
             LLM enrichment (personas + summaries) — reads DEEPSEEK_API_KEY from repo .env
           </label>
           <div className="flex flex-wrap gap-3 items-center">
-          <button
-            type="button"
-            disabled={!live || trigger.isPending || !selfConfig}
-            onClick={runSelfTest}
-            className="text-xs px-4 py-2 rounded-md border border-primary/50 bg-primary/10 inline-flex items-center gap-2 disabled:opacity-50"
-          >
-            {trigger.isPending ? (
-              <Loader2 className="size-3.5 animate-spin" />
-            ) : (
-              <FlaskConical className="size-3.5" />
+            <button
+              type="button"
+              disabled={!live || trigger.isPending || !selfConfig}
+              onClick={runSelfTest}
+              className="text-xs px-4 py-2 rounded-md border border-primary/50 bg-primary/10 inline-flex items-center gap-2 disabled:opacity-50"
+            >
+              {trigger.isPending ? (
+                <Loader2 className="size-3.5 animate-spin" />
+              ) : (
+                <FlaskConical className="size-3.5" />
+              )}
+              Run self-test (this UI)
+            </button>
+            <button
+              type="button"
+              disabled={!live || trigger.isPending}
+              onClick={() => trigger.mutate({ mode: "run", llm: useLlm })}
+              className="text-xs px-4 py-2 rounded-md bg-primary text-primary-foreground inline-flex items-center gap-2 disabled:opacity-50"
+            >
+              {trigger.isPending ? (
+                <Loader2 className="size-3.5 animate-spin" />
+              ) : (
+                <Play className="size-3.5" />
+              )}
+              Run full rehearsal
+            </button>
+            <button
+              type="button"
+              disabled={!live || trigger.isPending}
+              onClick={() => trigger.mutate({ mode: "crawl" })}
+              className="text-xs px-4 py-2 rounded-md border border-border inline-flex items-center gap-2 disabled:opacity-50"
+            >
+              <Network className="size-3.5" /> Crawl only
+            </button>
+            {!live && (
+              <Chip tone="warn">Start API: rehearse serve -o launch-rehearsal/artifacts</Chip>
             )}
-            Run self-test (this UI)
-          </button>
-          <button
-            type="button"
-            disabled={!live || trigger.isPending}
-            onClick={() => trigger.mutate({ mode: "run", llm: useLlm })}
-            className="text-xs px-4 py-2 rounded-md bg-primary text-primary-foreground inline-flex items-center gap-2 disabled:opacity-50"
-          >
-            {trigger.isPending ? (
-              <Loader2 className="size-3.5 animate-spin" />
-            ) : (
-              <Play className="size-3.5" />
+            {live && !selfConfig && (
+              <Chip tone="warn">Self-test config missing — open Init → Dogfood</Chip>
             )}
-            Run full rehearsal
-          </button>
-          <button
-            type="button"
-            disabled={!live || trigger.isPending}
-            onClick={() => trigger.mutate({ mode: "crawl" })}
-            className="text-xs px-4 py-2 rounded-md border border-border inline-flex items-center gap-2 disabled:opacity-50"
-          >
-            <Network className="size-3.5" /> Crawl only
-          </button>
-          {!live && (
-            <Chip tone="warn">Start API: rehearse serve -o launch-rehearsal/artifacts</Chip>
-          )}
-          {live && !selfConfig && (
-            <Chip tone="warn">Self-test config missing — open Init → Dogfood</Chip>
-          )}
           </div>
         </Panel>
 

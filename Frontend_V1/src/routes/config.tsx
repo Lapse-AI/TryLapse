@@ -106,118 +106,126 @@ function Config() {
         </div>
 
         <VisionOnly section="config.yamlEditor">
-        <Panel className="overflow-hidden">
-          <div className="p-4 border-b border-border flex items-center justify-between flex-wrap gap-2">
-            <div className="text-xs text-muted-foreground">YAML editor · journey DSL validator</div>
-            <div className="flex gap-2">
-              <Chip tone="ready">valid</Chip>
-              <button
-                type="button"
-                className="text-xs font-mono px-3 py-1 rounded border border-border hover:bg-surface-2"
-              >
-                validate
-              </button>
-              <button
-                type="button"
-                className="text-xs font-mono px-3 py-1 rounded bg-primary text-primary-foreground"
-              >
-                save · v15
-              </button>
+          <Panel className="overflow-hidden">
+            <div className="p-4 border-b border-border flex items-center justify-between flex-wrap gap-2">
+              <div className="text-xs text-muted-foreground">
+                YAML editor · journey DSL validator
+              </div>
+              <div className="flex gap-2">
+                <Chip tone="ready">valid</Chip>
+                <button
+                  type="button"
+                  className="text-xs font-mono px-3 py-1 rounded border border-border hover:bg-surface-2"
+                >
+                  validate
+                </button>
+                <button
+                  type="button"
+                  className="text-xs font-mono px-3 py-1 rounded bg-primary text-primary-foreground"
+                >
+                  save · v15
+                </button>
+              </div>
             </div>
-          </div>
-          <pre className="p-5 text-[12.5px] font-mono leading-relaxed overflow-x-auto bg-surface-2/30 text-foreground/95">
-            {yaml}
-          </pre>
-        </Panel>
+            <pre className="p-5 text-[12.5px] font-mono leading-relaxed overflow-x-auto bg-surface-2/30 text-foreground/95">
+              {yaml}
+            </pre>
+          </Panel>
         </VisionOnly>
 
         <VisionOnly section="config.personasEditor">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Panel className="p-5">
-            <div className="text-xs text-muted-foreground mb-3">Personas · 3–7 configurable</div>
-            <div className="space-y-3">
-              {personas.map((p) => (
-                <div key={p.id} className="border border-border rounded-lg p-3">
-                  <div className="flex items-center justify-between">
-                    <div className="font-medium">{p.name}</div>
-                    <Chip
-                      tone={
-                        p.patience === "low" ? "danger" : p.patience === "medium" ? "warn" : "ready"
-                      }
-                    >
-                      {p.patience} patience
-                    </Chip>
-                  </div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    {p.role} — goal: {p.goal}
-                  </div>
-                  {p.stressFactors && (
-                    <div className="text-[10px] font-mono text-muted-foreground mt-1">
-                      stress: {p.stressFactors.join(", ")}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Panel className="p-5">
+              <div className="text-xs text-muted-foreground mb-3">Personas · 3–7 configurable</div>
+              <div className="space-y-3">
+                {personas.map((p) => (
+                  <div key={p.id} className="border border-border rounded-lg p-3">
+                    <div className="flex items-center justify-between">
+                      <div className="font-medium">{p.name}</div>
+                      <Chip
+                        tone={
+                          p.patience === "low"
+                            ? "danger"
+                            : p.patience === "medium"
+                              ? "warn"
+                              : "ready"
+                        }
+                      >
+                        {p.patience} patience
+                      </Chip>
                     </div>
-                  )}
+                    <div className="text-xs text-muted-foreground mt-1">
+                      {p.role} — goal: {p.goal}
+                    </div>
+                    {p.stressFactors && (
+                      <div className="text-[10px] font-mono text-muted-foreground mt-1">
+                        stress: {p.stressFactors.join(", ")}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </Panel>
+
+            <Panel className="p-5 space-y-5">
+              <VisionOnly section="config.secretsVault">
+                <div>
+                  <div className="text-xs text-muted-foreground mb-3">
+                    Environment secrets · REHEARSE_*
+                  </div>
+                  <div className="space-y-2 font-mono text-sm">
+                    {[
+                      "REHEARSE_EMAIL",
+                      "REHEARSE_PASSWORD",
+                      "NVIDIA_NIM_API_KEY",
+                      "OPENAI_API_KEY",
+                    ].map((s) => (
+                      <div
+                        key={s}
+                        className="flex items-center justify-between border border-border rounded-md px-3 py-2"
+                      >
+                        <span className="text-xs">{s}</span>
+                        <Chip tone="ready">set</Chip>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </VisionOnly>
+              <VisionOnly section="config.agentToggles">
+                <div>
+                  <div className="text-xs text-muted-foreground mb-2">Agent toggles</div>
+                  <div className="flex flex-wrap gap-1">
+                    {[...agentConfigDefaults.enabled, ...agentConfigDefaults.optional].map((a) => (
+                      <Chip
+                        key={a}
+                        tone={agentConfigDefaults.enabled.includes(a) ? "ready" : "neutral"}
+                      >
+                        {a}
+                      </Chip>
+                    ))}
+                  </div>
+                </div>
+              </VisionOnly>
+            </Panel>
+          </div>
+        </VisionOnly>
+
+        <VisionOnly section="config.auditLog">
+          <Panel className="p-5">
+            <div className="text-xs text-muted-foreground mb-3">
+              Audit log · who ran, who viewed
+            </div>
+            <div className="divide-y divide-border text-sm font-mono">
+              {auditLog.map((e, i) => (
+                <div key={i} className="py-2 flex justify-between gap-4">
+                  <span>
+                    {e.at.slice(0, 19)} · {e.who} · {e.action}
+                  </span>
+                  <span className="text-muted-foreground">{e.target}</span>
                 </div>
               ))}
             </div>
           </Panel>
-
-          <Panel className="p-5 space-y-5">
-            <VisionOnly section="config.secretsVault">
-            <div>
-              <div className="text-xs text-muted-foreground mb-3">
-                Environment secrets · REHEARSE_*
-              </div>
-              <div className="space-y-2 font-mono text-sm">
-                {[
-                  "REHEARSE_EMAIL",
-                  "REHEARSE_PASSWORD",
-                  "NVIDIA_NIM_API_KEY",
-                  "OPENAI_API_KEY",
-                ].map((s) => (
-                  <div
-                    key={s}
-                    className="flex items-center justify-between border border-border rounded-md px-3 py-2"
-                  >
-                    <span className="text-xs">{s}</span>
-                    <Chip tone="ready">set</Chip>
-                  </div>
-                ))}
-              </div>
-            </div>
-            </VisionOnly>
-            <VisionOnly section="config.agentToggles">
-            <div>
-              <div className="text-xs text-muted-foreground mb-2">Agent toggles</div>
-              <div className="flex flex-wrap gap-1">
-                {[...agentConfigDefaults.enabled, ...agentConfigDefaults.optional].map((a) => (
-                  <Chip
-                    key={a}
-                    tone={agentConfigDefaults.enabled.includes(a) ? "ready" : "neutral"}
-                  >
-                    {a}
-                  </Chip>
-                ))}
-              </div>
-            </div>
-            </VisionOnly>
-          </Panel>
-        </div>
-        </VisionOnly>
-
-        <VisionOnly section="config.auditLog">
-        <Panel className="p-5">
-          <div className="text-xs text-muted-foreground mb-3">Audit log · who ran, who viewed</div>
-          <div className="divide-y divide-border text-sm font-mono">
-            {auditLog.map((e, i) => (
-              <div key={i} className="py-2 flex justify-between gap-4">
-                <span>
-                  {e.at.slice(0, 19)} · {e.who} · {e.action}
-                </span>
-                <span className="text-muted-foreground">{e.target}</span>
-              </div>
-            ))}
-          </div>
-        </Panel>
         </VisionOnly>
       </div>
     </div>

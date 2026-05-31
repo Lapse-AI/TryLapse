@@ -31,12 +31,12 @@ function Agents() {
         description="Each rehearsal is a chain of specialized agents. Inspect handoffs, replay stages, configure LLM persona agents."
         actions={
           <VisionOnly section="agents.configurePanel">
-          <button
-            type="button"
-            className="text-xs font-mono px-3 py-1.5 rounded-md border border-border hover:bg-surface-2 inline-flex items-center gap-1.5"
-          >
-            <Sliders className="size-3.5" /> configure
-          </button>
+            <button
+              type="button"
+              className="text-xs font-mono px-3 py-1.5 rounded-md border border-border hover:bg-surface-2 inline-flex items-center gap-1.5"
+            >
+              <Sliders className="size-3.5" /> configure
+            </button>
           </VisionOnly>
         }
       />
@@ -76,28 +76,29 @@ function Agents() {
         </Panel>
 
         <VisionOnly section="agents.llmConfigDefaults">
-        <Panel className="p-5 grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div>
-            <div className="text-xs text-muted-foreground">LLM provider</div>
-            <div className="font-mono text-sm mt-1">{agentConfigDefaults.llmProvider}</div>
-          </div>
-          <div>
-            <div className="text-xs text-muted-foreground">Model</div>
-            <div className="font-mono text-xs mt-1 truncate">{agentConfigDefaults.llmModel}</div>
-          </div>
-          <div>
-            <div className="text-xs text-muted-foreground">Crawl budget</div>
-            <div className="font-mono text-sm mt-1">
-              {agentConfigDefaults.crawlMaxPages} pages · depth {agentConfigDefaults.crawlMaxDepth}
+          <Panel className="p-5 grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div>
+              <div className="text-xs text-muted-foreground">LLM provider</div>
+              <div className="font-mono text-sm mt-1">{agentConfigDefaults.llmProvider}</div>
             </div>
-          </div>
-          <div>
-            <div className="text-xs text-muted-foreground">Strict enterprise</div>
-            <div className="font-mono text-sm mt-1 text-ready">
-              {agentConfigDefaults.strictEnterpriseMode ? "on" : "off"}
+            <div>
+              <div className="text-xs text-muted-foreground">Model</div>
+              <div className="font-mono text-xs mt-1 truncate">{agentConfigDefaults.llmModel}</div>
             </div>
-          </div>
-        </Panel>
+            <div>
+              <div className="text-xs text-muted-foreground">Crawl budget</div>
+              <div className="font-mono text-sm mt-1">
+                {agentConfigDefaults.crawlMaxPages} pages · depth{" "}
+                {agentConfigDefaults.crawlMaxDepth}
+              </div>
+            </div>
+            <div>
+              <div className="text-xs text-muted-foreground">Strict enterprise</div>
+              <div className="font-mono text-sm mt-1 text-ready">
+                {agentConfigDefaults.strictEnterpriseMode ? "on" : "off"}
+              </div>
+            </div>
+          </Panel>
         </VisionOnly>
 
         <Panel className="overflow-hidden">
@@ -150,18 +151,18 @@ function Agents() {
                     </div>
                     <div className="mt-2 flex gap-1 justify-end">
                       <VisionOnly section="agents.replayFindings">
-                      <button
-                        type="button"
-                        className="text-[11px] font-mono px-2 py-1 rounded border border-border hover:bg-surface-2 inline-flex items-center gap-1"
-                      >
-                        <RotateCw className="size-3" /> replay
-                      </button>
-                      <button
-                        type="button"
-                        className="text-[11px] font-mono px-2 py-1 rounded border border-border hover:bg-surface-2 inline-flex items-center gap-1"
-                      >
-                        <MessageSquare className="size-3" /> findings
-                      </button>
+                        <button
+                          type="button"
+                          className="text-[11px] font-mono px-2 py-1 rounded border border-border hover:bg-surface-2 inline-flex items-center gap-1"
+                        >
+                          <RotateCw className="size-3" /> replay
+                        </button>
+                        <button
+                          type="button"
+                          className="text-[11px] font-mono px-2 py-1 rounded border border-border hover:bg-surface-2 inline-flex items-center gap-1"
+                        >
+                          <MessageSquare className="size-3" /> findings
+                        </button>
                       </VisionOnly>
                     </div>
                   </div>
