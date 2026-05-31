@@ -9,12 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Sprint 2 UI: live command-center KPIs from `/api/trends`, workflow map from run bundle, delights from latest run, issue annotation agree/disagree/false-positive actions
+- Sprint 1 UI: export artifact downloads, compare run selectors wired to `/api/diff`, evidence copy-repro and step timeline deep links
 - GitHub Flow repo foundation: CI, PR checks, release workflow, issue/PR templates
 - Python unit tests for DSL, preflight SSRF guards, and flaky heuristics
 - `CONTRIBUTING.md`, `CODEOWNERS`, Dependabot config
 
 ### Changed
 
+- Workflows and recommendations pages use live run bundle data instead of mock Acme fixtures
 - `FEATURE_SCOPE.md` reorganized for SELECTIVE EXPANSION execution plan
 
 ## [0.1.0] - 2026-05-31

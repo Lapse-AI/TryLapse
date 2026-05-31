@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { z } from "zod";
 import {
   PageHeader,
   Panel,
@@ -19,6 +20,7 @@ import {
   ScreenshotGallery,
   DiffPanel,
   AnnotationsPanel,
+  IssueAnnotationActions,
   ExportMenu,
 } from "@/components/run-detail";
 import {
@@ -52,7 +54,13 @@ import {
   GitBranch,
 } from "lucide-react";
 
+const searchSchema = z.object({
+  tab: z.string().optional(),
+  step: z.string().optional(),
+});
+
 export const Route = createFileRoute("/runs/$runId")({
+  validateSearch: searchSchema,
   head: ({ params }) => ({ meta: [{ title: `${params.runId} — Run detail` }] }),
   component: RunDetail,
   notFoundComponent: () => (
@@ -138,10 +146,23 @@ function MatrixCellDialog({
 
 function RunDetail() {
   const { runId } = Route.useParams();
+  const { tab: tabSearch, step: highlightStepId } = Route.useSearch();
+  const navigate = Route.useNavigate();
   const { data: bundle, isLoading } = useRunBundle(runId);
   const { data: runSummaries = [] } = useRunSummaries();
   const [active, setActive] = useState<Set<Severity>>(new Set(ALL_SEVERITIES));
   const [compareRunId, setCompareRunId] = useState(runSummaries[1]?.id ?? "");
+  const [activeTab, setActiveTab] = useState(tabSearch ?? "overview");
+
+  useEffect(() => {
+    if (tabSearch) setActiveTab(tabSearch);
+  }, [tabSearch]);
+
+  useEffect(() => {
+    if (!highlightStepId || activeTab !== "steps") return;
+    const el = document.getElementById(`step-${highlightStepId}`);
+    el?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [highlightStepId, activeTab, bundle?.steps.length]);
 
   if (isLoading || !bundle) {
     return <div className="p-12 text-center text-muted-foreground">Loading run…</div>;
@@ -203,7 +224,7 @@ function RunDetail() {
             >
               <GitCompare className="size-3.5" /> Diff
             </Link>
-            <ExportMenu />
+            <ExportMenu runId={run.id} bundle={bundle} />
           </>
         }
       />
@@ -234,7 +255,20 @@ function RunDetail() {
           />
         </div>
 
-        <Tabs defaultValue="overview" className="space-y-4">
+        <Tabs
+          value={activeTab}
+          onValueChange={(v) => {
+            setActiveTab(v);
+            void navigate({
+              search: (prev) => ({
+                ...prev,
+                tab: v === "overview" ? undefined : v,
+                step: v === "steps" ? prev.step : undefined,
+              }),
+            });
+          }}
+          className="space-y-4"
+        >
           <TabsList className="flex flex-wrap h-auto gap-1 bg-surface-2 p-1">
             <TabsTrigger value="overview" className="text-xs">
               Overview
@@ -404,39 +438,53 @@ function RunDetail() {
                     No findings match the active filters.
                   </div>
                 ) : (
-                  filtered.map((i) => (
-                    <div key={i.id} className="p-5 hover:bg-surface-2/30">
-                      <div className="flex items-start gap-3">
-                        <SeverityChip s={i.severity} />
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <h3 className="font-medium">{i.title}</h3>
-                            <Chip>{i.dimension}</Chip>
-                            <Chip tone={i.confidence === "high" ? "info" : "warn"}>
-                              {i.confidence}
-                            </Chip>
-                            <Chip>owner · {i.owner}</Chip>
-                            {i.recurring > 1 && <Chip tone="danger">recurring ×{i.recurring}</Chip>}
+                  filtered.map((i) => {
+                    const issueAnnotation = bundle.annotations.find(
+                      (a) => a.targetType === "issue" && a.targetId === i.id,
+                    );
+                    return (
+                      <div key={i.id} className="p-5 hover:bg-surface-2/30">
+                        <div className="flex items-start gap-3">
+                          <SeverityChip s={i.severity} />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <h3 className="font-medium">{i.title}</h3>
+                              <Chip>{i.dimension}</Chip>
+                              <Chip tone={i.confidence === "high" ? "info" : "warn"}>
+                                {i.confidence}
+                              </Chip>
+                              <Chip>owner · {i.owner}</Chip>
+                              {i.recurring > 1 && (
+                                <Chip tone="danger">recurring ×{i.recurring}</Chip>
+                              )}
+                            </div>
+                            <p className="text-sm text-muted-foreground mt-2 font-mono">
+                              {i.evidence}
+                            </p>
+                            <div className="text-xs text-muted-foreground mt-2">
+                              {i.persona} · {i.journey} ·{" "}
+                              <span className="font-mono">{i.stepId}</span>
+                            </div>
                           </div>
-                          <p className="text-sm text-muted-foreground mt-2 font-mono">
-                            {i.evidence}
-                          </p>
-                          <div className="text-xs text-muted-foreground mt-2">
-                            {i.persona} · {i.journey} ·{" "}
-                            <span className="font-mono">{i.stepId}</span>
+                          <div className="flex flex-col items-end gap-2 shrink-0">
+                            <IssueAnnotationActions
+                              runId={run.id}
+                              issue={i}
+                              existing={issueAnnotation}
+                            />
+                            <EvidenceDialog issue={i} runId={run.id}>
+                              <button
+                                type="button"
+                                className="text-[11px] text-muted-foreground hover:text-foreground inline-flex items-center gap-1 px-2 py-1 rounded-md border border-border hover:bg-surface-2"
+                              >
+                                <ImageIcon className="size-3" /> Evidence
+                              </button>
+                            </EvidenceDialog>
                           </div>
                         </div>
-                        <EvidenceDialog issue={i}>
-                          <button
-                            type="button"
-                            className="text-[11px] text-muted-foreground hover:text-foreground inline-flex items-center gap-1 px-2 py-1 rounded-md border border-border hover:bg-surface-2 shrink-0"
-                          >
-                            <ImageIcon className="size-3" /> Evidence
-                          </button>
-                        </EvidenceDialog>
                       </div>
-                    </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
             </Panel>
@@ -519,7 +567,7 @@ function RunDetail() {
           </TabsContent>
           <TabsContent value="steps">
             <Panel className="overflow-hidden">
-              <StepsTable steps={bundle.steps} />
+              <StepsTable steps={bundle.steps} highlightStepId={highlightStepId} />
             </Panel>
           </TabsContent>
           <TabsContent value="sitemap">
@@ -555,7 +603,7 @@ function RunDetail() {
           </TabsContent>
           <TabsContent value="annotations">
             <Panel className="overflow-hidden">
-              <AnnotationsPanel annotations={bundle.annotations} />
+              <AnnotationsPanel runId={run.id} annotations={bundle.annotations} />
             </Panel>
           </TabsContent>
         </Tabs>

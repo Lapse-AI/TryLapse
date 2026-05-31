@@ -1,8 +1,18 @@
+import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { Panel, Chip, SeverityChip } from "@/components/ui-bits";
-import type { Annotation, Issue, StepSnapshot } from "@/lib/mock-data";
+import type { Annotation, Issue, RunBundle, StepSnapshot } from "@/lib/mock-data";
 import { formatDurationMs } from "@/lib/mock-data";
 import { artifactUrl } from "@/lib/api/client";
-import { useRunDiff } from "@/lib/api/hooks";
+import { useAddAnnotation, useRunDiff } from "@/lib/api/hooks";
+import {
+  copyReproToClipboard,
+  downloadArtifact,
+  downloadRunBundleArtifacts,
+  EXPORT_ITEMS,
+  runArtifactRelPath,
+} from "@/lib/run-export";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -14,7 +24,29 @@ import {
 } from "@/components/ui/dialog";
 import { Camera } from "lucide-react";
 
-export function EvidenceDialog({ issue, children }: { issue: Issue; children: React.ReactNode }) {
+export function EvidenceDialog({
+  issue,
+  runId,
+  children,
+}: {
+  issue: Issue;
+  runId: string;
+  children: React.ReactNode;
+}) {
+  const [copying, setCopying] = useState(false);
+
+  const handleCopyRepro = async () => {
+    setCopying(true);
+    try {
+      await copyReproToClipboard(issue, runId);
+      toast.success("Repro copied to clipboard");
+    } catch {
+      toast.error("Could not copy repro");
+    } finally {
+      setCopying(false);
+    }
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -89,23 +121,33 @@ export function EvidenceDialog({ issue, children }: { issue: Issue; children: Re
         <DialogFooter>
           <button
             type="button"
-            className="text-xs px-3 py-1.5 rounded-md border border-border hover:bg-surface-2"
+            disabled={copying}
+            onClick={() => void handleCopyRepro()}
+            className="text-xs px-3 py-1.5 rounded-md border border-border hover:bg-surface-2 disabled:opacity-50"
           >
-            Copy repro
+            {copying ? "Copying…" : "Copy repro"}
           </button>
-          <button
-            type="button"
-            className="text-xs px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:opacity-90"
+          <Link
+            to="/runs/$runId"
+            params={{ runId }}
+            search={{ tab: "steps", step: issue.stepId }}
+            className="text-xs px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:opacity-90 inline-flex items-center"
           >
             Open in step timeline
-          </button>
+          </Link>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 }
 
-export function StepsTable({ steps }: { steps: StepSnapshot[] }) {
+export function StepsTable({
+  steps,
+  highlightStepId,
+}: {
+  steps: StepSnapshot[];
+  highlightStepId?: string;
+}) {
   if (!steps.length) {
     return (
       <div className="p-8 text-center text-sm text-muted-foreground">
@@ -130,7 +172,10 @@ export function StepsTable({ steps }: { steps: StepSnapshot[] }) {
           {steps.map((s) => (
             <tr
               key={s.stepId}
-              className="border-b border-border last:border-0 hover:bg-surface-2/30"
+              id={`step-${s.stepId}`}
+              className={`border-b border-border last:border-0 hover:bg-surface-2/30 ${
+                highlightStepId === s.stepId ? "bg-primary/10 ring-1 ring-primary/30" : ""
+              }`}
             >
               <td className="px-5 py-3 font-mono text-xs">
                 {s.stepId}
@@ -291,7 +336,13 @@ export function DiffPanel({ runA, runB }: { runA: string; runB: string }) {
   );
 }
 
-export function AnnotationsPanel({ annotations }: { annotations: Annotation[] }) {
+export function AnnotationsPanel({
+  runId: _runId,
+  annotations,
+}: {
+  runId: string;
+  annotations: Annotation[];
+}) {
   if (!annotations.length) {
     return (
       <div className="p-8 text-center text-sm text-muted-foreground">
@@ -332,7 +383,110 @@ export function AnnotationsPanel({ annotations }: { annotations: Annotation[] })
   );
 }
 
-export function ExportMenu() {
+type AnnotationAction = Extract<Annotation["action"], "agreed" | "disagree" | "false positive">;
+
+const ANNOTATION_ACTIONS: {
+  action: AnnotationAction;
+  label: string;
+  tone: "ready" | "info" | "warn";
+}[] = [
+  { action: "agreed", label: "Agree", tone: "ready" },
+  { action: "disagree", label: "Disagree", tone: "info" },
+  { action: "false positive", label: "False positive", tone: "warn" },
+];
+
+export function IssueAnnotationActions({
+  runId,
+  issue,
+  existing,
+}: {
+  runId: string;
+  issue: Issue;
+  existing?: Annotation;
+}) {
+  const addAnnotation = useAddAnnotation(runId);
+
+  const submit = (action: AnnotationAction) => {
+    const ann: Annotation = {
+      id: `ann_${Date.now()}`,
+      runId,
+      targetType: "issue",
+      targetId: issue.id,
+      action,
+      author: "operator",
+      at: new Date().toISOString(),
+    };
+    addAnnotation.mutate(ann, {
+      onSuccess: () => toast.success(`Marked ${action}`),
+      onError: () => toast.error("Could not save annotation"),
+    });
+  };
+
+  if (existing) {
+    return (
+      <Chip
+        tone={
+          existing.action === "agreed"
+            ? "ready"
+            : existing.action === "false positive"
+              ? "warn"
+              : "info"
+        }
+      >
+        {existing.action}
+      </Chip>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-1 shrink-0">
+      {ANNOTATION_ACTIONS.map(({ action, label, tone }) => (
+        <button
+          key={action}
+          type="button"
+          disabled={addAnnotation.isPending}
+          onClick={() => submit(action)}
+          className="text-[10px] font-mono px-2 py-1 rounded-md border border-border hover:bg-surface-2 disabled:opacity-50"
+          style={{ color: `var(--${tone})` }}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+export function ExportMenu({ runId, bundle }: { runId: string; bundle: RunBundle }) {
+  const [busy, setBusy] = useState<string | null>(null);
+
+  const downloadOne = async (kind: (typeof EXPORT_ITEMS)[number]["kind"], label: string) => {
+    setBusy(label);
+    try {
+      await downloadArtifact(runArtifactRelPath(runId, kind), `${runId}-${label}`);
+      toast.success(`Downloaded ${label}`);
+    } catch {
+      toast.error(`Could not download ${label} — is ./rehearse serve running?`);
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const downloadAll = async () => {
+    setBusy("all");
+    try {
+      const { ok, failed } = await downloadRunBundleArtifacts(bundle);
+      if (failed.length) {
+        toast.warning(`Downloaded ${ok} files; missing: ${failed.slice(0, 5).join(", ")}`);
+      } else {
+        toast.success(`Downloaded ${ok} artifacts`);
+      }
+    } catch {
+      toast.error("Bulk download failed");
+    } finally {
+      setBusy(null);
+    }
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -346,32 +500,37 @@ export function ExportMenu() {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Export run artifacts</DialogTitle>
-          <DialogDescription>Same files the CLI writes under artifacts/</DialogDescription>
+          <DialogDescription>
+            Files from launch-rehearsal/artifacts/ — served at /files/ when rehearse serve is
+            running.
+          </DialogDescription>
         </DialogHeader>
         <div className="space-y-2">
-          {[
-            "scorecard.md",
-            "run.json",
-            "sitemap.json",
-            "sitemap.md",
-            "analysis.json",
-            "screenshots.zip",
-          ].map((f) => (
+          {EXPORT_ITEMS.map(({ kind, label }) => (
             <button
-              key={f}
+              key={label}
               type="button"
-              className="w-full text-left px-3 py-2 rounded-md border border-border hover:bg-surface-2 font-mono text-sm"
+              disabled={busy !== null}
+              onClick={() => void downloadOne(kind, label)}
+              className="w-full text-left px-3 py-2 rounded-md border border-border hover:bg-surface-2 font-mono text-sm disabled:opacity-50"
             >
-              {f}
+              {busy === label ? `Downloading ${label}…` : label}
             </button>
           ))}
+          {bundle.screenshots.length > 0 && (
+            <p className="text-[11px] text-muted-foreground px-1 pt-1">
+              Download all includes {bundle.screenshots.length} PNG screenshots (no zip yet).
+            </p>
+          )}
         </div>
         <DialogFooter>
           <button
             type="button"
-            className="text-xs px-3 py-1.5 rounded-md bg-primary text-primary-foreground"
+            disabled={busy !== null}
+            onClick={() => void downloadAll()}
+            className="text-xs px-3 py-1.5 rounded-md bg-primary text-primary-foreground disabled:opacity-50"
           >
-            Download all
+            {busy === "all" ? "Downloading…" : "Download all"}
           </button>
         </DialogFooter>
       </DialogContent>

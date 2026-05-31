@@ -57,6 +57,36 @@ function Index() {
   const topBlocker = bundle.issues.find((i) => i.severity === "P0") ?? bundle.issues[0];
   const topDelight = bundle.delights[0];
 
+  const recurringCount = bundle.issues.filter((i) => i.recurring > 1).length;
+  const flakeRates = trends?.flakeRate ?? [];
+  const recentFlake = flakeRates.slice(-7);
+  const flakeValue =
+    recentFlake.length > 0
+      ? recentFlake.at(-1)!
+      : bundle.steps.length
+        ? Math.round((bundle.steps.filter((s) => s.flaky).length / bundle.steps.length) * 1000) / 10
+        : 0;
+  const priorFlake = flakeRates.length >= 2 ? flakeRates.at(-2)! : null;
+  const flakeDelta = priorFlake !== null ? Math.round((flakeValue - priorFlake) * 10) / 10 : null;
+  const flakeHint =
+    flakeRates.length >= 2 && flakeDelta !== null
+      ? `${flakeDelta >= 0 ? "+" : ""}${flakeDelta}% vs prior run`
+      : flakeRates.length > 0
+        ? `over ${flakeRates.length} run${flakeRates.length === 1 ? "" : "s"}`
+        : "single run";
+  const flakeTone = flakeValue <= 2 ? "ready" : flakeValue <= 5 ? "warn" : "danger";
+
+  const recurringHint =
+    recurringCount === 0
+      ? "none recurring across runs"
+      : recurringCount === 1
+        ? "1 issue seen in multiple runs"
+        : `${recurringCount} issues seen in multiple runs`;
+
+  const scorecardHint =
+    runSummaries.length > 1 ? `${runSummaries.length} runs · goal < 15m` : "goal < 15m";
+  const scorecardTone = latest.durationSec <= 900 ? "ready" : "warn";
+
   return (
     <div>
       <PageHeader
@@ -183,9 +213,24 @@ function Index() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Stat label="Time to first scorecard" value="11m 42s" hint="goal < 15m" tone="ready" />
-          <Stat label="Flake rate (7d)" value="3.1%" hint="−1.2% vs prior week" tone="ready" />
-          <Stat label="Recurring blockers" value="2" hint="same issue in last 3 runs" tone="warn" />
+          <Stat
+            label="Time to first scorecard"
+            value={formatDuration(latest.durationSec)}
+            hint={scorecardHint}
+            tone={scorecardTone}
+          />
+          <Stat
+            label={`Flake rate${flakeRates.length ? ` (${Math.min(7, flakeRates.length)}d)` : ""}`}
+            value={`${flakeValue}%`}
+            hint={flakeHint}
+            tone={flakeTone}
+          />
+          <Stat
+            label="Recurring blockers"
+            value={String(recurringCount)}
+            hint={recurringHint}
+            tone={recurringCount > 0 ? "warn" : "ready"}
+          />
           <Stat
             label="Agent cost / run"
             value={`$${latest.agentCost.toFixed(2)}`}

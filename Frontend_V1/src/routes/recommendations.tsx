@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageHeader, Panel, Chip, SeverityChip } from "@/components/ui-bits";
-import { delights } from "@/lib/mock-data";
-import { useLatestRun, useBacklog } from "@/lib/api/hooks";
+import { useLatestRun, useBacklog, useRunBundle } from "@/lib/api/hooks";
 import { Download, Rocket, Target } from "lucide-react";
 
 export const Route = createFileRoute("/recommendations")({
@@ -11,9 +10,11 @@ export const Route = createFileRoute("/recommendations")({
 
 function Recommendations() {
   const latest = useLatestRun();
+  const { data: bundle } = useRunBundle(latest?.id ?? "");
   const { data: backlogItems = [] } = useBacklog();
   const fixBeforeLaunch = backlogItems.filter((b) => b.fixBeforeLaunch);
   const backlog = backlogItems.filter((b) => !b.fixBeforeLaunch);
+  const delights = bundle?.delights ?? [];
   if (!latest) return null;
 
   return (
@@ -85,26 +86,32 @@ function Recommendations() {
           <div className="text-xs text-muted-foreground mb-3">
             Delights to protect (regression watch)
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {delights.map((d) => (
-              <div key={d.id} className="border border-ready/30 rounded-lg p-3 bg-ready/5">
-                <div className="font-medium">{d.title}</div>
-                <blockquote className="text-sm italic mt-1 text-foreground/80">
-                  &ldquo;{d.quote}&rdquo;
-                </blockquote>
-                <div className="text-[11px] text-muted-foreground mt-2">
-                  Latest run:{" "}
-                  <Link
-                    to="/runs/$runId"
-                    params={{ runId: latest.id }}
-                    className="text-primary font-mono"
-                  >
-                    {latest.id}
-                  </Link>
+          {delights.length === 0 ? (
+            <div className="py-6 text-center text-sm text-muted-foreground">
+              No delights in {latest.id} — scorecard still emits the required section.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {delights.map((d) => (
+                <div key={d.id} className="border border-ready/30 rounded-lg p-3 bg-ready/5">
+                  <div className="font-medium">{d.title}</div>
+                  <blockquote className="text-sm italic mt-1 text-foreground/80">
+                    &ldquo;{d.quote}&rdquo;
+                  </blockquote>
+                  <div className="text-[11px] text-muted-foreground mt-2">
+                    Latest run:{" "}
+                    <Link
+                      to="/runs/$runId"
+                      params={{ runId: latest.id }}
+                      className="text-primary font-mono"
+                    >
+                      {latest.id}
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </Panel>
 
         <Panel className="p-6">

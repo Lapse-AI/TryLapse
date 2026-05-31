@@ -53,7 +53,7 @@ Partner runs + capture     →  Phase 1 tail (budgets, cost)
 | Sprint | When | L2 / eng IDs | Outcome |
 |--------|------|--------------|---------|
 | **Sprint 1** | Now | L2-UI-08–11, L2-UI-17 | Post-call async: export, compare, repro |
-| **Sprint 2** | After 1+ partner call | L2-UI-12, L2-UI-29–30, L2-UI-52, L2-UI-01–04 | Live data on home/workflows; annotations |
+| **Sprint 2** | After 1+ partner call | L2-UI-12, L2-UI-29–30, L2-UI-52, L2-UI-01–04 | ✅ Live data on home/workflows; annotations |
 | **Sprint 3** | Before self-serve marketing | L2-UI-63, L2-MCK-01, L2-UI-50 | Init writes YAML; retire Acme; Linear export |
 | **Phase 1 tail** | Parallel / low urgency | Run budgets + named errors; cost estimate in bundle | CEO Phase 1 #11–13 |
 
@@ -353,28 +353,28 @@ Partner runs + capture     →  Phase 1 tail (budgets, cost)
 
 ### 3.1 Active L2 backlog (SELECTIVE EXPANSION)
 
-#### Sprint 1 — P0 post-call async
+#### Sprint 1 — P0 post-call async ✅ (2026-05-31)
 
 | ID | Feature | Notes |
 |----|---------|-------|
-| L2-UI-08 | Export menu — artifact download buttons | No download implementation |
-| L2-UI-09 | Export “Download all” | No handler |
-| L2-UI-10 | Evidence dialog “Copy repro” | No handler |
-| L2-UI-11 | Evidence dialog “Open in step timeline” | No handler |
-| L2-UI-17 | Compare page run A/B `<select>` | `defaultValue` only — selection does not refetch diff |
+| L2-UI-08 | Export menu — artifact download buttons | ✅ `run-export.ts` + `/files/` downloads |
+| L2-UI-09 | Export “Download all” | ✅ Sequential download of md/json/png |
+| L2-UI-10 | Evidence dialog “Copy repro” | ✅ Clipboard + toast |
+| L2-UI-11 | Evidence dialog “Open in step timeline” | ✅ Deep link `?tab=steps&step=` |
+| L2-UI-17 | Compare page run A/B `<select>` | ✅ URL search `a`/`b` refetches diff |
 
-#### Sprint 2 — P1 credibility & partner workflow
+#### Sprint 2 — P1 credibility & partner workflow ✅
 
 | ID | Feature | Notes |
 |----|---------|-------|
-| L2-UI-12 | Annotations tab — add agree/disagree/false positive | Backend POST exists; **no create UI** |
-| L2-UI-29 | Workflows page coverage cards | Always from mock `workflowCoverage` |
-| L2-UI-30 | Workflows active journeys list | Mock Acme `journeys`, not run-specific |
-| L2-UI-52 | Delights to protect section | Uses mock `delights`, not latest run bundle |
+| L2-UI-12 | Annotations tab — add agree/disagree/false positive | ✅ `IssueAnnotationActions` + POST `/api/annotations/{run_id}` |
+| L2-UI-29 | Workflows page coverage cards | ✅ `buildWorkflowCoverage()` from live bundle |
+| L2-UI-30 | Workflows active journeys list | ✅ `bundle.journeys` from latest run |
+| L2-UI-52 | Delights to protect section | ✅ `bundle.delights` on recommendations page |
 | L2-UI-01 | “live” chip always shown | Not tied to API health or run in progress |
-| L2-UI-02 | Stat: “Time to first scorecard 11m 42s” | Hardcoded |
-| L2-UI-03 | Stat: “Flake rate (7d) 3.1%” | Hardcoded (API `/api/trends` exists) |
-| L2-UI-04 | Stat: “Recurring blockers 2” | Hardcoded |
+| L2-UI-02 | Stat: “Time to first scorecard 11m 42s” | ✅ `formatDuration(latest.durationSec)` |
+| L2-UI-03 | Stat: “Flake rate (7d) 3.1%” | ✅ `/api/trends` flakeRate + prior-run delta |
+| L2-UI-04 | Stat: “Recurring blockers 2” | ✅ `issues.filter(recurring > 1).length` |
 
 #### Sprint 3 — P2 onboarding & handoff
 
