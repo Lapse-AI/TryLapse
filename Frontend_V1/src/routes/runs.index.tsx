@@ -22,7 +22,11 @@ function RunsList() {
         description="Every rehearsal, every environment. Includes backend-shaped runs (enterprise-*, cal-*)."
         actions={
           previous && (
-            <Link to="/compare" search={{ a: previous.id, b: latest.id }} className="text-xs font-mono px-3 py-1.5 rounded-md border border-border hover:bg-surface-2 inline-flex items-center gap-1.5">
+            <Link
+              to="/compare"
+              search={{ a: previous.id, b: latest.id }}
+              className="text-xs font-mono px-3 py-1.5 rounded-md border border-border hover:bg-surface-2 inline-flex items-center gap-1.5"
+            >
               <GitCompare className="size-3.5" /> Diff last two
             </Link>
           )
@@ -48,18 +52,55 @@ function RunsList() {
             </thead>
             <tbody>
               {runSummaries.map((r) => (
-                <tr key={r.id} className="border-b border-border last:border-0 hover:bg-surface-2/40">
-                  <td className="px-5 py-3"><Link to="/runs/$runId" params={{ runId: r.id }} className="font-mono text-xs text-primary hover:underline">{r.id}</Link></td>
+                <tr
+                  key={r.id}
+                  className="border-b border-border last:border-0 hover:bg-surface-2/40"
+                >
+                  <td className="px-5 py-3">
+                    <Link
+                      to="/runs/$runId"
+                      params={{ runId: r.id }}
+                      className="font-mono text-xs text-primary hover:underline"
+                    >
+                      {r.id}
+                    </Link>
+                  </td>
                   <td className="px-5 py-3 text-xs">{r.productName}</td>
                   <td className="px-5 py-3 font-mono text-xs">{r.target}</td>
-                  <td className="px-5 py-3"><Chip tone={r.env === "prod-canary" ? "violet" : r.env === "staging" ? "info" : "neutral"}>{r.env}</Chip></td>
-                  <td className="px-5 py-3"><div className="flex items-center gap-2"><StatusDot status={r.status} /><span className="font-mono tabular-nums">{r.readiness}</span><span className="text-[10px] text-muted-foreground">{r.readinessBand}</span></div></td>
+                  <td className="px-5 py-3">
+                    <Chip
+                      tone={
+                        r.env === "prod-canary"
+                          ? "violet"
+                          : r.env === "staging"
+                            ? "info"
+                            : "neutral"
+                      }
+                    >
+                      {r.env}
+                    </Chip>
+                  </td>
+                  <td className="px-5 py-3">
+                    <div className="flex items-center gap-2">
+                      <StatusDot status={r.status} />
+                      <span className="font-mono tabular-nums">{r.readiness}</span>
+                      <span className="text-[10px] text-muted-foreground">{r.readinessBand}</span>
+                    </div>
+                  </td>
                   <td className="px-5 py-3 font-mono tabular-nums text-danger">{r.blockers}</td>
                   <td className="px-5 py-3 font-mono tabular-nums text-ready">{r.delights}</td>
-                  <td className="px-5 py-3 font-mono tabular-nums text-muted-foreground">{r.pages || "—"}</td>
-                  <td className="px-5 py-3 font-mono text-muted-foreground">{formatDuration(r.durationSec)}</td>
-                  <td className="px-5 py-3 font-mono text-muted-foreground tabular-nums">${r.agentCost.toFixed(2)}</td>
-                  <td className="px-5 py-3 text-right text-muted-foreground text-xs"><ClientTime iso={r.startedAt} /></td>
+                  <td className="px-5 py-3 font-mono tabular-nums text-muted-foreground">
+                    {r.pages || "—"}
+                  </td>
+                  <td className="px-5 py-3 font-mono text-muted-foreground">
+                    {formatDuration(r.durationSec)}
+                  </td>
+                  <td className="px-5 py-3 font-mono text-muted-foreground tabular-nums">
+                    ${r.agentCost.toFixed(2)}
+                  </td>
+                  <td className="px-5 py-3 text-right text-muted-foreground text-xs">
+                    <ClientTime iso={r.startedAt} />
+                  </td>
                 </tr>
               ))}
             </tbody>

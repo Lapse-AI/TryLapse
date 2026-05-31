@@ -100,32 +100,50 @@
   --sidebar-ring: oklch(0.5 0.14 265);
 
   --grid-line: color-mix(in oklab, var(--foreground) 4%, transparent);
-  --shadow-soft: 0 1px 2px 0 color-mix(in oklab, var(--foreground) 4%, transparent),
-                 0 1px 0 0 color-mix(in oklab, var(--foreground) 2%, transparent);
+  --shadow-soft:
+    0 1px 2px 0 color-mix(in oklab, var(--foreground) 4%, transparent),
+    0 1px 0 0 color-mix(in oklab, var(--foreground) 2%, transparent);
 }
 
-.dark { /* single light theme */ }
+.dark {
+  /* single light theme */
+}
 
 @layer base {
-  * { border-color: var(--color-border); }
-  html, body {
+  * {
+    border-color: var(--color-border);
+  }
+  html,
+  body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
     font-feature-settings: "ss01", "cv11";
     -webkit-font-smoothing: antialiased;
   }
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     font-family: var(--font-display);
     letter-spacing: -0.02em;
     font-weight: 600;
   }
-  ::selection { background: color-mix(in oklab, var(--primary) 22%, transparent); color: var(--foreground); }
+  ::selection {
+    background: color-mix(in oklab, var(--primary) 22%, transparent);
+    color: var(--foreground);
+  }
 }
 
-@utility font-mono { font-family: var(--font-mono); }
-@utility font-display { font-family: var(--font-display); }
-@utility font-serif { font-family: var(--font-serif); }
+@utility font-mono {
+  font-family: var(--font-mono);
+}
+@utility font-display {
+  font-family: var(--font-display);
+}
+@utility font-serif {
+  font-family: var(--font-serif);
+}
 
 @utility grid-bg {
   background-image:
@@ -135,9 +153,14 @@
 }
 
 @utility chip {
-  display: inline-flex; align-items: center; gap: 0.375rem;
-  padding: 0.125rem 0.5rem; border-radius: 999px;
-  font-family: var(--font-sans); font-size: 0.6875rem; font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 500;
   letter-spacing: 0;
   border: 1px solid var(--border);
   background: var(--surface);
@@ -152,8 +175,13 @@
 }
 
 @keyframes pulse-ready {
-  0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--ready) 45%, transparent); }
-  50% { box-shadow: 0 0 0 6px color-mix(in oklab, var(--ready) 0%, transparent); }
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--ready) 45%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 6px color-mix(in oklab, var(--ready) 0%, transparent);
+  }
 }
 
 @utility pulse-dot {

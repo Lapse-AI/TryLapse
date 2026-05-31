@@ -33,18 +33,34 @@ function ComparePage() {
         <Panel className="p-5 flex flex-wrap items-center gap-4">
           <div>
             <div className="text-xs text-muted-foreground mb-1">Run A (baseline)</div>
-            <select className="bg-surface border border-border rounded-md px-3 py-1.5 text-sm font-mono" defaultValue={runA}>
-              {runSummaries.map((r) => <option key={r.id} value={r.id}>{r.id}</option>)}
+            <select
+              className="bg-surface border border-border rounded-md px-3 py-1.5 text-sm font-mono"
+              defaultValue={runA}
+            >
+              {runSummaries.map((r) => (
+                <option key={r.id} value={r.id}>
+                  {r.id}
+                </option>
+              ))}
             </select>
           </div>
           <div className="text-muted-foreground">→</div>
           <div>
             <div className="text-xs text-muted-foreground mb-1">Run B (current)</div>
-            <select className="bg-surface border border-border rounded-md px-3 py-1.5 text-sm font-mono" defaultValue={runB}>
-              {runSummaries.map((r) => <option key={r.id} value={r.id}>{r.id}</option>)}
+            <select
+              className="bg-surface border border-border rounded-md px-3 py-1.5 text-sm font-mono"
+              defaultValue={runB}
+            >
+              {runSummaries.map((r) => (
+                <option key={r.id} value={r.id}>
+                  {r.id}
+                </option>
+              ))}
             </select>
           </div>
-          <Chip tone="info">CLI: rehearse diff {runA} {runB}</Chip>
+          <Chip tone="info">
+            CLI: rehearse diff {runA} {runB}
+          </Chip>
         </Panel>
 
         <Panel className="overflow-hidden">
@@ -53,9 +69,21 @@ function ComparePage() {
 
         <div className="text-sm text-muted-foreground">
           Open individual runs:{" "}
-          <Link to="/runs/$runId" params={{ runId: runA }} className="text-primary hover:underline font-mono">{runA}</Link>
+          <Link
+            to="/runs/$runId"
+            params={{ runId: runA }}
+            className="text-primary hover:underline font-mono"
+          >
+            {runA}
+          </Link>
           {" · "}
-          <Link to="/runs/$runId" params={{ runId: runB }} className="text-primary hover:underline font-mono">{runB}</Link>
+          <Link
+            to="/runs/$runId"
+            params={{ runId: runB }}
+            className="text-primary hover:underline font-mono"
+          >
+            {runB}
+          </Link>
         </div>
       </div>
     </div>

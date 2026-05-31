@@ -23,7 +23,10 @@ function Recommendations() {
         title="Recommendations & backlog"
         description="Prioritized export — no auto-fix. Evidence-bound suggestions aligned with Evaluation rubric."
         actions={
-          <button type="button" className="text-xs px-3 py-1.5 rounded-md bg-primary text-primary-foreground inline-flex items-center gap-1.5">
+          <button
+            type="button"
+            className="text-xs px-3 py-1.5 rounded-md bg-primary text-primary-foreground inline-flex items-center gap-1.5"
+          >
             <Download className="size-3.5" /> Export to Linear
           </button>
         }
@@ -37,16 +40,23 @@ function Recommendations() {
           </div>
           <div className="space-y-3">
             {fixBeforeLaunch.map((b) => (
-              <div key={b.id} className="flex items-center justify-between border border-border rounded-lg p-4">
+              <div
+                key={b.id}
+                className="flex items-center justify-between border border-border rounded-lg p-4"
+              >
                 <div className="flex items-center gap-3">
                   <SeverityChip s={b.severity} />
                   <div>
                     <div className="font-medium">{b.title}</div>
-                    <div className="text-xs text-muted-foreground mt-0.5 capitalize">owner · {b.owner}</div>
+                    <div className="text-xs text-muted-foreground mt-0.5 capitalize">
+                      owner · {b.owner}
+                    </div>
                   </div>
                 </div>
                 <div className="flex gap-1">
-                  {b.exportTargets.map((t) => <Chip key={t}>{t}</Chip>)}
+                  {b.exportTargets.map((t) => (
+                    <Chip key={t}>{t}</Chip>
+                  ))}
                 </div>
               </div>
             ))}
@@ -72,22 +82,43 @@ function Recommendations() {
         </Panel>
 
         <Panel className="p-6">
-          <div className="text-xs text-muted-foreground mb-3">Delights to protect (regression watch)</div>
+          <div className="text-xs text-muted-foreground mb-3">
+            Delights to protect (regression watch)
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {delights.map((d) => (
               <div key={d.id} className="border border-ready/30 rounded-lg p-3 bg-ready/5">
                 <div className="font-medium">{d.title}</div>
-                <blockquote className="text-sm italic mt-1 text-foreground/80">&ldquo;{d.quote}&rdquo;</blockquote>
-                <div className="text-[11px] text-muted-foreground mt-2">Latest run: <Link to="/runs/$runId" params={{ runId: latest.id }} className="text-primary font-mono">{latest.id}</Link></div>
+                <blockquote className="text-sm italic mt-1 text-foreground/80">
+                  &ldquo;{d.quote}&rdquo;
+                </blockquote>
+                <div className="text-[11px] text-muted-foreground mt-2">
+                  Latest run:{" "}
+                  <Link
+                    to="/runs/$runId"
+                    params={{ runId: latest.id }}
+                    className="text-primary font-mono"
+                  >
+                    {latest.id}
+                  </Link>
+                </div>
               </div>
             ))}
           </div>
         </Panel>
 
         <Panel className="p-6">
-          <div className="text-xs text-muted-foreground mb-2">Competitive benchmark slot (manual)</div>
-          <p className="text-sm text-muted-foreground">Optional compare URL — paste a competitor for side-by-side rubric scoring. Phase 2.</p>
-          <input placeholder="https://competitor.example.com" className="mt-3 w-full max-w-md bg-surface border border-border rounded-md px-3 py-2 text-sm font-mono" disabled />
+          <div className="text-xs text-muted-foreground mb-2">
+            Competitive benchmark slot (manual)
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Optional compare URL — paste a competitor for side-by-side rubric scoring. Phase 2.
+          </p>
+          <input
+            placeholder="https://competitor.example.com"
+            className="mt-3 w-full max-w-md bg-surface border border-border rounded-md px-3 py-2 text-sm font-mono"
+            disabled
+          />
         </Panel>
       </div>
     </div>

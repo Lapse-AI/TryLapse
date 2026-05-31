@@ -2,14 +2,22 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Play, Search, ChevronDown, Check, Loader2, Menu } from "lucide-react";
 import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
-  DropdownMenuSeparator, DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Sheet, SheetContent, SheetTrigger, SheetTitle,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { AppSidebar } from "@/components/app-sidebar";
-import { useApiHealth, useRunSummaries, useSearch, useTriggerJob, useWorkspace } from "@/lib/api/hooks";
+import {
+  useApiHealth,
+  useRunSummaries,
+  useSearch,
+  useTriggerJob,
+  useWorkspace,
+} from "@/lib/api/hooks";
 
 const ENVS = [
   { id: "prod-canary", label: "prod-canary", hint: "Production canary slice" },
@@ -27,7 +35,9 @@ export function RehearseTopBar() {
   const [showResults, setShowResults] = useState(false);
   const { data: searchResults } = useSearch(query);
 
-  const host = workspace?.targetUrl ? new URL(workspace.targetUrl).host : summaries[0]?.target ?? "app.acme.io";
+  const host = workspace?.targetUrl
+    ? new URL(workspace.targetUrl).host
+    : (summaries[0]?.target ?? "app.acme.io");
   const slug = workspace?.slug ?? "workspace";
 
   const runJob = (mode: "run" | "crawl") => {
@@ -50,8 +60,14 @@ export function RehearseTopBar() {
             <DropdownMenuLabel>Environment</DropdownMenuLabel>
             <DropdownMenuSeparator />
             {ENVS.map((e) => (
-              <DropdownMenuItem key={e.id} onSelect={() => setEnv(e.id)} className="flex items-start gap-2">
-                <Check className={`size-3.5 mt-0.5 ${e.id === env ? "opacity-100" : "opacity-0"}`} />
+              <DropdownMenuItem
+                key={e.id}
+                onSelect={() => setEnv(e.id)}
+                className="flex items-start gap-2"
+              >
+                <Check
+                  className={`size-3.5 mt-0.5 ${e.id === env ? "opacity-100" : "opacity-0"}`}
+                />
                 <div>
                   <div className="text-sm">{e.label}</div>
                   <div className="text-[11px] text-muted-foreground">{e.hint}</div>
@@ -71,27 +87,44 @@ export function RehearseTopBar() {
           aria-label="Search runs, issues, pages"
           placeholder="Search runs, issues, pages…"
           value={query}
-          onChange={(e) => { setQuery(e.target.value); setShowResults(true); }}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setShowResults(true);
+          }}
           onFocus={() => setShowResults(true)}
           onBlur={() => setTimeout(() => setShowResults(false), 150)}
           className="w-full bg-surface border border-border rounded-md pl-8 pr-3 py-1.5 text-sm placeholder:text-muted-foreground focus:outline-none focus:border-primary/50"
         />
         {showResults && query.length >= 2 && searchResults && (
           <div className="absolute top-full left-0 right-0 mt-1 z-50 border border-border rounded-md bg-surface shadow-lg max-h-64 overflow-y-auto text-sm">
-            {searchResults.runs.length === 0 && searchResults.issues.length === 0 && searchResults.pages.length === 0 ? (
+            {searchResults.runs.length === 0 &&
+            searchResults.issues.length === 0 &&
+            searchResults.pages.length === 0 ? (
               <div className="p-3 text-muted-foreground text-xs">No matches</div>
             ) : (
               <>
                 {searchResults.runs.map((r) => (
-                  <Link key={r.id} to="/runs/$runId" params={{ runId: r.id }} className="block px-3 py-2 hover:bg-surface-2 font-mono text-xs">
+                  <Link
+                    key={r.id}
+                    to="/runs/$runId"
+                    params={{ runId: r.id }}
+                    className="block px-3 py-2 hover:bg-surface-2 font-mono text-xs"
+                  >
                     run · {r.id}
                   </Link>
                 ))}
-                {searchResults.issues.slice(0, 5).map((i: { id: string; title: string; runId: string }) => (
-                  <Link key={i.id} to="/runs/$runId" params={{ runId: i.runId }} className="block px-3 py-2 hover:bg-surface-2 text-xs truncate">
-                    issue · {i.title}
-                  </Link>
-                ))}
+                {searchResults.issues
+                  .slice(0, 5)
+                  .map((i: { id: string; title: string; runId: string }) => (
+                    <Link
+                      key={i.id}
+                      to="/runs/$runId"
+                      params={{ runId: i.runId }}
+                      className="block px-3 py-2 hover:bg-surface-2 text-xs truncate"
+                    >
+                      issue · {i.title}
+                    </Link>
+                  ))}
               </>
             )}
           </div>
@@ -113,11 +146,17 @@ export function RehearseTopBar() {
           onClick={() => runJob("run")}
           className="text-xs px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:opacity-90 inline-flex items-center gap-1.5 font-medium disabled:opacity-50"
         >
-          {trigger.isPending ? <Loader2 className="size-3.5 animate-spin" /> : <Play className="size-3.5" />}
+          {trigger.isPending ? (
+            <Loader2 className="size-3.5 animate-spin" />
+          ) : (
+            <Play className="size-3.5" />
+          )}
           Run rehearsal
         </button>
         {!live && (
-          <Link to="/cli" className="text-[10px] text-muted-foreground hidden lg:inline">start API</Link>
+          <Link to="/cli" className="text-[10px] text-muted-foreground hidden lg:inline">
+            start API
+          </Link>
         )}
       </div>
     </header>
@@ -129,7 +168,10 @@ function MobileNav() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <button aria-label="Open navigation" className="md:hidden inline-flex items-center justify-center size-9 rounded-md border border-border hover:bg-surface-2">
+        <button
+          aria-label="Open navigation"
+          className="md:hidden inline-flex items-center justify-center size-9 rounded-md border border-border hover:bg-surface-2"
+        >
           <Menu className="size-4" />
         </button>
       </SheetTrigger>

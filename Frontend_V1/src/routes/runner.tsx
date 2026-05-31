@@ -29,7 +29,11 @@ function RunnerPage() {
             onClick={() => trigger.mutate({ mode: "run" })}
             className="text-xs px-4 py-2 rounded-md bg-primary text-primary-foreground inline-flex items-center gap-2 disabled:opacity-50"
           >
-            {trigger.isPending ? <Loader2 className="size-3.5 animate-spin" /> : <Play className="size-3.5" />}
+            {trigger.isPending ? (
+              <Loader2 className="size-3.5 animate-spin" />
+            ) : (
+              <Play className="size-3.5" />
+            )}
             Run full rehearsal
           </button>
           <button
@@ -40,13 +44,17 @@ function RunnerPage() {
           >
             <Network className="size-3.5" /> Crawl only
           </button>
-          {!live && <Chip tone="warn">Start API: rehearse serve -o launch-rehearsal/artifacts</Chip>}
+          {!live && (
+            <Chip tone="warn">Start API: rehearse serve -o launch-rehearsal/artifacts</Chip>
+          )}
         </Panel>
 
         <Panel className="overflow-hidden">
           <div className="p-5 border-b border-border font-display font-semibold">Job queue</div>
           {jobs.length === 0 ? (
-            <div className="p-8 text-sm text-muted-foreground text-center">No jobs yet — trigger a run above.</div>
+            <div className="p-8 text-sm text-muted-foreground text-center">
+              No jobs yet — trigger a run above.
+            </div>
           ) : (
             <table className="w-full text-sm">
               <thead className="text-xs text-muted-foreground border-b border-border">
@@ -62,7 +70,15 @@ function RunnerPage() {
                   <tr key={j.id} className="border-b border-border last:border-0">
                     <td className="px-5 py-3 font-mono text-xs">{j.id}</td>
                     <td className="px-5 py-3">{j.mode}</td>
-                    <td className="px-5 py-3"><Chip tone={j.status === "done" ? "ready" : j.status === "failed" ? "danger" : "info"}>{j.status}</Chip></td>
+                    <td className="px-5 py-3">
+                      <Chip
+                        tone={
+                          j.status === "done" ? "ready" : j.status === "failed" ? "danger" : "info"
+                        }
+                      >
+                        {j.status}
+                      </Chip>
+                    </td>
                     <td className="px-5 py-3 font-mono text-xs">{j.runId ?? "—"}</td>
                   </tr>
                 ))}
