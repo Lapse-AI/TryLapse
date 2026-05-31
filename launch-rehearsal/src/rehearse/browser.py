@@ -11,7 +11,7 @@ from urllib.parse import urlparse
 from playwright.sync_api import Page, Response, sync_playwright
 
 from rehearse.dsl import AuthConfig, RunConfig, Step
-from rehearse.errors import BrowserStepTimeout, ConfigError, PreflightError
+from rehearse.errors import ConfigError, PreflightError, classify_step_error
 from rehearse.evidence import StepSnapshot
 
 ERROR_PHRASES = (
@@ -368,12 +368,14 @@ class BrowserSession:
                     snap.note = link_note
                 if fallback not in (page.url or ""):
                     snap.outcome = "fail"
+                    snap.error_type = "BrowserNavigationFailed"
                     if not snap.note:
                         snap.note = f"open_link failed: expected '{fallback}' in URL"
             elif step.action == "assert_url_contains":
                 needle = step.value or step.url or ""
                 if needle not in page.url:
                     snap.outcome = "fail"
+                    snap.error_type = "StepAssertionFailed"
                     snap.note = f"URL assertion failed: expected '{needle}' in {page.url}"
             else:
                 raise PreflightError(f"Unsupported action: {step.action}")
@@ -404,6 +406,7 @@ class BrowserSession:
                 snap.outcome = _grade_step(snap, step)
         except Exception as exc:
             snap.outcome = "fail"
+            snap.error_type = classify_step_error(exc)
             snap.note = str(exc)[:500]
             try:
                 shot = self.artifacts_dir / f"{_safe_filename(step_id)}-error.png"
@@ -411,8 +414,6 @@ class BrowserSession:
                 snap.artifact_paths.append(str(shot))
             except Exception:
                 pass
-            if "Timeout" in snap.note:
-                raise BrowserStepTimeout(snap.note) from exc
 
         snap.duration_ms = int((time.perf_counter() - started) * 1000)
         return snap

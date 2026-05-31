@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Phase 1 tail: named step error types (`errorType` on steps/issues), run `costEstimate` in analysis bundle, observability fields (`pagesCrawled`, `agentsRun`) in bundle summary
 - Sprint 3 UI: init wizard writes YAML via `POST /api/configs`; Linear backlog export stub; live/offline/running command-center chip
 - Sprint 3 backend: `save_config()` + `POST /api/configs` for self-serve init
 - Sprint 2 UI: live command-center KPIs from `/api/trends`, workflow map from run bundle, delights from latest run, issue annotation agree/disagree/false-positive actions

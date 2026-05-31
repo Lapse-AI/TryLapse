@@ -33,6 +33,7 @@ class StepSnapshot:
     network_failures: list[str] = field(default_factory=list)
     artifact_paths: list[str] = field(default_factory=list)
     note: str | None = None
+    error_type: str | None = None
     flaky: bool = False
     seed_index: int = 1
 

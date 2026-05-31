@@ -343,9 +343,9 @@ Partner runs + capture     →  Phase 1 tail (budgets, cost)
 
 | ID | Feature | Notes |
 |----|---------|-------|
-| L1-TAIL-01 | Named errors complete set | `BrowserStepTimeout`, etc. — CEO #11 |
-| L1-TAIL-02 | Run cost estimate in bundle/logs | CEO #13 — partial metadata today |
-| L1-TAIL-03 | Structured observability export | duration, outcome, token/cost per run |
+| L1-TAIL-01 | Named errors complete set | ✅ `BrowserStepTimeout`, etc. — CEO #11 |
+| L1-TAIL-02 | Run cost estimate in bundle/logs | ✅ CEO #13 — `costEstimate` + `agentCost` |
+| L1-TAIL-03 | Structured observability export | ✅ duration, outcome, pagesCrawled, agentsRun, configHash |
 
 ---
 
