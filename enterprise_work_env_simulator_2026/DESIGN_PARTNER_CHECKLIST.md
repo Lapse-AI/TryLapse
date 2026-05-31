@@ -1,7 +1,7 @@
 # Design partner outreach — Phase 1 checklist
 
 *Authority: `CEO_DECISIONS.md` · Target: **3 would-pay** design partners by Sep 30, 2026*  
-*Last updated: 2026-05-30 · Scope: `FEATURE_SCOPE.md` · UI review: `.cursor/gstack/launch-rehearsal/design-reviews/live-2026-05-29-followup.md`*
+*Last updated: 2026-05-31 · Scope: `FEATURE_SCOPE.md` · UI review: `.cursor/gstack/launch-rehearsal/design-reviews/live-2026-05-29-followup.md`*
 
 ---
 
@@ -45,12 +45,12 @@ Record verbatim answers. Secondary: *“Would you pay ~$49/mo for this on every 
 | **G6** Dogfood scorecard attachable | ✅ | Argyle + enterprise scorecards in `launch-rehearsal/artifacts/scorecards/` |
 | **G7** Mobile nav usable | ✅ | Hamburger sheet (DR-07) |
 | **G8** Honest Phase 2 scope (Compliance/Performance idle) | ✅ | Agents page shows idle placeholders |
-| **G9** Export / Diff / Compare fully functional | ⚠️ | L2 — menus stubbed; **concierge demo OK**, self-serve export not yet |
-| **G10** Command-center KPIs from live data | ⚠️ | L2 — flake rate, time-to-scorecard still hardcoded; use run detail + trends API |
-| **G11** Init wizard writes config from UI | ⚠️ | L2 — use `./rehearse init <url>` CLI for partner onboarding |
+| **G9** Export / Diff / Compare fully functional | ✅ | Sprint 1 shipped in PR #13 — export, compare, evidence repro |
+| **G10** Command-center KPIs from live data | ✅ | Sprint 2 — home KPIs wired from live run/bundle data (PR #13) |
+| **G11** Init wizard writes config from UI | ⚠️ | Sprint 3 (L2-UI-63) — use `./rehearse init <url>` CLI until merged |
 | **G12** Lovable badge removed in production build | ⚠️ | Dismiss before screen share |
 
-**Verdict (2026-05-30):** Ready for **concierge design partner demos** (you operate CLI + walk dashboard). Not ready for **self-serve** or marketing until G9–G11 close — see `FEATURE_SCOPE.md` L2 “Close before outreach” subset.
+**Verdict (2026-05-31):** **Concierge demos fully ready** (CLI + dashboard with export/compare/KPIs). **Self-serve** blocked on **Sprint 3 only** (G11 init wizard; optional Linear export). Marketing/PLG still gated per `CEO_DECISIONS.md`.
 
 ---
 
@@ -60,13 +60,13 @@ Priority order from `FEATURE_SCOPE.md`:
 
 | ID | Item | Why it matters for partners |
 |----|------|----------------------------|
-| L2-UI-12 | Annotation agree/disagree UI | False-positive feedback loop |
-| L2-UI-17 | Compare run selectors wired | “What changed since last release?” |
-| L2-UI-08–09 | Export artifact download | Async handoff after call |
+| L2-UI-12 | Annotation agree/disagree UI ✅ | False-positive feedback loop |
+| L2-UI-17 | Compare run selectors wired ✅ | “What changed since last release?” |
+| L2-UI-08–09 | Export artifact download ✅ | Async handoff after call |
 | L2-UI-50 | Export to Linear | Workflow integration ask |
-| L2-UI-29–30 | Workflows from live bundle | Credibility on crawl-derived coverage |
-| L2-UI-52 | Delights from latest run | Home page delight parity |
-| L2-UI-01–04 | Command-center KPIs from API | Trust in aggregate metrics |
+| L2-UI-29–30 | Workflows from live bundle ✅ | Credibility on crawl-derived coverage |
+| L2-UI-52 | Delights from latest run ✅ | Home page delight parity |
+| L2-UI-01–04 | Command-center KPIs from API ✅ | Trust in aggregate metrics |
 | L2-UI-63 | Init wizard writes YAML | Partner self-onboarding |
 
 ---
@@ -151,6 +151,22 @@ Worth a look before your next release?
 | Feature scope (internal) | `FEATURE_SCOPE.md` |
 
 ---
+
+
+## Next 10 outreach targets
+
+| Company | Contact | Status | Next action |
+|---------|---------|--------|-------------|
+| | | | |
+| | | | |
+| | | | |
+| | | | |
+| | | | |
+| | | | |
+| | | | |
+| | | | |
+| | | | |
+| | | | |
 
 ## Partner tracking (target: 5 conversations → 3 would-pay)
 

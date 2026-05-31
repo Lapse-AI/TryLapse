@@ -36,6 +36,8 @@
 
 ## 0. Active execution plan (SELECTIVE EXPANSION)
 
+**CEO 2026-05-31:** Ship PR #13; parallel Sprint 3 + outreach Track A.
+
 **Baseline scope: HOLD.** Phase 1 engine is largely shipped. **Cherry-pick** only L2 items that unlock partner trust or post-call async.
 
 ### Parallel tracks (do not serialize outreach behind UI)
