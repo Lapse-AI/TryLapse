@@ -48,7 +48,7 @@ jobs:
             echo "updated=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - uses: actions/github-script@v7
+      - uses: actions/github-script@v9
         if: steps.changes_check.outputs.updated == 'false'
         with:
           script: |
@@ -63,7 +63,7 @@ jobs:
     name: PR Size Label
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/github-script@v7
+      - uses: actions/github-script@v9
         with:
           script: |
             const pr = context.payload.pull_request;
