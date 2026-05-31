@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Run detail observability: Web Vitals per step, console warnings, network-log / web-vitals exports, agents-run summary
+- Compare diff: sitemap new/removed pages panel (L2-UI-19)
 - Dimension rollup grid component on command center and run detail (clickable dimension filters with breakdown banner)
 - NLU narrative disk cache (`artifacts/narratives/`) for digest, trends, and compare — LLM runs once per stable run set; `?refresh=true` to regenerate; UI 30m stale time without refetch on focus
 - **NLU-1:** Run narratives (template + optional LLM), Run summary + chat on run Overview, `POST /api/runs/{runId}/chat`

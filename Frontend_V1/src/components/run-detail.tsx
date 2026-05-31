@@ -12,6 +12,11 @@ import {
   EXPORT_ITEMS,
   runArtifactRelPath,
 } from "@/lib/run-export";
+import {
+  extraArtifactDownloads,
+  formatWebVitalsBrief,
+  stepObservabilityHint,
+} from "@/lib/run-observability";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -144,6 +149,73 @@ export function EvidenceDialog({
   );
 }
 
+export function RunObservabilityPanel({ bundle }: { bundle: RunBundle }) {
+  const summary = bundle.summary;
+  const stepsWithVitals = bundle.steps.filter((s) => formatWebVitalsBrief(s.webVitals));
+  const warnSteps = bundle.steps.filter((s) => (s.consoleWarnings?.length ?? 0) > 0);
+  const extras = extraArtifactDownloads(bundle);
+  const pagesCrawled = summary.pagesCrawled ?? summary.pages;
+  if (
+    !extras.length &&
+    !stepsWithVitals.length &&
+    !warnSteps.length &&
+    summary.agentsRun == null &&
+    !pagesCrawled
+  ) {
+    return null;
+  }
+
+  return (
+    <Panel className="p-4 md:p-5 space-y-3">
+      <div className="flex items-center gap-2 flex-wrap">
+        <div className="font-display font-semibold text-sm">Run observability</div>
+        <Chip tone="neutral">Phase B</Chip>
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+        {summary.agentsRun != null && (
+          <div>
+            <div className="text-xs text-muted-foreground">Agents run</div>
+            <div className="font-mono tabular-nums mt-0.5">{summary.agentsRun}</div>
+          </div>
+        )}
+        {pagesCrawled > 0 && (
+          <div>
+            <div className="text-xs text-muted-foreground">Pages crawled</div>
+            <div className="font-mono tabular-nums mt-0.5">{pagesCrawled}</div>
+          </div>
+        )}
+        {stepsWithVitals.length > 0 && (
+          <div>
+            <div className="text-xs text-muted-foreground">Web Vitals samples</div>
+            <div className="font-mono tabular-nums mt-0.5">{stepsWithVitals.length} steps</div>
+          </div>
+        )}
+        {warnSteps.length > 0 && (
+          <div>
+            <div className="text-xs text-muted-foreground">Console warnings</div>
+            <div className="font-mono tabular-nums mt-0.5">{warnSteps.length} steps</div>
+          </div>
+        )}
+      </div>
+      {extras.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {extras.map(({ relPath, label }) => (
+            <a
+              key={label}
+              href={artifactUrl(relPath)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs font-mono px-2.5 py-1 rounded-md border border-border hover:bg-surface-2"
+            >
+              {label} ↗
+            </a>
+          ))}
+        </div>
+      )}
+    </Panel>
+  );
+}
+
 export function StepsTable({
   steps,
   highlightStepId,
@@ -194,6 +266,11 @@ export function StepsTable({
                   {s.action === "explore" && s.exploreSummary && (
                     <p className="text-xs text-muted-foreground mt-1 max-w-md whitespace-pre-wrap">
                       {s.exploreSummary}
+                    </p>
+                  )}
+                  {stepObservabilityHint(s) && (
+                    <p className="text-[11px] font-mono text-muted-foreground mt-1">
+                      {stepObservabilityHint(s)}
                     </p>
                   )}
                 </td>
@@ -391,6 +468,47 @@ export function DiffPanel({ runA, runB }: { runA: string; runB: string }) {
           </ul>
         </div>
       )}
+      {(diff.newPages.length > 0 || diff.removedPages.length > 0) && (
+        <Panel className="p-4 space-y-3">
+          <div className="text-xs text-muted-foreground">Sitemap diff</div>
+          {diff.newPages.length > 0 && (
+            <div>
+              <div className="text-[11px] text-muted-foreground mb-1">
+                New in {runB} ({diff.newPages.length})
+              </div>
+              <ul className="text-sm font-mono space-y-0.5 max-h-32 overflow-y-auto">
+                {diff.newPages.slice(0, 20).map((p) => (
+                  <li key={p} className="text-ready">
+                    + {p}
+                  </li>
+                ))}
+                {diff.newPages.length > 20 && (
+                  <li className="text-muted-foreground">…and {diff.newPages.length - 20} more</li>
+                )}
+              </ul>
+            </div>
+          )}
+          {diff.removedPages.length > 0 && (
+            <div>
+              <div className="text-[11px] text-muted-foreground mb-1">
+                Removed since {runA} ({diff.removedPages.length})
+              </div>
+              <ul className="text-sm font-mono space-y-0.5 max-h-32 overflow-y-auto">
+                {diff.removedPages.slice(0, 20).map((p) => (
+                  <li key={p} className="text-danger">
+                    − {p}
+                  </li>
+                ))}
+                {diff.removedPages.length > 20 && (
+                  <li className="text-muted-foreground">
+                    …and {diff.removedPages.length - 20} more
+                  </li>
+                )}
+              </ul>
+            </div>
+          )}
+        </Panel>
+      )}
       <details className="group">
         <summary className="text-xs text-muted-foreground cursor-pointer hover:text-foreground">
           Advanced · raw diff JSON
@@ -579,6 +697,25 @@ export function ExportMenu({ runId, bundle }: { runId: string; bundle: RunBundle
               type="button"
               disabled={busy !== null}
               onClick={() => void downloadOne(kind, label)}
+              className="w-full text-left px-3 py-2 rounded-md border border-border hover:bg-surface-2 font-mono text-sm disabled:opacity-50"
+            >
+              {busy === label ? `Downloading ${label}…` : label}
+            </button>
+          ))}
+          {extraArtifactDownloads(bundle).map(({ relPath, label }) => (
+            <button
+              key={label}
+              type="button"
+              disabled={busy !== null}
+              onClick={() => {
+                setBusy(label);
+                void downloadArtifact(relPath, `${runId}-${label}`)
+                  .then(() => toast.success(`Downloaded ${label}`))
+                  .catch(() =>
+                    toast.error(`Could not download ${label} — is ./rehearse serve running?`),
+                  )
+                  .finally(() => setBusy(null));
+              }}
               className="w-full text-left px-3 py-2 rounded-md border border-border hover:bg-surface-2 font-mono text-sm disabled:opacity-50"
             >
               {busy === label ? `Downloading ${label}…` : label}

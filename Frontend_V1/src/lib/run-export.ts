@@ -1,6 +1,7 @@
 /** Client-side export helpers — downloads via /files/ (rehearse serve). */
 
 import { artifactUrl } from "@/lib/api/client";
+import { extraArtifactDownloads } from "@/lib/run-observability";
 import type { Issue, RunBundle } from "@/lib/mock-data/types";
 
 export type RunExportKind = "scorecard" | "run" | "analysis" | "sitemapJson" | "sitemapMd";
@@ -95,6 +96,16 @@ export async function downloadRunBundleArtifacts(
       await downloadArtifact(runArtifactRelPath(runId, kind), `${runId}-${label}`);
       ok += 1;
       await new Promise((r) => setTimeout(r, 200));
+    } catch {
+      failed.push(label);
+    }
+  }
+
+  for (const { relPath, label } of extraArtifactDownloads(bundle)) {
+    try {
+      await downloadArtifact(relPath, `${runId}-${label}`);
+      ok += 1;
+      await new Promise((r) => setTimeout(r, 150));
     } catch {
       failed.push(label);
     }
