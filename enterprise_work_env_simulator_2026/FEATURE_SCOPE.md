@@ -353,15 +353,15 @@ Partner runs + capture     →  Phase 1 tail (budgets, cost)
 
 ### 3.1 Active L2 backlog (SELECTIVE EXPANSION)
 
-#### Sprint 1 — P0 post-call async
+#### Sprint 1 — P0 post-call async ✅ (2026-05-31)
 
 | ID | Feature | Notes |
 |----|---------|-------|
-| L2-UI-08 | Export menu — artifact download buttons | No download implementation |
-| L2-UI-09 | Export “Download all” | No handler |
-| L2-UI-10 | Evidence dialog “Copy repro” | No handler |
-| L2-UI-11 | Evidence dialog “Open in step timeline” | No handler |
-| L2-UI-17 | Compare page run A/B `<select>` | `defaultValue` only — selection does not refetch diff |
+| L2-UI-08 | Export menu — artifact download buttons | ✅ `run-export.ts` + `/files/` downloads |
+| L2-UI-09 | Export “Download all” | ✅ Sequential download of md/json/png |
+| L2-UI-10 | Evidence dialog “Copy repro” | ✅ Clipboard + toast |
+| L2-UI-11 | Evidence dialog “Open in step timeline” | ✅ Deep link `?tab=steps&step=` |
+| L2-UI-17 | Compare page run A/B `<select>` | ✅ URL search `a`/`b` refetches diff |
 
 #### Sprint 2 — P1 credibility & partner workflow
 

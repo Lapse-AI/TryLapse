@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AppSidebar } from "../components/app-sidebar";
 import { RehearseTopBar } from "../components/rehearse-top-bar";
+import { Toaster } from "../components/ui/sonner";
 
 function NotFoundComponent() {
   return (
@@ -123,6 +124,7 @@ function RootComponent() {
           </main>
         </div>
       </div>
+      <Toaster />
     </QueryClientProvider>
   );
 }

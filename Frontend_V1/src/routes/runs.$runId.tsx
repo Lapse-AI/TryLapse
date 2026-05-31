@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { z } from "zod";
 import {
   PageHeader,
   Panel,
@@ -52,7 +53,13 @@ import {
   GitBranch,
 } from "lucide-react";
 
+const searchSchema = z.object({
+  tab: z.string().optional(),
+  step: z.string().optional(),
+});
+
 export const Route = createFileRoute("/runs/$runId")({
+  validateSearch: searchSchema,
   head: ({ params }) => ({ meta: [{ title: `${params.runId} — Run detail` }] }),
   component: RunDetail,
   notFoundComponent: () => (
@@ -138,10 +145,23 @@ function MatrixCellDialog({
 
 function RunDetail() {
   const { runId } = Route.useParams();
+  const { tab: tabSearch, step: highlightStepId } = Route.useSearch();
+  const navigate = Route.useNavigate();
   const { data: bundle, isLoading } = useRunBundle(runId);
   const { data: runSummaries = [] } = useRunSummaries();
   const [active, setActive] = useState<Set<Severity>>(new Set(ALL_SEVERITIES));
   const [compareRunId, setCompareRunId] = useState(runSummaries[1]?.id ?? "");
+  const [activeTab, setActiveTab] = useState(tabSearch ?? "overview");
+
+  useEffect(() => {
+    if (tabSearch) setActiveTab(tabSearch);
+  }, [tabSearch]);
+
+  useEffect(() => {
+    if (!highlightStepId || activeTab !== "steps") return;
+    const el = document.getElementById(`step-${highlightStepId}`);
+    el?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [highlightStepId, activeTab, bundle?.steps.length]);
 
   if (isLoading || !bundle) {
     return <div className="p-12 text-center text-muted-foreground">Loading run…</div>;
@@ -203,7 +223,7 @@ function RunDetail() {
             >
               <GitCompare className="size-3.5" /> Diff
             </Link>
-            <ExportMenu />
+            <ExportMenu runId={run.id} bundle={bundle} />
           </>
         }
       />
@@ -234,7 +254,20 @@ function RunDetail() {
           />
         </div>
 
-        <Tabs defaultValue="overview" className="space-y-4">
+        <Tabs
+          value={activeTab}
+          onValueChange={(v) => {
+            setActiveTab(v);
+            void navigate({
+              search: (prev) => ({
+                ...prev,
+                tab: v === "overview" ? undefined : v,
+                step: v === "steps" ? prev.step : undefined,
+              }),
+            });
+          }}
+          className="space-y-4"
+        >
           <TabsList className="flex flex-wrap h-auto gap-1 bg-surface-2 p-1">
             <TabsTrigger value="overview" className="text-xs">
               Overview
@@ -426,7 +459,7 @@ function RunDetail() {
                             <span className="font-mono">{i.stepId}</span>
                           </div>
                         </div>
-                        <EvidenceDialog issue={i}>
+                        <EvidenceDialog issue={i} runId={run.id}>
                           <button
                             type="button"
                             className="text-[11px] text-muted-foreground hover:text-foreground inline-flex items-center gap-1 px-2 py-1 rounded-md border border-border hover:bg-surface-2 shrink-0"
@@ -519,7 +552,7 @@ function RunDetail() {
           </TabsContent>
           <TabsContent value="steps">
             <Panel className="overflow-hidden">
-              <StepsTable steps={bundle.steps} />
+              <StepsTable steps={bundle.steps} highlightStepId={highlightStepId} />
             </Panel>
           </TabsContent>
           <TabsContent value="sitemap">

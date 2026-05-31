@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { PageHeader, Panel, Chip } from "@/components/ui-bits";
 import { DiffPanel } from "@/components/run-detail";
 import { useLatestRun, useRunSummaries } from "@/lib/api/hooks";
@@ -16,11 +16,26 @@ export const Route = createFileRoute("/compare")({
 });
 
 function ComparePage() {
+  const navigate = useNavigate({ from: Route.fullPath });
   const { a, b } = Route.useSearch();
   const latest = useLatestRun();
   const { data: runSummaries = [] } = useRunSummaries();
-  const runA = a ?? runSummaries[1]?.id ?? latest?.id ?? "";
-  const runB = b ?? latest?.id ?? "";
+
+  const defaultA = runSummaries[1]?.id ?? runSummaries[0]?.id ?? latest?.id ?? "";
+  const defaultB = latest?.id ?? runSummaries[0]?.id ?? "";
+  const runA = a ?? defaultA;
+  const runB = b ?? defaultB;
+
+  const setRunA = (id: string) => {
+    void navigate({ search: (prev) => ({ ...prev, a: id }) });
+  };
+  const setRunB = (id: string) => {
+    void navigate({ search: (prev) => ({ ...prev, b: id }) });
+  };
+
+  const swapRuns = () => {
+    void navigate({ search: { a: runB, b: runA } });
+  };
 
   return (
     <div>
@@ -34,8 +49,9 @@ function ComparePage() {
           <div>
             <div className="text-xs text-muted-foreground mb-1">Run A (baseline)</div>
             <select
-              className="bg-surface border border-border rounded-md px-3 py-1.5 text-sm font-mono"
-              defaultValue={runA}
+              className="bg-surface border border-border rounded-md px-3 py-1.5 text-sm font-mono min-w-[240px]"
+              value={runA}
+              onChange={(e) => setRunA(e.target.value)}
             >
               {runSummaries.map((r) => (
                 <option key={r.id} value={r.id}>
@@ -44,12 +60,20 @@ function ComparePage() {
               ))}
             </select>
           </div>
-          <div className="text-muted-foreground">→</div>
+          <button
+            type="button"
+            onClick={swapRuns}
+            className="text-xs px-2 py-1 rounded-md border border-border hover:bg-surface-2 text-muted-foreground"
+            title="Swap A and B"
+          >
+            ⇄
+          </button>
           <div>
             <div className="text-xs text-muted-foreground mb-1">Run B (current)</div>
             <select
-              className="bg-surface border border-border rounded-md px-3 py-1.5 text-sm font-mono"
-              defaultValue={runB}
+              className="bg-surface border border-border rounded-md px-3 py-1.5 text-sm font-mono min-w-[240px]"
+              value={runB}
+              onChange={(e) => setRunB(e.target.value)}
             >
               {runSummaries.map((r) => (
                 <option key={r.id} value={r.id}>
@@ -64,7 +88,13 @@ function ComparePage() {
         </Panel>
 
         <Panel className="overflow-hidden">
-          <DiffPanel runA={runA} runB={runB} />
+          {runA && runB && runA !== runB ? (
+            <DiffPanel key={`${runA}-${runB}`} runA={runA} runB={runB} />
+          ) : (
+            <div className="p-8 text-center text-sm text-muted-foreground">
+              Pick two different runs to compare.
+            </div>
+          )}
         </Panel>
 
         <div className="text-sm text-muted-foreground">
