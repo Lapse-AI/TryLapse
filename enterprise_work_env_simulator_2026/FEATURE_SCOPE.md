@@ -64,7 +64,7 @@ Partner runs + capture     →  Phase 1 tail (budgets, cost)
 | Mode | Status | Blocker |
 |------|--------|---------|
 | **Concierge demo** (you run CLI + walk UI) | ✅ Ready | None — start outreach |
-| **Self-serve** (partner operates UI alone) | ⚠️ | Sprint 1–3 L2 subset |
+| **Self-serve** (partner operates UI alone) | ✅ | Sprint 1–3 shipped (PRs #13–#14); G12 badge only |
 | **Marketing / PLG** | ❌ Later | §1 Deferred + 3 verbal would-pay |
 
 **Demo runs (API live):** `argyle-20260531-000517`, `enterprise-20260530-234231` — not mock `run_8s7d2`.

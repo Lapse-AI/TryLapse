@@ -47,10 +47,10 @@ Record verbatim answers. Secondary: *“Would you pay ~$49/mo for this on every 
 | **G8** Honest Phase 2 scope (Compliance/Performance idle) | ✅ | Agents page shows idle placeholders |
 | **G9** Export / Diff / Compare fully functional | ✅ | Sprint 1 shipped in PR #13 — export, compare, evidence repro |
 | **G10** Command-center KPIs from live data | ✅ | Sprint 2 — home KPIs wired from live run/bundle data (PR #13) |
-| **G11** Init wizard writes config from UI | ⚠️ | Sprint 3 (L2-UI-63) — use `./rehearse init <url>` CLI until merged |
+| **G11** Init wizard writes config from UI | ✅ | Sprint 3 merged (PR #14) — `POST /api/configs` + Init wizard button |
 | **G12** Lovable badge removed in production build | ⚠️ | Dismiss before screen share |
 
-**Verdict (2026-05-31):** **Concierge demos fully ready** (CLI + dashboard with export/compare/KPIs). **Self-serve** blocked on **Sprint 3 only** (G11 init wizard; optional Linear export). Marketing/PLG still gated per `CEO_DECISIONS.md`.
+**Verdict (2026-05-31):** **Concierge + self-serve onboarding ready** (export, compare, KPIs, init wizard, Linear backlog download). **Marketing/PLG** still gated per `CEO_DECISIONS.md` (3 would-pay partners first).
 
 ---
 
@@ -63,11 +63,11 @@ Priority order from `FEATURE_SCOPE.md`:
 | L2-UI-12 | Annotation agree/disagree UI ✅ | False-positive feedback loop |
 | L2-UI-17 | Compare run selectors wired ✅ | “What changed since last release?” |
 | L2-UI-08–09 | Export artifact download ✅ | Async handoff after call |
-| L2-UI-50 | Export to Linear | Workflow integration ask |
+| L2-UI-50 | Export to Linear ✅ | Markdown download stub (full OAuth later) |
 | L2-UI-29–30 | Workflows from live bundle ✅ | Credibility on crawl-derived coverage |
 | L2-UI-52 | Delights from latest run ✅ | Home page delight parity |
 | L2-UI-01–04 | Command-center KPIs from API ✅ | Trust in aggregate metrics |
-| L2-UI-63 | Init wizard writes YAML | Partner self-onboarding |
+| L2-UI-63 | Init wizard writes YAML ✅ | Partner self-onboarding (PR #14) |
 
 ---
 
