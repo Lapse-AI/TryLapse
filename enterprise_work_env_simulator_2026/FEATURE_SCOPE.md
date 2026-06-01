@@ -413,7 +413,7 @@ Mock fallback when API down in **both**. Partner demos: API live + real run IDs.
 
 | ID | Feature | Notes |
 |----|---------|-------|
-| L2-UI-63 | Init wizard “Generate & write YAML” end step | No write API call from UI |
+| L2-UI-63 | Init wizard “Generate & write YAML” end step | ✅ Calls `POST /api/configs` from `/init` |
 | L2-MCK-01 | Acme demo run `run_8s7d2` | Retire when API live — causes 404 on screen share |
 | L2-UI-50 | “Export to Linear” button | Inert — **later** full integration (§1) |
 
@@ -456,7 +456,7 @@ Mock fallback when API down in **both**. Partner demos: API live + real run IDs.
 | L2-UI-10 | Evidence dialog “Copy repro” | Sprint 1 |
 | L2-UI-11 | Evidence dialog “Open in step timeline” | Sprint 1 |
 | L2-UI-12 | Annotations tab — add agree/disagree/false positive | Sprint 2 |
-| L2-UI-13 | Annotations — pin / manual finding | No UI |
+| L2-UI-13 | Annotations — pin / manual finding | ✅ Pin on issues + `ManualAnnotationPanel` |
 | L2-UI-14 | Severity reason / persona impact rich fields | Shown when in bundle; not always populated |
 | L2-UI-15 | Similar issue IDs cross-linking | Mock Acme only |
 | L2-UI-16 | Marketing-ready / regression-risk on delights | Partially in bundle; inconsistent |
@@ -467,8 +467,8 @@ Mock fallback when API down in **both**. Partner demos: API live + real run IDs.
 |----|---------|-------|
 | L2-UI-17 | Compare page run A/B `<select>` | ✅ Sprint 1 |
 | L2-UI-17b | Compare **What changed** narrative panel | ✅ NLU-2; `AI + rules` badge |
-| L2-UI-18 | Side-by-side step screenshot diff | Not implemented |
-| L2-UI-19 | Visual sitemap diff highlight | Diff API has new/removed pages; UI does not graph diff |
+| L2-UI-18 | Side-by-side step screenshot diff | ✅ `CompareVisualDiffPanel` + focus regions — `COMPARE_SCREENSHOTS.md` |
+| L2-UI-19 | Visual sitemap diff highlight | ✅ Compare page sitemap new/removed panel |
 
 ### 3.6 L2 catalog — trends & monitoring UI
 
@@ -486,12 +486,12 @@ Mock fallback when API down in **both**. Partner demos: API live + real run IDs.
 | ID | Feature | Notes |
 |----|---------|-------|
 | L2-UI-26 | Sitemap graph layout | Client grid positions, not force-directed |
-| L2-UI-27 | Sitemap “Preview screenshot” per page | Button inert |
+| L2-UI-27 | Sitemap “Preview screenshot” per page | ✅ Page list + graph click → preview |
 | L2-UI-28 | Sitemap “Diff sitemap” | Links to compare; no sitemap-specific diff view |
 | L2-UI-29 | Workflows page coverage cards | Sprint 2 |
 | L2-UI-30 | Workflows active journeys list | Sprint 2 |
-| L2-UI-31 | “Add to config” on suggested journey | Placeholder button |
-| L2-UI-32 | Click page → preview from last crawl | Not wired |
+| L2-UI-31 | “Add to config” on suggested journey | ✅ Wired on `/workflows` + `/sitemap` via `POST /api/configs/append-journey` |
+| L2-UI-32 | Click page → preview from last crawl | ✅ Wired on `/sitemap` |
 
 ### 3.8 L2 catalog — agents UI
 
@@ -510,9 +510,9 @@ Mock fallback when API down in **both**. Partner demos: API live + real run IDs.
 
 | ID | Feature | Notes |
 |----|---------|-------|
-| L2-UI-41 | YAML editor with live config | Static template string |
-| L2-UI-42 | YAML validate button | Inert |
-| L2-UI-43 | YAML save to backend | Inert |
+| L2-UI-41 | YAML editor with live config | ✅ `GET /api/configs/{id}` + `ConfigYamlEditor` |
+| L2-UI-42 | YAML validate button | ✅ `POST /api/configs/validate` |
+| L2-UI-43 | YAML save to backend | ✅ `POST /api/configs/save` |
 | L2-UI-44 | Personas editor (add/edit/remove) | Display mock personas only |
 | L2-UI-45 | REHEARSE_* secrets manager UI | Shows “set” labels; no vault |
 | L2-UI-46 | Git config version link | Display only |
@@ -546,15 +546,15 @@ Mock fallback when API down in **both**. Partner demos: API live + real run IDs.
 
 | ID | Feature | Notes |
 |----|---------|-------|
-| L2-UI-62 | Init wizard PII checkbox | Local state only; not saved |
-| L2-UI-63 | Init wizard “Generate & write YAML” end step | Sprint 3 |
+| L2-UI-62 | Init wizard PII checkbox | ✅ Saved via `POST /api/configs` (`piiRedaction`) |
+| L2-UI-63 | Init wizard “Generate & write YAML” end step | ✅ Calls `POST /api/configs` from `/init` |
 | L2-UI-64 | Library “parallel seeds / flaky config” badges | **Misleading UI** — engine runs seeds (L1-BRW-19); badge copy only |
 
 ### 3.13 L2 catalog — runner UI
 
 | ID | Feature | Notes |
 |----|---------|-------|
-| L2-UI-65 | Job config picker | Triggers default/first config only |
+| L2-UI-65 | Job config picker | ✅ Runner config selector + shared `selected-config` persistence |
 | L2-UI-66 | `--llm` toggle in runner UI | Not exposed in all job POST paths |
 | L2-UI-67 | Live log stream during job | Poll only; no stdout stream |
 

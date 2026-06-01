@@ -13,12 +13,14 @@ import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/s
 import { AppSidebar } from "@/components/app-sidebar";
 import {
   useApiHealth,
-  useRunSummaries,
+  useScopedRunSummaries,
   useSearch,
   useTriggerJob,
   useWorkspace,
 } from "@/lib/api/hooks";
 import { uiModeLabel } from "@/lib/ui-mode";
+import { TestGroupAuth } from "@/components/test-group-auth";
+import { useTestGroup, displayTargetForGroup } from "@/hooks/use-test-group";
 
 const ENVS = [
   { id: "prod-canary", label: "prod-canary", hint: "Production canary slice" },
@@ -29,16 +31,15 @@ const ENVS = [
 export function RehearseTopBar() {
   const { data: live } = useApiHealth();
   const { data: workspace } = useWorkspace();
-  const { data: summaries = [] } = useRunSummaries();
+  const { data: summaries = [] } = useScopedRunSummaries();
   const trigger = useTriggerJob();
+  const { group } = useTestGroup();
   const [env, setEnv] = useState(workspace?.env ?? "staging");
   const [query, setQuery] = useState("");
   const [showResults, setShowResults] = useState(false);
   const { data: searchResults } = useSearch(query);
 
-  const host = workspace?.targetUrl
-    ? new URL(workspace.targetUrl).host
-    : (summaries[0]?.target ?? "app.acme.io");
+  const host = displayTargetForGroup(group);
   const slug = workspace?.slug ?? "workspace";
 
   const runJob = (mode: "run" | "crawl") => {
@@ -143,6 +144,7 @@ export function RehearseTopBar() {
       </div>
 
       <div className="flex items-center gap-2">
+        <TestGroupAuth />
         <button
           type="button"
           disabled={!live || trigger.isPending}

@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageHeader, Panel, Chip, StatusDot, ClientTime } from "@/components/ui-bits";
 import { formatDuration } from "@/lib/mock-data";
-import { useRunSummaries } from "@/lib/api/hooks";
+import { useScopedRunSummaries, useScopedActiveJobs } from "@/lib/api/hooks";
+import { RunHistoryLiveRows } from "@/components/run-history-live-rows";
 import { GitCompare } from "lucide-react";
 
 export const Route = createFileRoute("/runs/")({
@@ -10,7 +11,8 @@ export const Route = createFileRoute("/runs/")({
 });
 
 function RunsList() {
-  const { data: runSummaries = [] } = useRunSummaries();
+  const { data: runSummaries = [], allRuns, group } = useScopedRunSummaries();
+  const { data: activeJobs = [] } = useScopedActiveJobs();
   const latest = runSummaries[0];
   const previous = runSummaries[1];
 
@@ -19,7 +21,7 @@ function RunsList() {
       <PageHeader
         eyebrow="runs"
         title="Run history"
-        description="Every rehearsal, every environment. Includes backend-shaped runs (enterprise-*, cal-*)."
+        description={`${activeJobs.length ? `${activeJobs.length} live · ` : ""}${runSummaries.length} completed for ${group.label} (${allRuns.length} total). In-progress jobs appear at the top until the run finishes.`}
         actions={
           previous && (
             <Link
@@ -51,6 +53,7 @@ function RunsList() {
               </tr>
             </thead>
             <tbody>
+              <RunHistoryLiveRows jobs={activeJobs} group={group} />
               {runSummaries.map((r) => (
                 <tr
                   key={r.id}

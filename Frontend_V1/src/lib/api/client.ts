@@ -15,6 +15,18 @@ import type {
 
 const API_BASE = (typeof import.meta !== "undefined" && import.meta.env?.VITE_REHEARSE_API) || "";
 
+export type JobRecord = {
+  id: string;
+  mode: string;
+  status: "queued" | "running" | "done" | "failed" | string;
+  runId?: string | null;
+  error?: string | null;
+  startedAt?: string;
+  finishedAt?: string | null;
+  config?: string;
+  deduped?: boolean;
+};
+
 export class ApiError extends Error {
   status: number;
   constructor(message: string, status: number) {
@@ -132,10 +144,7 @@ export const api = {
       cliHint: string;
       writeHint?: string;
     }>("/api/init"),
-  jobs: () =>
-    apiFetch<{ id: string; mode: string; status: string; runId?: string; error?: string }[]>(
-      "/api/jobs",
-    ),
+  jobs: () => apiFetch<JobRecord[]>("/api/jobs"),
   triggerJob: (body: {
     mode?: "run" | "crawl";
     configPath?: string;
@@ -159,6 +168,32 @@ export const api = {
     apiFetch<Annotation[]>(`/api/annotations/${runId}`, {
       method: "POST",
       body: JSON.stringify(ann),
+    }),
+  getConfigYaml: (configId: string) =>
+    apiFetch<{ id: string; path: string; yaml: string }>(`/api/configs/${configId}`),
+  validateConfigYaml: (yaml: string) =>
+    apiFetch<{
+      valid: boolean;
+      errors: string[];
+      summary?: { targetUrl?: string; journeyCount?: number };
+    }>("/api/configs/validate", {
+      method: "POST",
+      body: JSON.stringify({ yaml }),
+    }),
+  saveConfigYaml: (yaml: string, configId?: string) =>
+    apiFetch<{ id: string; path: string }>("/api/configs/save", {
+      method: "POST",
+      body: JSON.stringify({ yaml, configId }),
+    }),
+  draftJourney: (prompt: string, targetUrl: string) =>
+    apiFetch<{ journey: unknown; yamlFragment: string; source: string; hint: string }>(
+      "/api/journeys/draft",
+      { method: "POST", body: JSON.stringify({ prompt, targetUrl }) },
+    ),
+  appendJourneyToConfig: (body: { configId: string; path: string; title?: string }) =>
+    apiFetch<{ configId: string; journeyId: string; url: string }>("/api/configs/append-journey", {
+      method: "POST",
+      body: JSON.stringify(body),
     }),
   saveConfig: (body: {
     targetUrl: string;

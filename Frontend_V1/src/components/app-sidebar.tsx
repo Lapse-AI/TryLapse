@@ -18,7 +18,9 @@ import {
   Wand2,
 } from "lucide-react";
 import { formatRel } from "@/lib/mock-data";
-import { useLatestRun, useWorkspace } from "@/lib/api/hooks";
+import { useLatestRun, useWorkspace, useScopedActiveJobs } from "@/lib/api/hooks";
+import { useTestGroup, displayTargetForGroup } from "@/hooks/use-test-group";
+import { Chip } from "@/components/ui-bits";
 
 const nav = [
   {
@@ -26,7 +28,6 @@ const nav = [
     items: [
       { to: "/", label: "Command center", icon: LayoutDashboard },
       { to: "/runs", label: "Runs", icon: Activity },
-      { to: "/runner", label: "Runner", icon: PlayCircle },
       { to: "/compare", label: "Compare runs", icon: GitCompare },
       { to: "/trends", label: "Trends", icon: TrendingUp },
       { to: "/alerts", label: "Alerts", icon: Bell },
@@ -34,19 +35,25 @@ const nav = [
     ],
   },
   {
+    group: "Author & rehearse",
+    items: [
+      { to: "/init", label: "Init wizard", icon: Wand2 },
+      { to: "/library", label: "Journey library", icon: BookOpen },
+      { to: "/config", label: "Config (YAML)", icon: Settings },
+      { to: "/runner", label: "Runner", icon: PlayCircle },
+    ],
+  },
+  {
     group: "Map",
     items: [
       { to: "/sitemap", label: "Site map", icon: Network },
       { to: "/workflows", label: "Workflows", icon: GitBranch },
-      { to: "/library", label: "Journey library", icon: BookOpen },
     ],
   },
   { group: "Agents", items: [{ to: "/agents", label: "Agent control", icon: Bot }] },
   {
-    group: "Configure",
+    group: "Platform",
     items: [
-      { to: "/init", label: "Init wizard", icon: Wand2 },
-      { to: "/config", label: "Workspace", icon: Settings },
       { to: "/integrations", label: "Integrations", icon: Plug },
       { to: "/cli", label: "CLI", icon: Terminal },
     ],
@@ -56,7 +63,11 @@ const nav = [
 export function AppSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const latest = useLatestRun();
+  const { data: activeJobs = [] } = useScopedActiveJobs();
+  const liveJob = activeJobs[0];
   const { data: workspace } = useWorkspace();
+  const { group, resolvedConfigId } = useTestGroup();
+  const targetLabel = displayTargetForGroup(group);
 
   return (
     <aside className="w-60 shrink-0 border-r border-sidebar-border bg-sidebar text-sidebar-foreground flex flex-col">
@@ -81,9 +92,15 @@ export function AppSidebar() {
           className="w-full flex items-center justify-between px-2.5 py-2 rounded-md bg-sidebar-accent hover:bg-sidebar-accent/70 border border-sidebar-border text-left transition-colors"
         >
           <div className="min-w-0">
-            <div className="text-sm font-medium truncate">{workspace?.name ?? "Workspace"}</div>
+            <div className="text-sm font-medium truncate">{group.label}</div>
             <div className="text-[11px] text-muted-foreground font-mono truncate">
-              {workspace?.targetUrl?.replace(/^https?:\/\//, "") ?? "—"}
+              {targetLabel}
+            </div>
+            <div className="mt-1 flex flex-wrap gap-1">
+              <Chip tone="violet">{group.personaLabel}</Chip>
+              <span className="text-[10px] font-mono text-muted-foreground self-center">
+                {resolvedConfigId}
+              </span>
             </div>
           </div>
           <span className="size-2 rounded-full bg-ready pulse-dot" />
@@ -121,27 +138,45 @@ export function AppSidebar() {
         ))}
       </nav>
 
-      {latest && (
+      {(liveJob || latest) && (
         <div className="border-t border-sidebar-border p-3">
-          <div className="rounded-md border border-sidebar-border p-2.5 bg-surface">
-            <div className="text-[11px] text-muted-foreground">Latest run</div>
-            <Link
-              to="/runs/$runId"
-              params={{ runId: latest.id }}
-              className="mt-0.5 font-mono text-xs text-foreground hover:text-primary block truncate"
-            >
-              {latest.id}
-            </Link>
-            <div className="flex items-center gap-1.5 mt-1.5">
-              <span
-                className="size-1.5 rounded-full"
-                style={{ background: `var(--${latest.status})` }}
-              />
-              <span className="text-[11px] text-muted-foreground">
-                {latest.readiness} · {latest.readinessBand} · {formatRel(latest.startedAt)}
-              </span>
+          {liveJob && (
+            <div className="rounded-md border border-info/40 p-2.5 bg-info/5 mb-2">
+              <div className="text-[11px] text-info font-medium">Live rehearsal</div>
+              <Link
+                to="/runner"
+                className="mt-0.5 font-mono text-xs text-foreground hover:text-primary block truncate"
+              >
+                {liveJob.id} · {liveJob.status}
+              </Link>
+              <div className="text-[10px] text-muted-foreground mt-1">
+                {liveJob.runId ? `run ${liveJob.runId}` : "run id when CLI finishes"}
+              </div>
             </div>
-          </div>
+          )}
+          {latest && (
+            <div className="rounded-md border border-sidebar-border p-2.5 bg-surface">
+              <div className="text-[11px] text-muted-foreground">
+                {liveJob ? "Last completed run" : "Latest run"}
+              </div>
+              <Link
+                to="/runs/$runId"
+                params={{ runId: latest.id }}
+                className="mt-0.5 font-mono text-xs text-foreground hover:text-primary block truncate"
+              >
+                {latest.id}
+              </Link>
+              <div className="flex items-center gap-1.5 mt-1.5">
+                <span
+                  className="size-1.5 rounded-full"
+                  style={{ background: `var(--${latest.status})` }}
+                />
+                <span className="text-[11px] text-muted-foreground">
+                  {latest.readiness} · {latest.readinessBand} · {formatRel(latest.startedAt)}
+                </span>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </aside>

@@ -202,6 +202,18 @@ class _Handler(BaseHTTPRequestHandler):
             self._send_json(get_backlog(root))
             return
 
+        if path.startswith("/api/configs/"):
+            parts = path.strip("/").split("/")
+            if len(parts) == 3 and parts[0] == "api" and parts[1] == "configs":
+                config_id = parts[2]
+                try:
+                    from rehearse.dashboard.config_yaml import get_config_yaml
+
+                    self._send_json(get_config_yaml(root, config_id))
+                except ValueError as exc:
+                    self._send_json({"error": str(exc)}, status=404)
+                return
+
         if path == "/api/configs":
             self._send_json(list_configs(root))
             return
@@ -273,6 +285,62 @@ class _Handler(BaseHTTPRequestHandler):
         parsed = urllib.parse.urlparse(self.path)
         path = parsed.path.rstrip("/") or "/"
         root = self.server.artifacts_root
+
+        if path == "/api/configs/validate":
+            body = self._read_json_body()
+            from rehearse.dashboard.config_yaml import validate_config_yaml
+
+            yaml_text = body.get("yaml") or ""
+            self._send_json(validate_config_yaml(yaml_text))
+            return
+
+        if path == "/api/configs/save":
+            body = self._read_json_body()
+            from rehearse.dashboard.config_yaml import save_config_yaml
+
+            try:
+                result = save_config_yaml(
+                    root,
+                    body.get("yaml") or "",
+                    config_id=body.get("configId"),
+                )
+            except ValueError as exc:
+                self._send_json({"error": str(exc)}, status=400)
+                return
+            self._send_json(result)
+            return
+
+        if path == "/api/configs/append-journey":
+            body = self._read_json_body()
+            from rehearse.dashboard.config_yaml import append_navigate_journey
+
+            try:
+                result = append_navigate_journey(
+                    root,
+                    config_id=str(body.get("configId") or "lr-self"),
+                    path=str(body.get("path") or "/"),
+                    title=body.get("title"),
+                )
+            except ValueError as exc:
+                self._send_json({"error": str(exc)}, status=400)
+                return
+            self._send_json(result)
+            return
+
+        if path == "/api/journeys/draft":
+            body = self._read_json_body()
+            from rehearse.dashboard.config_yaml import draft_journey_from_prompt
+
+            try:
+                result = draft_journey_from_prompt(
+                    str(body.get("prompt") or ""),
+                    target_url=str(body.get("targetUrl") or ""),
+                )
+            except ValueError as exc:
+                self._send_json({"error": str(exc)}, status=400)
+                return
+            self._send_json(result)
+            return
 
         if path == "/api/configs":
             body = self._read_json_body()

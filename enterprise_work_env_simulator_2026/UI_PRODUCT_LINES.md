@@ -48,6 +48,8 @@ cd Frontend_Deliverable && npm run dev # alias → Frontend_V1 dev
 
 Optional: mark future-only sections with `<VisionOnly section="…">` for documentation — it does **not** hide UI.
 
+**Dev rehearsal personas:** top-bar **Test groups** (mock sign-in) switches target URL + YAML config presets per website persona — see `AUTH_TEST_GROUPS.md`.
+
 ---
 
 ## Backend vs UI honesty (partner calls)
@@ -66,6 +68,18 @@ The newest UI still includes some **mock / Phase 2 shells** (recurrence table, c
 
 ---
 
+## Sidebar groups (authoring vs monitoring)
+
+| Group | Routes | When to use |
+|-------|--------|-------------|
+| **Author & rehearse** | `/init`, `/library`, `/config`, `/runner` | Target URL, prompt → YAML draft, recorder, edit & save config, trigger run |
+| **Monitor** | `/`, `/runs`, `/compare`, `/trends`, … | Scorecards, compare runs (incl. visual step diff), drift |
+| **Map** | `/sitemap`, `/workflows` | Crawl output → preview page → append smoke journey |
+
+See `JOURNEY_STRATEGY.md`, `COMPARE_SCREENSHOTS.md`, and `DOC_CATALOG_STATUS.md` for journey philosophy, compare steps, and doc consistency checklist.
+
+---
+
 ## Related
 
-`FEATURE_SCOPE.md` · `DESIGN_PARTNER_CHECKLIST.md` · `live-2026-05-31.md`
+`FEATURE_SCOPE.md` · `JOURNEY_STRATEGY.md` · `COMPARE_SCREENSHOTS.md` · `DESIGN_PARTNER_CHECKLIST.md` · `live-2026-05-31.md`

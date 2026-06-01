@@ -1,4 +1,6 @@
+import { useEffect, useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import type { Annotation, RunBundle, RunDiff, RunSummary, Workspace } from "@/lib/mock-data/types";
 import {
   getLatestRun as mockLatest,
@@ -18,7 +20,12 @@ import {
   issueRecurrence as mockIssueRecurrence,
 } from "@/lib/mock-data";
 import { allowsMockFallback } from "@/lib/ui-mode";
-import { api, checkApiHealth } from "./client";
+import { jobMatchesTestGroup, runMatchesTestGroup } from "@/lib/test-groups";
+import { getTestGroupId } from "@/lib/test-auth";
+import { getTestGroup } from "@/lib/test-groups";
+import { api, checkApiHealth, type JobRecord } from "./client";
+
+export type { JobRecord };
 
 function mockAllowed(live: boolean): boolean {
   return !live && allowsMockFallback();
@@ -69,12 +76,31 @@ export function useRunSummaries() {
   });
 }
 
+/** Runs for the active test group (Cal.com, Argyle, self-test, staging). */
+export function useScopedRunSummaries() {
+  const { data: all = [], ...rest } = useRunSummaries();
+  const group = getTestGroup(getTestGroupId());
+  const scoped = all.filter((r) => runMatchesTestGroup(r, group));
+  return { data: scoped, allRuns: all, group, ...rest };
+}
+
+/** Active jobs (queued/running) for the current product — shown in Run history before the run exists. */
+export function useScopedActiveJobs() {
+  const { data: jobs = [], ...rest } = useJobs();
+  const group = getTestGroup(getTestGroupId());
+  const active = jobs.filter(
+    (j) =>
+      (j.status === "queued" || j.status === "running") && jobMatchesTestGroup(j, group),
+  );
+  return { data: active, group, ...rest };
+}
+
 export function useLatestRun(): RunSummary | undefined {
+  const { data: scoped } = useScopedRunSummaries();
   const health = useApiHealth();
-  const { data } = useRunSummaries();
-  if (health.data === true) return data?.[0];
-  if (allowsMockFallback()) return data?.[0] ?? mockLatest();
-  return data?.[0];
+  if (health.data === true) return scoped?.[0];
+  if (allowsMockFallback()) return scoped?.[0] ?? mockLatest();
+  return scoped?.[0];
 }
 
 export function useRunBundle(runId: string) {
@@ -253,21 +279,64 @@ export function useInitWizard() {
   });
 }
 
+function jobsHaveActive(jobs: JobRecord[] | undefined): boolean {
+  return (jobs ?? []).some((j) => j.status === "queued" || j.status === "running");
+}
+
 export function useJobs() {
   const health = useApiHealth();
-  return useQuery({
+  const qc = useQueryClient();
+  const prevStatusRef = useRef<Record<string, string>>({});
+
+  const query = useQuery({
     queryKey: queryKeys.jobs,
     queryFn: () => api.jobs(),
     enabled: health.data === true,
-    refetchInterval: 5000,
+    refetchInterval: (q) => (jobsHaveActive(q.state.data) ? 1500 : 8000),
   });
+
+  useEffect(() => {
+    const jobs = query.data;
+    if (!jobs?.length) return;
+
+    let refreshedRuns = false;
+    for (const j of jobs) {
+      const prev = prevStatusRef.current[j.id];
+      const now = j.status;
+      if (prev && (prev === "queued" || prev === "running") && (now === "done" || now === "failed")) {
+        if (now === "done" && j.runId) {
+          toast.success(`Run finished: ${j.runId}`, {
+            action: { label: "Open", onClick: () => (window.location.href = `/runs/${j.runId}`) },
+          });
+        } else if (now === "failed") {
+          toast.error(j.error?.slice(0, 120) || `Job ${j.id} failed`);
+        }
+        refreshedRuns = true;
+      }
+      prevStatusRef.current[j.id] = now;
+    }
+
+    if (refreshedRuns) {
+      void qc.invalidateQueries({ queryKey: queryKeys.summaries });
+      void qc.invalidateQueries({ queryKey: queryKeys.trends });
+      void qc.invalidateQueries({ queryKey: ["rehearse", "digest"] });
+    }
+  }, [query.data, qc]);
+
+  return query;
 }
 
 export function useTriggerJob() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: api.triggerJob,
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.jobs }),
+    onSuccess: (job) => {
+      toast.info(`Job ${job.status}: ${job.id}`, { description: "Watch status on Runner" });
+      void qc.invalidateQueries({ queryKey: queryKeys.jobs });
+    },
+    onError: (err) => {
+      toast.error(err instanceof Error ? err.message : "Could not start job");
+    },
   });
 }
 
@@ -288,6 +357,15 @@ export function useSaveConfig() {
       qc.invalidateQueries({ queryKey: queryKeys.configs });
       qc.invalidateQueries({ queryKey: queryKeys.init });
     },
+  });
+}
+
+export function useConfigYaml(configId: string) {
+  const health = useApiHealth();
+  return useQuery({
+    queryKey: ["configYaml", configId],
+    queryFn: () => api.getConfigYaml(configId),
+    enabled: health.data === true && !!configId,
   });
 }
 

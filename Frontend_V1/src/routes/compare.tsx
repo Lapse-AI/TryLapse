@@ -1,7 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { PageHeader, Panel, Chip } from "@/components/ui-bits";
 import { DiffPanel } from "@/components/run-detail";
-import { useLatestRun, useRunSummaries } from "@/lib/api/hooks";
+import { useScopedRunSummaries } from "@/lib/api/hooks";
+import { useTestGroup } from "@/hooks/use-test-group";
 import { z } from "zod";
 
 const searchSchema = z.object({
@@ -18,8 +19,9 @@ export const Route = createFileRoute("/compare")({
 function ComparePage() {
   const navigate = useNavigate({ from: Route.fullPath });
   const { a, b } = Route.useSearch();
-  const latest = useLatestRun();
-  const { data: runSummaries = [] } = useRunSummaries();
+  const { group } = useTestGroup();
+  const { data: runSummaries = [] } = useScopedRunSummaries();
+  const latest = runSummaries[0];
 
   const defaultA = runSummaries[1]?.id ?? runSummaries[0]?.id ?? latest?.id ?? "";
   const defaultB = latest?.id ?? runSummaries[0]?.id ?? "";
@@ -42,7 +44,7 @@ function ComparePage() {
       <PageHeader
         eyebrow="monitor"
         title="Run diff"
-        description="Side-by-side comparison — readiness, sitemap, step outcomes. Mirrors rehearse diff CLI and GET /api/diff."
+        description={`Compare runs for ${group.label} — readiness, sitemap, step outcomes. Only runs matching this product are listed.`}
       />
       <div className="p-8 max-w-[1400px] space-y-6">
         <Panel className="p-5 flex flex-wrap items-center gap-4">

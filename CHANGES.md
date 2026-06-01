@@ -9,7 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Config YAML API: `GET /api/configs/{id}`, validate/save, append navigate journey from sitemap path
+- Init wizard: prompt → journey draft (`POST /api/journeys/draft`) before recorder block
+- Site map: page preview screenshot + “Add navigate journey” to selected config
+- Annotations: **Pin** on automated issues; **manual finding** panel on run Annotations tab
+- Docs: `DOC_CATALOG_STATUS.md` audit checklist; aligned `FEATURE_SCOPE` / compare docs
+- UX handoff: shared config selection (`selected-config.ts`) across Config, Runner, Sitemap, Workflows; Runner readiness panel + config picker; Init/Config CTAs toward Runner
+- Temporary test auth: product dropdown (no login required) + optional sign-in; runs/compare scoped per product — `AUTH_TEST_GROUPS.md`
 - Compare visual step diff: side-by-side screenshots with focus box + label on click/fill/select steps
+- Compare UI: collapsible accordion per changed step (expand for side-by-side); command-center top-right **Compare runs** link with `#visual-diff` anchor
+- Workflows: **Add to config** on suggested journeys (append navigate journey via `/api/configs/append-journey`)
 - Run detail observability: Web Vitals per step, console warnings, network-log / web-vitals exports, agents-run summary
 - Compare diff: sitemap new/removed pages panel (L2-UI-19)
 - Dimension rollup grid component on command center and run detail (clickable dimension filters with breakdown banner)
@@ -25,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Browser parity Phase B:** Performance agent (Web Vitals), `network-log.json`, console warnings + `press` action
 - Job queue: file lock on `jobs.json`, one rehearsal at a time, dedupe, stale-job cleanup on serve restart; `.env` loaded for background jobs
 - Runner UI: LLM enrichment checkbox for job triggers
+- **Test groups (dev):** mock sign-in + website persona groups in top bar; presets target URL and YAML config (`AUTH_TEST_GROUPS.md`)
 - Phase 1 tail: named step error types (`errorType` on steps/issues), run `costEstimate` in analysis bundle, observability fields (`pagesCrawled`, `agentsRun`) in bundle summary
 - Sprint 3 UI: init wizard writes YAML via `POST /api/configs`; Linear backlog export stub; live/offline/running command-center chip
 - Sprint 3 backend: `save_config()` + `POST /api/configs` for self-serve init

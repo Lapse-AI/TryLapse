@@ -1,8 +1,12 @@
+import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader, Panel, Chip } from "@/components/ui-bits";
-import { useLatestRun, useRunBundle } from "@/lib/api/hooks";
+import { useLatestRun, useRunBundle, useConfigs } from "@/lib/api/hooks";
+import { usePersistedConfigId } from "@/hooks/use-persisted-config-id";
 import { buildWorkflowCoverage, normalizeSuggestedJourneys } from "@/lib/workflow-coverage";
-import { Plus, CheckCircle2 } from "lucide-react";
+import { api } from "@/lib/api/client";
+import { Plus, CheckCircle2, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/workflows")({
   head: () => ({ meta: [{ title: "Workflows — Launch Rehearsal" }] }),
@@ -12,11 +16,31 @@ export const Route = createFileRoute("/workflows")({
 function Workflows() {
   const latest = useLatestRun();
   const { data: bundle } = useRunBundle(latest?.id ?? "");
+  const { data: configs = [] } = useConfigs();
+  const { configId, pickConfig } = usePersistedConfigId();
+  const [appendPending, setAppendPending] = useState<string | null>(null);
+  const configOptions = useMemo(
+    () => (configs.length ? configs : [{ id: "lr-self", name: "lr-self" }]),
+    [configs],
+  );
+
   if (!latest || !bundle) return null;
   const wfAgent = bundle.agents.find((a) => a.id === "ag_wf" || a.name === "Workflow");
   const workflowCoverage = buildWorkflowCoverage(bundle);
   const suggestedJourneys = normalizeSuggestedJourneys(bundle);
   const journeys = bundle.journeys ?? [];
+
+  const appendJourney = async (suggestedId: string, path: string, title: string) => {
+    setAppendPending(suggestedId);
+    try {
+      const out = await api.appendJourneyToConfig({ configId, path, title });
+      toast.success(`Added ${out.journeyId} — edit on Config (YAML), then Run in Runner`);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Could not append journey");
+    } finally {
+      setAppendPending(null);
+    }
+  };
 
   return (
     <div>
@@ -96,12 +120,30 @@ function Workflows() {
         </Panel>
 
         <Panel className="p-6">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex flex-wrap items-end justify-between gap-4 mb-4">
             <div>
               <div className="text-xs text-muted-foreground">Suggested journeys</div>
               <h2 className="font-display text-lg font-semibold mt-0.5">
                 From workflow agent · accept → add to config
               </h2>
+            </div>
+            <div>
+              <label htmlFor="wf-config-id" className="text-xs text-muted-foreground mb-1 block">
+                Target config
+              </label>
+              <select
+                id="wf-config-id"
+                aria-label="Target config for append journey"
+                className="bg-surface border border-border rounded-md px-3 py-1.5 text-sm font-mono min-w-[160px]"
+                value={configId}
+                onChange={(e) => pickConfig(e.target.value)}
+              >
+                {configOptions.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.id}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
           {suggestedJourneys.length === 0 ? (
@@ -119,15 +161,28 @@ function Workflows() {
                     <div className="font-medium">{s.title}</div>
                     <div className="text-xs text-muted-foreground mt-1">{s.reason}</div>
                     <Chip tone="info">{s.category}</Chip>
+                    {s.path && (
+                      <span className="text-[10px] font-mono text-muted-foreground ml-2">
+                        {s.path}
+                      </span>
+                    )}
                     <span className="text-[10px] font-mono text-muted-foreground ml-2">
                       from {s.sourceRunId}
                     </span>
                   </div>
                   <button
                     type="button"
-                    className="text-xs font-mono px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:opacity-90 inline-flex items-center gap-1.5 shrink-0"
+                    disabled={!s.path || appendPending === s.id}
+                    title={s.path ? undefined : "No navigate path in suggested journey"}
+                    onClick={() => void appendJourney(s.id, s.path!, s.title)}
+                    className="text-xs font-mono px-3 py-1.5 rounded-md bg-primary text-primary-foreground hover:opacity-90 inline-flex items-center gap-1.5 shrink-0 disabled:opacity-50"
                   >
-                    <Plus className="size-3.5" /> add to config
+                    {appendPending === s.id ? (
+                      <Loader2 className="size-3.5 animate-spin" />
+                    ) : (
+                      <Plus className="size-3.5" />
+                    )}{" "}
+                    add to config
                   </button>
                 </div>
               ))}

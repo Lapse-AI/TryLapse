@@ -104,10 +104,10 @@ export function PageHeader({
     <div className="border-b border-border bg-surface">
       <div className="px-4 md:px-8 py-7 flex items-start justify-between gap-6 flex-wrap">
         <div>
-          <div className="text-xs text-primary/80 mb-2 font-medium">{eyebrow}</div>
-          <h1 className="font-display text-[28px] font-semibold tracking-tight">{title}</h1>
+          <div className="text-xs text-muted-foreground mb-2 font-medium">{eyebrow}</div>
+          <h1 className="font-display text-[30px] font-semibold tracking-tight">{title}</h1>
           {description && (
-            <p className="text-muted-foreground mt-1.5 max-w-2xl text-sm leading-relaxed">
+            <p className="text-muted-foreground mt-1.5 max-w-prose text-sm leading-relaxed">
               {description}
             </p>
           )}
@@ -147,20 +147,22 @@ export function Sparkline({
   values,
   color = "var(--ready)",
   height = 36,
+  className = "w-full",
 }: {
   values: number[];
   color?: string;
   height?: number;
+  className?: string;
 }) {
   const safe = values.filter((v) => Number.isFinite(v));
+  const w = Math.max(120, safe.length * 8);
   if (safe.length === 0) {
-    return <svg width={120} height={height} aria-hidden />;
+    return <svg viewBox={`0 0 ${w} ${height}`} className={className} aria-hidden />;
   }
 
   const min = Math.min(...safe);
   const max = Math.max(...safe);
   const range = max - min || 1;
-  const w = 120;
   const denom = Math.max(safe.length - 1, 1);
 
   const coords = safe.map((v, i) => {
@@ -172,7 +174,11 @@ export function Sparkline({
   const points = coords.map(({ x, y }) => `${x},${y}`).join(" ");
 
   return (
-    <svg width={w} height={height} className="overflow-visible">
+    <svg
+      viewBox={`0 0 ${w} ${height}`}
+      className={`${className} overflow-visible`}
+      preserveAspectRatio="none"
+    >
       <polyline fill="none" stroke={color} strokeWidth={1.5} points={points} />
       {coords.map(({ x, y }, i) => (
         <circle key={i} cx={x} cy={y} r={1.5} fill={color} />

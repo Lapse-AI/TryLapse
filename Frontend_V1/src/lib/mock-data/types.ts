@@ -181,6 +181,8 @@ export type SuggestedJourney = {
   category: Journey["category"];
   reason: string;
   sourceRunId: string;
+  /** First navigate step path — used for append-journey API */
+  path?: string;
 };
 
 export type DimensionScore = {

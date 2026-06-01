@@ -27,6 +27,19 @@ function inferCategoryFromSuggested(raw: Record<string, unknown>): WorkflowCateg
   return "dashboard";
 }
 
+function pathFromSuggested(raw: Record<string, unknown>): string | undefined {
+  const steps = raw.steps;
+  if (!Array.isArray(steps) || steps.length === 0) return undefined;
+  const first = steps[0] as Record<string, unknown>;
+  const url = String(first.url ?? "");
+  if (!url) return undefined;
+  try {
+    return new URL(url).pathname;
+  } catch {
+    return url.startsWith("/") ? url : undefined;
+  }
+}
+
 /** Normalize backend suggested-journey shapes into UI SuggestedJourney rows. */
 export function normalizeSuggestedJourneys(bundle: RunBundle): SuggestedJourney[] {
   const raw = (bundle.suggestedJourneys ?? []) as Array<
@@ -48,6 +61,7 @@ export function normalizeSuggestedJourneys(bundle: RunBundle): SuggestedJourney[
       category,
       reason,
       sourceRunId: s.sourceRunId ?? bundle.summary.id,
+      path: s.path ?? pathFromSuggested(s as Record<string, unknown>),
     };
   });
 }

@@ -25,6 +25,7 @@ import {
   ExportMenu,
   RunNarrativePanel,
 } from "@/components/run-detail";
+import { ManualAnnotationPanel } from "@/components/manual-annotation-panel";
 import {
   formatDuration,
   bandFromIssues,
@@ -646,7 +647,8 @@ function RunDetail() {
               {compareRunId && <DiffPanel runA={compareRunId} runB={run.id} />}
             </Panel>
           </TabsContent>
-          <TabsContent value="annotations">
+          <TabsContent value="annotations" className="space-y-4">
+            <ManualAnnotationPanel runId={run.id} />
             <Panel className="overflow-hidden">
               <AnnotationsPanel runId={run.id} annotations={bundle.annotations} />
             </Panel>

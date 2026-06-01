@@ -3,56 +3,12 @@ import { PageHeader, Panel, Chip } from "@/components/ui-bits";
 import { personas, workspace, agentConfigDefaults, auditLog } from "@/lib/mock-data";
 import { useWorkspace, useSaveWorkspace } from "@/lib/api/hooks";
 import { VisionOnly } from "@/components/vision-only";
+import { ConfigYamlEditor } from "@/components/config-yaml-editor";
 
 export const Route = createFileRoute("/config")({
   head: () => ({ meta: [{ title: "Workspace — Launch Rehearsal" }] }),
   component: Config,
 });
-
-const yaml = `# rehearse.yaml — matches launch-rehearsal/examples/enterprise-saas.yaml shape
-product_name: Acme SaaS
-target_url: https://app.acme.io
-run_id_prefix: acme
-
-crawl:
-  enabled: true
-  max_depth: ${agentConfigDefaults.crawlMaxDepth}
-  max_pages: ${agentConfigDefaults.crawlMaxPages}
-  respect_robots: ${agentConfigDefaults.crawlRespectRobots}
-
-personas:
-  - id: p1-evaluator
-    name: Prospect Priya
-    role: First-time visitor evaluating
-    goals: [Decide if worth a demo]
-  - id: p2-operator
-    name: Operator Owen
-    role: Daily power user
-  - id: p3-admin
-    name: Admin Ada
-    role: Owns the workspace
-
-journeys:
-  - id: j1
-    name: Land → Pricing → Signup
-    steps:
-      - action: navigate
-        url: /
-      - action: click
-        selector: "[data-cta='pricing']"
-
-auth:
-  login_url: /login
-  email_env: REHEARSE_EMAIL
-  password_env: REHEARSE_PASSWORD
-
-budgets:
-  max_run_seconds: 900
-  step_timeout_ms: 30000
-
-# LLM persona agents (optional — NVIDIA NIM / OpenAI)
-# rehearse run --llm
-`;
 
 function Config() {
   const { data: ws = workspace } = useWorkspace();
@@ -105,33 +61,7 @@ function Config() {
           </Panel>
         </div>
 
-        <VisionOnly section="config.yamlEditor">
-          <Panel className="overflow-hidden">
-            <div className="p-4 border-b border-border flex items-center justify-between flex-wrap gap-2">
-              <div className="text-xs text-muted-foreground">
-                YAML editor · journey DSL validator
-              </div>
-              <div className="flex gap-2">
-                <Chip tone="ready">valid</Chip>
-                <button
-                  type="button"
-                  className="text-xs font-mono px-3 py-1 rounded border border-border hover:bg-surface-2"
-                >
-                  validate
-                </button>
-                <button
-                  type="button"
-                  className="text-xs font-mono px-3 py-1 rounded bg-primary text-primary-foreground"
-                >
-                  save · v15
-                </button>
-              </div>
-            </div>
-            <pre className="p-5 text-[12.5px] font-mono leading-relaxed overflow-x-auto bg-surface-2/30 text-foreground/95">
-              {yaml}
-            </pre>
-          </Panel>
-        </VisionOnly>
+        <ConfigYamlEditor />
 
         <VisionOnly section="config.personasEditor">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

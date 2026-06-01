@@ -4,6 +4,10 @@ import { useInitWizard, useApiHealth, useSaveConfig } from "@/lib/api/hooks";
 import { useEffect, useMemo, useState } from "react";
 import { api } from "@/lib/api/client";
 import { toast } from "sonner";
+import { JourneyDraftPanel } from "@/components/journey-draft-panel";
+import { setSelectedConfigId } from "@/lib/selected-config";
+import { useTestGroup } from "@/hooks/use-test-group";
+import { groupInitPreset } from "@/lib/test-groups";
 
 export const Route = createFileRoute("/init")({
   head: () => ({ meta: [{ title: "Init wizard — Launch Rehearsal" }] }),
@@ -97,6 +101,10 @@ function InitPage() {
   const { data: live } = useApiHealth();
   const { data: wizard } = useInitWizard();
   const saveConfig = useSaveConfig();
+  const { isSignedIn, group, resolvedConfigId } = useTestGroup();
+  const allConfigs = wizard?.configs ?? [];
+  const exampleConfigs = allConfigs.slice(0, 8);
+  const hiddenConfigCount = Math.max(0, allConfigs.length - exampleConfigs.length);
   const dogfoodDefault =
     (wizard?.dogfood as { targetUrl?: string } | undefined)?.targetUrl ?? "http://127.0.0.1:8081";
 
@@ -163,7 +171,15 @@ function InitPage() {
       },
       {
         onSuccess: (result) => {
-          toast.success(`Config written to ${result.path}`);
+          setSelectedConfigId(result.id);
+          toast.success(`Config written to ${result.path}`, {
+            action: {
+              label: "Open Runner",
+              onClick: () => {
+                window.location.href = "/runner";
+              },
+            },
+          });
         },
         onError: (err) => {
           toast.error(err instanceof Error ? err.message : "Failed to write config");
@@ -177,6 +193,18 @@ function InitPage() {
     setSelfTest(true);
     setAllowLocalhost(true);
     setPreflight(null);
+  };
+
+  const applyTestGroupPreset = () => {
+    const preset = groupInitPreset(group);
+    setTargetUrl(preset.targetUrl);
+    if (preset.productName) setProductName(preset.productName);
+    setWithAuth(preset.withAuth ?? false);
+    setSelfTest(preset.selfTest ?? false);
+    setAllowLocalhost(preset.allowLocalhost ?? false);
+    setPreflight(null);
+    setSelectedConfigId(resolvedConfigId);
+    toast.success(`Applied ${group.label} preset`);
   };
 
   const steps = wizard?.steps ?? [
@@ -198,6 +226,32 @@ function InitPage() {
         description={wizard?.cliHint ?? "Scaffold rehearse.yaml — mirrors CLI init flow."}
       />
       <div className="p-8 max-w-[900px] space-y-6">
+        {isSignedIn && (
+          <Panel className="p-6 space-y-3 border-violet/30 bg-violet/5">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <div className="font-medium">Test group preset</div>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {group.personaLabel} — fills target URL and auth flags from the top-bar test
+                  group.
+                </p>
+              </div>
+              <Chip tone="violet">{group.label}</Chip>
+            </div>
+            <div className="text-[11px] font-mono text-muted-foreground">
+              {group.targetUrl} · config {resolvedConfigId}
+              {group.withAuth && " · REHEARSE_EMAIL / REHEARSE_PASSWORD"}
+            </div>
+            <button
+              type="button"
+              onClick={applyTestGroupPreset}
+              className="text-xs px-3 py-1.5 rounded-md border border-violet/40 bg-background hover:bg-surface-2"
+            >
+              Apply test group to form
+            </button>
+          </Panel>
+        )}
+
         <Panel className="p-6 space-y-4 border-primary/30 bg-primary/5">
           <div>
             <div className="font-medium">Dogfood this dashboard</div>
@@ -352,6 +406,8 @@ function InitPage() {
           </fieldset>
         </Panel>
 
+        <JourneyDraftPanel live={!!live} targetUrl={targetUrl} />
+
         <Panel className="p-6 space-y-4">
           <div>
             <div className="font-display font-semibold">Journey recorder (Phase C)</div>
@@ -384,14 +440,20 @@ function InitPage() {
           </pre>
         </Panel>
 
-        {(wizard?.configs ?? []).length > 0 && (
+        {allConfigs.length > 0 && (
           <Panel className="p-6">
             <div className="text-xs text-muted-foreground mb-3">Start from example config</div>
             <ul className="font-mono text-xs space-y-1">
-              {wizard!.configs.map((c) => (
+              {exampleConfigs.map((c) => (
                 <li key={c.id}>{c.path}</li>
               ))}
             </ul>
+            {hiddenConfigCount > 0 && (
+              <div className="mt-2 text-[11px] text-muted-foreground">
+                +{hiddenConfigCount} more generated configs in artifacts. Open `Config (YAML)` to
+                edit a specific file.
+              </div>
+            )}
           </Panel>
         )}
 

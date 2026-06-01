@@ -466,7 +466,7 @@ export function DiffPanel({ runA, runB }: { runA: string; runB: string }) {
         </div>
       )}
       {(diff.visualDiffs?.length ?? 0) > 0 && (
-        <div className="space-y-3">
+        <div id="visual-diff" className="space-y-3 scroll-mt-24">
           <div className="font-display font-semibold text-sm">Visual step diff</div>
           <p className="text-xs text-muted-foreground">
             Side-by-side screenshots for changed steps. Boxes show the control that was clicked,
@@ -586,6 +586,7 @@ const ANNOTATION_ACTIONS: {
   { action: "agreed", label: "Agree", tone: "ready" },
   { action: "disagree", label: "Disagree", tone: "info" },
   { action: "false positive", label: "False positive", tone: "warn" },
+  { action: "pinned", label: "Pin", tone: "info" },
 ];
 
 export function IssueAnnotationActions({
@@ -623,7 +624,9 @@ export function IssueAnnotationActions({
             ? "ready"
             : existing.action === "false positive"
               ? "warn"
-              : "info"
+              : existing.action === "pinned"
+                ? "violet"
+                : "info"
         }
       >
         {existing.action}

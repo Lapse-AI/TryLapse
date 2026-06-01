@@ -22,6 +22,7 @@ import {
   useApiHealth,
   useJobs,
 } from "@/lib/api/hooks";
+import { ActiveJobsBanner } from "@/components/job-queue-status";
 import {
   ArrowRight,
   Sparkles,
@@ -99,6 +100,11 @@ function Index() {
 
   return (
     <div>
+      {jobsRunning && jobs && jobs.length > 0 && (
+        <div className="px-8 pt-6 max-w-[1400px]">
+          <ActiveJobsBanner jobs={jobs} />
+        </div>
+      )}
       <PageHeader
         eyebrow="Command center"
         title="Pre-launch readiness, observed."
@@ -111,6 +117,24 @@ function Index() {
               />{" "}
               {liveChipLabel}
             </Chip>
+            {runSummaries.length >= 2 ? (
+              <Link
+                to="/compare"
+                search={{ a: runSummaries[1]?.id, b: latest.id }}
+                hash="visual-diff"
+                className="text-xs px-3 py-1.5 rounded-md border border-border/70 hover:bg-surface-2 inline-flex items-center gap-1.5 text-muted-foreground"
+              >
+                <GitCompare className="size-3.5" /> Compare runs
+              </Link>
+            ) : (
+              <Link
+                to="/compare"
+                className="text-xs px-3 py-1.5 rounded-md border border-border hover:bg-surface-2 inline-flex items-center gap-1.5 text-muted-foreground"
+                title="Need two runs to compare"
+              >
+                <GitCompare className="size-3.5" /> Compare
+              </Link>
+            )}
             <Link
               to="/runs"
               className="text-xs px-3 py-1.5 rounded-md border border-border hover:bg-surface-2"
@@ -121,18 +145,17 @@ function Index() {
         }
       />
 
-      <div className="p-4 md:p-8 space-y-8 max-w-[1400px]">
+      <div className="p-4 md:p-8 space-y-7 max-w-[1400px]">
         {digest && (
-          <Panel className="p-5 md:p-6 space-y-3 border-primary/20 bg-primary/5">
+          <Panel className="p-5 md:p-6 space-y-3 panel-quiet">
             <div className="flex items-center gap-2 flex-wrap">
-              <Sparkles className="size-4 text-primary" />
+              <Sparkles className="size-4 text-muted-foreground" />
               <h2 className="font-display text-lg font-semibold">Command center digest</h2>
-              <Chip tone="neutral">
-                {digest.source === "llm+template" ? "AI + rules" : "Rules"}
-              </Chip>
-              <Chip tone="info">{digest.readinessTrend}</Chip>
+              <span className="text-xs text-muted-foreground">
+                {digest.source === "llm+template" ? "AI + rules" : "Rules"} · {digest.readinessTrend}
+              </span>
             </div>
-            <p className="text-sm leading-relaxed">{digest.headline}</p>
+            <p className="text-sm leading-relaxed max-w-prose">{digest.headline}</p>
             <ul className="text-sm space-y-1.5 list-disc pl-5">
               {digest.bullets.map((b) => (
                 <li key={b}>{b}</li>
@@ -141,12 +164,12 @@ function Index() {
           </Panel>
         )}
         {/* Quick actions */}
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             disabled={!live || trigger.isPending}
             onClick={() => trigger.mutate({ mode: "run" })}
-            className="text-xs px-3 py-1.5 rounded-md bg-primary text-primary-foreground inline-flex items-center gap-1.5 font-medium disabled:opacity-50"
+            className="text-xs px-3 py-1.5 rounded-md bg-primary text-primary-foreground inline-flex items-center gap-1.5 font-medium hover:opacity-95 disabled:opacity-50"
           >
             {trigger.isPending ? (
               <Loader2 className="size-3.5 animate-spin" />
@@ -159,25 +182,18 @@ function Index() {
             type="button"
             disabled={!live || trigger.isPending}
             onClick={() => trigger.mutate({ mode: "crawl" })}
-            className="text-xs px-3 py-1.5 rounded-md border border-border hover:bg-surface-2 inline-flex items-center gap-1.5 disabled:opacity-50"
+            className="text-xs px-3 py-1.5 rounded-md border border-border/80 text-foreground/85 hover:bg-surface-2 inline-flex items-center gap-1.5 disabled:opacity-50"
           >
             <Network className="size-3.5" /> Crawl only
           </button>
-          <Link
-            to="/compare"
-            search={{ a: runSummaries[1]?.id, b: latest.id }}
-            className="text-xs px-3 py-1.5 rounded-md border border-border hover:bg-surface-2 inline-flex items-center gap-1.5"
-          >
-            <GitCompare className="size-3.5" /> Compare last two runs
-          </Link>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-          <Panel className="md:col-span-4 p-6 flex items-center justify-center">
+          <Panel className="md:col-span-4 p-6 flex items-center justify-center border-border/60">
             <ReadinessGauge value={latest.readiness} band={band} />
           </Panel>
 
-          <Panel className="md:col-span-5 p-6">
+          <Panel className="md:col-span-5 p-6 border-border/60">
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-xs text-muted-foreground">Latest run</div>
@@ -226,12 +242,16 @@ function Index() {
             </div>
           </Panel>
 
-          <Panel className="md:col-span-3 p-6">
+          <Panel className="md:col-span-3 p-6 panel-quiet flex flex-col">
             <div className="text-xs text-muted-foreground">{runSummaries.length}-run trend</div>
-            <div className="mt-3">
-              <Sparkline values={trends?.readiness ?? [latest.readiness]} height={64} />
+            <div className="mt-3 grow flex items-center">
+              <Sparkline
+                values={trends?.readiness ?? [latest.readiness]}
+                height={64}
+                className="w-full h-16"
+              />
             </div>
-            <div className="mt-2 flex items-center justify-between text-[11px] text-muted-foreground font-mono">
+            <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground font-mono">
               <span>{(trends?.readiness ?? [])[0] ?? latest.readiness}</span>
               <span className="text-ready">
                 {(trends?.readiness?.length ?? 0) > 1
@@ -243,7 +263,7 @@ function Index() {
           </Panel>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
           <Stat
             label="Time to first scorecard"
             value={formatDuration(latest.durationSec)}
@@ -269,13 +289,13 @@ function Index() {
           />
         </div>
 
-        <Panel className="p-6">
+        <Panel className="p-6 border-border/60">
           <div className="flex items-end justify-between mb-5">
             <div>
               <div className="text-xs text-muted-foreground">Dimension rollup</div>
               <h2 className="font-display text-xl font-semibold mt-1">8-axis evaluation</h2>
               <p
-                className="text-[11px] text-muted-foreground mt-1 max-w-xl"
+                className="text-xs text-muted-foreground mt-1 max-w-prose leading-relaxed"
                 title={READINESS_BAND_HELP}
               >
                 {READINESS_BAND_HELP}
@@ -293,7 +313,7 @@ function Index() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {topBlocker && (
-            <Panel className="p-6">
+            <Panel className="p-6 panel-quiet">
               <div className="flex items-center gap-2 mb-3">
                 <AlertOctagon className="size-4 text-danger" />
                 <div className="text-xs text-muted-foreground">Top blocker — fix before launch</div>
@@ -315,9 +335,9 @@ function Index() {
           )}
 
           {topDelight ? (
-            <Panel className="p-6">
+            <Panel className="p-6 panel-quiet">
               <div className="flex items-center gap-2 mb-3">
-                <Sparkles className="size-4 text-ready" />
+                <Sparkles className="size-4 text-muted-foreground" />
                 <div className="text-xs text-muted-foreground">Delight worth shipping with</div>
               </div>
               <h3 className="font-display text-lg font-semibold">{topDelight.title}</h3>
@@ -329,7 +349,7 @@ function Index() {
               </div>
             </Panel>
           ) : (
-            <Panel className="p-6">
+            <Panel className="p-6 panel-quiet">
               <div className="text-xs text-muted-foreground">Delights</div>
               <p className="mt-2 text-sm text-muted-foreground">
                 No delights detected this run — required section still emitted in scorecard.
@@ -338,7 +358,7 @@ function Index() {
           )}
         </div>
 
-        <Panel className="overflow-hidden">
+        <Panel className="overflow-hidden border-border/60">
           <div className="p-5 border-b border-border flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Activity className="size-4 text-primary" />
