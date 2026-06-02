@@ -13,7 +13,7 @@ import yaml
 from rehearse.dashboard.store import list_configs
 from rehearse.dsl import load_config
 from rehearse.errors import ConfigError
-from rehearse.init_config import write_config
+from rehearse.dashboard.persona_draft import persona_to_yaml_entry
 
 
 def _resolve_config_path(artifacts_root: Path, config_id: str) -> Path | None:
@@ -29,15 +29,35 @@ def _resolve_config_path(artifacts_root: Path, config_id: str) -> Path | None:
     return None
 
 
+def _experiment_payload(cfg) -> dict[str, str] | None:
+    if not cfg.experiment:
+        return None
+    exp = cfg.experiment
+    out: dict[str, str] = {}
+    if exp.hypothesis:
+        out["hypothesis"] = exp.hypothesis
+    if exp.user_goal:
+        out["userGoal"] = exp.user_goal
+    if exp.variant_label:
+        out["variantLabel"] = exp.variant_label
+    return out or None
+
+
 def get_config_yaml(artifacts_root: Path, config_id: str) -> dict[str, Any]:
     path = _resolve_config_path(artifacts_root, config_id)
     if not path:
         raise ValueError(f"Config not found: {config_id}")
-    return {
+    payload: dict[str, Any] = {
         "id": path.stem,
         "path": str(path.resolve()),
         "yaml": path.read_text(),
     }
+    try:
+        cfg = load_config(path)
+        payload["experiment"] = _experiment_payload(cfg)
+    except ConfigError:
+        payload["experiment"] = None
+    return payload
 
 
 def validate_config_yaml(yaml_text: str) -> dict[str, Any]:
@@ -58,6 +78,7 @@ def validate_config_yaml(yaml_text: str) -> dict[str, Any]:
         tmp_path.unlink(missing_ok=True)
     run = data.get("run") or {}
     journeys = data.get("journeys") or []
+    exp = data.get("experiment") if isinstance(data.get("experiment"), dict) else {}
     return {
         "valid": True,
         "errors": [],
@@ -66,8 +87,75 @@ def validate_config_yaml(yaml_text: str) -> dict[str, Any]:
             "productName": run.get("product_name"),
             "personaCount": len(data.get("personas") or []),
             "journeyCount": len(journeys),
+            "hasExperiment": bool(exp),
         },
     }
+
+
+def set_config_experiment(
+    artifacts_root: Path,
+    *,
+    config_id: str,
+    hypothesis: str = "",
+    user_goal: str = "",
+    variant_label: str = "",
+) -> dict[str, Any]:
+    """Merge optional experiment block into config YAML (L3-PRED-02)."""
+    meta = get_config_yaml(artifacts_root, config_id)
+    data = yaml.safe_load(meta["yaml"]) or {}
+    fields = {
+        "hypothesis": (hypothesis or "").strip(),
+        "user_goal": (user_goal or "").strip(),
+        "variant_label": (variant_label or "").strip(),
+    }
+    if any(fields.values()):
+        data["experiment"] = {k: v for k, v in fields.items() if v}
+    elif "experiment" in data:
+        del data["experiment"]
+    new_yaml = yaml.dump(data, default_flow_style=False, sort_keys=False, allow_unicode=True)
+    return save_config_yaml(artifacts_root, new_yaml, config_id=config_id)
+
+
+def append_persona_to_config(
+    artifacts_root: Path,
+    *,
+    config_id: str,
+    persona: dict[str, Any],
+) -> dict[str, Any]:
+    """Append or replace a persona entry on saved config."""
+    meta = get_config_yaml(artifacts_root, config_id)
+    data = yaml.safe_load(meta["yaml"]) or {}
+    personas = list(data.get("personas") or [])
+    entry = persona_to_yaml_entry(persona)
+    personas = [p for p in personas if p.get("id") != entry["id"]]
+    personas.append(entry)
+    data["personas"] = personas
+    new_yaml = yaml.dump(data, default_flow_style=False, sort_keys=False, allow_unicode=True)
+    return save_config_yaml(artifacts_root, new_yaml, config_id=config_id)
+
+
+def update_config_personas(
+    artifacts_root: Path,
+    *,
+    config_id: str,
+    persona_enabled: dict[str, bool] | None = None,
+    persona_lens: bool | None = None,
+) -> dict[str, Any]:
+    """Toggle core/extra personas or persona lens on existing config."""
+    meta = get_config_yaml(artifacts_root, config_id)
+    data = yaml.safe_load(meta["yaml"]) or {}
+    run = data.setdefault("run", {})
+    if persona_lens is not None:
+        run["persona_lens"] = bool(persona_lens)
+    if persona_enabled:
+        personas = list(data.get("personas") or [])
+        for p in personas:
+            pid = p.get("id")
+            if pid in persona_enabled:
+                p["enabled"] = bool(persona_enabled[pid])
+        data["personas"] = personas
+    new_yaml = yaml.dump(data, default_flow_style=False, sort_keys=False, allow_unicode=True)
+    return save_config_yaml(artifacts_root, new_yaml, config_id=config_id)
 
 
 def save_config_yaml(artifacts_root: Path, yaml_text: str, *, config_id: str | None = None) -> dict[str, Any]:

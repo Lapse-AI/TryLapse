@@ -26,6 +26,7 @@ import {
   RunNarrativePanel,
 } from "@/components/run-detail";
 import { ManualAnnotationPanel } from "@/components/manual-annotation-panel";
+import { ExperimentRunBanner } from "@/components/experiment-spec-panel";
 import {
   formatDuration,
   bandFromIssues,
@@ -42,6 +43,7 @@ import {
   READINESS_BAND_HELP,
   displayAgentSummary,
 } from "@/lib/run-metrics";
+import { countIssuesForDimension, issueMatchesDimension } from "@/lib/dimension-match";
 import { useRunBundle, useRunSummaries } from "@/lib/api/hooks";
 import {
   Dialog,
@@ -201,7 +203,7 @@ function RunDetail() {
   const runJourneys = bundleJourneys(bundle);
   const filtered = bundle.issues.filter((i) => {
     if (!active.has(i.severity)) return false;
-    if (dimensionFilter && i.dimension !== dimensionFilter) return false;
+    if (dimensionFilter && !issueMatchesDimension(i, dimensionFilter)) return false;
     return true;
   });
   const band = bandFromIssues(bundle.issues);
@@ -335,6 +337,7 @@ function RunDetail() {
           </TabsList>
 
           <TabsContent value="overview" className="space-y-8 mt-0">
+            <ExperimentRunBanner experiment={run.experiment} />
             <RunNarrativePanel runId={run.id} bundle={bundle} />
             <RunObservabilityPanel bundle={bundle} />
             <Panel className="p-4 md:p-6 overflow-x-auto">
@@ -422,9 +425,7 @@ function RunDetail() {
             {activeDimensionMeta && (
               <DimensionBreakdownBanner
                 dimension={activeDimensionMeta}
-                relatedCount={
-                  bundle.issues.filter((i) => i.dimension === activeDimensionMeta.name).length
-                }
+                relatedCount={countIssuesForDimension(bundle.issues, activeDimensionMeta.name)}
                 onClear={() =>
                   void navigate({
                     search: (prev) => ({ ...prev, dimension: undefined }),
@@ -538,8 +539,13 @@ function RunDetail() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {bundle.delights.map((d) => (
                     <div key={d.id} className="border border-border rounded-lg p-4 bg-surface-2/30">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <h4 className="font-medium">{d.title}</h4>
+                        {d.confidence && (
+                          <Chip tone={d.confidence === "high" ? "info" : "warn"}>
+                            {d.confidence}
+                          </Chip>
+                        )}
                         {d.marketingReady && <Chip tone="ready">marketing-ready</Chip>}
                         {d.regressionRisk && <Chip tone="warn">regression risk</Chip>}
                       </div>

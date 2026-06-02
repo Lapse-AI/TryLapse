@@ -634,6 +634,34 @@ def save_config(artifacts_root: Path, body: dict[str, Any]) -> dict[str, Any]:
         config["run"]["viewports"] = viewport_list
     if bool(body.get("executeAllPersonasInBrowser")):
         config["run"]["execute_all_personas_in_browser"] = True
+    if "personaLens" in body:
+        config["run"]["persona_lens"] = bool(body.get("personaLens"))
+
+    # Core persona enable toggles from Init persona studio
+    enabled_map = body.get("personaEnabled") or {}
+    if isinstance(enabled_map, dict) and config.get("personas"):
+        for p in config["personas"]:
+            pid = p.get("id")
+            if pid in enabled_map:
+                p["enabled"] = bool(enabled_map[pid])
+
+    extra = body.get("extraPersonas") or []
+    if isinstance(extra, list) and extra:
+        from rehearse.dashboard.persona_draft import persona_to_yaml_entry
+
+        existing_ids = {p.get("id") for p in config.get("personas") or []}
+        for raw in extra:
+            if not isinstance(raw, dict):
+                continue
+            entry = persona_to_yaml_entry(raw)
+            if entry["id"] in existing_ids:
+                config["personas"] = [
+                    entry if p.get("id") == entry["id"] else p for p in config["personas"]
+                ]
+            else:
+                config.setdefault("personas", []).append(entry)
+                existing_ids.add(entry["id"])
+
     slug = config["run"]["run_id_prefix"]
     cfg_dir = artifacts_root / "configs"
     path = cfg_dir / f"{slug}.yaml"

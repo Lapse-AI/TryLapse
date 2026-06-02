@@ -1,6 +1,6 @@
 # TODOS — Launch Rehearsal
 
-*CEO authority: `enterprise_work_env_simulator_2026/CEO_DECISIONS.md` · Last updated: May 31, 2026*
+*CEO authority: `enterprise_work_env_simulator_2026/CEO_DECISIONS.md` · Last updated: June 2, 2026*
 
 ## Hard gates
 
@@ -18,7 +18,7 @@
 - [x] Scorecard: matrix, P0–P3 issues, **required** delights (`heuristics.py`, `scorecard.py`)
 - [x] 3 auto dimensions: Functionality, UI/UX, Information clarity (heuristics)
 - [x] CLI: `rehearse run` + `rehearse scorecard`
-- [ ] Run budgets + named errors (`RunBudgetExceeded`, `BrowserStepTimeout`, etc.)
+- [x] Run budgets + named errors (`RunBudgetExceeded`, `BrowserStepTimeout`, etc.)
 - [x] Persona agents + LLM layer (DeepSeek direct API)
 - [x] 3 parallel seeds + FLAKY flag (`journey_agent.py`, `heuristics.py`, yaml budgets)
 - [x] 3× micro-repeat friction signal (`repeat_micro_loop` in DSL; default 1, raise in yaml when needed)
@@ -26,8 +26,8 @@
 - [x] CLI: `rehearse run` | `serve` | `diff` | `init` | `backfill` | `crawl`
 - [x] Dashboard API + Frontend_V1 wired (`/api/*`, `/files/*`, analysis bundle export)
 - [x] Backfill analysis bundles for existing runs
-- [ ] Observability: duration, cost estimate, outcome per run (partial in bundle)
-- [ ] Confidence labels: `high` vs `hypothesis` on voice-of-user text (partial in heuristics)
+- [x] Observability: duration, cost estimate, outcome per run (bundle + run detail panel)
+- [x] Confidence labels: `high` vs `hypothesis` on issues and delights (heuristics + UI chips)
 
 ## Explicitly OUT of Phase 1 (CEO NO)
 
@@ -45,7 +45,7 @@
 - [x] Concierge + self-serve demo stack (Sprints 1–3, PRs #13–#15)
 - [x] G1–G13 design partner gates ✅ (`live-2026-05-31.md`)
 - [x] Dual UI modes: **Dev** (`:8081`, `npm run dev`) + **Vision reference** (`npm run dev:vision`) — `UI_PRODUCT_LINES.md`
-- [ ] List 10 warm targets + send 5 intros (`DESIGN_PARTNER_CHECKLIST.md`)
+- [ ] List 10 warm targets + send 5 intros — see `DESIGN_PARTNER_OUTREACH.md`
 
 ## Phase 2+ (unchanged targets)
 

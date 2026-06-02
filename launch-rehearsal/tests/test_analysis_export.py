@@ -4,12 +4,18 @@ from pathlib import Path
 
 import pytest
 
-from rehearse.analysis_export import build_run_bundle, _compute_cost_estimate, _named_error_issues
+from rehearse.analysis_export import (
+    build_run_bundle,
+    _compute_cost_estimate,
+    _dimension_for_finding,
+    _named_error_issues,
+    issue_matches_dimension,
+)
 from rehearse.context import AgentReport, RunContext
 from rehearse.dsl import Budgets, Journey, Persona, RunConfig, Step
 from rehearse.errors import BrowserStepTimeout, PreflightError, classify_step_error
 from rehearse.evidence import RunEvidence, StepSnapshot
-from rehearse.heuristics import AnalysisResult
+from rehearse.heuristics import AnalysisResult, analyze_run
 
 
 def _cfg() -> RunConfig:
@@ -142,3 +148,54 @@ def test_build_run_bundle_observability_fields(tmp_path: Path):
     assert step["errorType"] == "StepAssertionFailed"
     error_issues = [i for i in bundle["issues"] if i.get("errorType")]
     assert any(i["errorType"] == "StepAssertionFailed" for i in error_issues)
+
+
+def test_dimension_for_finding_tags():
+    assert _dimension_for_finding("Icon-only or unlabeled buttons", "3 button(s) lack accessible name") == "UI/UX"
+    assert _dimension_for_finding("Form inputs missing labels", "2 of 4 inputs lack label") == "Accessibility"
+    assert _dimension_for_finding("Slow step completion", "Step took 9000ms") == "Performance"
+    assert _dimension_for_finding("Sparse page content", "Page body has very little text") == "Information"
+    assert _dimension_for_finding("Auth wall on deep link", "landed on /login") == "Trust"
+    assert _dimension_for_finding("BrowserStepTimeout: One", "click timeout") == "Functionality"
+
+
+def test_build_run_bundle_tags_heuristic_issues_by_dimension(tmp_path: Path):
+    config = _cfg()
+    evidence = _evidence(
+        StepSnapshot(
+            "j1-s1",
+            "j1",
+            "One",
+            "p1",
+            "click",
+            outcome="pass",
+            unlabeled_button_count=8,
+            duration_ms=5000,
+            body_text_excerpt="short",
+        ),
+        StepSnapshot(
+            "j1-s2",
+            "j1",
+            "One",
+            "p1",
+            "click",
+            outcome="pass",
+            unlabeled_button_count=6,
+            input_count=3,
+            labeled_input_count=1,
+            duration_ms=4000,
+            body_text_excerpt="enough body text for this step to not be sparse content",
+        ),
+    )
+    analysis = analyze_run(config, evidence)
+    bundle = build_run_bundle(config, evidence, analysis, tmp_path)
+
+    ui_issues = [i for i in bundle["issues"] if issue_matches_dimension(i, "UI/UX")]
+    a11y_issues = [i for i in bundle["issues"] if issue_matches_dimension(i, "Accessibility")]
+    assert ui_issues, "expected UI/UX findings for unlabeled buttons"
+    assert a11y_issues, "expected Accessibility findings for labels or related UI/UX"
+
+    unlabeled = next(i for i in bundle["issues"] if "unlabeled" in i["title"].lower())
+    assert "14 button" in unlabeled["detail"]
+    assert unlabeled["dimension"] == "UI/UX"
+    assert "Accessibility" in unlabeled.get("relatedDimensions", [])

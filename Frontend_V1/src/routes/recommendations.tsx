@@ -98,7 +98,12 @@ function Recommendations() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {delights.map((d) => (
                 <div key={d.id} className="border border-ready/30 rounded-lg p-3 bg-ready/5">
-                  <div className="font-medium">{d.title}</div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <div className="font-medium">{d.title}</div>
+                    {d.confidence && (
+                      <Chip tone={d.confidence === "high" ? "info" : "warn"}>{d.confidence}</Chip>
+                    )}
+                  </div>
                   <blockquote className="text-sm italic mt-1 text-foreground/80">
                     &ldquo;{d.quote}&rdquo;
                   </blockquote>

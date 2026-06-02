@@ -40,6 +40,18 @@ Sell **trust**, not **coverage**. Partners want named launch paths with evidence
 - **Browser default:** first persona runs journeys; optional `execute_all_personas_in_browser`.
 - **Matrix columns:** technical steps from browser; other personas = evaluation lens (PersonaAgent + heuristics + optional LLM).
 
+### Planned — Init persona studio (L2-UI-68–71)
+
+| Capability | Behavior |
+|------------|----------|
+| **Core three** | Always scaffolded: first-time evaluator, daily operator, admin/buyer (today’s `init_config.py` defaults). |
+| **Describe a user** | Free-text need (e.g. “SOC2 reviewer who only cares about audit logs”) → LLM drafts `id`, `name`, `role`, `goals[]` for YAML. |
+| **Product suggestions** | From target URL + product name (+ optional crawl hints): 2–4 *suggested* personas user can one-click add. |
+| **Custom** | User edits draft or writes persona by hand; validate still enforces ≥3 personas for full matrix runs. |
+| **Persona off** | Optional run mode: journeys execute with **no persona lens** (technical pass/fail only) or subset of personas — for smoke vs full rehearsal. |
+
+**Init step order (target):** Target → Auth → **Personas (new panel)** → Journeys (draft/recorder) → Crawl/viewport → Review & generate YAML.
+
 ---
 
 ## UI placement (authoring vs monitoring)
@@ -63,6 +75,7 @@ Sell **trust**, not **coverage**. Partners want named launch paths with evidence
 | L2-UI-27–32 | Sitemap preview + add journey to config | ✅ Preview + append navigate journey |
 | L2-UI-13 | Annotations pin + manual finding | ✅ Pin on issues + manual finding panel |
 | — | `POST /api/journeys/draft` prompt → YAML fragment | ✅ Init wizard **Describe a journey** panel |
+| — | Persona studio L2-UI-68–70 | ✅ Init **Personas** panel + API |
 | — | Journey `priority: critical \| smoke \| exploratory` | Documented; optional YAML field Phase 2 |
 
 ---

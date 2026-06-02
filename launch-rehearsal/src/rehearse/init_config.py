@@ -60,18 +60,21 @@ def build_config(
                 "name": "First-time evaluator",
                 "role": "prospect / new user",
                 "goals": ["Understand value from landing and primary workflow"],
+                "enabled": True,
             },
             {
                 "id": "p2-operator",
                 "name": "Daily operator",
                 "role": "power user",
                 "goals": ["Complete core tasks quickly and reliably"],
+                "enabled": True,
             },
             {
                 "id": "p3-admin",
                 "name": "Admin / buyer",
                 "role": "IT admin",
                 "goals": ["Verify access boundaries and trust signals"],
+                "enabled": True,
             },
     ]
     cfg["journeys"] = [

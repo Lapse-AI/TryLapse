@@ -17,6 +17,7 @@ import {
   formatWebVitalsBrief,
   stepObservabilityHint,
 } from "@/lib/run-observability";
+import { formatAgentCostDisplay } from "@/lib/run-metrics";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -155,25 +156,31 @@ export function RunObservabilityPanel({ bundle }: { bundle: RunBundle }) {
   const summary = bundle.summary;
   const stepsWithVitals = bundle.steps.filter((s) => formatWebVitalsBrief(s.webVitals));
   const warnSteps = bundle.steps.filter((s) => (s.consoleWarnings?.length ?? 0) > 0);
+  const errorSteps = bundle.steps.filter((s) => s.errorType);
   const extras = extraArtifactDownloads(bundle);
   const pagesCrawled = summary.pagesCrawled ?? summary.pages;
-  if (
-    !extras.length &&
-    !stepsWithVitals.length &&
-    !warnSteps.length &&
-    summary.agentsRun == null &&
-    !pagesCrawled
-  ) {
-    return null;
-  }
+  const cost = formatAgentCostDisplay(bundle);
 
   return (
     <Panel className="p-4 md:p-5 space-y-3">
       <div className="flex items-center gap-2 flex-wrap">
         <div className="font-display font-semibold text-sm">Run observability</div>
-        <Chip tone="neutral">Phase B</Chip>
+        <Chip tone="neutral">Phase 1 tail</Chip>
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+        <div>
+          <div className="text-xs text-muted-foreground">Duration</div>
+          <div className="font-mono tabular-nums mt-0.5">{summary.durationSec}s</div>
+        </div>
+        <div>
+          <div className="text-xs text-muted-foreground">Outcome</div>
+          <div className="font-mono text-xs mt-0.5 uppercase">{summary.outcome}</div>
+        </div>
+        <div>
+          <div className="text-xs text-muted-foreground">Est. cost</div>
+          <div className="font-mono tabular-nums mt-0.5">{cost.value}</div>
+          <div className="text-[10px] text-muted-foreground">{cost.hint}</div>
+        </div>
         {summary.agentsRun != null && (
           <div>
             <div className="text-xs text-muted-foreground">Agents run</div>
@@ -198,7 +205,18 @@ export function RunObservabilityPanel({ bundle }: { bundle: RunBundle }) {
             <div className="font-mono tabular-nums mt-0.5">{warnSteps.length} steps</div>
           </div>
         )}
+        {errorSteps.length > 0 && (
+          <div>
+            <div className="text-xs text-muted-foreground">Named step errors</div>
+            <div className="font-mono tabular-nums mt-0.5">{errorSteps.length} steps</div>
+          </div>
+        )}
       </div>
+      {errorSteps.length > 0 && (
+        <p className="text-[11px] text-muted-foreground font-mono">
+          {Array.from(new Set(errorSteps.map((s) => s.errorType).filter(Boolean))).join(" · ")}
+        </p>
+      )}
       {extras.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {extras.map(({ relPath, label }) => (

@@ -5,6 +5,10 @@ import { useEffect, useMemo, useState } from "react";
 import { api } from "@/lib/api/client";
 import { toast } from "sonner";
 import { JourneyDraftPanel } from "@/components/journey-draft-panel";
+import {
+  PersonaStudioPanel,
+  type PersonaDraft,
+} from "@/components/persona-studio-panel";
 import { setSelectedConfigId } from "@/lib/selected-config";
 import { useTestGroup } from "@/hooks/use-test-group";
 import { groupInitPreset } from "@/lib/test-groups";
@@ -126,6 +130,13 @@ function InitPage() {
     tablet: false,
     mobile: false,
   });
+  const [personaLens, setPersonaLens] = useState(true);
+  const [coreEnabled, setCoreEnabled] = useState<Record<string, boolean>>({
+    "p1-evaluator": true,
+    "p2-operator": true,
+    "p3-admin": true,
+  });
+  const [stagedExtras, setStagedExtras] = useState<PersonaDraft[]>([]);
 
   const localhostTarget = useMemo(() => isLocalhostUrl(targetUrl), [targetUrl]);
   const preflightNeedsLocalhost = selfTest || allowLocalhost || localhostTarget;
@@ -168,6 +179,9 @@ function InitPage() {
         excludePathPrefixes: excludePathPrefixes.trim() || undefined,
         viewports: selectedViewports.length ? selectedViewports : undefined,
         executeAllPersonasInBrowser,
+        personaLens,
+        personaEnabled: coreEnabled,
+        extraPersonas: stagedExtras,
       },
       {
         onSuccess: (result) => {
@@ -405,6 +419,26 @@ function InitPage() {
             ))}
           </fieldset>
         </Panel>
+
+        <PersonaStudioPanel
+          live={!!live}
+          targetUrl={targetUrl}
+          productName={productName}
+          configId={undefined}
+          personaLens={personaLens}
+          onPersonaLensChange={setPersonaLens}
+          coreEnabled={coreEnabled}
+          onCoreEnabledChange={(id, enabled) =>
+            setCoreEnabled((prev) => ({ ...prev, [id]: enabled }))
+          }
+          stagedExtras={stagedExtras}
+          onStageExtra={(p) =>
+            setStagedExtras((prev) =>
+              prev.some((x) => x.id === p.id) ? prev : [...prev, p],
+            )
+          }
+          onRemoveStaged={(id) => setStagedExtras((prev) => prev.filter((p) => p.id !== id))}
+        />
 
         <JourneyDraftPanel live={!!live} targetUrl={targetUrl} />
 

@@ -1,6 +1,6 @@
 # Launch Rehearsal — Feature Scope
 
-**Last updated:** 2026-05-31  
+**Last updated:** 2026-06-02  
 **Planning mode:** **SELECTIVE EXPANSION** (CEO review)  
 **Authority:** `CEO_DECISIONS.md` · `MONITORING_PLATFORM_SPEC.md` · `DESIGN_PARTNER_CHECKLIST.md`
 
@@ -59,6 +59,7 @@ Partner runs + capture     →  Phase 1 tail (budgets, cost)
 | **Sprint 2** | After 1+ partner call | L2-UI-12, L2-UI-29–30, L2-UI-52, L2-UI-01–04 | ✅ Live data on home/workflows; annotations |
 | **Sprint 3** | Before self-serve marketing | L2-UI-63, L2-MCK-01, L2-UI-50 | ✅ Init writes YAML; retire Acme; Linear export |
 | **Phase 1 tail** | Parallel / low urgency | Run budgets + named errors; cost estimate in bundle | CEO Phase 1 #11–13 |
+| **Init persona studio** | After experiment spec · before §0 outreach | L2-UI-68–71 | AI + suggested personas; optional persona-off runs |
 
 ### Concierge vs self-serve
 
@@ -123,6 +124,7 @@ Mock fallback when API down in **both**. Partner demos: API live + real run IDs.
 | Visual regression / Figma compare | L3-DES-08–09 |
 | Every-button sitewide crawl | L3-DES-11 |
 | Competitor benchmark | L3-CMP-01–04, L2-UI-53 |
+| **Predictive rehearsal (Blok-adjacent)** | After 3 would-pay · **G6** for fidelity claims | `L3-PRED-01`–`10` · `COMPETITIVE_BLOK.md` |
 
 ### 1.4 Promoted to L1 (remove from “blocked” mental model)
 
@@ -404,7 +406,7 @@ Mock fallback when API down in **both**. Partner demos: API live + real run IDs.
 | L2-UI-29 | Workflows page coverage cards | ✅ `buildWorkflowCoverage()` from live bundle |
 | L2-UI-30 | Workflows active journeys list | ✅ `bundle.journeys` from latest run |
 | L2-UI-52 | Delights to protect section | ✅ `bundle.delights` on recommendations page |
-| L2-UI-01 | “live” chip always shown | Not tied to API health or run in progress |
+| L2-UI-01 | “live” chip tied to API health + jobs | ✅ Command center |
 | L2-UI-02 | Stat: “Time to first scorecard 11m 42s” | ✅ `formatDuration(latest.durationSec)` |
 | L2-UI-03 | Stat: “Flake rate (7d) 3.1%” | ✅ `/api/trends` flakeRate + prior-run delta |
 | L2-UI-04 | Stat: “Recurring blockers 2” | ✅ `issues.filter(recurring > 1).length` |
@@ -414,8 +416,12 @@ Mock fallback when API down in **both**. Partner demos: API live + real run IDs.
 | ID | Feature | Notes |
 |----|---------|-------|
 | L2-UI-63 | Init wizard “Generate & write YAML” end step | ✅ Calls `POST /api/configs` from `/init` |
+| L2-UI-68 | Init: describe user need → AI draft persona | ✅ `POST /api/personas/draft` + PersonaStudioPanel |
+| L2-UI-69 | Init: core 3 + product-suggested extra personas | ✅ `POST /api/personas/suggest` |
+| L2-UI-70 | Init: custom persona + toggle personas on/off | ✅ `personaEnabled`, `persona_lens`, staged extras on generate |
+| L2-UI-71 | Config persona editor (add/edit/remove live) | **Partial** — append via `/api/configs/append-persona`; full editor later |
 | L2-MCK-01 | Acme demo run `run_8s7d2` | Retire when API live — causes 404 on screen share |
-| L2-UI-50 | “Export to Linear” button | Inert — **later** full integration (§1) |
+| L2-UI-50 | “Export to Linear” button | ✅ Markdown/JSON download — OAuth delivery **later** §1 |
 
 ### 3.2 L2 catalog — mock data & fallback
 
@@ -724,6 +730,25 @@ Mock fallback when API down in **both**. Partner demos: API live + real run IDs.
 | L3-PRD-02 | Phase 3 — trend alerting at scale | |
 | L3-PRD-03 | Numeric readiness as SLA gate in CI | Ties to GitHub Action CI §1 |
 
+### 4.12 Predictive rehearsal (Blok-adjacent) — **later**
+
+> **Cherry-pick only.** Full matrix: `COMPETITIVE_BLOK.md`. Do not promise on partner calls until Wave 1 ships. No public fidelity % until **G6** (`PRODUCT.md`).
+
+| ID | Feature | Wave | Notes |
+|----|---------|------|-------|
+| L3-PRED-01 | Import analytics export (Segment / Mixpanel / Amplitude JSON) → persona priors | 3 | TechCrunch onboarding; optional for founders without data |
+| L3-PRED-02 | Experiment spec: `hypothesis`, `user_goal`, `variant_label` on config or run | 1 | ✅ DSL + API + Config UI + run banner |
+| L3-PRED-03 | Cohort mode: N seeds + aggregate pass/fail and confidence band | 2 | Extends `parallel_seeds` |
+| L3-PRED-04 | Experiment report UI: overall + per-persona rollup | 1 | Complements persona × journey matrix |
+| L3-PRED-05 | Chat scoped to experiment (multi-run + diff context) | 1 | Extends `L1-NLU-02` |
+| L3-PRED-06 | Variant rehearsal job: config A vs B, single report + readiness delta | 1 | Pre-merge sandbox; extends compare |
+| L3-PRED-07 | Step-level continue / hesitate / abandon distribution | 2 | Fidelity-style signal; not a marketing % |
+| L3-PRED-08 | Optional Figma / prototype link on experiment | 3 | Shares `L3-DES-08`; staging URL remains primary |
+| L3-PRED-09 | Directional lift card (readiness Δ, issues new/resolved; `hypothesis` label) | 2 | Until G6 calibration |
+| L3-PRED-10 | Calibration dashboard (sim vs beta overlap; optional step backtest) | 3 | **G6** Jun 30, 2027 |
+
+**Overlaps (do not duplicate work):** funnel drop-off → `L3-JRN-05`; Figma compare → `L3-DES-08`; fidelity narrative → `G6` + `EVALUATION_FRAMEWORK.md` §8.
+
 ---
 
 ## 5. Indexes & cross-refs
@@ -758,6 +783,9 @@ Mock fallback when API down in **both**. Partner demos: API live + real run IDs.
 | Product B | L3 | **Later** §1 |
 | Journey marketplace | — | **Later** §1 |
 | Parallel seeds / FLAKY | L1 | Active (shipped) |
+| Predicted drop-off / lift (Blok-style) | L3-PRED + L3-JRN-05 | **Later** · `COMPETITIVE_BLOK.md` |
+| Analytics-informed personas | L3-PRED-01 | **Later** Wave 3 |
+| Behavioral fidelity % (published) | L3-PRED-10, G6 | **Later** 2027 |
 
 ### 5.2 Design partner demo readiness
 

@@ -5,6 +5,7 @@ import type {
   Annotation,
   BacklogItem,
   CommandDigest,
+  ExperimentSpec,
   InsightNarrative,
   Integration,
   RunBundle,
@@ -170,7 +171,22 @@ export const api = {
       body: JSON.stringify(ann),
     }),
   getConfigYaml: (configId: string) =>
-    apiFetch<{ id: string; path: string; yaml: string }>(`/api/configs/${configId}`),
+    apiFetch<{
+      id: string;
+      path: string;
+      yaml: string;
+      experiment?: ExperimentSpec | null;
+    }>(`/api/configs/${configId}`),
+  saveConfigExperiment: (body: {
+    configId: string;
+    hypothesis?: string;
+    userGoal?: string;
+    variantLabel?: string;
+  }) =>
+    apiFetch<{ id: string; path: string }>("/api/configs/experiment", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
   validateConfigYaml: (yaml: string) =>
     apiFetch<{
       valid: boolean;
@@ -190,6 +206,58 @@ export const api = {
       "/api/journeys/draft",
       { method: "POST", body: JSON.stringify({ prompt, targetUrl }) },
     ),
+  draftPersona: (body: { prompt: string; targetUrl?: string; productName?: string }) =>
+    apiFetch<{
+      persona: {
+        id: string;
+        name: string;
+        role: string;
+        goals: string[];
+        enabled?: boolean;
+        source?: string;
+      };
+      yamlFragment: string;
+      source: string;
+      hint: string;
+    }>("/api/personas/draft", { method: "POST", body: JSON.stringify(body) }),
+  suggestPersonas: (body: {
+    targetUrl?: string;
+    productName?: string;
+    existingIds?: string[];
+  }) =>
+    apiFetch<{
+      corePersonas: {
+        id: string;
+        name: string;
+        role: string;
+        goals: string[];
+        core?: boolean;
+        enabled?: boolean;
+      }[];
+      suggested: {
+        id: string;
+        name: string;
+        role: string;
+        goals: string[];
+        reason?: string;
+      }[];
+      source: string;
+      hint: string;
+    }>("/api/personas/suggest", { method: "POST", body: JSON.stringify(body) }),
+  appendPersonaToConfig: (body: { configId: string; persona: Record<string, unknown> }) =>
+    apiFetch<{ id: string; path: string }>("/api/configs/append-persona", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+  updateConfigPersonas: (body: {
+    configId: string;
+    personaEnabled?: Record<string, boolean>;
+    personaLens?: boolean;
+  }) =>
+    apiFetch<{ id: string; path: string }>("/api/configs/personas", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
   appendJourneyToConfig: (body: { configId: string; path: string; title?: string }) =>
     apiFetch<{ configId: string; journeyId: string; url: string }>("/api/configs/append-journey", {
       method: "POST",
@@ -205,6 +273,9 @@ export const api = {
     excludePathPrefixes?: string | string[];
     viewports?: string | string[];
     executeAllPersonasInBrowser?: boolean;
+    personaLens?: boolean;
+    personaEnabled?: Record<string, boolean>;
+    extraPersonas?: Record<string, unknown>[];
   }) =>
     apiFetch<{ id: string; path: string; name: string }>("/api/configs", {
       method: "POST",

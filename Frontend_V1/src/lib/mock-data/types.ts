@@ -35,6 +35,7 @@ export type Issue = {
   journeyId: string;
   stepId: string;
   dimension: string;
+  relatedDimensions?: string[];
   confidence: "high" | "hypothesis";
   owner: "frontend" | "backend" | "content" | "security";
   recurring: number;
@@ -57,6 +58,12 @@ export type FocusRegion = {
   label?: string;
 };
 
+export type ExperimentSpec = {
+  hypothesis?: string;
+  userGoal?: string;
+  variantLabel?: string;
+};
+
 export type Delight = {
   id: string;
   runId: string;
@@ -67,6 +74,7 @@ export type Delight = {
   stepId?: string;
   marketingReady?: boolean;
   regressionRisk?: boolean;
+  confidence?: "high" | "hypothesis";
 };
 
 export type RunSummary = {
@@ -106,6 +114,7 @@ export type RunSummary = {
   agentsRun?: number;
   networkLogPath?: string | null;
   webVitalsPath?: string | null;
+  experiment?: ExperimentSpec | null;
 };
 
 export type StepSnapshot = {

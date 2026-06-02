@@ -6,7 +6,7 @@ import re
 from dataclasses import dataclass, field
 from urllib.parse import urlparse
 
-from rehearse.dsl import Persona, RunConfig
+from rehearse.dsl import Persona, RunConfig, active_personas
 from rehearse.evidence import RunEvidence, StepSnapshot
 from rehearse.sitemap import SiteMap
 
@@ -31,6 +31,7 @@ class Delight:
     detail: str
     persona_ids: list[str]
     step_id: str
+    confidence: str = "high"  # high | hypothesis
 
 
 @dataclass
@@ -105,7 +106,10 @@ def analyze_run(
         steps = by_journey.get(journey.id, [])
         status = _journey_status(steps)
         result.journey_matrix[journey.id] = {}
-        for persona in config.personas:
+        matrix_personas = active_personas(config) or (
+            config.personas[:1] if config.personas else []
+        )
+        for persona in matrix_personas:
             result.journey_matrix[journey.id][persona.id] = status
 
     for step in canonical_steps:
@@ -191,7 +195,13 @@ def _analyze_step(
             )
         )
 
-    def add_delight(title: str, detail: str, personas: list[str]) -> None:
+    def add_delight(
+        title: str,
+        detail: str,
+        personas: list[str],
+        *,
+        confidence: str = "high",
+    ) -> None:
         if title in seen:
             return
         seen.add(title)
@@ -202,6 +212,7 @@ def _analyze_step(
                 detail=detail,
                 persona_ids=personas,
                 step_id=step.step_id,
+                confidence=confidence,
             )
         )
 

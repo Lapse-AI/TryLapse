@@ -66,6 +66,7 @@ class Persona:
     name: str
     role: str
     goals: list[str]
+    enabled: bool = True
 
 
 @dataclass
@@ -90,6 +91,15 @@ class CrawlConfig:
 
 
 @dataclass
+class ExperimentSpec:
+    """Optional pre-ship experiment metadata (L3-PRED-02)."""
+
+    hypothesis: str = ""
+    user_goal: str = ""
+    variant_label: str = ""
+
+
+@dataclass
 class Budgets:
     max_steps_per_journey: int = 20
     max_run_seconds: int = 1800
@@ -107,11 +117,13 @@ class RunConfig:
     personas: list[Persona]
     journeys: list[Journey]
     budgets: Budgets = field(default_factory=Budgets)
+    experiment: ExperimentSpec | None = None
     auth: AuthConfig | None = None
     crawl: CrawlConfig | None = field(default_factory=CrawlConfig)
     allow_localhost: bool = False
     viewports: list[str] = field(default_factory=lambda: ["desktop"])
     execute_all_personas_in_browser: bool = False
+    persona_lens: bool = True
 
     def materialize_steps(self) -> None:
         base = self.target_url.rstrip("/")
@@ -169,6 +181,7 @@ def load_config(path: Path) -> RunConfig:
             name=p["name"],
             role=p["role"],
             goals=list(p.get("goals") or []),
+            enabled=bool(p.get("enabled", True)),
         )
         for p in personas_raw
     ]
@@ -218,6 +231,17 @@ def load_config(path: Path) -> RunConfig:
 
     from rehearse.viewports import normalize_viewports
 
+    exp_raw = data.get("experiment")
+    experiment = None
+    if isinstance(exp_raw, dict) and exp_raw:
+        experiment = ExperimentSpec(
+            hypothesis=str(exp_raw.get("hypothesis") or "").strip(),
+            user_goal=str(exp_raw.get("user_goal") or exp_raw.get("userGoal") or "").strip(),
+            variant_label=str(
+                exp_raw.get("variant_label") or exp_raw.get("variantLabel") or ""
+            ).strip(),
+        )
+
     cfg = RunConfig(
         target_url=str(target_url).rstrip("/"),
         run_id_prefix=str(run_id_prefix),
@@ -225,11 +249,20 @@ def load_config(path: Path) -> RunConfig:
         personas=personas,
         journeys=journeys,
         budgets=budgets,
+        experiment=experiment,
         auth=auth,
         crawl=crawl,
         allow_localhost=bool(run.get("allow_localhost", False)),
         viewports=normalize_viewports(run.get("viewports")),
         execute_all_personas_in_browser=bool(run.get("execute_all_personas_in_browser", False)),
+        persona_lens=bool(run.get("persona_lens", True)),
     )
     cfg.materialize_steps()
     return cfg
+
+
+def active_personas(config: RunConfig) -> list[Persona]:
+    """Personas used for matrix grading and persona agents (L2-UI-70)."""
+    if not config.persona_lens:
+        return []
+    return [p for p in config.personas if p.enabled]

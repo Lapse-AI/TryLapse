@@ -327,6 +327,24 @@ class _Handler(BaseHTTPRequestHandler):
             self._send_json(result)
             return
 
+        if path == "/api/configs/experiment":
+            body = self._read_json_body()
+            from rehearse.dashboard.config_yaml import set_config_experiment
+
+            try:
+                result = set_config_experiment(
+                    root,
+                    config_id=str(body.get("configId") or ""),
+                    hypothesis=str(body.get("hypothesis") or ""),
+                    user_goal=str(body.get("userGoal") or body.get("user_goal") or ""),
+                    variant_label=str(body.get("variantLabel") or body.get("variant_label") or ""),
+                )
+            except ValueError as exc:
+                self._send_json({"error": str(exc)}, status=400)
+                return
+            self._send_json(result)
+            return
+
         if path == "/api/journeys/draft":
             body = self._read_json_body()
             from rehearse.dashboard.config_yaml import draft_journey_from_prompt
@@ -335,6 +353,67 @@ class _Handler(BaseHTTPRequestHandler):
                 result = draft_journey_from_prompt(
                     str(body.get("prompt") or ""),
                     target_url=str(body.get("targetUrl") or ""),
+                )
+            except ValueError as exc:
+                self._send_json({"error": str(exc)}, status=400)
+                return
+            self._send_json(result)
+            return
+
+        if path == "/api/personas/draft":
+            body = self._read_json_body()
+            from rehearse.dashboard.persona_draft import draft_persona_from_prompt
+
+            try:
+                result = draft_persona_from_prompt(
+                    str(body.get("prompt") or ""),
+                    product_name=body.get("productName"),
+                    target_url=body.get("targetUrl"),
+                )
+            except ValueError as exc:
+                self._send_json({"error": str(exc)}, status=400)
+                return
+            self._send_json(result)
+            return
+
+        if path == "/api/personas/suggest":
+            body = self._read_json_body()
+            from rehearse.dashboard.persona_draft import suggest_personas_for_product
+
+            result = suggest_personas_for_product(
+                product_name=body.get("productName"),
+                target_url=body.get("targetUrl"),
+                existing_ids=list(body.get("existingIds") or []),
+            )
+            self._send_json(result)
+            return
+
+        if path == "/api/configs/append-persona":
+            body = self._read_json_body()
+            from rehearse.dashboard.config_yaml import append_persona_to_config
+
+            try:
+                result = append_persona_to_config(
+                    root,
+                    config_id=str(body.get("configId") or ""),
+                    persona=body.get("persona") or {},
+                )
+            except ValueError as exc:
+                self._send_json({"error": str(exc)}, status=400)
+                return
+            self._send_json(result)
+            return
+
+        if path == "/api/configs/personas":
+            body = self._read_json_body()
+            from rehearse.dashboard.config_yaml import update_config_personas
+
+            try:
+                result = update_config_personas(
+                    root,
+                    config_id=str(body.get("configId") or ""),
+                    persona_enabled=body.get("personaEnabled"),
+                    persona_lens=body.get("personaLens"),
                 )
             except ValueError as exc:
                 self._send_json({"error": str(exc)}, status=400)

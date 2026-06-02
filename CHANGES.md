@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Docs: `COMPETITIVE_BLOK.md` — Blok/TechCrunch feature matrix; `L3-PRED-01`–`10` in `FEATURE_SCOPE.md` §4.12 (gated post–3 would-pay)
+- **L3-PRED-02 (partial):** Experiment spec — `experiment:` in YAML, `POST /api/configs/experiment`, Config panel + run banner
+- **L2-UI-68–70:** Persona studio — `POST /api/personas/draft|suggest`, Init panel, `persona_lens` / `enabled`, staged extras on generate
+- Docs: `DESIGN_PARTNER_OUTREACH.md` (§0 Track A templates); `INIT_WIZARD.md` (Init flow reference)
+- Delight `confidence` in analysis bundle + UI chips; run observability panel (duration, outcome, cost, named errors)
+- Dimension filter helper: `Frontend_V1/src/lib/dimension-match.ts` (`relatedDimensions` cross-tag support)
+- Tests: `test_experiment_dsl.py`, `test_errors_budgets.py`, `test_persona_draft.py`, dimension tagging in `test_analysis_export.py`
+
+### Fixed
+
+- **Dimension rollup filters:** findings were all exported as `Functionality`; UI/UX and Accessibility tabs showed “0 findings” despite low rubric scores. Export now tags findings by dimension, adds `relatedDimensions` for cross-cutting issues (e.g. unlabeled buttons → UI/UX + Accessibility), enriches unlabeled totals across steps, and adds Phase 2 rollup findings when scores flag gaps. **Existing runs:** delete `artifacts/analysis/{run-id}.json` and reload, or re-run `build_run_bundle` / backfill.
+
 - Config YAML API: `GET /api/configs/{id}`, validate/save, append navigate journey from sitemap path
 - Init wizard: prompt → journey draft (`POST /api/journeys/draft`) before recorder block
 - Site map: page preview screenshot + “Add navigate journey” to selected config

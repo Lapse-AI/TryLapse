@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Bar } from "@/components/ui-bits";
 import type { DimensionScore, Issue } from "@/lib/mock-data";
+import { countIssuesForDimension } from "@/lib/dimension-match";
 
 function dimensionTone(score: number): "ready" | "warn" | "danger" {
   if (score >= 85) return "ready";
@@ -119,7 +120,7 @@ export function DimensionRollupGrid({
         <DimensionCard
           key={d.name}
           dimension={d}
-          relatedCount={issues.filter((i) => i.dimension === d.name).length}
+          relatedCount={countIssuesForDimension(issues, d.name)}
           active={activeDimension === d.name}
           runId={runId}
           mode={mode}

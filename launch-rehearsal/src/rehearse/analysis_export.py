@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from rehearse.context import AgentReport, RunContext
-from rehearse.dsl import RunConfig, Persona
+from rehearse.dsl import ExperimentSpec, RunConfig, Persona
 from rehearse.evidence import RunEvidence, StepSnapshot
 from rehearse.heuristics import AnalysisResult, Finding
 from rehearse.sitemap import SiteMap
@@ -98,7 +98,7 @@ def _named_error_issues(
                 "journey": step.journey_name,
                 "journeyId": step.journey_id,
                 "stepId": step.step_id,
-                "dimension": "Functionality",
+                "dimension": _dimension_for_finding(step.error_type, step.note or ""),
                 "confidence": "high",
                 "owner": _owner_heuristic(step.error_type, step.note or ""),
                 "recurring": 1,
@@ -163,6 +163,207 @@ def _owner_heuristic(title: str, detail: str) -> str:
     if any(k in blob for k in ("security", "pii", "compliance")):
         return "security"
     return "frontend"
+
+
+def _dimension_for_finding(title: str, detail: str) -> str:
+    """Map heuristic finding text to dashboard dimension rollup names."""
+    blob = f"{title} {detail}".lower()
+    if any(k in blob for k in ("form input", "inputs lack label", "missing label", "aria-label")):
+        return "Accessibility"
+    if any(k in blob for k in ("unlabeled", "icon-only", "duplicate primary cta", "duplicate cta")):
+        return "UI/UX"
+    if any(k in blob for k in ("slow step", "perceived delay", "avg step", "vitals", "lcp")):
+        return "Performance"
+    if any(k in blob for k in ("sparse page", "sparse content", "deep navigation", "depth reaches")):
+        return "Information"
+    if any(k in blob for k in ("auth wall", "auth attempted", "auth fail")):
+        return "Trust"
+    if any(
+        k in blob
+        for k in (
+            "http ",
+            "loading state",
+            "console",
+            "crawl found error",
+            "browserstep",
+            "preflight",
+            "runbudget",
+            "step failed",
+            "timeout",
+        )
+    ):
+        return "Functionality"
+    return "Functionality"
+
+
+def _related_dimensions_for_finding(title: str, detail: str, primary: str) -> list[str]:
+    """Cross-cutting findings that should appear under multiple dimension filters."""
+    blob = f"{title} {detail}".lower()
+    related: list[str] = []
+    if primary == "UI/UX" and any(k in blob for k in ("unlabeled", "icon-only", "accessible name")):
+        related.append("Accessibility")
+    if primary == "Accessibility" and any(k in blob for k in ("button", "label")):
+        related.append("UI/UX")
+    if primary == "Performance" and "slow step" in blob:
+        related.append("UI/UX")
+    return related
+
+
+def issue_matches_dimension(issue: dict[str, Any], dimension: str) -> bool:
+    if issue.get("dimension") == dimension:
+        return True
+    return dimension in (issue.get("relatedDimensions") or [])
+
+
+def _rollup_issue(
+    *,
+    issue_id: str,
+    run_id: str,
+    config: RunConfig,
+    severity: str,
+    title: str,
+    detail: str,
+    dimension: str,
+    related: list[str] | None = None,
+    step_id: str = "run-rollup",
+) -> dict[str, Any]:
+    pid = config.personas[0].id if config.personas else "unknown"
+    return {
+        "id": issue_id,
+        "runId": run_id,
+        "severity": severity,
+        "title": title,
+        "detail": detail,
+        "persona": _persona_name(config, pid),
+        "personaId": pid,
+        "journey": "Run rollup",
+        "journeyId": "rollup",
+        "stepId": step_id,
+        "dimension": dimension,
+        "relatedDimensions": related or [],
+        "confidence": "high",
+        "owner": _owner_heuristic(title, detail),
+        "recurring": 1,
+        "evidence": detail,
+        "severityReason": f"{severity} from automated dimension rollup",
+        "suggestion": None,
+    }
+
+
+def _enrich_unlabeled_issue_totals(issues: list[dict[str, Any]], evidence: RunEvidence) -> None:
+    total = sum(s.unlabeled_button_count for s in evidence.steps)
+    step_count = sum(1 for s in evidence.steps if s.unlabeled_button_count > 0)
+    if total <= 0:
+        return
+    for issue in issues:
+        if "unlabeled" not in issue.get("title", "").lower():
+            continue
+        issue["detail"] = (
+            f"{total} button(s) lack accessible name across {step_count} step(s)."
+        )
+        issue["evidence"] = issue["detail"]
+        issue["recurring"] = step_count
+
+
+def _append_dimension_rollup_issues(
+    issues: list[dict[str, Any]],
+    evidence: RunEvidence,
+    dimensions: list[dict[str, Any]],
+    config: RunConfig,
+) -> None:
+    """Add run-level findings when dimension scores flag gaps with no tagged issues."""
+    existing_ids = {i["id"] for i in issues}
+    unlabeled = sum(s.unlabeled_button_count for s in evidence.steps)
+    missing_labels = sum(max(0, s.input_count - s.labeled_input_count) for s in evidence.steps)
+    avg_ms = sum(s.duration_ms for s in evidence.steps) / max(len(evidence.steps), 1)
+    sparse = sum(1 for s in evidence.steps if len(s.body_text_excerpt) < 80)
+
+    def has_dimension(name: str) -> bool:
+        return any(issue_matches_dimension(i, name) for i in issues)
+
+    if unlabeled > 0 and not has_dimension("UI/UX") and "DIM-UI-ROLLUP" not in existing_ids:
+        issues.append(
+            _rollup_issue(
+                issue_id="DIM-UI-ROLLUP",
+                run_id=evidence.run_id,
+                config=config,
+                severity="P2" if unlabeled > 5 else "P3",
+                title="Unlabeled controls across run",
+                detail=(
+                    f"{unlabeled} button(s) without accessible name across "
+                    f"{sum(1 for s in evidence.steps if s.unlabeled_button_count > 0)} step(s)."
+                ),
+                dimension="UI/UX",
+                related=["Accessibility"],
+            )
+        )
+
+    if (missing_labels > 0 or unlabeled > 5) and not has_dimension("Accessibility"):
+        if "DIM-A11Y-ROLLUP" not in existing_ids:
+            parts = []
+            if unlabeled > 5:
+                parts.append(f"{unlabeled} unlabeled button(s)")
+            if missing_labels > 0:
+                parts.append(f"{missing_labels} input(s) missing labels")
+            issues.append(
+                _rollup_issue(
+                    issue_id="DIM-A11Y-ROLLUP",
+                    run_id=evidence.run_id,
+                    config=config,
+                    severity="P2",
+                    title="Accessibility gaps across run",
+                    detail="; ".join(parts) + ".",
+                    dimension="Accessibility",
+                    related=["UI/UX"] if unlabeled > 5 else [],
+                )
+            )
+
+    if avg_ms > 3000 and not has_dimension("Performance") and "DIM-PERF-ROLLUP" not in existing_ids:
+        issues.append(
+            _rollup_issue(
+                issue_id="DIM-PERF-ROLLUP",
+                run_id=evidence.run_id,
+                config=config,
+                severity="P3",
+                title="Slow average step time",
+                detail=f"Average step duration ~{int(avg_ms)}ms across {len(evidence.steps)} steps.",
+                dimension="Performance",
+            )
+        )
+
+    if sparse > 0 and not has_dimension("Information") and "DIM-INFO-ROLLUP" not in existing_ids:
+        issues.append(
+            _rollup_issue(
+                issue_id="DIM-INFO-ROLLUP",
+                run_id=evidence.run_id,
+                config=config,
+                severity="P2" if sparse > 2 else "P3",
+                title="Sparse content across run",
+                detail=f"{sparse} step(s) with very little body text.",
+                dimension="Information",
+            )
+        )
+
+    for dim in dimensions:
+        if dim["name"] in ("Functionality", "UI/UX", "Information", "Performance", "Accessibility"):
+            continue
+        if dim.get("score", 100) >= 85 or has_dimension(dim["name"]):
+            continue
+        rid = f"DIM-{dim['name'].upper().replace('/', '')}-ROLLUP"
+        if rid in existing_ids:
+            continue
+        signal = dim.get("signal") or "Phase 2 heuristic from step evidence"
+        issues.append(
+            _rollup_issue(
+                issue_id=rid,
+                run_id=evidence.run_id,
+                config=config,
+                severity="P3",
+                title=f"{dim['name']} signal from run evidence",
+                detail=signal,
+                dimension=dim["name"],
+            )
+        )
 
 
 def _step_flaky(step: StepSnapshot, all_steps: list[StepSnapshot]) -> bool:
@@ -285,6 +486,7 @@ def _serialize_issues(config: RunConfig, evidence: RunEvidence, analysis: Analys
         pid = f.persona_ids[0] if f.persona_ids else config.personas[0].id
         step = next((s for s in evidence.steps if s.step_id == f.step_id), None)
         jid = step.journey_id if step else "unknown"
+        primary_dimension = _dimension_for_finding(f.title, f.detail)
         issue: dict[str, Any] = {
                 "id": f.id or f"I{i+1}",
                 "runId": evidence.run_id,
@@ -296,7 +498,8 @@ def _serialize_issues(config: RunConfig, evidence: RunEvidence, analysis: Analys
                 "journey": _journey_name(config, jid),
                 "journeyId": jid,
                 "stepId": f.step_id,
-                "dimension": "Functionality",
+                "dimension": primary_dimension,
+                "relatedDimensions": _related_dimensions_for_finding(f.title, f.detail, primary_dimension),
                 "confidence": f.confidence,
                 "owner": _owner_heuristic(f.title, f.detail),
                 "recurring": 1,
@@ -329,9 +532,23 @@ def _serialize_delights(config: RunConfig, evidence: RunEvidence, analysis: Anal
                 "journey": _journey_name(config, jid),
                 "stepId": d.step_id,
                 "marketingReady": True,
+                "confidence": d.confidence or "high",
             }
         )
     return out
+
+
+def _serialize_experiment(exp: ExperimentSpec | None) -> dict[str, str] | None:
+    if not exp:
+        return None
+    out: dict[str, str] = {}
+    if exp.hypothesis:
+        out["hypothesis"] = exp.hypothesis
+    if exp.user_goal:
+        out["userGoal"] = exp.user_goal
+    if exp.variant_label:
+        out["variantLabel"] = exp.variant_label
+    return out or None
 
 
 def _sync_agent_flaky_summary(agents: list[dict[str, Any]], flaky_step_count: int) -> list[dict[str, Any]]:
@@ -485,6 +702,9 @@ def build_run_bundle(
     issues = _serialize_issues(config, evidence, analysis)
     issue_step_ids = {i["stepId"] for i in issues if i.get("stepId")}
     issues.extend(_named_error_issues(config, evidence, issue_step_ids))
+    _enrich_unlabeled_issue_totals(issues, evidence)
+    dimensions = _expand_dimensions(analysis.dimensions, evidence)
+    _append_dimension_rollup_issues(issues, evidence, dimensions, config)
     delights = _serialize_delights(config, evidence, analysis)
     sitemap_pages, sitemap_edges, sitemap_md = _serialize_sitemap(
         ctx.sitemap if ctx else None, evidence.run_id, ctx.workflows if ctx else None
@@ -548,13 +768,14 @@ def build_run_bundle(
             "networkLogPath": evidence.network_log_path
             or (ctx.metadata.get("network_log_path") if ctx else None),
             "webVitalsPath": (ctx.metadata.get("web_vitals_path") if ctx else None),
+            "experiment": _serialize_experiment(config.experiment),
         },
         "steps": steps,
         "issues": issues,
         "delights": delights,
         "agents": _sync_agent_flaky_summary(_serialize_agents(ctx, evidence), flaky_step_count),
         "matrix": _serialize_matrix(config, analysis),
-        "dimensions": _expand_dimensions(analysis.dimensions, evidence),
+        "dimensions": dimensions,
         "scorecardMd": scorecard_md or "",
         "sitemapMd": sitemap_md,
         "sitemapPages": sitemap_pages,

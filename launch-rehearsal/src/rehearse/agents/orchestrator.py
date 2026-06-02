@@ -11,6 +11,7 @@ from rehearse.agents.performance_agent import PerformanceAgent
 from rehearse.agents.persona_agent import PersonaAgent
 from rehearse.agents.synthesizer import SynthesizerAgent
 from rehearse.agents.workflow_agent import WorkflowAgent
+from rehearse.dsl import active_personas
 from rehearse.llm import llm_enabled
 from rehearse.browser import BrowserSession
 from rehearse.context import RunContext
@@ -31,11 +32,12 @@ class AgentOrchestrator:
         self.artifacts_root = artifacts_root
         self._crawl_agents = [CrawlAgent(), WorkflowAgent()]
         self._journey_agent = JourneyAgent(session, artifacts_root)
-        self._persona_agents = [PersonaAgent(p) for p in ctx.config.personas]
+        lens_personas = active_personas(ctx.config)
+        self._persona_agents = [PersonaAgent(p) for p in lens_personas]
         self._llm_agents: list[LLMPersonaAgent] = []
         if use_llm or llm_enabled():
             ctx.metadata["force_llm"] = use_llm
-            self._llm_agents = [LLMPersonaAgent(p) for p in ctx.config.personas]
+            self._llm_agents = [LLMPersonaAgent(p) for p in lens_personas]
         self._synthesizer = SynthesizerAgent()
 
     def run_crawl_phase(self) -> None:

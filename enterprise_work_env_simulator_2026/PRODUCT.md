@@ -260,6 +260,8 @@ This section is the **source of truth** for decisions at the first benchmark. If
 | Regression rehearsal | **Feb 28, 2027** | Compare run N vs N-1 on same journeys |
 | Veteran (100×) simulation mode | **Jun 30, 2027** | Chronic gaps + delight rubric in core |
 | Calibration blog / case study | **Jun 30, 2027** | Sim vs real beta findings |
+| Predictive rehearsal Wave 1 (optional) | **Q1 2027** | Experiment spec, variant job, experiment report — `COMPETITIVE_BLOK.md` · `L3-PRED-02/04/05/06` |
+| Analytics-informed personas (optional) | **H2 2027** | Segment/Mixpanel import — `L3-PRED-01` |
 | PMF review gate | **Mar 31, 2027** | Continue, pivot, or double down on B |
 
 **Exit criteria:** Paying customers OR clear path to $5k MRR; calibration data for sales story.

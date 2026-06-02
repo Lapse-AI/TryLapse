@@ -4,6 +4,8 @@ import { personas, workspace, agentConfigDefaults, auditLog } from "@/lib/mock-d
 import { useWorkspace, useSaveWorkspace } from "@/lib/api/hooks";
 import { VisionOnly } from "@/components/vision-only";
 import { ConfigYamlEditor } from "@/components/config-yaml-editor";
+import { ExperimentSpecPanel } from "@/components/experiment-spec-panel";
+import { usePersistedConfigId } from "@/hooks/use-persisted-config-id";
 
 export const Route = createFileRoute("/config")({
   head: () => ({ meta: [{ title: "Workspace — Launch Rehearsal" }] }),
@@ -13,6 +15,7 @@ export const Route = createFileRoute("/config")({
 function Config() {
   const { data: ws = workspace } = useWorkspace();
   const save = useSaveWorkspace();
+  const { configId } = usePersistedConfigId();
   return (
     <div>
       <PageHeader
@@ -62,6 +65,8 @@ function Config() {
         </div>
 
         <ConfigYamlEditor />
+
+        {configId ? <ExperimentSpecPanel configId={configId} /> : null}
 
         <VisionOnly section="config.personasEditor">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
