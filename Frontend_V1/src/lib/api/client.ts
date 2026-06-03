@@ -258,6 +258,21 @@ export const api = {
       method: "POST",
       body: JSON.stringify(body),
     }),
+  getConfigPersonas: (configId: string) =>
+    apiFetch<{
+      configId: string;
+      personas: { id: string; name: string; role: string; goals: string[]; enabled: boolean }[];
+      personaLens: boolean;
+    }>(`/api/configs/${configId}/personas`),
+  replaceConfigPersonas: (body: {
+    configId: string;
+    personas: { id: string; name: string; role: string; goals: string[]; enabled?: boolean }[];
+    personaLens?: boolean;
+  }) =>
+    apiFetch<{ id: string; path: string }>("/api/configs/personas/replace", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
   appendJourneyToConfig: (body: { configId: string; path: string; title?: string }) =>
     apiFetch<{ configId: string; journeyId: string; url: string }>("/api/configs/append-journey", {
       method: "POST",

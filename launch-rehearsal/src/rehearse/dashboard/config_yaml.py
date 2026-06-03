@@ -116,6 +116,46 @@ def set_config_experiment(
     return save_config_yaml(artifacts_root, new_yaml, config_id=config_id)
 
 
+def get_config_personas(artifacts_root: Path, config_id: str) -> dict[str, Any]:
+    """Return personas and persona_lens from a saved config as structured JSON."""
+    meta = get_config_yaml(artifacts_root, config_id)
+    data = yaml.safe_load(meta["yaml"]) or {}
+    run = data.get("run") or {}
+    personas = []
+    for p in data.get("personas") or []:
+        goals = p.get("goals") or []
+        personas.append({
+            "id": p.get("id", ""),
+            "name": p.get("name", ""),
+            "role": p.get("role", ""),
+            "goals": goals if isinstance(goals, list) else [goals],
+            "enabled": p.get("enabled", True),
+        })
+    return {
+        "configId": config_id,
+        "personas": personas,
+        "personaLens": run.get("persona_lens", True),
+    }
+
+
+def replace_config_personas(
+    artifacts_root: Path,
+    *,
+    config_id: str,
+    personas: list[dict[str, Any]],
+    persona_lens: bool | None = None,
+) -> dict[str, Any]:
+    """Replace the entire personas array in a config and optionally update persona_lens."""
+    meta = get_config_yaml(artifacts_root, config_id)
+    data = yaml.safe_load(meta["yaml"]) or {}
+    data["personas"] = [persona_to_yaml_entry(p) for p in personas]
+    if persona_lens is not None:
+        run = data.setdefault("run", {})
+        run["persona_lens"] = bool(persona_lens)
+    new_yaml = yaml.dump(data, default_flow_style=False, sort_keys=False, allow_unicode=True)
+    return save_config_yaml(artifacts_root, new_yaml, config_id=config_id)
+
+
 def append_persona_to_config(
     artifacts_root: Path,
     *,

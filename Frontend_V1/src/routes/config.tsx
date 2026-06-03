@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader, Panel, Chip } from "@/components/ui-bits";
-import { personas, workspace, agentConfigDefaults, auditLog } from "@/lib/mock-data";
-import { useWorkspace, useSaveWorkspace } from "@/lib/api/hooks";
+import { workspace, agentConfigDefaults, auditLog } from "@/lib/mock-data";
+import { useApiHealth, useWorkspace, useSaveWorkspace } from "@/lib/api/hooks";
 import { VisionOnly } from "@/components/vision-only";
 import { ConfigYamlEditor } from "@/components/config-yaml-editor";
 import { ExperimentSpecPanel } from "@/components/experiment-spec-panel";
+import { PersonaEditorPanel } from "@/components/persona-editor-panel";
 import { usePersistedConfigId } from "@/hooks/use-persisted-config-id";
 
 export const Route = createFileRoute("/config")({
@@ -16,6 +17,7 @@ function Config() {
   const { data: ws = workspace } = useWorkspace();
   const save = useSaveWorkspace();
   const { configId } = usePersistedConfigId();
+  const { data: live } = useApiHealth();
   return (
     <div>
       <PageHeader
@@ -68,40 +70,12 @@ function Config() {
 
         {configId ? <ExperimentSpecPanel configId={configId} /> : null}
 
+        {configId ? (
+          <PersonaEditorPanel configId={configId} live={!!live} />
+        ) : null}
+
         <VisionOnly section="config.personasEditor">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Panel className="p-5">
-              <div className="text-xs text-muted-foreground mb-3">Personas · 3–7 configurable</div>
-              <div className="space-y-3">
-                {personas.map((p) => (
-                  <div key={p.id} className="border border-border rounded-lg p-3">
-                    <div className="flex items-center justify-between">
-                      <div className="font-medium">{p.name}</div>
-                      <Chip
-                        tone={
-                          p.patience === "low"
-                            ? "danger"
-                            : p.patience === "medium"
-                              ? "warn"
-                              : "ready"
-                        }
-                      >
-                        {p.patience} patience
-                      </Chip>
-                    </div>
-                    <div className="text-xs text-muted-foreground mt-1">
-                      {p.role} — goal: {p.goal}
-                    </div>
-                    {p.stressFactors && (
-                      <div className="text-[10px] font-mono text-muted-foreground mt-1">
-                        stress: {p.stressFactors.join(", ")}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </Panel>
-
             <Panel className="p-5 space-y-5">
               <VisionOnly section="config.secretsVault">
                 <div>

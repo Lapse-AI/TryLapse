@@ -204,6 +204,16 @@ class _Handler(BaseHTTPRequestHandler):
 
         if path.startswith("/api/configs/"):
             parts = path.strip("/").split("/")
+            # /api/configs/{id}/personas
+            if len(parts) == 4 and parts[3] == "personas":
+                config_id = parts[2]
+                try:
+                    from rehearse.dashboard.config_yaml import get_config_personas
+
+                    self._send_json(get_config_personas(root, config_id))
+                except ValueError as exc:
+                    self._send_json({"error": str(exc)}, status=404)
+                return
             if len(parts) == 3 and parts[0] == "api" and parts[1] == "configs":
                 config_id = parts[2]
                 try:
@@ -413,6 +423,23 @@ class _Handler(BaseHTTPRequestHandler):
                     root,
                     config_id=str(body.get("configId") or ""),
                     persona_enabled=body.get("personaEnabled"),
+                    persona_lens=body.get("personaLens"),
+                )
+            except ValueError as exc:
+                self._send_json({"error": str(exc)}, status=400)
+                return
+            self._send_json(result)
+            return
+
+        if path == "/api/configs/personas/replace":
+            body = self._read_json_body()
+            from rehearse.dashboard.config_yaml import replace_config_personas
+
+            try:
+                result = replace_config_personas(
+                    root,
+                    config_id=str(body.get("configId") or ""),
+                    personas=list(body.get("personas") or []),
                     persona_lens=body.get("personaLens"),
                 )
             except ValueError as exc:
