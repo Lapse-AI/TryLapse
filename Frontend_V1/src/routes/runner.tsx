@@ -23,6 +23,12 @@ function RunnerPage() {
   const { configId, pickConfig } = usePersistedConfigId();
   const [useLlm, setUseLlm] = useState(true);
 
+  // Prefer canonical named configs over auto-generated timestamped snapshots
+  const cleanConfigs = configs
+    .filter((c) => !/\d{8}-\d{6}$/.test(c.id))
+    .concat(configs.filter((c) => /\d{8}-\d{6}$/.test(c.id)).slice(0, 3));
+  const displayConfigs = cleanConfigs.length ? cleanConfigs : configs.slice(0, 10);
+
   const selectedConfig =
     configs.find((c) => c.id === configId) ?? configs.find((c) => c.id === "lr-self") ?? configs[0];
 
@@ -109,9 +115,9 @@ function RunnerPage() {
               onChange={(e) => pickConfig(e.target.value)}
               disabled={!configs.length}
             >
-              {configs.map((c) => (
+              {displayConfigs.map((c) => (
                 <option key={c.id} value={c.id}>
-                  {c.id} ({c.source})
+                  {c.id}
                 </option>
               ))}
             </select>
