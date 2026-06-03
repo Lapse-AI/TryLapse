@@ -6,6 +6,7 @@ import { usePersistedConfigId } from "@/hooks/use-persisted-config-id";
 import { useTestGroup } from "@/hooks/use-test-group";
 import { ActiveJobsBanner, JobQueueTable } from "@/components/job-queue-status";
 import { VariantRehearsalPanel } from "@/components/variant-rehearsal-panel";
+import { CohortRehearsalPanel } from "@/components/cohort-rehearsal-panel";
 import { Loader2, Play, Network, FlaskConical, Settings } from "lucide-react";
 import { toast } from "sonner";
 
@@ -185,6 +186,7 @@ function RunnerPage() {
         </Panel>
 
         <VariantRehearsalPanel live={!!live} />
+        <CohortRehearsalPanel live={!!live} />
 
         <Panel className="overflow-hidden">
           <div className="p-5 border-b border-border font-display font-semibold">Job queue</div>

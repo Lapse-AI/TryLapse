@@ -10,7 +10,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from rehearse.dashboard.graphml import load_sitemap_graphml
-from rehearse.dashboard.jobs import enqueue_run, enqueue_variant_run, list_jobs, mark_stale_running_jobs
+from rehearse.dashboard.jobs import enqueue_cohort_run, enqueue_run, enqueue_variant_run, list_jobs, mark_stale_running_jobs
 from rehearse.dashboard.store import (
     backfill_all,
     diff_runs,
@@ -218,6 +218,16 @@ class _Handler(BaseHTTPRequestHandler):
                 except Exception as exc:
                     report["error"] = str(exc)
             self._send_json(report)
+            return
+
+        if path.startswith("/api/cohort/"):
+            job_id = path.split("/")[-1]
+            jobs = list_jobs(root)
+            job = next((j for j in jobs if j.get("id") == job_id), None)
+            if not job:
+                self._send_json({"error": "cohort job not found"}, status=404)
+                return
+            self._send_json(job)
             return
 
         if path.startswith("/api/variant/"):
@@ -627,6 +637,23 @@ class _Handler(BaseHTTPRequestHandler):
                 steps=body.get("steps") if isinstance(body.get("steps"), list) else [],
             )
             self._send_json(out)
+            return
+
+        if path == "/api/jobs/cohort":
+            body = self._read_json_body()
+            cfg = Path(body.get("configPath", ""))
+            if not cfg.is_file():
+                self._send_json({"error": "configPath required"}, status=400)
+                return
+            job = enqueue_cohort_run(
+                root,
+                config_path=cfg,
+                n_seeds=int(body.get("nSeeds", 3)),
+                hypothesis=str(body.get("hypothesis") or ""),
+                output_dir=root,
+                use_llm=bool(body.get("llm")),
+            )
+            self._send_json(job, status=202)
             return
 
         if path == "/api/jobs/variant":

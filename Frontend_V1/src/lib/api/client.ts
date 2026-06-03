@@ -156,6 +156,38 @@ export const api = {
       method: "POST",
       body: JSON.stringify(body),
     }),
+  triggerCohortJob: (body: {
+    configPath: string;
+    nSeeds?: number;
+    hypothesis?: string;
+    llm?: boolean;
+  }) =>
+    apiFetch<{ id: string; type: string; status: string }>("/api/jobs/cohort", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+  getCohortJob: (jobId: string) =>
+    apiFetch<{
+      id: string;
+      type: string;
+      status: string;
+      phase: string;
+      config: string;
+      nSeeds: number;
+      hypothesis: string;
+      completedSeeds: number;
+      runIds: string[];
+      aggregate: {
+        readinessMean: number;
+        readinessMin: number;
+        readinessMax: number;
+        spread: number;
+        confidence: "high" | "medium" | "low";
+        recurringIssues: { title: string; count: number; rate: number }[];
+      } | null;
+      error: string | null;
+      finishedAt: string | null;
+    }>(`/api/cohort/${jobId}`),
   triggerVariantJob: (body: {
     configAPath: string;
     configBPath: string;

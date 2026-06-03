@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageHeader, Panel, Chip } from "@/components/ui-bits";
+import { LiftCard } from "@/components/lift-card";
 import { api } from "@/lib/api/client";
 import {
   GitCompare,
@@ -413,6 +414,43 @@ export default function ExperimentReport() {
             )}
           </Panel>
         </div>
+
+        {/* L3-PRED-09 — Directional lift card */}
+        {report && job.status === "done" && (
+          <LiftCard
+            readinessA={
+              (report.bundleA as Record<string, unknown> | undefined)?.summary
+                ? ((report.bundleA as Record<string, Record<string, number>>).summary.readiness ??
+                  0)
+                : 0
+            }
+            readinessB={
+              (report.bundleB as Record<string, unknown> | undefined)?.summary
+                ? ((report.bundleB as Record<string, Record<string, number>>).summary.readiness ??
+                  0)
+                : 0
+            }
+            bandA={
+              (report.bundleA as Record<string, Record<string, string>> | undefined)?.summary
+                ?.readinessBand
+            }
+            bandB={
+              (report.bundleB as Record<string, Record<string, string>> | undefined)?.summary
+                ?.readinessBand
+            }
+            newIssues={
+              Array.isArray((report.diff as Record<string, unknown> | undefined)?.newIssues)
+                ? (report.diff as Record<string, unknown[]>).newIssues.length
+                : 0
+            }
+            resolvedIssues={
+              Array.isArray((report.diff as Record<string, unknown> | undefined)?.resolvedIssues)
+                ? (report.diff as Record<string, unknown[]>).resolvedIssues.length
+                : 0
+            }
+            verdict={report.hypothesisVerdict}
+          />
+        )}
 
         {/* L3-PRED-04 — Per-persona comparison */}
         {report?.personaComparison && report.personaComparison.length > 0 && (
