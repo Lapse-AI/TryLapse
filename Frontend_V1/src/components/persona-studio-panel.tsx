@@ -51,10 +51,7 @@ export function PersonaStudioPanel({
   const [suggested, setSuggested] = useState<PersonaDraft[]>([]);
 
   const existingIds = useMemo(
-    () => [
-      ...corePersonas.map((p) => p.id),
-      ...stagedExtras.map((p) => p.id),
-    ],
+    () => [...corePersonas.map((p) => p.id), ...stagedExtras.map((p) => p.id)],
     [corePersonas, stagedExtras],
   );
 
@@ -128,7 +125,8 @@ export function PersonaStudioPanel({
         </div>
         <p className="text-sm text-muted-foreground mt-1">
           Three core personas are always generated. Describe another user type — AI drafts{" "}
-          <span className="font-mono">id / name / role / goals</span> — or pick a product suggestion.
+          <span className="font-mono">id / name / role / goals</span> — or pick a product
+          suggestion.
         </p>
       </div>
 
@@ -144,11 +142,26 @@ export function PersonaStudioPanel({
       <div>
         <div className="text-xs text-muted-foreground mb-2">Core three (always in YAML)</div>
         <div className="space-y-2">
-          {(corePersonas.length ? corePersonas : [
-            { id: "p1-evaluator", name: "First-time evaluator", role: "prospect / new user", goals: [], core: true },
-            { id: "p2-operator", name: "Daily operator", role: "power user", goals: [], core: true },
-            { id: "p3-admin", name: "Admin / buyer", role: "IT admin", goals: [], core: true },
-          ]).map((p) => (
+          {(corePersonas.length
+            ? corePersonas
+            : [
+                {
+                  id: "p1-evaluator",
+                  name: "First-time evaluator",
+                  role: "prospect / new user",
+                  goals: [],
+                  core: true,
+                },
+                {
+                  id: "p2-operator",
+                  name: "Daily operator",
+                  role: "power user",
+                  goals: [],
+                  core: true,
+                },
+                { id: "p3-admin", name: "Admin / buyer", role: "IT admin", goals: [], core: true },
+              ]
+          ).map((p) => (
             <div
               key={p.id}
               className="flex flex-wrap items-center justify-between gap-2 border border-border rounded-lg px-3 py-2"

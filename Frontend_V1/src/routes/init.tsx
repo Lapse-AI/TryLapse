@@ -5,10 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { api } from "@/lib/api/client";
 import { toast } from "sonner";
 import { JourneyDraftPanel } from "@/components/journey-draft-panel";
-import {
-  PersonaStudioPanel,
-  type PersonaDraft,
-} from "@/components/persona-studio-panel";
+import { PersonaStudioPanel, type PersonaDraft } from "@/components/persona-studio-panel";
 import { setSelectedConfigId } from "@/lib/selected-config";
 import { useTestGroup } from "@/hooks/use-test-group";
 import { groupInitPreset } from "@/lib/test-groups";
@@ -433,9 +430,7 @@ function InitPage() {
           }
           stagedExtras={stagedExtras}
           onStageExtra={(p) =>
-            setStagedExtras((prev) =>
-              prev.some((x) => x.id === p.id) ? prev : [...prev, p],
-            )
+            setStagedExtras((prev) => (prev.some((x) => x.id === p.id) ? prev : [...prev, p]))
           }
           onRemoveStaged={(id) => setStagedExtras((prev) => prev.filter((p) => p.id !== id))}
         />

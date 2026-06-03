@@ -30,12 +30,20 @@ function PhaseBar({ phase }: { phase: string }) {
           <div
             className={[
               "px-2 py-0.5 rounded-full",
-              i < idx ? "bg-ready/20 text-ready" :
-              i === idx ? "bg-primary/20 text-primary font-medium" :
-              "bg-surface-2 text-muted-foreground",
+              i < idx
+                ? "bg-ready/20 text-ready"
+                : i === idx
+                  ? "bg-primary/20 text-primary font-medium"
+                  : "bg-surface-2 text-muted-foreground",
             ].join(" ")}
           >
-            {p === "running-A" ? "A" : p === "running-B" ? "B" : p === "comparing" ? "compare" : "done"}
+            {p === "running-A"
+              ? "A"
+              : p === "running-B"
+                ? "B"
+                : p === "comparing"
+                  ? "compare"
+                  : "done"}
           </div>
           {i < phases.length - 1 && <ArrowRight className="size-3 text-muted-foreground" />}
         </div>
@@ -48,14 +56,21 @@ function ReadinessBadge({ runId }: { runId: string | null }) {
   const [readiness, setReadiness] = useState<string | null>(null);
   useEffect(() => {
     if (!runId) return;
-    api.summaries().then((list) => {
-      const r = list.find((s) => s.run_id === runId);
-      if (r) setReadiness((r as { run_id: string; readiness?: string }).readiness ?? null);
-    }).catch(() => {});
+    api
+      .summaries()
+      .then((list) => {
+        const r = list.find((s) => s.run_id === runId);
+        if (r) setReadiness((r as { run_id: string; readiness?: string }).readiness ?? null);
+      })
+      .catch(() => {});
   }, [runId]);
   if (!runId) return <Chip tone="neutral">—</Chip>;
   if (!readiness) return <Chip tone="neutral">loading…</Chip>;
-  return <Chip tone={readiness === "green" ? "ready" : readiness === "red" ? "danger" : "warn"}>{readiness}</Chip>;
+  return (
+    <Chip tone={readiness === "green" ? "ready" : readiness === "red" ? "danger" : "warn"}>
+      {readiness}
+    </Chip>
+  );
 }
 
 export default function ExperimentReport() {
@@ -78,7 +93,9 @@ export default function ExperimentReport() {
       }
     };
     void poll();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [jobId]);
 
   if (error) {
@@ -104,7 +121,11 @@ export default function ExperimentReport() {
   const isRunning = job.status === "queued" || job.status === "running";
   const configAName = job.configA.split("/").pop()?.replace(".yaml", "") ?? job.configA;
   const configBName = job.configB.split("/").pop()?.replace(".yaml", "") ?? job.configB;
-  const narrative = (job.diffNarrative ?? (job.diff as Record<string, unknown> | undefined)?.narrative) as Record<string, string> | null | undefined;
+  const narrative = (job.diffNarrative ??
+    (job.diff as Record<string, unknown> | undefined)?.narrative) as
+    | Record<string, string>
+    | null
+    | undefined;
 
   return (
     <div>
@@ -114,14 +135,15 @@ export default function ExperimentReport() {
         description={job.hypothesis || "Side-by-side rehearsal — control vs variant"}
       />
       <div className="p-8 max-w-[900px] space-y-6">
-
         {/* Status + phase */}
         <Panel className="p-5 space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <FlaskConical className="size-4 text-primary" />
               <span className="font-display font-semibold text-sm">{jobId}</span>
-              <Chip tone={job.status === "done" ? "ready" : job.status === "failed" ? "danger" : "info"}>
+              <Chip
+                tone={job.status === "done" ? "ready" : job.status === "failed" ? "danger" : "info"}
+              >
                 {job.status}
               </Chip>
             </div>
@@ -217,13 +239,17 @@ export default function ExperimentReport() {
             {(narrative as Record<string, string>).founderSummary && (
               <div className="space-y-1">
                 <div className="text-xs font-medium text-muted-foreground">Founder view</div>
-                <p className="text-sm text-muted-foreground">{(narrative as Record<string, string>).founderSummary}</p>
+                <p className="text-sm text-muted-foreground">
+                  {(narrative as Record<string, string>).founderSummary}
+                </p>
               </div>
             )}
             {(narrative as Record<string, string>).engineeringSummary && (
               <div className="space-y-1">
                 <div className="text-xs font-medium text-muted-foreground">Engineering view</div>
-                <p className="text-sm text-muted-foreground">{(narrative as Record<string, string>).engineeringSummary}</p>
+                <p className="text-sm text-muted-foreground">
+                  {(narrative as Record<string, string>).engineeringSummary}
+                </p>
               </div>
             )}
           </Panel>

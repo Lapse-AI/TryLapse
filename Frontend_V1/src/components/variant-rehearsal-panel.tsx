@@ -23,12 +23,24 @@ export function VariantRehearsalPanel({ live }: Props) {
   const configPath = (id: string) => configs.find((c) => c.id === id)?.path ?? "";
 
   const run = async () => {
-    if (!live) { toast.error("Start rehearse serve first"); return; }
-    if (!configAId || !configBId) { toast.error("Select both configs"); return; }
-    if (configAId === configBId) { toast.error("Configs must be different"); return; }
+    if (!live) {
+      toast.error("Start rehearse serve first");
+      return;
+    }
+    if (!configAId || !configBId) {
+      toast.error("Select both configs");
+      return;
+    }
+    if (configAId === configBId) {
+      toast.error("Configs must be different");
+      return;
+    }
     const pathA = configPath(configAId);
     const pathB = configPath(configBId);
-    if (!pathA || !pathB) { toast.error("Config path not found"); return; }
+    if (!pathA || !pathB) {
+      toast.error("Config path not found");
+      return;
+    }
     setRunning(true);
     try {
       const job = await api.triggerVariantJob({
@@ -70,7 +82,9 @@ export function VariantRehearsalPanel({ live }: Props) {
           >
             <option value="">— select —</option>
             {saved.map((c) => (
-              <option key={c.id} value={c.id}>{c.id}.yaml</option>
+              <option key={c.id} value={c.id}>
+                {c.id}.yaml
+              </option>
             ))}
           </select>
         </div>
@@ -84,7 +98,9 @@ export function VariantRehearsalPanel({ live }: Props) {
           >
             <option value="">— select —</option>
             {saved.map((c) => (
-              <option key={c.id} value={c.id}>{c.id}.yaml</option>
+              <option key={c.id} value={c.id}>
+                {c.id}.yaml
+              </option>
             ))}
           </select>
         </div>

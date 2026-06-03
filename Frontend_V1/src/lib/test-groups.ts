@@ -132,7 +132,12 @@ export function runMatchesTestGroup(
 export function jobMatchesTestGroup(job: { config?: string }, group: TestGroup): boolean {
   const path = job.config ?? "";
   if (!path) return false;
-  const stem = path.replace(/\\/g, "/").split("/").pop()?.replace(/\.yaml$/, "") ?? "";
+  const stem =
+    path
+      .replace(/\\/g, "/")
+      .split("/")
+      .pop()
+      ?.replace(/\.yaml$/, "") ?? "";
   if (stem === group.configId) return true;
   for (const prefix of group.configIdPrefixes ?? []) {
     if (stem === prefix || stem.startsWith(`${prefix}-`)) return true;

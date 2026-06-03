@@ -59,7 +59,10 @@ export function PersonaEditorPanel({ configId, live }: Props) {
   };
 
   const save = async () => {
-    if (!live) { toast.error("Start rehearse serve first"); return; }
+    if (!live) {
+      toast.error("Start rehearse serve first");
+      return;
+    }
     setSaving(true);
     try {
       await api.replaceConfigPersonas({ configId, personas, personaLens });
@@ -82,17 +85,29 @@ export function PersonaEditorPanel({ configId, live }: Props) {
   };
 
   const addManual = () => {
-    const slug = newName.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 20) || "custom";
+    const slug =
+      newName
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .slice(0, 20) || "custom";
     const id = `p-${slug}-${Date.now().toString(36)}`;
-    const goals = newGoals.split("\n").map((g) => g.trim()).filter(Boolean);
+    const goals = newGoals
+      .split("\n")
+      .map((g) => g.trim())
+      .filter(Boolean);
     mark((prev) => [...prev, { id, name: newName, role: newRole, goals, enabled: true }]);
-    setNewName(""); setNewRole(""); setNewGoals("");
+    setNewName("");
+    setNewRole("");
+    setNewGoals("");
     setShowAddForm(false);
     setExpanded(id);
   };
 
   const draftWithAI = async () => {
-    if (!live) { toast.error("Start rehearse serve first"); return; }
+    if (!live) {
+      toast.error("Start rehearse serve first");
+      return;
+    }
     if (!draftPrompt.trim()) return;
     setDraftPending(true);
     try {
@@ -102,7 +117,9 @@ export function PersonaEditorPanel({ configId, live }: Props) {
       setDraftPrompt("");
       setExpanded(p.id);
       setShowAddForm(false);
-      toast.success(out.source === "llm" ? "Persona drafted with AI" : "Persona drafted (template)");
+      toast.success(
+        out.source === "llm" ? "Persona drafted with AI" : "Persona drafted (template)",
+      );
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Draft failed");
     } finally {
@@ -146,7 +163,10 @@ export function PersonaEditorPanel({ configId, live }: Props) {
             <input
               type="checkbox"
               checked={personaLens}
-              onChange={(e) => { setPersonaLens(e.target.checked); setDirty(true); }}
+              onChange={(e) => {
+                setPersonaLens(e.target.checked);
+                setDirty(true);
+              }}
             />
             Persona lens in scorecard
           </label>
@@ -175,7 +195,9 @@ export function PersonaEditorPanel({ configId, live }: Props) {
                   On
                 </label>
                 <div className="min-w-0">
-                  <div className="text-sm font-medium truncate">{p.name || <span className="text-muted-foreground italic">unnamed</span>}</div>
+                  <div className="text-sm font-medium truncate">
+                    {p.name || <span className="text-muted-foreground italic">unnamed</span>}
+                  </div>
                   <div className="text-[11px] text-muted-foreground font-mono truncate">{p.id}</div>
                 </div>
                 {!p.enabled && <Chip tone="neutral">disabled</Chip>}
@@ -187,7 +209,11 @@ export function PersonaEditorPanel({ configId, live }: Props) {
                   className="p-1 rounded hover:bg-surface-2 text-muted-foreground"
                   aria-label="expand"
                 >
-                  {expanded === p.id ? <ChevronUp className="size-4" /> : <ChevronDown className="size-4" />}
+                  {expanded === p.id ? (
+                    <ChevronUp className="size-4" />
+                  ) : (
+                    <ChevronDown className="size-4" />
+                  )}
                 </button>
                 <button
                   type="button"
@@ -226,7 +252,14 @@ export function PersonaEditorPanel({ configId, live }: Props) {
                     className="w-full min-h-[80px] text-sm bg-surface border border-border rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-primary/30"
                     value={p.goals.join("\n")}
                     onChange={(e) =>
-                      updateField(p.id, "goals", e.target.value.split("\n").map((g) => g.trim()).filter(Boolean))
+                      updateField(
+                        p.id,
+                        "goals",
+                        e.target.value
+                          .split("\n")
+                          .map((g) => g.trim())
+                          .filter(Boolean),
+                      )
                     }
                   />
                 </div>
@@ -250,7 +283,13 @@ export function PersonaEditorPanel({ configId, live }: Props) {
           <div className="space-y-3 border border-border rounded-lg p-4">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Add persona</span>
-              <button type="button" onClick={() => setShowAddForm(false)} className="text-xs text-muted-foreground hover:underline">cancel</button>
+              <button
+                type="button"
+                onClick={() => setShowAddForm(false)}
+                className="text-xs text-muted-foreground hover:underline"
+              >
+                cancel
+              </button>
             </div>
 
             {/* AI draft */}
@@ -264,7 +303,9 @@ export function PersonaEditorPanel({ configId, live }: Props) {
                   placeholder='e.g. "Security reviewer who checks audit logs"'
                   value={draftPrompt}
                   onChange={(e) => setDraftPrompt(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === "Enter") void draftWithAI(); }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") void draftWithAI();
+                  }}
                 />
                 <button
                   type="button"
@@ -277,7 +318,9 @@ export function PersonaEditorPanel({ configId, live }: Props) {
               </div>
             </div>
 
-            <div className="text-[11px] text-muted-foreground text-center">— or fill manually —</div>
+            <div className="text-[11px] text-muted-foreground text-center">
+              — or fill manually —
+            </div>
 
             {/* Manual */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">

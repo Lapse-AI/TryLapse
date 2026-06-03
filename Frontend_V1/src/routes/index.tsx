@@ -152,7 +152,8 @@ function Index() {
               <Sparkles className="size-4 text-muted-foreground" />
               <h2 className="font-display text-lg font-semibold">Command center digest</h2>
               <span className="text-xs text-muted-foreground">
-                {digest.source === "llm+template" ? "AI + rules" : "Rules"} · {digest.readinessTrend}
+                {digest.source === "llm+template" ? "AI + rules" : "Rules"} ·{" "}
+                {digest.readinessTrend}
               </span>
             </div>
             <p className="text-sm leading-relaxed max-w-prose">{digest.headline}</p>

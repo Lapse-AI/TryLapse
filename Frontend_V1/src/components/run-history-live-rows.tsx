@@ -18,10 +18,7 @@ export function RunHistoryLiveRows({ jobs, group }: { jobs: JobRecord[]; group: 
   return (
     <>
       {jobs.map((j) => (
-        <tr
-          key={j.id}
-          className="border-b border-border bg-info/5 hover:bg-info/10"
-        >
+        <tr key={j.id} className="border-b border-border bg-info/5 hover:bg-info/10">
           <td className="px-5 py-3">
             <div className="flex flex-col gap-1">
               {j.runId ? (
@@ -35,10 +32,7 @@ export function RunHistoryLiveRows({ jobs, group }: { jobs: JobRecord[]; group: 
               ) : (
                 <span className="font-mono text-xs text-muted-foreground">pending…</span>
               )}
-              <Link
-                to="/runner"
-                className="font-mono text-[10px] text-info hover:underline"
-              >
+              <Link to="/runner" className="font-mono text-[10px] text-info hover:underline">
                 job {j.id}
               </Link>
             </div>

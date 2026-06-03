@@ -104,7 +104,11 @@ export function JobQueueTable({ jobs }: { jobs: JobRecord[] }) {
               )}
             </td>
             <td className="px-5 py-3 text-xs text-muted-foreground max-w-[280px] truncate">
-              {j.status === "failed" && j.error ? j.error : j.startedAt ? j.startedAt.slice(0, 19) : "—"}
+              {j.status === "failed" && j.error
+                ? j.error
+                : j.startedAt
+                  ? j.startedAt.slice(0, 19)
+                  : "—"}
             </td>
           </tr>
         ))}

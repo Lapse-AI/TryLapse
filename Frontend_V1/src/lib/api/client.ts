@@ -248,11 +248,7 @@ export const api = {
       source: string;
       hint: string;
     }>("/api/personas/draft", { method: "POST", body: JSON.stringify(body) }),
-  suggestPersonas: (body: {
-    targetUrl?: string;
-    productName?: string;
-    existingIds?: string[];
-  }) =>
+  suggestPersonas: (body: { targetUrl?: string; productName?: string; existingIds?: string[] }) =>
     apiFetch<{
       corePersonas: {
         id: string;

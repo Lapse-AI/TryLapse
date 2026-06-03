@@ -57,8 +57,8 @@ export function ExperimentSpecPanel({ configId, onSaved }: Props) {
         <Chip tone="neutral">optional</Chip>
       </div>
       <p className="text-[11px] text-muted-foreground max-w-2xl">
-        How will users behave if you ship this? Capture hypothesis and goal before running — surfaced
-        on run detail and compare (not predicted lift until calibration).
+        How will users behave if you ship this? Capture hypothesis and goal before running —
+        surfaced on run detail and compare (not predicted lift until calibration).
       </p>
       <div className="grid gap-3 md:grid-cols-2">
         <div className="md:col-span-2">

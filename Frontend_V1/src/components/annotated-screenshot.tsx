@@ -102,7 +102,11 @@ export function CompareVisualDiffPanel({ items }: { items: VisualStepDiff[] }) {
   }
 
   return (
-    <Accordion type="single" collapsible className="border border-border rounded-lg divide-y divide-border">
+    <Accordion
+      type="single"
+      collapsible
+      className="border border-border rounded-lg divide-y divide-border"
+    >
       {withShots.map((item) => {
         const outcomeLabel = item.onlyInB
           ? "new step"

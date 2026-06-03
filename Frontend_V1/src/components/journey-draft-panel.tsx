@@ -5,13 +5,7 @@ import { api } from "@/lib/api/client";
 import { toast } from "sonner";
 import { Settings } from "lucide-react";
 
-export function JourneyDraftPanel({
-  live,
-  targetUrl,
-}: {
-  live: boolean;
-  targetUrl: string;
-}) {
+export function JourneyDraftPanel({ live, targetUrl }: { live: boolean; targetUrl: string }) {
   const [prompt, setPrompt] = useState("");
   const [fragment, setFragment] = useState("");
   const [pending, setPending] = useState(false);

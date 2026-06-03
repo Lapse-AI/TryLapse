@@ -89,8 +89,7 @@ export function useScopedActiveJobs() {
   const { data: jobs = [], ...rest } = useJobs();
   const group = getTestGroup(getTestGroupId());
   const active = jobs.filter(
-    (j) =>
-      (j.status === "queued" || j.status === "running") && jobMatchesTestGroup(j, group),
+    (j) => (j.status === "queued" || j.status === "running") && jobMatchesTestGroup(j, group),
   );
   return { data: active, group, ...rest };
 }
@@ -303,7 +302,11 @@ export function useJobs() {
     for (const j of jobs) {
       const prev = prevStatusRef.current[j.id];
       const now = j.status;
-      if (prev && (prev === "queued" || prev === "running") && (now === "done" || now === "failed")) {
+      if (
+        prev &&
+        (prev === "queued" || prev === "running") &&
+        (now === "done" || now === "failed")
+      ) {
         if (now === "done" && j.runId) {
           toast.success(`Run finished: ${j.runId}`, {
             action: { label: "Open", onClick: () => (window.location.href = `/runs/${j.runId}`) },
