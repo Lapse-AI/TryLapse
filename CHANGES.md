@@ -7,7 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
+### Added (June 3, 2026 — Claude Code session)
+
+- **L3-PRED-09 — Directional lift card** (`LiftCard` component): before/after readiness bars, Δ chip, new/resolved issue counts. Wired into experiment page. "Directional until G6 calibration" honesty label
+- **L3-PRED-03 — Cohort rehearsal**: `enqueue_cohort_run()` runs same config N seeds serially, aggregates readiness (mean/min/max/spread), confidence band (high ≤5 pt spread / medium ≤15 / low), recurring issues at ≥50% of seeds. `POST /api/jobs/cohort`, `GET /api/cohort/{id}`. `CohortRehearsalPanel` in Runner. `/cohort/:jobId` report page with live seed progress bar, band visualization, recurring issues table
+- **L3-PRED-07 — Step behavior signals**: `_step_behavior()` in `analysis_export.py` — abandon (fail/error), hesitate (partial or >5s interactive), continue (pass). Added to every step in bundle. Abandon/hesitate chips in Steps tab; counts in Run observability panel
+- **L3-PRED-04/05 — Experiment report + chat** (PR #21): `GET /api/experiment/{id}/report` (per-persona A-vs-B grade table, readiness delta, hypothesis verdict); `GET/POST /api/experiment/{id}/chat` (LLM context = both bundles + diff + hypothesis; template fallback)
+- **L2-UI-71 — Config persona editor** (PR #21): live CRUD panel on `/config`; `GET /api/configs/{id}/personas` + `POST /api/configs/personas/replace`
+- **L3-PRED-06 — Variant A/B rehearsal**: `enqueue_variant_run()`, `POST /api/jobs/variant`, `GET /api/variant/{id}`, `/experiment/:jobId` page with phase bar + per-run readiness
+- **Deploy — Railway/Coolify**: `Dockerfile` (dashboard-only, no Playwright), `docker-entrypoint.sh` (seeds demo artifacts on first boot), `docker-compose.yml`. Demo artifacts (enterprise×2, argyle) tracked in git for deployed seed
+- **Demo polish** (PR #21): screenshots in Evidence dialog and gallery now go through `artifactUrl()` (were 404ing); Runner config dropdown filtered to canonical named configs
+
+### Fixed (June 3, 2026)
+
+- Screenshot Evidence dialog: `issue.screenshotPath` was used directly as `<img src>` instead of via `artifactUrl()` — all evidence screenshots showed broken image
+- Runner config dropdown: 39 entries (mostly auto-generated timestamps) reduced to canonical configs + 3 most-recent snapshots
+- CI lint failures on `feat/nlu-browser-parity` and post-session direct-push commits — Prettier formatting applied via `eslint --fix`
+
+### Added (prior — Cursor session, May 31 – June 2, 2026)
 
 - Docs: `COMPETITIVE_BLOK.md` — Blok/TechCrunch feature matrix; `L3-PRED-01`–`10` in `FEATURE_SCOPE.md` §4.12 (gated post–3 would-pay)
 - **L3-PRED-02 (partial):** Experiment spec — `experiment:` in YAML, `POST /api/configs/experiment`, Config panel + run banner

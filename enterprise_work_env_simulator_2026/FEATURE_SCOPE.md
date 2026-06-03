@@ -738,13 +738,14 @@ Mock fallback when API down in **both**. Partner demos: API live + real run IDs.
 |----|---------|------|-------|
 | L3-PRED-01 | Import analytics export (Segment / Mixpanel / Amplitude JSON) → persona priors | 3 | TechCrunch onboarding; optional for founders without data |
 | L3-PRED-02 | Experiment spec: `hypothesis`, `user_goal`, `variant_label` on config or run | 1 | ✅ DSL + API + Config UI + run banner |
-| L3-PRED-03 | Cohort mode: N seeds + aggregate pass/fail and confidence band | 2 | Extends `parallel_seeds` |
-| L3-PRED-04 | Experiment report UI: overall + per-persona rollup | 1 | Complements persona × journey matrix |
-| L3-PRED-05 | Chat scoped to experiment (multi-run + diff context) | 1 | Extends `L1-NLU-02` |
-| L3-PRED-06 | Variant rehearsal job: config A vs B, single report + readiness delta | 1 | Pre-merge sandbox; extends compare |
-| L3-PRED-07 | Step-level continue / hesitate / abandon distribution | 2 | Fidelity-style signal; not a marketing % |
+| L3-PRED-03 | Cohort mode: N seeds + aggregate pass/fail and confidence band | 2 | ✅ `enqueue_cohort_run()`, `/api/jobs/cohort`, `/cohort/:jobId` (PR #22) |
+| L3-PRED-04 | Experiment report UI: overall + per-persona rollup | 1 | ✅ `/api/experiment/{id}/report`, per-persona grade table, verdict chip (PR #21) |
+| L3-PRED-05 | Chat scoped to experiment (multi-run + diff context) | 1 | ✅ `/api/experiment/{id}/chat`, `chat_about_experiment()` in `llm.py` (PR #21) |
+| L3-PRED-06 | Variant rehearsal job: config A vs B, single report + readiness delta | 1 | ✅ `enqueue_variant_run()`, `/api/jobs/variant`, `/experiment/:jobId` (PR #22) |
+| L3-PRED-07 | Step-level continue / hesitate / abandon distribution | 2 | ✅ `_step_behavior()` in export, chips in Steps tab, counts in observability (PR #22) |
+| L3-PRED-07b | Funnel drop-off: aggregate abandon rates across journeys (step-level → flow view) | 2 | Depends on L3-JRN-05; next after L3-PRED-07 |
 | L3-PRED-08 | Optional Figma / prototype link on experiment | 3 | Shares `L3-DES-08`; staging URL remains primary |
-| L3-PRED-09 | Directional lift card (readiness Δ, issues new/resolved; `hypothesis` label) | 2 | Until G6 calibration |
+| L3-PRED-09 | Directional lift card (readiness Δ, issues new/resolved; `hypothesis` label) | 2 | ✅ `LiftCard` component on experiment page, "Directional until G6" label (PR #22) |
 | L3-PRED-10 | Calibration dashboard (sim vs beta overlap; optional step backtest) | 3 | **G6** Jun 30, 2027 |
 
 **Overlaps (do not duplicate work):** funnel drop-off → `L3-JRN-05`; Figma compare → `L3-DES-08`; fidelity narrative → `G6` + `EVALUATION_FRAMEWORK.md` §8.

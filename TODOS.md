@@ -47,6 +47,27 @@
 - [x] Dual UI modes: **Dev** (`:8081`, `npm run dev`) + **Vision reference** (`npm run dev:vision`) — `UI_PRODUCT_LINES.md`
 - [ ] List 10 warm targets + send 5 intros — see `DESIGN_PARTNER_OUTREACH.md`
 
+## Engineering — next up (June 2026)
+
+### Deploy
+- [ ] **Railway** — connect TryLapse repo, set env vars, verify demo dashboard live (try off-peak: after 8 PM PT)
+- [ ] **Fresh demo run** — re-run argyle or enterprise config so dashboard shows current-date evidence
+
+### Scoring quality (dimension scores)
+- [ ] **Onboarding score** — currently `base + 0` (no signal). Add real heuristics: first-run flow detected in crawl, auth success on first journey, onboarding path completeness
+- [ ] **Recovery score** — currently `base + 0`. Add signals: error page detection, retry-after-fail outcomes, 4xx rates in crawl
+- [ ] **Information score** — crude threshold (`body_text < 80 chars = sparse`). Improve: heading structure, link density, content-to-chrome ratio
+- [ ] **Accessibility score** — only counts unlabeled buttons. Add: form inputs without labels (already in heuristics but not weighted here), image alt text absence, color contrast hint from contrast ratio
+- [ ] **UI label honesty** — Onboarding + Recovery cards show "Phase 2 heuristic from step evidence" but actually carry no unique signal; update label to "Estimated (no specific signal)" until real heuristics land
+
+### Wave 2 Track B — remaining
+- [x] ~~L3-PRED-09 — Directional lift card on experiment page~~ (PR #22)
+- [x] ~~L3-PRED-03 — Cohort rehearsal (N seeds, confidence band)~~ (PR #22)
+- [x] ~~L3-PRED-07 — Step behavior signals (abandon/hesitate/continue)~~ (PR #22)
+- [ ] **L3-PRED-07 funnel** — aggregate abandon/hesitate rates across journeys into a funnel-style drop-off view (L3-JRN-05 dependency)
+- [ ] **L3-PRED-09 lift card on Compare page** — show readiness delta prominently when two runs are selected
+- [ ] **Cohort sidebar link** — show active cohort jobs in Run history live rows (same as variant)
+
 ## Phase 2+ (unchanged targets)
 
 - [ ] 5 founder design partners — **3 would-pay** by Sep 30, 2026 (`DESIGN_PARTNER_CHECKLIST.md`)
