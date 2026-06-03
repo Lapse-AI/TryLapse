@@ -167,6 +167,33 @@ export const api = {
       method: "POST",
       body: JSON.stringify(body),
     }),
+  getExperimentReport: (jobId: string) =>
+    apiFetch<{
+      jobId: string;
+      hypothesis: string | null;
+      userGoal: string | null;
+      readinessDelta: number;
+      hypothesisVerdict: "held" | "regressed" | "inconclusive";
+      personaComparison: { id: string; name: string; gradeA: string; gradeB: string }[];
+      bundleA?: Record<string, unknown>;
+      bundleB?: Record<string, unknown>;
+      diff?: Record<string, unknown>;
+      error?: string;
+    }>(`/api/experiment/${jobId}/report`),
+  getExperimentChat: (jobId: string) =>
+    apiFetch<{ jobId: string; turns: { role: string; content: string; at?: string }[] }>(
+      `/api/experiment/${jobId}/chat`,
+    ),
+  sendExperimentChat: (jobId: string, message: string) =>
+    apiFetch<{
+      jobId: string;
+      reply: string;
+      source: string;
+      turns: { role: string; content: string; at?: string }[];
+    }>(`/api/experiment/${jobId}/chat`, {
+      method: "POST",
+      body: JSON.stringify({ message }),
+    }),
   getVariantJob: (jobId: string) =>
     apiFetch<{
       id: string;

@@ -1,0 +1,25 @@
+services:
+  dashboard:
+    build: .
+    image: launch-rehearsal-dashboard
+    ports:
+      - "8080:8080"
+    volumes:
+      - artifacts:/data/artifacts
+    environment:
+      - REHEARSE_PORT=8080
+      # Set these in Coolify → Environment Variables
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+      - REHEARSE_LLM_API_KEY=${REHEARSE_LLM_API_KEY:-}
+      - REHEARSE_EMAIL=${REHEARSE_EMAIL:-}
+      - REHEARSE_PASSWORD=${REHEARSE_PASSWORD:-}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  artifacts:
+    driver: local

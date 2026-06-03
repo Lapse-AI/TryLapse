@@ -549,6 +549,98 @@ def generate_command_digest_llm(
     )
 
 
+EXPERIMENT_CHAT_SYSTEM_PROMPT = """You are an experiment analyst for Launch Rehearsal.
+You have access to the results of two rehearsal runs (A = control, B = variant) and the diff between them.
+Answer questions about what changed, whether the hypothesis held, and what persona-level friction shifted.
+Be direct and evidence-based. Do not claim lift or fidelity — say 'directional' when uncertain.
+Use ONLY the experiment context provided."""
+
+
+def chat_about_experiment(
+    job: dict[str, Any],
+    bundle_a: dict[str, Any] | None,
+    bundle_b: dict[str, Any] | None,
+    diff: dict[str, Any] | None,
+    message: str,
+    history: list[dict[str, str]] | None = None,
+) -> dict[str, Any]:
+    """Answer a question scoped to a variant experiment (both run bundles + diff)."""
+    from rehearse.narrative import template_chat_reply
+
+    def _bundle_compact(bundle: dict[str, Any] | None, label: str) -> dict[str, Any]:
+        if not bundle:
+            return {"label": label, "available": False}
+        s = bundle.get("summary") or {}
+        return {
+            "label": label,
+            "readiness": s.get("readiness"),
+            "readinessBand": s.get("readinessBand"),
+            "blockers": s.get("blockers"),
+            "issues": s.get("issues"),
+            "delights": s.get("delights"),
+            "topIssues": [
+                {"severity": i.get("severity"), "title": i.get("title"), "persona": i.get("persona")}
+                for i in (bundle.get("issues") or [])[:8]
+            ],
+            "topDelights": [{"title": d.get("title")} for d in (bundle.get("delights") or [])[:5]],
+        }
+
+    compact = {
+        "hypothesis": job.get("hypothesis") or "not specified",
+        "userGoal": job.get("userGoal") or "",
+        "configA": job.get("configA", "").split("/")[-1].replace(".yaml", ""),
+        "configB": job.get("configB", "").split("/")[-1].replace(".yaml", ""),
+        "runA": _bundle_compact(bundle_a, "control"),
+        "runB": _bundle_compact(bundle_b, "variant"),
+        "diff": {
+            "newIssues": (diff or {}).get("newIssues", [])[:6],
+            "resolvedIssues": (diff or {}).get("resolvedIssues", [])[:6],
+            "narrativeSummary": ((diff or {}).get("narrative") or {}).get("executiveSummary", ""),
+        } if diff else {},
+    }
+
+    key = _api_key()
+    if not key:
+        readiness_a = (bundle_a or {}).get("summary", {}).get("readiness")
+        readiness_b = (bundle_b or {}).get("summary", {}).get("readiness")
+        if readiness_a is not None and readiness_b is not None:
+            delta = readiness_b - readiness_a
+            verdict = "improved" if delta > 0 else ("regressed" if delta < 0 else "unchanged")
+            reply = (
+                f"Directional result: readiness {verdict} from {readiness_a} to {readiness_b} "
+                f"({delta:+d} pts). New issues: {len((diff or {}).get('newIssues', []))}. "
+                f"Resolved: {len((diff or {}).get('resolvedIssues', []))}."
+            )
+        else:
+            reply = "One or both runs are still pending. Check the status panel above."
+        return {"reply": reply, "source": "template"}
+
+    messages: list[dict[str, str]] = [
+        {"role": "system", "content": EXPERIMENT_CHAT_SYSTEM_PROMPT + "\n\nExperiment context:\n" + json.dumps(compact)},
+    ]
+    for turn in (history or [])[-6:]:
+        role = turn.get("role", "user")
+        content = str(turn.get("content", ""))[:2000]
+        if role in ("user", "assistant") and content:
+            messages.append({"role": role, "content": content})
+    messages.append({"role": "user", "content": message[:4000]})
+
+    payload: dict[str, Any] = {
+        "model": _model(),
+        "messages": messages,
+        "temperature": 0.35,
+        "max_tokens": int(os.environ.get("REHEARSE_CHAT_MAX_TOKENS", "800")),
+    }
+    try:
+        with httpx.Client(timeout=_http_timeout()) as client:
+            resp = _post_chat(client, payload)
+            resp.raise_for_status()
+            reply = resp.json()["choices"][0]["message"]["content"].strip()
+        return {"reply": reply, "source": "llm"}
+    except Exception as exc:
+        return {"reply": f"LLM unavailable: {exc}", "source": "template", "llmError": str(exc)[:200]}
+
+
 def chat_about_run(
     bundle: dict[str, Any],
     message: str,
