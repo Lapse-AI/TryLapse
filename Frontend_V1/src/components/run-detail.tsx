@@ -157,6 +157,12 @@ export function RunObservabilityPanel({ bundle }: { bundle: RunBundle }) {
   const stepsWithVitals = bundle.steps.filter((s) => formatWebVitalsBrief(s.webVitals));
   const warnSteps = bundle.steps.filter((s) => (s.consoleWarnings?.length ?? 0) > 0);
   const errorSteps = bundle.steps.filter((s) => s.errorType);
+  const abandonSteps = bundle.steps.filter(
+    (s) => (s as Record<string, unknown>).behavior === "abandon",
+  );
+  const hesitateSteps = bundle.steps.filter(
+    (s) => (s as Record<string, unknown>).behavior === "hesitate",
+  );
   const extras = extraArtifactDownloads(bundle);
   const pagesCrawled = summary.pagesCrawled ?? summary.pages;
   const cost = formatAgentCostDisplay(bundle);
@@ -209,6 +215,22 @@ export function RunObservabilityPanel({ bundle }: { bundle: RunBundle }) {
           <div>
             <div className="text-xs text-muted-foreground">Named step errors</div>
             <div className="font-mono tabular-nums mt-0.5">{errorSteps.length} steps</div>
+          </div>
+        )}
+        {abandonSteps.length > 0 && (
+          <div>
+            <div className="text-xs text-muted-foreground">Abandon</div>
+            <div className="font-mono tabular-nums mt-0.5 text-danger">
+              {abandonSteps.length} steps
+            </div>
+          </div>
+        )}
+        {hesitateSteps.length > 0 && (
+          <div>
+            <div className="text-xs text-muted-foreground">Hesitate</div>
+            <div className="font-mono tabular-nums mt-0.5 text-warn">
+              {hesitateSteps.length} steps
+            </div>
           </div>
         )}
       </div>
@@ -277,6 +299,16 @@ export function StepsTable({
                   {s.flaky && (
                     <span className="ml-2">
                       <Chip tone="warn">flaky</Chip>
+                    </span>
+                  )}
+                  {(s as Record<string, unknown>).behavior === "abandon" && (
+                    <span className="ml-2">
+                      <Chip tone="danger">abandon</Chip>
+                    </span>
+                  )}
+                  {(s as Record<string, unknown>).behavior === "hesitate" && (
+                    <span className="ml-2">
+                      <Chip tone="warn">hesitate</Chip>
                     </span>
                   )}
                 </td>

@@ -366,6 +366,24 @@ def _append_dimension_rollup_issues(
         )
 
 
+_HESITATE_DURATION_MS = 5_000   # steps slower than this are "hesitating"
+_PASSIVE_ACTIONS = {"navigate", "wait", "scroll"}
+
+
+def _step_behavior(step: StepSnapshot) -> str:
+    """Classify step as continue / hesitate / abandon (L3-PRED-07)."""
+    outcome = (step.outcome or "").lower()
+    if outcome == "fail" or step.error_type:
+        return "abandon"
+    duration = step.duration_ms or 0
+    action = (step.action or "").lower()
+    if action not in _PASSIVE_ACTIONS and duration > _HESITATE_DURATION_MS:
+        return "hesitate"
+    if outcome == "partial":
+        return "hesitate"
+    return "continue"
+
+
 def _step_flaky(step: StepSnapshot, all_steps: list[StepSnapshot]) -> bool:
     if step.flaky:
         return True
@@ -465,6 +483,7 @@ def _serialize_steps(evidence: RunEvidence, artifacts_root: Path, output_dir: Pa
                 "note": s.note,
                 "errorType": s.error_type,
                 "flaky": _step_flaky(s, evidence.steps),
+                "behavior": _step_behavior(s),
                 "consoleErrors": s.console_errors,
                 "consoleWarnings": getattr(s, "console_warnings", None) or [],
                 "networkFailures": s.network_failures,
