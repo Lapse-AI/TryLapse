@@ -10,7 +10,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from rehearse.dashboard.graphml import load_sitemap_graphml
-from rehearse.dashboard.jobs import enqueue_run, list_jobs, mark_stale_running_jobs
+from rehearse.dashboard.jobs import enqueue_run, enqueue_variant_run, list_jobs, mark_stale_running_jobs
 from rehearse.dashboard.store import (
     backfill_all,
     diff_runs,
@@ -158,6 +158,24 @@ class _Handler(BaseHTTPRequestHandler):
 
         if path == "/api/summaries":
             self._send_json(list_run_summaries(root))
+            return
+
+        if path.startswith("/api/variant/"):
+            job_id = path.split("/")[-1]
+            jobs = list_jobs(root)
+            job = next((j for j in jobs if j.get("id") == job_id), None)
+            if not job:
+                self._send_json({"error": "variant job not found"}, status=404)
+                return
+            payload: dict = dict(job)
+            run_id_a = job.get("runIdA")
+            run_id_b = job.get("runIdB")
+            if run_id_a and run_id_b and not payload.get("diffNarrative"):
+                try:
+                    payload["diff"] = diff_runs(root, run_id_a, run_id_b)
+                except Exception:
+                    pass
+            self._send_json(payload)
             return
 
         if path == "/api/diff":
@@ -517,6 +535,25 @@ class _Handler(BaseHTTPRequestHandler):
                 steps=body.get("steps") if isinstance(body.get("steps"), list) else [],
             )
             self._send_json(out)
+            return
+
+        if path == "/api/jobs/variant":
+            body = self._read_json_body()
+            config_a = Path(body.get("configAPath", ""))
+            config_b = Path(body.get("configBPath", ""))
+            if not config_a.is_file() or not config_b.is_file():
+                self._send_json({"error": "configAPath and configBPath must be valid files"}, status=400)
+                return
+            job = enqueue_variant_run(
+                root,
+                config_a=config_a,
+                config_b=config_b,
+                hypothesis=str(body.get("hypothesis") or ""),
+                user_goal=str(body.get("userGoal") or ""),
+                output_dir=root,
+                use_llm=bool(body.get("llm")),
+            )
+            self._send_json(job, status=202)
             return
 
         if path == "/api/jobs":

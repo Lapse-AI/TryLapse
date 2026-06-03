@@ -25,6 +25,7 @@ import { Route as AgentsRouteImport } from './routes/agents'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RunsIndexRouteImport } from './routes/runs.index'
 import { Route as RunsRunIdRouteImport } from './routes/runs.$runId'
+import { Route as ExperimentJobIdRouteImport } from './routes/experiment.$jobId'
 
 const WorkflowsRoute = WorkflowsRouteImport.update({
   id: '/workflows',
@@ -106,6 +107,11 @@ const RunsRunIdRoute = RunsRunIdRouteImport.update({
   path: '/runs/$runId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExperimentJobIdRoute = ExperimentJobIdRouteImport.update({
+  id: '/experiment/$jobId',
+  path: '/experiment/$jobId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -122,6 +128,7 @@ export interface FileRoutesByFullPath {
   '/sitemap': typeof SitemapRoute
   '/trends': typeof TrendsRoute
   '/workflows': typeof WorkflowsRoute
+  '/experiment/$jobId': typeof ExperimentJobIdRoute
   '/runs/$runId': typeof RunsRunIdRoute
   '/runs/': typeof RunsIndexRoute
 }
@@ -140,6 +147,7 @@ export interface FileRoutesByTo {
   '/sitemap': typeof SitemapRoute
   '/trends': typeof TrendsRoute
   '/workflows': typeof WorkflowsRoute
+  '/experiment/$jobId': typeof ExperimentJobIdRoute
   '/runs/$runId': typeof RunsRunIdRoute
   '/runs': typeof RunsIndexRoute
 }
@@ -159,6 +167,7 @@ export interface FileRoutesById {
   '/sitemap': typeof SitemapRoute
   '/trends': typeof TrendsRoute
   '/workflows': typeof WorkflowsRoute
+  '/experiment/$jobId': typeof ExperimentJobIdRoute
   '/runs/$runId': typeof RunsRunIdRoute
   '/runs/': typeof RunsIndexRoute
 }
@@ -179,6 +188,7 @@ export interface FileRouteTypes {
     | '/sitemap'
     | '/trends'
     | '/workflows'
+    | '/experiment/$jobId'
     | '/runs/$runId'
     | '/runs/'
   fileRoutesByTo: FileRoutesByTo
@@ -197,6 +207,7 @@ export interface FileRouteTypes {
     | '/sitemap'
     | '/trends'
     | '/workflows'
+    | '/experiment/$jobId'
     | '/runs/$runId'
     | '/runs'
   id:
@@ -215,6 +226,7 @@ export interface FileRouteTypes {
     | '/sitemap'
     | '/trends'
     | '/workflows'
+    | '/experiment/$jobId'
     | '/runs/$runId'
     | '/runs/'
   fileRoutesById: FileRoutesById
@@ -234,6 +246,7 @@ export interface RootRouteChildren {
   SitemapRoute: typeof SitemapRoute
   TrendsRoute: typeof TrendsRoute
   WorkflowsRoute: typeof WorkflowsRoute
+  ExperimentJobIdRoute: typeof ExperimentJobIdRoute
   RunsRunIdRoute: typeof RunsRunIdRoute
   RunsIndexRoute: typeof RunsIndexRoute
 }
@@ -352,6 +365,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RunsRunIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/experiment/$jobId': {
+      id: '/experiment/$jobId'
+      path: '/experiment/$jobId'
+      fullPath: '/experiment/$jobId'
+      preLoaderRoute: typeof ExperimentJobIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -370,6 +390,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapRoute: SitemapRoute,
   TrendsRoute: TrendsRoute,
   WorkflowsRoute: WorkflowsRoute,
+  ExperimentJobIdRoute: ExperimentJobIdRoute,
   RunsRunIdRoute: RunsRunIdRoute,
   RunsIndexRoute: RunsIndexRoute,
 }

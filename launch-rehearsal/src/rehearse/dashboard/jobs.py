@@ -145,6 +145,121 @@ def _has_active_job(jobs: list[dict[str, Any]], config_path: Path) -> bool:
     return False
 
 
+def enqueue_variant_run(
+    artifacts_root: Path,
+    *,
+    config_a: Path,
+    config_b: Path,
+    hypothesis: str = "",
+    user_goal: str = "",
+    output_dir: Path,
+    use_llm: bool = False,
+) -> dict[str, Any]:
+    """Run config A then config B sequentially, then build a comparison report (L3-PRED-06)."""
+    config_a = config_a.resolve()
+    config_b = config_b.resolve()
+
+    job_id = f"variant_{uuid.uuid4().hex[:8]}"
+    job: dict[str, Any] = {
+        "id": job_id,
+        "type": "variant",
+        "configA": str(config_a),
+        "configB": str(config_b),
+        "hypothesis": hypothesis,
+        "userGoal": user_goal,
+        "status": "queued",
+        "phase": "queued",
+        "startedAt": datetime.now(timezone.utc).isoformat(),
+        "finishedAt": None,
+        "runIdA": None,
+        "runIdB": None,
+        "runId": None,
+        "diffNarrative": None,
+        "error": None,
+    }
+    jobs = list_jobs(artifacts_root)
+    jobs.insert(0, job)
+    _save_jobs(artifacts_root, jobs)
+
+    rehearse_bin = artifacts_root.parent / ".venv" / "bin" / "rehearse"
+    if not rehearse_bin.is_file():
+        rehearse_bin = Path("rehearse")
+
+    def _run_one(config_path: Path, label: str) -> str | None:
+        """Run a single rehearse config and return run_id or None on failure."""
+        cmd = [str(rehearse_bin), "run", "-c", str(config_path), "-o", str(output_dir)]
+        if use_llm:
+            cmd.append("--llm")
+        try:
+            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=3600,
+                                  env=_load_env(artifacts_root))
+            if proc.returncode == 0:
+                return parse_run_id_from_cli_output(proc.stdout, proc.stderr)
+            raise RuntimeError((proc.stderr or proc.stdout)[-400:])
+        except Exception as exc:
+            raise RuntimeError(f"{label} run failed: {exc}") from exc
+
+    def _worker() -> None:
+        with _run_serial_lock:
+            try:
+                # Phase A
+                _update_job(artifacts_root, job_id, {"status": "running", "phase": "running-A"})
+                run_id_a = _run_one(config_a, "Config A")
+                _update_job(artifacts_root, job_id, {"runIdA": run_id_a, "phase": "running-B"})
+
+                # Phase B
+                run_id_b = _run_one(config_b, "Config B")
+                _update_job(artifacts_root, job_id, {"runIdB": run_id_b, "phase": "comparing"})
+
+                # Build diff narrative
+                diff_narrative = None
+                if run_id_a and run_id_b:
+                    try:
+                        from rehearse.dashboard.diff import diff_runs
+                        diff_data = diff_runs(artifacts_root, run_id_a, run_id_b)
+                        diff_narrative = diff_data.get("narrative")
+                    except Exception:
+                        pass
+
+                _update_job(artifacts_root, job_id, {
+                    "status": "done",
+                    "phase": "done",
+                    "runId": run_id_b,
+                    "diffNarrative": diff_narrative,
+                    "finishedAt": datetime.now(timezone.utc).isoformat(),
+                })
+            except Exception as exc:
+                _update_job(artifacts_root, job_id, {
+                    "status": "failed",
+                    "phase": "failed",
+                    "error": str(exc),
+                    "finishedAt": datetime.now(timezone.utc).isoformat(),
+                })
+
+    threading.Thread(target=_worker, daemon=True, name=f"variant-{job_id}").start()
+    return job
+
+
+def _load_env(artifacts_root: Path) -> dict[str, str]:
+    """Load subprocess env, merging .env if present."""
+    import os
+    env = dict(os.environ)
+    for candidate in (artifacts_root.parent.parent / ".env", artifacts_root.parent / ".env"):
+        if not candidate.is_file():
+            continue
+        for line in candidate.read_text().splitlines():
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, _, val = line.partition("=")
+            key = key.strip()
+            val = val.strip().strip('"').strip("'")
+            if key and key not in env:
+                env[key] = val
+        break
+    return env
+
+
 def mark_stale_running_jobs(artifacts_root: Path) -> int:
     """On serve startup, mark orphaned running jobs as failed."""
     jobs = list_jobs(artifacts_root)
@@ -213,29 +328,6 @@ def enqueue_run(
     except Exception:
         pass
 
-    def _load_env_for_subprocess() -> dict[str, str]:
-        """Pass through DEEPSEEK / REHEARSE LLM keys from repo .env if present."""
-        import os
-
-        env = dict(os.environ)
-        for candidate in (
-            artifacts_root.parent.parent / ".env",
-            artifacts_root.parent / ".env",
-        ):
-            if not candidate.is_file():
-                continue
-            for line in candidate.read_text().splitlines():
-                line = line.strip()
-                if not line or line.startswith("#") or "=" not in line:
-                    continue
-                key, _, val = line.partition("=")
-                key = key.strip()
-                val = val.strip().strip('"').strip("'")
-                if key and key not in env:
-                    env[key] = val
-            break
-        return env
-
     def _worker() -> None:
         with _run_serial_lock:
             _update_job(artifacts_root, job_id, {"status": "running"})
@@ -257,7 +349,7 @@ def enqueue_run(
                     capture_output=True,
                     text=True,
                     timeout=3600,
-                    env=_load_env_for_subprocess(),
+                    env=_load_env(artifacts_root),
                 )
                 if proc.returncode == 0:
                     run_id = parse_run_id_from_cli_output(proc.stdout, proc.stderr)

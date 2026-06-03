@@ -156,6 +156,34 @@ export const api = {
       method: "POST",
       body: JSON.stringify(body),
     }),
+  triggerVariantJob: (body: {
+    configAPath: string;
+    configBPath: string;
+    hypothesis?: string;
+    userGoal?: string;
+    llm?: boolean;
+  }) =>
+    apiFetch<{ id: string; type: string; status: string }>("/api/jobs/variant", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+  getVariantJob: (jobId: string) =>
+    apiFetch<{
+      id: string;
+      type: string;
+      status: string;
+      phase: string;
+      configA: string;
+      configB: string;
+      hypothesis: string;
+      userGoal: string;
+      runIdA: string | null;
+      runIdB: string | null;
+      diffNarrative: Record<string, unknown> | null;
+      diff?: Record<string, unknown>;
+      error: string | null;
+      finishedAt: string | null;
+    }>(`/api/variant/${jobId}`),
   preflight: (url: string, opts?: { allowLocalhost?: boolean }) =>
     apiFetch<{ ok: boolean; url?: string; status_code?: number; error?: string }>(
       "/api/preflight",
