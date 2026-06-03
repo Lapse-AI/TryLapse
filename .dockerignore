@@ -1,0 +1,17 @@
+.git
+.github
+.cursor
+node_modules
+Frontend_V1/node_modules
+Frontend_V1/dist
+launch-rehearsal/artifacts
+launch-rehearsal/.venv
+launch-rehearsal/__pycache__
+launch-rehearsal/src/**/__pycache__
+**/*.pyc
+**/.DS_Store
+*.log
+.env
+.env.*
+cursor_idea_research_and_tool_discovery.md
+PRODUCT.md

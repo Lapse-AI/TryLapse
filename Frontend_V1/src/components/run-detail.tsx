@@ -76,7 +76,7 @@ export function EvidenceDialog({
           <div className="aspect-video rounded-md border border-border bg-surface-2 overflow-hidden">
             {issue.screenshotPath ? (
               <AnnotatedScreenshot
-                src={issue.screenshotPath}
+                src={artifactUrl(issue.screenshotPath)}
                 region={issue.focusRegion}
                 alt={`Screenshot for ${issue.stepId}`}
                 className="h-full min-h-[200px]"
@@ -179,7 +179,7 @@ export function RunObservabilityPanel({ bundle }: { bundle: RunBundle }) {
         <div>
           <div className="text-xs text-muted-foreground">Est. cost</div>
           <div className="font-mono tabular-nums mt-0.5">{cost.value}</div>
-          <div className="text-[10px] text-muted-foreground">{cost.hint}</div>
+          <div className="text-[11px] text-muted-foreground">{cost.hint}</div>
         </div>
         {summary.agentsRun != null && (
           <div>
@@ -381,7 +381,7 @@ export function ScreenshotGallery({
           className="border border-border rounded-lg overflow-hidden bg-surface-2/30"
         >
           <div className="aspect-video">
-            <AnnotatedScreenshot src={s.path} alt={s.stepId} className="h-full" />
+            <AnnotatedScreenshot src={artifactUrl(s.path)} alt={s.stepId} className="h-full" />
           </div>
           <figcaption className="p-2 text-[11px] text-muted-foreground border-t border-border">
             <div className="font-medium text-foreground truncate">{s.label}</div>
@@ -660,7 +660,7 @@ export function IssueAnnotationActions({
           type="button"
           disabled={addAnnotation.isPending}
           onClick={() => submit(action)}
-          className="text-[10px] font-mono px-2 py-1 rounded-md border border-border hover:bg-surface-2 disabled:opacity-50"
+          className="text-[11px] font-mono px-2 py-1 rounded-md border border-border hover:bg-surface-2 disabled:opacity-50"
           style={{ color: `var(--${tone})` }}
         >
           {label}

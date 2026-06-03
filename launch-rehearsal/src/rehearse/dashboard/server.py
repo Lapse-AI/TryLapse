@@ -160,6 +160,66 @@ class _Handler(BaseHTTPRequestHandler):
             self._send_json(list_run_summaries(root))
             return
 
+        if path.startswith("/api/experiment/") and path.endswith("/chat"):
+            job_id = path.split("/")[-2]
+            jobs = list_jobs(root)
+            job = next((j for j in jobs if j.get("id") == job_id), None)
+            if not job:
+                self._send_json({"error": "experiment job not found"}, status=404)
+                return
+            from rehearse.dashboard.chat_store import load_chat_thread as _lct
+            thread = _lct(root, f"exp-{job_id}")
+            self._send_json({"jobId": job_id, "turns": thread.get("turns", [])})
+            return
+
+        if path.startswith("/api/experiment/") and path.endswith("/report"):
+            job_id = path.split("/")[-2]
+            jobs = list_jobs(root)
+            job = next((j for j in jobs if j.get("id") == job_id), None)
+            if not job:
+                self._send_json({"error": "experiment job not found"}, status=404)
+                return
+            run_id_a = job.get("runIdA")
+            run_id_b = job.get("runIdB")
+            report: dict = {"jobId": job_id, "hypothesis": job.get("hypothesis"), "userGoal": job.get("userGoal")}
+            if run_id_a and run_id_b:
+                try:
+                    ba = load_bundle(root, run_id_a)
+                    bb = load_bundle(root, run_id_b)
+                    d = diff_runs(root, run_id_a, run_id_b)
+                    report["bundleA"] = ba
+                    report["bundleB"] = bb
+                    report["diff"] = d
+                    # Per-persona comparison
+                    def _persona_grades(bundle: dict) -> dict:
+                        grades: dict = {}
+                        for cell in (bundle.get("matrix") or []):
+                            pid = cell.get("personaId") or cell.get("persona_id", "")
+                            grade = cell.get("grade", "")
+                            if pid:
+                                grades.setdefault(pid, []).append(grade)
+                        return {pid: max(set(gs), key=gs.count) for pid, gs in grades.items()}
+                    grades_a = _persona_grades(ba)
+                    grades_b = _persona_grades(bb)
+                    personas_a = {p.get("id"): p.get("name") for p in (ba.get("personas") or [])}
+                    personas_b = {p.get("id"): p.get("name") for p in (bb.get("personas") or [])}
+                    all_pids = sorted(set(list(grades_a.keys()) + list(grades_b.keys())))
+                    report["personaComparison"] = [
+                        {"id": pid, "name": personas_a.get(pid) or personas_b.get(pid) or pid,
+                         "gradeA": grades_a.get(pid, "—"), "gradeB": grades_b.get(pid, "—")}
+                        for pid in all_pids
+                    ]
+                    # Readiness delta verdict
+                    ra = (ba.get("summary") or {}).get("readiness") or 0
+                    rb = (bb.get("summary") or {}).get("readiness") or 0
+                    delta = rb - ra
+                    report["readinessDelta"] = delta
+                    report["hypothesisVerdict"] = "held" if delta > 2 else ("regressed" if delta < -2 else "inconclusive")
+                except Exception as exc:
+                    report["error"] = str(exc)
+            self._send_json(report)
+            return
+
         if path.startswith("/api/variant/"):
             job_id = path.split("/")[-1]
             jobs = list_jobs(root)
@@ -488,6 +548,38 @@ class _Handler(BaseHTTPRequestHandler):
         if path == "/api/workspace":
             body = self._read_json_body()
             self._send_json(save_workspace(root, body))
+            return
+
+        if path.startswith("/api/experiment/") and path.endswith("/chat"):
+            job_id = path.split("/")[-2]
+            jobs = list_jobs(root)
+            job = next((j for j in jobs if j.get("id") == job_id), None)
+            if not job:
+                self._send_json({"error": "experiment job not found"}, status=404)
+                return
+            body = self._read_json_body()
+            message = (body.get("message") or "").strip()
+            if not message:
+                self._send_json({"error": "message required"}, status=400)
+                return
+            from rehearse.dashboard.chat_store import chat_history_for_llm, load_chat_thread, save_chat_turn
+            from rehearse.llm import chat_about_experiment
+
+            thread_key = f"exp-{job_id}"
+            thread = load_chat_thread(root, thread_key)
+            history = chat_history_for_llm(thread)
+            bundle_a = load_bundle(root, job.get("runIdA") or "") if job.get("runIdA") else None
+            bundle_b = load_bundle(root, job.get("runIdB") or "") if job.get("runIdB") else None
+            diff = None
+            if job.get("runIdA") and job.get("runIdB"):
+                try:
+                    diff = diff_runs(root, job["runIdA"], job["runIdB"])
+                except Exception:
+                    pass
+            result = chat_about_experiment(job, bundle_a, bundle_b, diff, message, history=history)
+            save_chat_turn(root, thread_key, user_message=message,
+                           assistant_reply=result.get("reply", ""), source=result.get("source", "template"))
+            self._send_json({"jobId": job_id, "reply": result.get("reply"), "source": result.get("source"), "turns": load_chat_thread(root, thread_key).get("turns", [])})
             return
 
         if path.startswith("/api/runs/") and path.endswith("/chat"):
