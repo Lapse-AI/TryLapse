@@ -4,10 +4,15 @@
 node_modules
 Frontend_V1/node_modules
 Frontend_V1/dist
-launch-rehearsal/artifacts
+# Exclude large/local-only artifacts — but keep demo run JSONs (tracked in git)
+launch-rehearsal/artifacts/artifacts/
+launch-rehearsal/artifacts/chats/
+launch-rehearsal/artifacts/narratives/
+launch-rehearsal/artifacts/jobs.json
+launch-rehearsal/artifacts/workspace.json
 launch-rehearsal/.venv
-launch-rehearsal/__pycache__
 launch-rehearsal/src/**/__pycache__
+**/__pycache__
 **/*.pyc
 **/.DS_Store
 *.log

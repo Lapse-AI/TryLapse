@@ -17,12 +17,20 @@ node_modules/
 Frontend_V1/dist/
 Frontend_V1/.output/
 
-# Run artifacts (large; regenerate via rehearse)
+# Run artifacts — screenshots are large; run/analysis JSONs for demo runs are tracked
 launch-rehearsal/artifacts/artifacts/
-launch-rehearsal/artifacts/runs/
-launch-rehearsal/artifacts/analysis/
-launch-rehearsal/artifacts/scorecards/
-launch-rehearsal/artifacts/sitemaps/
+launch-rehearsal/artifacts/chats/
+launch-rehearsal/artifacts/narratives/
+# Demo runs tracked for deployed dashboard seed (no screenshots)
+!launch-rehearsal/artifacts/runs/enterprise-20260530-234231.json
+!launch-rehearsal/artifacts/runs/enterprise-20260530-234459.json
+!launch-rehearsal/artifacts/runs/argyle-20260531-000517.json
+!launch-rehearsal/artifacts/analysis/enterprise-20260530-234231.json
+!launch-rehearsal/artifacts/analysis/enterprise-20260530-234459.json
+!launch-rehearsal/artifacts/analysis/argyle-20260531-000517.json
+!launch-rehearsal/artifacts/scorecards/enterprise-20260530-234231-scorecard.md
+!launch-rehearsal/artifacts/scorecards/argyle-20260531-000517-scorecard.md
+!launch-rehearsal/artifacts/sitemaps/argyle-20260531-000517-sitemap.json
 
 # OS / IDE
 .DS_Store
