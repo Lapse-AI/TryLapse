@@ -36,11 +36,19 @@ export class ApiError extends Error {
   }
 }
 
+// Optional API token — set VITE_REHEARSE_API_TOKEN in .env.local for deployed auth
+const API_TOKEN =
+  (typeof import.meta !== "undefined" && import.meta.env?.VITE_REHEARSE_API_TOKEN) || "";
+
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
+  const authHeaders: Record<string, string> = API_TOKEN
+    ? { Authorization: `Bearer ${API_TOKEN}` }
+    : {};
   const res = await fetch(`${API_BASE}${path}`, {
     ...init,
     headers: {
       "Content-Type": "application/json",
+      ...authHeaders,
       ...(init?.headers ?? {}),
     },
   });

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import mimetypes
+import os
 import threading
 import urllib.parse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -36,11 +37,38 @@ from rehearse.dashboard.store import (
 )
 
 _STATIC_DIR = Path(__file__).resolve().parent / "static"
-_CORS = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, POST, PUT, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-}
+
+# --- Auth -------------------------------------------------------------------
+# Set REHEARSE_API_TOKEN in .env or environment to require a bearer token on
+# every API request. Leave unset for local dev (no auth enforced).
+_API_TOKEN: str | None = os.environ.get("REHEARSE_API_TOKEN") or None
+
+# --- CORS -------------------------------------------------------------------
+# Defaults to localhost dev ports. Set REHEARSE_CORS_ORIGIN to a comma-
+# separated list of allowed origins for deployed environments, e.g.:
+#   REHEARSE_CORS_ORIGIN=https://trylapse.up.railway.app
+_CORS_ORIGINS: set[str] = set(
+    o.strip()
+    for o in (
+        os.environ.get("REHEARSE_CORS_ORIGIN")
+        or "http://localhost:8081,http://127.0.0.1:8081,http://localhost:8080,http://127.0.0.1:8080"
+    ).split(",")
+    if o.strip()
+)
+
+# Paths that bypass auth (always public)
+_PUBLIC_PATHS = {"/api/health", "/"}
+
+
+def _cors_headers(origin: str | None) -> dict[str, str]:
+    """Return CORS headers. Allow the requesting origin if it is in the allowlist."""
+    allowed = origin if (origin and origin in _CORS_ORIGINS) else next(iter(_CORS_ORIGINS), "*")
+    return {
+        "Access-Control-Allow-Origin": allowed,
+        "Access-Control-Allow-Methods": "GET, POST, PUT, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        "Vary": "Origin",
+    }
 
 
 class DashboardServer(ThreadingHTTPServer):
@@ -74,12 +102,16 @@ class _Handler(BaseHTTPRequestHandler):
     def log_message(self, format: str, *args) -> None:  # noqa: A003
         return
 
+    @property
+    def _origin(self) -> str | None:
+        return self.headers.get("Origin")
+
     def _send_json(self, payload: object, status: int = 200) -> None:
         body = json.dumps(payload, indent=2).encode("utf-8")
         self.send_response(status)
         self.send_header("Content-Type", "application/json")
         self.send_header("Content-Length", str(len(body)))
-        for k, v in _CORS.items():
+        for k, v in _cors_headers(self._origin).items():
             self.send_header(k, v)
         self.end_headers()
         try:
@@ -91,21 +123,40 @@ class _Handler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(len(data)))
-        for k, v in _CORS.items():
+        for k, v in _cors_headers(self._origin).items():
             self.send_header(k, v)
         self.end_headers()
         self.wfile.write(data)
 
     def _read_json_body(self) -> dict:
         length = int(self.headers.get("Content-Length", 0))
-        if length <= 0:
+        if not length or length > 10_000_000:  # 10 MB hard cap
             return {}
         raw = self.rfile.read(length)
-        return json.loads(raw.decode("utf-8"))
+        try:
+            return json.loads(raw.decode("utf-8"))
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            return {}
+
+    def _check_auth(self, path: str) -> bool:
+        """Return True if request is authorised. Sends 401 and returns False otherwise."""
+        if not _API_TOKEN:
+            return True  # auth disabled — local dev
+        if path in _PUBLIC_PATHS or path.startswith("/static") or not path.startswith("/api"):
+            return True
+        # Accept Bearer token in Authorization header or ?token= query param
+        auth_header = self.headers.get("Authorization", "")
+        if auth_header.startswith("Bearer ") and auth_header[7:] == _API_TOKEN:
+            return True
+        qs = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+        if (qs.get("token") or [""])[0] == _API_TOKEN:
+            return True
+        self._send_json({"error": "Unauthorized — set Authorization: Bearer <REHEARSE_API_TOKEN>"}, status=401)
+        return False
 
     def do_OPTIONS(self) -> None:  # noqa: N802
         self.send_response(204)
-        for k, v in _CORS.items():
+        for k, v in _cors_headers(self._origin).items():
             self.send_header(k, v)
         self.end_headers()
 
@@ -117,6 +168,9 @@ class _Handler(BaseHTTPRequestHandler):
 
         if path == "/api/health":
             self._send_json({"ok": True, "artifacts": str(root)})
+            return
+
+        if not self._check_auth(path):
             return
 
         if path == "/api/runs":
@@ -383,6 +437,21 @@ class _Handler(BaseHTTPRequestHandler):
         parsed = urllib.parse.urlparse(self.path)
         path = parsed.path.rstrip("/") or "/"
         root = self.server.artifacts_root
+
+        if not self._check_auth(path):
+            return
+
+        # Rate limiting (jobs endpoints — prevent run storms)
+        if path.startswith("/api/jobs") or path.startswith("/api/jobs/"):
+            from rehearse.dashboard.rate_limit import check_rate_limit
+            client_ip = self.headers.get("X-Forwarded-For", self.client_address[0]).split(",")[0].strip()
+            allowed, group = check_rate_limit(client_ip, path)
+            if not allowed:
+                self._send_json(
+                    {"error": f"Rate limit exceeded ({group}). Max 5 job requests per 60s per IP."},
+                    status=429,
+                )
+                return
 
         if path == "/api/configs/validate":
             body = self._read_json_body()
@@ -714,6 +783,10 @@ class _Handler(BaseHTTPRequestHandler):
         parsed = urllib.parse.urlparse(self.path)
         path = parsed.path.rstrip("/") or "/"
         root = self.server.artifacts_root
+
+        if not self._check_auth(path):
+            return
+
         if path == "/api/workspace":
             body = self._read_json_body()
             self._send_json(save_workspace(root, body))
@@ -723,6 +796,11 @@ class _Handler(BaseHTTPRequestHandler):
 
 def serve_dashboard(artifacts_root: Path, host: str = "127.0.0.1", port: int = 8765) -> None:
     artifacts_root = artifacts_root.resolve()
+    # Migrate legacy jobs.json → SQLite on first boot
+    from rehearse.dashboard.job_store import migrate_from_json
+    migrated = migrate_from_json(artifacts_root)
+    if migrated:
+        print(f"Migrated {migrated} job(s) from jobs.json → jobs.db")
     stale = mark_stale_running_jobs(artifacts_root)
     if stale:
         print(f"Marked {stale} stale running job(s) as failed (prior serve restart).")

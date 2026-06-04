@@ -11,74 +11,26 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-_jobs_file_lock = threading.Lock()
+from rehearse.dashboard.job_store import (
+    list_jobs as _db_list_jobs,
+    save_job as _db_save_job,
+    update_job as _db_update_job,
+    mark_stale_running as _db_mark_stale,
+)
+
 _run_serial_lock = threading.Lock()
 
 
-def _jobs_path(artifacts_root: Path) -> Path:
-    return artifacts_root / "jobs.json"
-
-
 def list_jobs(artifacts_root: Path) -> list[dict[str, Any]]:
-    path = _jobs_path(artifacts_root)
-    if not path.is_file():
-        return []
-    with _jobs_file_lock:
-        raw = path.read_text()
-    try:
-        data = json.loads(raw)
-        return data if isinstance(data, list) else []
-    except json.JSONDecodeError:
-        # Concurrent writers can corrupt the file — repair from first valid array.
-        backup = path.with_suffix(".json.bak")
-        backup.write_text(raw)
-        start = raw.find("[")
-        if start < 0:
-            return []
-        end = raw.find("]", start)
-        while end >= 0:
-            try:
-                data = json.loads(raw[start : end + 1])
-                if isinstance(data, list):
-                    _save_jobs_unlocked(artifacts_root, data)
-                    return data
-            except json.JSONDecodeError:
-                pass
-            end = raw.find("]", end + 1)
-        return []
+    return _db_list_jobs(artifacts_root)
 
 
-def _save_jobs_unlocked(artifacts_root: Path, jobs: list[dict[str, Any]]) -> None:
-    path = _jobs_path(artifacts_root)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(jobs[-50:], indent=2))
-
-
-def _save_jobs(artifacts_root: Path, jobs: list[dict[str, Any]]) -> None:
-    with _jobs_file_lock:
-        _save_jobs_unlocked(artifacts_root, jobs)
-
-
-def _load_jobs_unlocked(artifacts_root: Path) -> list[dict[str, Any]]:
-    path = _jobs_path(artifacts_root)
-    if not path.is_file():
-        return []
-    try:
-        data = json.loads(path.read_text())
-        return data if isinstance(data, list) else []
-    except json.JSONDecodeError:
-        return []
+def _save_job(artifacts_root: Path, job: dict[str, Any]) -> None:
+    _db_save_job(artifacts_root, job)
 
 
 def _update_job(artifacts_root: Path, job_id: str, patch: dict[str, Any]) -> dict[str, Any] | None:
-    with _jobs_file_lock:
-        jobs = _load_jobs_unlocked(artifacts_root)
-        j = next((x for x in jobs if x["id"] == job_id), None)
-        if not j:
-            return None
-        j.update(patch)
-        _save_jobs_unlocked(artifacts_root, jobs)
-        return j
+    return _db_update_job(artifacts_root, job_id, patch)
 
 
 def parse_run_id_from_cli_output(stdout: str, stderr: str = "") -> str | None:
@@ -178,8 +130,7 @@ def enqueue_variant_run(
         "error": None,
     }
     jobs = list_jobs(artifacts_root)
-    jobs.insert(0, job)
-    _save_jobs(artifacts_root, jobs)
+    _save_job(artifacts_root, job)
 
     rehearse_bin = artifacts_root.parent / ".venv" / "bin" / "rehearse"
     if not rehearse_bin.is_file():
@@ -290,8 +241,7 @@ def enqueue_cohort_run(
         "error": None,
     }
     jobs = list_jobs(artifacts_root)
-    jobs.insert(0, job)
-    _save_jobs(artifacts_root, jobs)
+    _save_job(artifacts_root, job)
 
     rehearse_bin = artifacts_root.parent / ".venv" / "bin" / "rehearse"
     if not rehearse_bin.is_file():
@@ -367,11 +317,9 @@ def enqueue_cohort_run(
                     rid = _run_one_seed(i + 1)
                     if rid:
                         run_ids.append(rid)
-                        current = _load_jobs_unlocked(artifacts_root)
-                        jobj = next((x for x in current if x["id"] == job_id), None)
-                        if jobj is not None:
-                            existing = jobj.get("runIds") or []
-                            _update_job(artifacts_root, job_id, {"runIds": existing + [rid], "completedSeeds": i + 1})
+                        current_job = next((j for j in list_jobs(artifacts_root) if j["id"] == job_id), None)
+                        existing = (current_job or {}).get("runIds") or []
+                        _update_job(artifacts_root, job_id, {"runIds": existing + [rid], "completedSeeds": i + 1})
                 except Exception as exc:
                     errors.append(str(exc))
 
@@ -404,18 +352,7 @@ def enqueue_cohort_run(
 
 def mark_stale_running_jobs(artifacts_root: Path) -> int:
     """On serve startup, mark orphaned running jobs as failed."""
-    jobs = list_jobs(artifacts_root)
-    changed = 0
-    now = datetime.now(timezone.utc).isoformat()
-    for j in jobs:
-        if j.get("status") == "running":
-            j["status"] = "failed"
-            j["error"] = "Interrupted — rehearse serve restarted"
-            j["finishedAt"] = now
-            changed += 1
-    if changed:
-        _save_jobs(artifacts_root, jobs)
-    return changed
+    return _db_mark_stale(artifacts_root)
 
 
 def enqueue_run(
@@ -454,8 +391,7 @@ def enqueue_run(
         "runId": None,
         "error": None,
     }
-    jobs.insert(0, job)
-    _save_jobs(artifacts_root, jobs)
+    _save_job(artifacts_root, job)
 
     rehearse_bin = artifacts_root.parent / ".venv" / "bin" / "rehearse"
     if not rehearse_bin.is_file():
