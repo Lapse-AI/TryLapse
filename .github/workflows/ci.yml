@@ -58,5 +58,8 @@ jobs:
       - name: Lint
         run: npm run lint -- --max-warnings 20
 
+      - name: Unit tests
+        run: npm run test
+
       - name: Production build
         run: npm run build
