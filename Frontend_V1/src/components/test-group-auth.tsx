@@ -28,10 +28,6 @@ import { toast } from "sonner";
 
 type AuthMode = "sign-in" | "sign-up";
 
-/**
- * Product / test-group switcher — no sign-in required.
- * Sign-in is optional (localStorage) for labeling who ran a rehearsal.
- */
 export function TestGroupAuth() {
   const { data: configs = [] } = useConfigs();
   const { user, isSignedIn, group, groupId, resolvedConfigId, signIn, signUp, signOut, setGroup } =
@@ -41,6 +37,8 @@ export function TestGroupAuth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
 
   const switchGroup = (id: TestGroupId) => {
     const next = getTestGroup(id);
@@ -51,21 +49,46 @@ export function TestGroupAuth() {
     });
   };
 
-  const submitAuth = (e: React.FormEvent) => {
+  const resetForm = () => {
+    setAuthError(null);
+    setPassword("");
+  };
+
+  const submitAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim()) {
-      toast.error("Email required");
+      setAuthError("Email is required.");
       return;
     }
-    if (mode === "sign-up") {
-      signUp(displayName, email, password);
-      toast.success("Signed up (optional — for your label only)");
-    } else {
-      signIn(email, password);
-      toast.success("Signed in");
+    if (!password) {
+      setAuthError("Password is required.");
+      return;
     }
-    setDialogOpen(false);
-    setPassword("");
+    setIsLoading(true);
+    setAuthError(null);
+    try {
+      if (mode === "sign-up") {
+        await signUp(displayName, email, password);
+        toast.success("Account created — welcome!");
+      } else {
+        await signIn(email, password);
+        toast.success("Signed in");
+      }
+      setDialogOpen(false);
+      resetForm();
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Something went wrong. Please try again.";
+      // Surface friendly messages for known API errors
+      if (msg.includes("409") || msg.toLowerCase().includes("already in use")) {
+        setAuthError("That email is already registered. Try signing in.");
+      } else if (msg.includes("401") || msg.toLowerCase().includes("invalid")) {
+        setAuthError("Incorrect email or password.");
+      } else {
+        setAuthError(msg);
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -84,14 +107,12 @@ export function TestGroupAuth() {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-72">
           <DropdownMenuLabel className="flex flex-col gap-1">
-            <span className="text-[11px] font-normal text-muted-foreground">
-              Product scope · no login required
-            </span>
+            <span className="text-[11px] font-normal text-muted-foreground">Product scope</span>
             {isSignedIn ? (
               <span className="flex items-center gap-1.5 font-normal">
                 <UserRound className="size-3.5" />
                 {user?.displayName}
-                <span className="text-muted-foreground font-mono text-[10px] truncate">
+                <span className="text-muted-foreground font-mono text-[11px] truncate">
                   {user?.email}
                 </span>
               </span>
@@ -114,14 +135,14 @@ export function TestGroupAuth() {
               <div className="min-w-0">
                 <div className="text-sm">{g.label}</div>
                 <div className="text-[11px] text-muted-foreground">{g.personaLabel}</div>
-                <div className="text-[10px] font-mono text-muted-foreground truncate mt-0.5">
+                <div className="text-[11px] font-mono text-muted-foreground truncate mt-0.5">
                   {g.targetUrl}
                 </div>
               </div>
             </DropdownMenuItem>
           ))}
           <DropdownMenuSeparator />
-          <div className="px-2 py-1.5 text-[10px] text-muted-foreground font-mono">
+          <div className="px-2 py-1.5 text-[11px] text-muted-foreground font-mono">
             config · {resolvedConfigId}
           </div>
           {isSignedIn ? (
@@ -130,9 +151,14 @@ export function TestGroupAuth() {
               Sign out
             </DropdownMenuItem>
           ) : (
-            <DropdownMenuItem onSelect={() => setDialogOpen(true)}>
+            <DropdownMenuItem
+              onSelect={() => {
+                resetForm();
+                setDialogOpen(true);
+              }}
+            >
               <UserRound className="size-3.5 mr-2" />
-              Sign in (optional)
+              Sign in
             </DropdownMenuItem>
           )}
         </DropdownMenuContent>
@@ -145,9 +171,15 @@ export function TestGroupAuth() {
 
       <AuthDialog
         open={dialogOpen}
-        onOpenChange={setDialogOpen}
+        onOpenChange={(open) => {
+          if (!open) resetForm();
+          setDialogOpen(open);
+        }}
         mode={mode}
-        onModeChange={setMode}
+        onModeChange={(m) => {
+          setMode(m);
+          setAuthError(null);
+        }}
         email={email}
         password={password}
         displayName={displayName}
@@ -155,6 +187,8 @@ export function TestGroupAuth() {
         onPasswordChange={setPassword}
         onDisplayNameChange={setDisplayName}
         onSubmit={submitAuth}
+        isLoading={isLoading}
+        error={authError}
       />
     </>
   );
@@ -172,6 +206,8 @@ function AuthDialog({
   onPasswordChange,
   onDisplayNameChange,
   onSubmit,
+  isLoading,
+  error,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -184,15 +220,20 @@ function AuthDialog({
   onPasswordChange: (v: string) => void;
   onDisplayNameChange: (v: string) => void;
   onSubmit: (e: React.FormEvent) => void;
+  isLoading: boolean;
+  error: string | null;
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="font-display">Optional sign-in</DialogTitle>
+          <DialogTitle className="font-display">
+            {mode === "sign-in" ? "Sign in" : "Create account"}
+          </DialogTitle>
           <DialogDescription>
-            Not required to use the dashboard. Sign in only to label who is rehearsing (stored in
-            localStorage). Switch products from the dropdown anytime.
+            {mode === "sign-in"
+              ? "Sign in to access the rehearsal dashboard."
+              : "Create an account to get started."}
           </DialogDescription>
         </DialogHeader>
         <div className="flex gap-2 text-xs mb-2">
@@ -208,21 +249,22 @@ function AuthDialog({
             onClick={() => onModeChange("sign-up")}
             className={`px-2 py-1 rounded ${mode === "sign-up" ? "bg-primary/15 text-primary" : "text-muted-foreground"}`}
           >
-            Sign up
+            Create account
           </button>
         </div>
         <form onSubmit={onSubmit} className="space-y-3">
           {mode === "sign-up" && (
             <div>
               <label htmlFor="tg-display-name" className="text-xs text-muted-foreground">
-                Display name
+                Name
               </label>
               <input
                 id="tg-display-name"
                 className="mt-1 w-full bg-surface border border-border rounded-md px-3 py-2 text-sm"
                 value={displayName}
                 onChange={(e) => onDisplayNameChange(e.target.value)}
-                placeholder="Cal.com QA"
+                placeholder="Your name"
+                disabled={isLoading}
               />
             </div>
           )}
@@ -238,11 +280,12 @@ function AuthDialog({
               value={email}
               onChange={(e) => onEmailChange(e.target.value)}
               placeholder="you@company.com"
+              disabled={isLoading}
             />
           </div>
           <div>
             <label htmlFor="tg-password" className="text-xs text-muted-foreground">
-              Password (any value)
+              Password
             </label>
             <input
               id="tg-password"
@@ -252,13 +295,22 @@ function AuthDialog({
               value={password}
               onChange={(e) => onPasswordChange(e.target.value)}
               placeholder="••••••••"
+              disabled={isLoading}
             />
           </div>
+          {error && <p className="text-xs text-destructive">{error}</p>}
           <button
             type="submit"
-            className="w-full text-sm px-4 py-2 rounded-md bg-primary text-primary-foreground font-medium"
+            disabled={isLoading}
+            className="w-full text-sm px-4 py-2 rounded-md bg-primary text-primary-foreground font-medium disabled:opacity-50"
           >
-            {mode === "sign-in" ? "Sign in" : "Sign up"}
+            {isLoading
+              ? mode === "sign-in"
+                ? "Signing in…"
+                : "Creating account…"
+              : mode === "sign-in"
+                ? "Sign in"
+                : "Create account"}
           </button>
         </form>
       </DialogContent>

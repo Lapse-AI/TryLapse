@@ -47,7 +47,10 @@ export function RehearseTopBar() {
   };
 
   return (
-    <header className="h-14 border-b border-border bg-surface/60 backdrop-blur flex items-center px-3 md:px-6 gap-3">
+    <header
+      className="h-14 border-b border-border/60 flex items-center px-3 md:px-6 gap-3 sticky top-0 z-40 backdrop-blur-xl"
+      style={{ background: "color-mix(in oklab, white 72%, transparent)" }}
+    >
       <MobileNav />
       <div className="hidden md:flex items-center gap-2 text-xs font-mono text-muted-foreground">
         <span className="px-2 py-0.5 rounded bg-surface-2 border border-border">{slug}</span>
@@ -84,11 +87,11 @@ export function RehearseTopBar() {
         <span>/</span>
         <span className="text-foreground">{host}</span>
         {live ? (
-          <span className="text-ready text-[10px]">· API live</span>
+          <span className="text-ready text-[11px]">· API live</span>
         ) : (
-          <span className="text-warn text-[10px]">· mock data</span>
+          <span className="text-warn text-[11px]">· mock data</span>
         )}
-        <span className="text-[10px] px-1.5 py-0.5 rounded border border-violet/30 text-violet">
+        <span className="text-[11px] px-1.5 py-0.5 rounded border border-violet/30 text-violet">
           Vision UI · {uiModeLabel()}
         </span>
       </div>
@@ -167,7 +170,7 @@ export function RehearseTopBar() {
           Run rehearsal
         </button>
         {!live && (
-          <Link to="/cli" className="text-[10px] text-muted-foreground hidden lg:inline">
+          <Link to="/cli" className="text-[11px] text-muted-foreground hidden lg:inline">
             start API
           </Link>
         )}

@@ -1,4 +1,4 @@
-import { useEffect, useState, type ElementType, type ReactNode } from "react";
+import { useEffect, useState, useMemo, type ElementType, type ReactNode } from "react";
 import type { Status, Severity } from "@/lib/mock-data";
 import { formatRel } from "@/lib/mock-data";
 
@@ -101,13 +101,24 @@ export function PageHeader({
   actions?: ReactNode;
 }) {
   return (
-    <div className="border-b border-border bg-surface">
-      <div className="px-4 md:px-8 py-7 flex items-start justify-between gap-6 flex-wrap">
+    <div
+      className="border-b border-border/50 backdrop-blur-sm"
+      style={{ background: "color-mix(in oklab, white 78%, transparent)" }}
+    >
+      <div className="px-4 md:px-8 py-6 flex items-start justify-between gap-6 flex-wrap">
         <div>
-          <div className="text-xs text-muted-foreground mb-2 font-medium">{eyebrow}</div>
-          <h1 className="font-display text-[30px] font-semibold tracking-tight">{title}</h1>
+          {/* Eyebrow pill */}
+          <div className="inline-flex items-center gap-1.5 mb-3 px-2 py-0.5 rounded-full border border-primary/20 bg-primary/5">
+            <span className="size-1.5 rounded-full bg-primary" />
+            <span className="text-[11px] text-primary/80 font-semibold uppercase tracking-wider">
+              {eyebrow}
+            </span>
+          </div>
+          <h1 className="font-display text-[34px] font-bold tracking-[-0.025em] leading-tight">
+            {title}
+          </h1>
           {description && (
-            <p className="text-muted-foreground mt-1.5 max-w-prose text-sm leading-relaxed">
+            <p className="text-muted-foreground mt-2 max-w-prose text-sm leading-relaxed">
               {description}
             </p>
           )}
@@ -132,10 +143,10 @@ export function Stat({
   title?: string;
 }) {
   return (
-    <div className="panel p-4" title={title}>
-      <div className="text-xs text-muted-foreground">{label}</div>
-      <div className="mt-1 flex items-baseline gap-2">
-        <div className="font-display text-2xl font-semibold tracking-tight">{value}</div>
+    <div className="panel-glass p-4" title={title}>
+      <div className="text-[11px] text-muted-foreground font-medium">{label}</div>
+      <div className="mt-1.5 flex items-baseline gap-2">
+        <div className="font-display text-2xl font-bold tracking-tight tabular-nums">{value}</div>
         {tone && <StatusDot status={tone} />}
       </div>
       {hint && <div className="text-[11px] text-muted-foreground mt-1">{hint}</div>}
@@ -154,24 +165,24 @@ export function Sparkline({
   height?: number;
   className?: string;
 }) {
-  const safe = values.filter((v) => Number.isFinite(v));
-  const w = Math.max(120, safe.length * 8);
+  const { safe, w, coords, points } = useMemo(() => {
+    const safe = values.filter((v) => Number.isFinite(v));
+    const w = Math.max(120, safe.length * 8);
+    if (safe.length === 0) return { safe, w, coords: [] as { x: number; y: number }[], points: "" };
+    const min = Math.min(...safe);
+    const max = Math.max(...safe);
+    const range = max - min || 1;
+    const denom = Math.max(safe.length - 1, 1);
+    const coords = safe.map((v, i) => ({
+      x: (i / denom) * w,
+      y: height - ((v - min) / range) * height,
+    }));
+    return { safe, w, coords, points: coords.map(({ x, y }) => `${x},${y}`).join(" ") };
+  }, [values, height]);
+
   if (safe.length === 0) {
     return <svg viewBox={`0 0 ${w} ${height}`} className={className} aria-hidden />;
   }
-
-  const min = Math.min(...safe);
-  const max = Math.max(...safe);
-  const range = max - min || 1;
-  const denom = Math.max(safe.length - 1, 1);
-
-  const coords = safe.map((v, i) => {
-    const x = (i / denom) * w;
-    const y = height - ((v - min) / range) * height;
-    return { x, y };
-  });
-
-  const points = coords.map(({ x, y }) => `${x},${y}`).join(" ");
 
   return (
     <svg
@@ -196,30 +207,50 @@ export function ReadinessGauge({ value, band }: { value: number; band?: Status }
   const dash = (value / 100) * circumference;
   const bandLabel = tone === "ready" ? "Green" : tone === "warn" ? "Amber" : "Red";
 
+  const glowClass = tone === "ready" ? "glow-ready" : tone === "warn" ? "glow-warn" : "glow-danger";
+
   return (
     <div
-      className="relative size-[200px] flex items-center justify-center"
+      className={`relative size-[200px] flex items-center justify-center rounded-full ${glowClass}`}
       title={`Score ${value}/100 · Band ${bandLabel} (derived from blocker severity, not the score)`}
     >
       <svg viewBox="0 0 200 200" className="-rotate-90 absolute inset-0">
-        <circle cx="100" cy="100" r={radius} stroke="var(--border)" strokeWidth="6" fill="none" />
+        {/* Outer glow ring */}
+        <circle
+          cx="100"
+          cy="100"
+          r={radius + 8}
+          stroke={color}
+          strokeWidth="1"
+          fill="none"
+          opacity="0.12"
+        />
+        {/* Track */}
+        <circle cx="100" cy="100" r={radius} stroke="var(--border)" strokeWidth="7" fill="none" />
+        {/* Progress arc */}
         <circle
           cx="100"
           cy="100"
           r={radius}
           stroke={color}
-          strokeWidth="6"
+          strokeWidth="7"
           strokeLinecap="round"
           fill="none"
           strokeDasharray={`${dash} ${circumference}`}
-          style={{ transition: "stroke-dasharray 600ms ease-out" }}
+          style={{
+            transition: "stroke-dasharray 700ms cubic-bezier(.4,0,.2,1)",
+            filter: `drop-shadow(0 0 5px color-mix(in oklab, ${color} 60%, transparent))`,
+          }}
         />
       </svg>
       <div className="text-center z-10">
-        <div className="font-display text-5xl font-semibold tabular-nums" style={{ color }}>
+        <div
+          className="font-display text-5xl font-bold tabular-nums tracking-tight"
+          style={{ color }}
+        >
           {value}
         </div>
-        <div className="text-xs text-muted-foreground mt-1">Readiness · /100</div>
+        <div className="text-[11px] text-muted-foreground mt-1 font-mono">/ 100</div>
         <div className="mt-2">
           <Chip tone={tone}>{bandLabel}</Chip>
         </div>
@@ -240,8 +271,12 @@ export function Bar({
   return (
     <div className="h-1.5 w-full rounded-full bg-surface-3 overflow-hidden">
       <div
-        className="h-full rounded-full"
-        style={{ width: `${(value / max) * 100}%`, background: `var(--${tone})` }}
+        className="h-full rounded-full transition-all duration-500"
+        style={{
+          width: `${(value / max) * 100}%`,
+          background: `var(--${tone})`,
+          boxShadow: `0 0 6px 0 color-mix(in oklab, var(--${tone}) 50%, transparent)`,
+        }}
       />
     </div>
   );

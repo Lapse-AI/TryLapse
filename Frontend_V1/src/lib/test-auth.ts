@@ -2,6 +2,7 @@ import { DEFAULT_TEST_GROUP_ID, type TestGroupId } from "@/lib/test-groups";
 import { setSelectedConfigId } from "@/lib/selected-config";
 
 const USER_KEY = "rehearse:testUser";
+const JWT_KEY = "rehearse:jwt";
 const GROUP_KEY = "rehearse:testGroupId";
 
 export const TEST_GROUP_CHANGED_EVENT = "rehearse:test-group-changed";
@@ -29,32 +30,41 @@ export function getTestUser(): TestUser | null {
   }
 }
 
-export function signIn(email: string, _password: string): TestUser {
-  const trimmed = email.trim().toLowerCase();
-  const user: TestUser = {
-    email: trimmed,
-    displayName: trimmed.split("@")[0] || "Tester",
+function _storeSession(user: { email: string; name: string }, jwt: string): TestUser {
+  const stored: TestUser = {
+    email: user.email,
+    displayName: user.name || user.email.split("@")[0],
     signedInAt: new Date().toISOString(),
   };
-  localStorage.setItem(USER_KEY, JSON.stringify(user));
+  localStorage.setItem(USER_KEY, JSON.stringify(stored));
+  localStorage.setItem(JWT_KEY, jwt);
   dispatch(TEST_AUTH_CHANGED_EVENT);
-  return user;
+  return stored;
 }
 
-export function signUp(displayName: string, email: string, _password: string): TestUser {
-  const trimmed = email.trim().toLowerCase();
-  const user: TestUser = {
-    email: trimmed,
-    displayName: displayName.trim() || trimmed.split("@")[0] || "Tester",
-    signedInAt: new Date().toISOString(),
-  };
-  localStorage.setItem(USER_KEY, JSON.stringify(user));
-  dispatch(TEST_AUTH_CHANGED_EVENT);
-  return user;
+export async function signIn(email: string, password: string): Promise<TestUser> {
+  const { api } = await import("@/lib/api/client");
+  const { token, user } = await api.authLogin(email.trim().toLowerCase(), password);
+  return _storeSession(user, token);
+}
+
+export async function signUp(
+  displayName: string,
+  email: string,
+  password: string,
+): Promise<TestUser> {
+  const { api } = await import("@/lib/api/client");
+  const { token, user } = await api.authSignup(
+    email.trim().toLowerCase(),
+    password,
+    displayName.trim(),
+  );
+  return _storeSession(user, token);
 }
 
 export function signOut(): void {
   localStorage.removeItem(USER_KEY);
+  localStorage.removeItem(JWT_KEY);
   dispatch(TEST_AUTH_CHANGED_EVENT);
 }
 

@@ -75,6 +75,7 @@ export function useTestGroup() {
       setUser(null);
     },
     setGroup,
+    refreshUser: sync,
   };
 }
 

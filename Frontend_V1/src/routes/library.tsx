@@ -73,7 +73,7 @@ function LibraryPage() {
                   <Chip tone="info">{t.category}</Chip>
                 </div>
                 {t.configPath && (
-                  <span className="font-mono text-[10px] text-muted-foreground">
+                  <span className="font-mono text-[11px] text-muted-foreground">
                     {t.configPath}
                   </span>
                 )}

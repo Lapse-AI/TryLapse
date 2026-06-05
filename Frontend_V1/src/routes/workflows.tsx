@@ -162,11 +162,11 @@ function Workflows() {
                     <div className="text-xs text-muted-foreground mt-1">{s.reason}</div>
                     <Chip tone="info">{s.category}</Chip>
                     {s.path && (
-                      <span className="text-[10px] font-mono text-muted-foreground ml-2">
+                      <span className="text-[11px] font-mono text-muted-foreground ml-2">
                         {s.path}
                       </span>
                     )}
-                    <span className="text-[10px] font-mono text-muted-foreground ml-2">
+                    <span className="text-[11px] font-mono text-muted-foreground ml-2">
                       from {s.sourceRunId}
                     </span>
                   </div>

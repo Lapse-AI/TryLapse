@@ -130,7 +130,7 @@ export function RunNarrativePanel({ runId, bundle }: { runId: string; bundle: Ru
                     : "text-sm text-muted-foreground border-l-2 border-primary/40 pl-3"
                 }
               >
-                <span className="text-[10px] uppercase font-mono text-muted-foreground mr-2">
+                <span className="text-[11px] uppercase font-mono text-muted-foreground mr-2">
                   {t.role}
                 </span>
                 <span className="whitespace-pre-wrap">{t.content}</span>

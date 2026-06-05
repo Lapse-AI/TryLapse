@@ -40,7 +40,7 @@ function DimensionCard({
         <span className="text-sm font-medium group-hover:text-primary transition-colors">
           {d.name}
           {!d.automated && (
-            <span className="text-[10px] text-muted-foreground font-normal ml-1">P2</span>
+            <span className="text-[11px] text-muted-foreground font-normal ml-1">P2</span>
           )}
         </span>
         <span
@@ -52,11 +52,11 @@ function DimensionCard({
       </div>
       <Bar value={d.score} tone={tone} />
       {d.signal && (
-        <p className="text-[10px] text-muted-foreground mt-2 line-clamp-2" title={d.signal}>
+        <p className="text-[11px] text-muted-foreground mt-2 line-clamp-2" title={d.signal}>
           {d.signal}
         </p>
       )}
-      <div className="text-[10px] text-primary mt-2 flex items-center justify-between gap-2">
+      <div className="text-[11px] text-primary mt-2 flex items-center justify-between gap-2">
         <span className="text-muted-foreground truncate">{hint}</span>
         <span className="shrink-0 font-medium group-hover:underline">
           {active ? "Showing · click to clear" : "View breakdown →"}
@@ -65,10 +65,12 @@ function DimensionCard({
     </>
   );
 
-  const className = `group block w-full text-left rounded-lg border p-3 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${
+  const stripeColor = `var(--${tone})`;
+  const baseStyle = { borderLeftColor: stripeColor, borderLeftWidth: "3px" };
+  const className = `group block w-full text-left rounded-lg border border-l-0 p-3 pl-[calc(0.75rem-1px)] transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 overflow-hidden ${
     active
-      ? "border-primary/50 bg-primary/5"
-      : "border-border bg-surface-2/20 hover:border-primary/30 hover:bg-surface-2/60"
+      ? "bg-primary/5 shadow-[var(--shadow-md)] -translate-y-px"
+      : "bg-surface hover:shadow-[var(--shadow-md)] hover:-translate-y-px border-border/80"
   }`;
 
   if (mode === "navigate") {
@@ -79,6 +81,7 @@ function DimensionCard({
         search={{ dimension: d.name }}
         hash="dimension-breakdown"
         className={className}
+        style={baseStyle}
         aria-label={`${d.name} score ${d.score}. View breakdown.`}
       >
         {inner}
@@ -90,6 +93,7 @@ function DimensionCard({
     <button
       type="button"
       className={className}
+      style={baseStyle}
       aria-pressed={active}
       aria-label={`${d.name} score ${d.score}. ${active ? "Clear filter" : "Filter findings by this dimension"}.`}
       onClick={() => onSelect?.(d.name)}
@@ -154,7 +158,7 @@ export function DimensionBreakdownBanner({
             <span className="font-mono text-lg tabular-nums" style={{ color: `var(--${tone})` }}>
               {dimension.score}
             </span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded border border-border text-muted-foreground">
+            <span className="text-[11px] px-1.5 py-0.5 rounded border border-border text-muted-foreground">
               {dimension.automated ? "Automated rubric" : "Phase 2 heuristic"}
             </span>
           </div>

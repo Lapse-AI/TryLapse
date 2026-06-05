@@ -36,14 +36,21 @@ export class ApiError extends Error {
   }
 }
 
-// Optional API token — set VITE_REHEARSE_API_TOKEN in .env.local for deployed auth
+// Optional static API token — set VITE_REHEARSE_API_TOKEN in .env.local for deployed auth.
+// Falls back to a user JWT stored by /auth/login if no static token is set.
 const API_TOKEN =
   (typeof import.meta !== "undefined" && import.meta.env?.VITE_REHEARSE_API_TOKEN) || "";
 
+const JWT_STORAGE_KEY = "rehearse:jwt";
+
+export function getStoredJwt(): string {
+  if (typeof window === "undefined") return "";
+  return localStorage.getItem(JWT_STORAGE_KEY) || "";
+}
+
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
-  const authHeaders: Record<string, string> = API_TOKEN
-    ? { Authorization: `Bearer ${API_TOKEN}` }
-    : {};
+  const bearer = API_TOKEN || getStoredJwt();
+  const authHeaders: Record<string, string> = bearer ? { Authorization: `Bearer ${bearer}` } : {};
   const res = await fetch(`${API_BASE}${path}`, {
     ...init,
     headers: {
@@ -388,4 +395,17 @@ export const api = {
       body: JSON.stringify(body),
     }),
   graphmlUrl: (runId: string) => `${API_BASE}/api/sitemap/${runId}/graphml`,
+
+  // Auth
+  authSignup: (email: string, password: string, name: string) =>
+    apiFetch<{ token: string; user: { id: string; email: string; name: string } }>("/auth/signup", {
+      method: "POST",
+      body: JSON.stringify({ email, password, name }),
+    }),
+  authLogin: (email: string, password: string) =>
+    apiFetch<{ token: string; user: { id: string; email: string; name: string } }>("/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    }),
+  authMe: () => apiFetch<{ id: string; email: string; name: string }>("/auth/me"),
 };

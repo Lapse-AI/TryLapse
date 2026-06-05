@@ -70,15 +70,18 @@ export function AppSidebar() {
   const targetLabel = displayTargetForGroup(group);
 
   return (
-    <aside className="w-60 shrink-0 border-r border-sidebar-border bg-sidebar text-sidebar-foreground flex flex-col">
-      <div className="px-4 h-14 flex items-center gap-2.5 border-b border-sidebar-border">
-        <div className="size-7 rounded-md bg-primary/10 border border-primary/20 flex items-center justify-center">
+    <aside
+      className="w-60 shrink-0 border-r border-sidebar-border text-sidebar-foreground flex flex-col backdrop-blur-xl"
+      style={{ background: "color-mix(in oklab, white 76%, transparent)" }}
+    >
+      <div className="px-4 h-14 flex items-center gap-2.5 border-b border-sidebar-border/70">
+        <div className="size-7 rounded-lg bg-primary/15 border border-primary/25 flex items-center justify-center shadow-[0_1px_3px_color-mix(in_oklab,var(--primary)_20%,transparent)]">
           <ShieldCheck className="size-4 text-primary" />
         </div>
         <div className="leading-tight">
           <div className="font-display font-semibold text-[15px] tracking-tight">Rehearsal</div>
           <div className="text-[11px] text-muted-foreground">
-            <span className="px-1 py-px rounded bg-surface-2 border border-border text-[10px] font-mono">
+            <span className="px-1 py-px rounded bg-surface-2 border border-border text-[11px] font-mono">
               Monitor
             </span>
           </div>
@@ -98,12 +101,12 @@ export function AppSidebar() {
             </div>
             <div className="mt-1 flex flex-wrap gap-1">
               <Chip tone="violet">{group.personaLabel}</Chip>
-              <span className="text-[10px] font-mono text-muted-foreground self-center">
+              <span className="text-[11px] font-mono text-muted-foreground self-center">
                 {resolvedConfigId}
               </span>
             </div>
           </div>
-          <span className="size-2 rounded-full bg-ready pulse-dot" />
+          <span className="size-2 rounded-full bg-ready" />
         </button>
       </div>
 
@@ -122,10 +125,10 @@ export function AppSidebar() {
                     key={it.to}
                     to={it.to}
                     aria-current={active ? "page" : undefined}
-                    className={`flex items-center gap-2.5 px-2 py-1.5 rounded-md text-sm transition-colors ${
+                    className={`flex items-center gap-2.5 px-2 py-1.5 rounded-md text-sm transition-all ${
                       active
-                        ? "bg-primary/10 text-primary font-medium"
-                        : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+                        ? "bg-primary/12 text-primary font-medium shadow-[inset_2px_0_0_var(--primary)] pl-[calc(0.5rem-2px)]"
+                        : "text-sidebar-foreground/75 hover:bg-sidebar-accent/70 hover:text-sidebar-foreground"
                     }`}
                   >
                     <Icon className="size-4" />
@@ -149,7 +152,7 @@ export function AppSidebar() {
               >
                 {liveJob.id} · {liveJob.status}
               </Link>
-              <div className="text-[10px] text-muted-foreground mt-1">
+              <div className="text-[11px] text-muted-foreground mt-1">
                 {liveJob.runId ? `run ${liveJob.runId}` : "run id when CLI finishes"}
               </div>
             </div>

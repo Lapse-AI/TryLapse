@@ -198,7 +198,7 @@ export function PersonaStudioPanel({
                   <div className="text-sm font-medium">{p.name}</div>
                   <div className="text-[11px] text-muted-foreground">{p.role}</div>
                   {p.reason && (
-                    <div className="text-[10px] text-muted-foreground mt-1">{p.reason}</div>
+                    <div className="text-[11px] text-muted-foreground mt-1">{p.reason}</div>
                   )}
                 </div>
                 <button
@@ -261,7 +261,7 @@ export function PersonaStudioPanel({
             </Link>
           </div>
           {draftFragment && (
-            <pre className="text-[10px] font-mono bg-surface-2 border border-border rounded p-2 overflow-x-auto whitespace-pre-wrap">
+            <pre className="text-[11px] font-mono bg-surface-2 border border-border rounded p-2 overflow-x-auto whitespace-pre-wrap">
               {draftFragment}
             </pre>
           )}

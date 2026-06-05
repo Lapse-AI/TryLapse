@@ -54,7 +54,7 @@ export function AnnotatedScreenshot({
       {showBox && region && (
         <>
           <div
-            className="absolute border-2 border-primary pointer-events-none rounded-sm shadow-[0_0_0_1px_rgba(255,255,255,0.6)]"
+            className="absolute border-2 border-primary pointer-events-none rounded-sm shadow-[0_0_0_1px_color-mix(in_oklab,white_60%,transparent)]"
             style={{
               left: `${(region.x / vpW) * 100}%`,
               top: `${(region.y / vpH) * 100}%`,
@@ -65,7 +65,7 @@ export function AnnotatedScreenshot({
           />
           {region.label && (
             <div
-              className="absolute text-[10px] font-medium px-1.5 py-0.5 rounded bg-primary text-primary-foreground shadow-sm max-w-[90%] truncate pointer-events-none"
+              className="absolute text-[11px] font-medium px-1.5 py-0.5 rounded bg-primary text-primary-foreground shadow-sm max-w-[90%] truncate pointer-events-none"
               style={{
                 left: `${(region.x / vpW) * 100}%`,
                 top: `max(0%, calc(${(region.y / vpH) * 100}% - 22px))`,
