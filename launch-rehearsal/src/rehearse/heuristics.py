@@ -440,18 +440,37 @@ def _score_dimensions(
     fail_count = sum(1 for s in steps if s.outcome == "fail")
     unlabeled = sum(s.unlabeled_button_count for s in steps)
     avg_duration = sum(s.duration_ms for s in steps) / len(steps)
-    sparse = sum(1 for s in steps if len(s.body_text_excerpt) < 80)
+
+    # Information: use heading structure + body length, not just char count
+    total_inputs = sum(getattr(s, "input_count", 0) for s in steps)
+    labeled_inputs = sum(getattr(s, "labeled_input_count", 0) for s in steps)
+    total_headings = sum(getattr(s, "heading_count", 0) for s in steps)
+    total_links = sum(getattr(s, "link_count", 0) for s in steps)
+    sparse = sum(
+        1 for s in steps
+        if len(s.body_text_excerpt or "") < 80
+        and getattr(s, "heading_count", 0) == 0
+        and getattr(s, "link_count", 0) < 3
+    )
+    has_structure = total_headings > 0 and total_links > 2
 
     func = 5 if pass_rate >= 0.9 and fail_count == 0 else 4 if pass_rate >= 0.7 else 3 if pass_rate >= 0.5 else 2
     ui = 5 if unlabeled == 0 and avg_duration < 4000 else 4 if unlabeled <= 2 else 3 if unlabeled <= 5 else 2
-    info = 5 if sparse == 0 else 4 if sparse <= 1 else 3 if sparse <= 2 else 2
+    info = 5 if sparse == 0 and has_structure else 4 if sparse <= 1 else 3 if sparse <= 2 else 2
     if sitemap and sitemap.orphan_paths:
         info = max(2, info - 1)
 
+    # Build descriptive signals
+    input_label_note = ""
+    if total_inputs > 0:
+        unlabeled_inputs = total_inputs - labeled_inputs
+        if unlabeled_inputs > 0:
+            input_label_note = f"; {unlabeled_inputs}/{total_inputs} inputs unlabeled"
+
     return {
         "Functionality": (func, f"{pass_rate:.0%} steps pass; {fail_count} failures"),
-        "UI/UX": (ui, f"{unlabeled} unlabeled buttons; ~{int(avg_duration)}ms avg step"),
-        "Information clarity": (info, f"{sparse} sparse-content pages"),
+        "UI/UX": (ui, f"{unlabeled} unlabeled buttons{input_label_note}; ~{int(avg_duration)}ms avg step"),
+        "Information clarity": (info, f"{sparse} content-sparse pages; {total_headings} headings; {total_links} links"),
     }
 
 
