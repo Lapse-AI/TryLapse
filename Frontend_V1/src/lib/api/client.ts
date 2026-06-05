@@ -214,6 +214,27 @@ export const api = {
       method: "POST",
       body: JSON.stringify(body),
     }),
+  getProductModel: () => apiFetch<Record<string, unknown>>("/api/product"),
+  analyzeProduct: (body: { targetUrl: string; productName?: string; sitemapPages?: unknown[] }) =>
+    apiFetch<Record<string, unknown>>("/api/product/analyze", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+  updateProductModel: (updates: Record<string, unknown>) =>
+    apiFetch<Record<string, unknown>>("/api/product/update", {
+      method: "POST",
+      body: JSON.stringify(updates),
+    }),
+  discoverJourneys: (personas: unknown[]) =>
+    apiFetch<{ personaJourneys: unknown[]; count: number }>("/api/journeys/discover", {
+      method: "POST",
+      body: JSON.stringify({ personas }),
+    }),
+  discoverJourneysForPersona: (persona: unknown) =>
+    apiFetch<Record<string, unknown>>("/api/journeys/discover/persona", {
+      method: "POST",
+      body: JSON.stringify({ persona }),
+    }),
   getExperimentReport: (jobId: string) =>
     apiFetch<{
       jobId: string;
@@ -408,4 +429,35 @@ export const api = {
       body: JSON.stringify({ email, password }),
     }),
   authMe: () => apiFetch<{ id: string; email: string; name: string }>("/auth/me"),
+
+  // Workspaces
+  myWorkspaces: () =>
+    apiFetch<
+      {
+        id: string;
+        slug: string;
+        name: string;
+        ownerId: string;
+        targetUrl: string;
+        productName: string;
+        teamRole: string;
+        createdAt: string;
+      }[]
+    >("/api/workspaces/me"),
+  createWorkspace: (body: {
+    name: string;
+    targetUrl: string;
+    productName: string;
+    teamRole: string;
+  }) =>
+    apiFetch<{
+      id: string;
+      slug: string;
+      name: string;
+      ownerId: string;
+      targetUrl: string;
+      productName: string;
+      teamRole: string;
+      createdAt: string;
+    }>("/api/workspaces", { method: "POST", body: JSON.stringify(body) }),
 };

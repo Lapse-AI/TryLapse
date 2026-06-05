@@ -138,6 +138,14 @@ class _Handler(BaseHTTPRequestHandler):
         except (json.JSONDecodeError, UnicodeDecodeError):
             return {}
 
+    def _require_jwt(self) -> dict | None:
+        """Return JWT payload dict if a valid token is present, else None."""
+        auth_header = self.headers.get("Authorization", "")
+        if not auth_header.startswith("Bearer "):
+            return None
+        from rehearse.dashboard.auth_store import decode_token
+        return decode_token(auth_header[7:])
+
     def _check_auth(self, path: str) -> bool:
         """Return True if request is authorised. Sends 401 and returns False otherwise."""
         if not _API_TOKEN:
@@ -179,18 +187,24 @@ class _Handler(BaseHTTPRequestHandler):
             return
 
         if path == "/auth/me":
-            auth_header = self.headers.get("Authorization", "")
-            if auth_header.startswith("Bearer "):
-                from rehearse.dashboard.auth_store import decode_token
-                payload = decode_token(auth_header[7:])
-                if payload:
-                    self._send_json({
-                        "id": payload["sub"],
-                        "email": payload["email"],
-                        "name": payload["name"],
-                    })
-                    return
+            payload = self._require_jwt()
+            if payload:
+                self._send_json({
+                    "id": payload["sub"],
+                    "email": payload["email"],
+                    "name": payload["name"],
+                })
+                return
             self._send_json({"error": "Not authenticated"}, status=401)
+            return
+
+        if path == "/api/workspaces/me":
+            payload = self._require_jwt()
+            if not payload:
+                self._send_json({"error": "Authentication required"}, status=401)
+                return
+            from rehearse.dashboard.workspace_store import get_workspaces_for_user
+            self._send_json(get_workspaces_for_user(root, payload["sub"]))
             return
 
         if not self._check_auth(path):
@@ -351,6 +365,15 @@ class _Handler(BaseHTTPRequestHandler):
             self._send_json(search_artifacts(root, q))
             return
 
+        if path == "/api/product":
+            from rehearse.product_intelligence import load_product_model
+            model = load_product_model(root)
+            if not model:
+                self._send_json({"error": "No product model — run POST /api/product/analyze first"}, status=404)
+                return
+            self._send_json(model)
+            return
+
         if path == "/api/workspace":
             self._send_json(get_workspace(root))
             return
@@ -494,6 +517,28 @@ class _Handler(BaseHTTPRequestHandler):
             self._send_json({"token": issue_token(user), "user": user})
             return
 
+        if path == "/api/workspaces":
+            payload = self._require_jwt()
+            if not payload:
+                self._send_json({"error": "Authentication required"}, status=401)
+                return
+            body = self._read_json_body()
+            from rehearse.dashboard.workspace_store import create_workspace
+            try:
+                ws = create_workspace(
+                    root,
+                    owner_id=payload["sub"],
+                    name=str(body.get("name") or ""),
+                    target_url=str(body.get("targetUrl") or ""),
+                    product_name=str(body.get("productName") or ""),
+                    team_role=str(body.get("teamRole") or ""),
+                )
+            except Exception as exc:
+                self._send_json({"error": str(exc)}, status=400)
+                return
+            self._send_json(ws, status=201)
+            return
+
         if not self._check_auth(path):
             return
 
@@ -596,6 +641,74 @@ class _Handler(BaseHTTPRequestHandler):
             except ValueError as exc:
                 self._send_json({"error": str(exc)}, status=400)
                 return
+            self._send_json(result)
+            return
+
+        if path == "/api/product/analyze":
+            body = self._read_json_body()
+            target_url = str(body.get("targetUrl") or body.get("url") or "")
+            if not target_url:
+                self._send_json({"error": "targetUrl required"}, status=400)
+                return
+            from rehearse.product_intelligence import analyze_product, save_product_model
+            # Use existing sitemap data if available (from a recent run)
+            sitemap_pages = list(body.get("sitemapPages") or [])
+            interaction_map = dict(body.get("interactionMap") or {})
+            api_calls = list(body.get("apiCalls") or [])
+            # If no crawl data provided, try to load from latest run
+            if not sitemap_pages:
+                summaries = list_run_summaries(root)
+                if summaries:
+                    latest = summaries[0]
+                    latest_bundle = load_bundle(root, latest.get("id") or "")
+                    if latest_bundle:
+                        sitemap_pages = latest_bundle.get("sitemapPages") or []
+            model = analyze_product(
+                target_url,
+                product_name=str(body.get("productName") or ""),
+                sitemap_pages=sitemap_pages,
+                interaction_map=interaction_map,
+                api_calls=api_calls,
+            )
+            save_product_model(root, model)
+            self._send_json(model)
+            return
+
+        if path == "/api/product/update":
+            body = self._read_json_body()
+            from rehearse.product_intelligence import load_product_model, save_product_model
+            existing = load_product_model(root) or {}
+            existing.update({k: v for k, v in body.items() if k != "source"})
+            save_product_model(root, existing)
+            self._send_json(existing)
+            return
+
+        if path == "/api/journeys/discover":
+            body = self._read_json_body()
+            personas = list(body.get("personas") or [])
+            if not personas:
+                self._send_json({"error": "personas list required"}, status=400)
+                return
+            from rehearse.product_intelligence import load_product_model
+            from rehearse.persona_journey_discovery import discover_journeys_for_all_personas
+            product_model = load_product_model(root) or {}
+            if not product_model:
+                self._send_json({"error": "No product model — run POST /api/product/analyze first"}, status=400)
+                return
+            results = discover_journeys_for_all_personas(personas, product_model)
+            self._send_json({"personaJourneys": results, "count": len(results)})
+            return
+
+        if path == "/api/journeys/discover/persona":
+            body = self._read_json_body()
+            persona = dict(body.get("persona") or {})
+            if not persona:
+                self._send_json({"error": "persona required"}, status=400)
+                return
+            from rehearse.product_intelligence import load_product_model
+            from rehearse.persona_journey_discovery import discover_journeys_for_persona
+            product_model = load_product_model(root) or {}
+            result = discover_journeys_for_persona(persona, product_model)
             self._send_json(result)
             return
 
@@ -852,9 +965,11 @@ class _Handler(BaseHTTPRequestHandler):
 
 def serve_dashboard(artifacts_root: Path, host: str = "127.0.0.1", port: int = 8765) -> None:
     artifacts_root = artifacts_root.resolve()
-    # Ensure users table exists (idempotent)
+    # Ensure auth + workspace tables exist (idempotent)
     from rehearse.dashboard.auth_store import ensure_users_table
+    from rehearse.dashboard.workspace_store import ensure_workspaces_table
     ensure_users_table(artifacts_root)
+    ensure_workspaces_table(artifacts_root)
     # Migrate legacy jobs.json → SQLite on first boot
     from rehearse.dashboard.job_store import migrate_from_json
     migrated = migrate_from_json(artifacts_root)

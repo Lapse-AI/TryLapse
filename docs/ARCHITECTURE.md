@@ -127,3 +127,44 @@ User → Init wizard → POST /api/configs → config.yaml saved
 | `REHEARSE_PASSWORD` | _(unset)_ | Staging password |
 | `VITE_REHEARSE_API` | _(unset)_ | Frontend: override API base URL (e.g. Railway domain) |
 | `VITE_REHEARSE_API_TOKEN` | _(unset)_ | Frontend: Bearer token to send with every request |
+
+---
+
+## Deep Analysis Engine (Phase 1–6)
+
+### Architecture overview
+
+```
+Deep Discovery Bot (deep_crawler.py)
+  → InteractionMap: every button, form, modal, API call, chatbot, filter
+
+Product Intelligence (product_intelligence.py)
+  → ProductModel: purpose, type, features, workflows, IA concerns, quality concerns
+  → Stored in artifacts/product_model.json — user-editable via PUT /api/product/update
+
+Per-Persona Journey Discovery (persona_journey_discovery.py)
+  → Each persona reads ProductModel + its goals
+  → LLM generates 10–100 journeys with frequency, sub-flows, failure signals
+  → POST /api/journeys/discover → parallel discovery for all personas
+
+Behavioral Judge (behavioral_judge.py)
+  → LLM evaluates every step: "Did this serve the persona's goal?"
+  → Not just technical pass/fail — chatbot quality, navigation friction, IA gaps
+  → judge_step(): per-step behavioral verdict + friction signals
+  → judge_journey(): synthesised UX improvements + journey length assessment
+```
+
+### New API endpoints
+
+| Endpoint | Purpose |
+|----------|---------|
+| `GET /api/product` | Load stored product model |
+| `POST /api/product/analyze` | Run LLM analysis from crawl data → store ProductModel |
+| `POST /api/product/update` | Partial update to ProductModel (user edits) |
+| `POST /api/journeys/discover` | Discover journeys for all personas in parallel |
+| `POST /api/journeys/discover/persona` | Discover journeys for one persona |
+
+### Two-lens analysis model
+
+**Lens A — Technical Inspector**: API failures, console errors, broken flows, form errors, performance
+**Lens B — Behavioral Analyst**: goal completion, navigation friction, chatbot quality, information architecture, journey length vs access frequency
