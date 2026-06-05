@@ -33,6 +33,10 @@ import {
   GitCompare,
   Network,
   Loader2,
+  TrendingUp,
+  TrendingDown,
+  Minus,
+  Heart,
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
@@ -113,7 +117,7 @@ function Index() {
           <>
             <Chip tone={liveChipTone}>
               <span
-                className={`size-1.5 rounded-full ${live ? "bg-ready pulse-dot" : "bg-warn"}`}
+                className={`size-1.5 rounded-full ${live ? "bg-ready" : "bg-warn pulse-dot"}`}
               />{" "}
               {liveChipLabel}
             </Chip>
@@ -146,31 +150,145 @@ function Index() {
       />
 
       <div className="p-4 md:p-8 space-y-7 max-w-[1400px]">
-        {digest && (
-          <Panel className="p-5 md:p-6 space-y-3 panel-quiet">
-            <div className="flex items-center gap-2 flex-wrap">
-              <Sparkles className="size-4 text-muted-foreground" />
-              <h2 className="font-display text-lg font-semibold">Command center digest</h2>
-              <span className="text-xs text-muted-foreground">
-                {digest.source === "llm+template" ? "AI + rules" : "Rules"} ·{" "}
-                {digest.readinessTrend}
-              </span>
-            </div>
-            <p className="text-sm leading-relaxed max-w-prose">{digest.headline}</p>
-            <ul className="text-sm space-y-1.5 list-disc pl-5">
-              {digest.bullets.map((b) => (
-                <li key={b}>{b}</li>
-              ))}
-            </ul>
-          </Panel>
-        )}
+        {digest &&
+          (() => {
+            const trendWord = digest.readinessTrend?.toLowerCase() ?? "";
+            const trendTone =
+              trendWord.includes("improv") || trendWord.includes("stable")
+                ? "ready"
+                : trendWord.includes("soft") || trendWord.includes("declin")
+                  ? "warn"
+                  : "neutral";
+            const TrendIcon = trendWord.includes("improv")
+              ? TrendingUp
+              : trendWord.includes("soft") || trendWord.includes("declin")
+                ? TrendingDown
+                : Minus;
+            return (
+              <div className="relative overflow-hidden rounded-xl panel-glass px-6 py-5">
+                {/* Vertical gradient accent bar */}
+                <div
+                  className="absolute left-0 top-0 bottom-0 w-[3px]"
+                  style={{
+                    background: `linear-gradient(180deg, var(--primary) 0%, color-mix(in oklab, var(--primary) 15%, transparent) 100%)`,
+                  }}
+                />
+
+                {/* Header row */}
+                <div className="flex items-center gap-2.5 flex-wrap mb-3">
+                  <Sparkles className="size-3.5 text-primary" />
+                  <span className="font-display text-[15px] font-semibold">Situation report</span>
+                  <Chip>{digest.source === "llm+template" ? "AI + rules" : "Rules"}</Chip>
+                  <Chip tone={trendTone as "ready" | "warn" | "neutral"}>
+                    <TrendIcon className="size-3" />
+                    {digest.readinessTrend}
+                  </Chip>
+                </div>
+
+                {/* Headline */}
+                <p className="text-sm leading-relaxed max-w-2xl font-medium text-foreground/90">
+                  {digest.headline}
+                </p>
+
+                {/* Bullets */}
+                <ul className="mt-3 space-y-1.5">
+                  {digest.bullets.map((b) => (
+                    <li key={b} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <span className="mt-[7px] size-1 rounded-full bg-primary/40 shrink-0" />
+                      {b}
+                    </li>
+                  ))}
+                </ul>
+
+                {/* Signal mini-cards */}
+                <div className="mt-5 pt-4 border-t border-border/40 grid grid-cols-1 md:grid-cols-3 gap-3">
+                  {/* Top blocker */}
+                  <div className="rounded-lg border border-border/60 bg-surface/70 p-3.5 backdrop-blur-sm">
+                    <div className="flex items-center gap-1.5 mb-2">
+                      <AlertOctagon className="size-3 text-muted-foreground" />
+                      <span className="text-[11px] text-muted-foreground font-medium">
+                        Top signal
+                      </span>
+                    </div>
+                    {topBlocker ? (
+                      <>
+                        <p className="text-sm font-semibold leading-snug line-clamp-2">
+                          {topBlocker.title}
+                        </p>
+                        <div className="flex items-center gap-1.5 mt-2">
+                          <Chip tone="danger">{topBlocker.severity}</Chip>
+                          <Chip>{topBlocker.dimension}</Chip>
+                        </div>
+                      </>
+                    ) : (
+                      <p className="text-sm font-semibold text-ready">No blockers this run</p>
+                    )}
+                  </div>
+
+                  {/* Readiness trend */}
+                  <div className="rounded-lg border border-border/60 bg-surface/70 p-3.5 backdrop-blur-sm">
+                    <div className="flex items-center gap-1.5 mb-2">
+                      <Activity className="size-3 text-muted-foreground" />
+                      <span className="text-[11px] text-muted-foreground font-medium">
+                        Readiness trend
+                      </span>
+                    </div>
+                    <div className="flex items-baseline gap-1.5">
+                      <span
+                        className="font-display text-2xl font-bold tabular-nums"
+                        style={{ color: `var(--${band})` }}
+                      >
+                        {latest.readiness}
+                      </span>
+                      <span className="text-[11px] text-muted-foreground font-mono">
+                        / 100 · {latest.readinessBand}
+                      </span>
+                    </div>
+                    <div className="mt-2 h-8">
+                      <Sparkline
+                        values={(trends?.readiness ?? [latest.readiness]) as number[]}
+                        height={28}
+                        color={`var(--${trendTone === "ready" ? "ready" : trendTone === "warn" ? "warn" : "info"})`}
+                        className="w-full"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Latest delight */}
+                  <div className="rounded-lg border border-border/60 bg-surface/70 p-3.5 backdrop-blur-sm">
+                    <div className="flex items-center gap-1.5 mb-2">
+                      <Heart className="size-3 text-muted-foreground" />
+                      <span className="text-[11px] text-muted-foreground font-medium">
+                        Latest delight
+                      </span>
+                    </div>
+                    {topDelight ? (
+                      <>
+                        <p className="text-sm font-semibold leading-snug line-clamp-2">
+                          {topDelight.title}
+                        </p>
+                        <p className="mt-1.5 text-[11px] text-muted-foreground truncate italic">
+                          &ldquo;{topDelight.quote}&rdquo;
+                        </p>
+                      </>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">
+                        {latest.delights} delight{latest.delights !== 1 ? "s" : ""} found this run
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
         {/* Quick actions */}
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             disabled={!live || trigger.isPending}
             onClick={() => trigger.mutate({ mode: "run" })}
-            className="text-xs px-3 py-1.5 rounded-md bg-primary text-primary-foreground inline-flex items-center gap-1.5 font-medium hover:opacity-95 disabled:opacity-50"
+            className="text-xs px-3.5 py-2 rounded-lg bg-primary text-primary-foreground inline-flex items-center gap-1.5 font-semibold hover:opacity-90 disabled:opacity-40 transition-all"
+            style={{ boxShadow: "var(--shadow-primary)" }}
           >
             {trigger.isPending ? (
               <Loader2 className="size-3.5 animate-spin" />
@@ -190,11 +308,11 @@ function Index() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-          <Panel className="md:col-span-4 p-6 flex items-center justify-center border-border/60">
+          <Panel className="md:col-span-4 p-6 flex items-center justify-center panel-elevated">
             <ReadinessGauge value={latest.readiness} band={band} />
           </Panel>
 
-          <Panel className="md:col-span-5 p-6 border-border/60">
+          <Panel className="md:col-span-5 p-6 panel-glass">
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-xs text-muted-foreground">Latest run</div>
@@ -243,7 +361,7 @@ function Index() {
             </div>
           </Panel>
 
-          <Panel className="md:col-span-3 p-6 panel-quiet flex flex-col">
+          <Panel className="md:col-span-3 p-6 panel-glass flex flex-col">
             <div className="text-xs text-muted-foreground">{runSummaries.length}-run trend</div>
             <div className="mt-3 grow flex items-center">
               <Sparkline

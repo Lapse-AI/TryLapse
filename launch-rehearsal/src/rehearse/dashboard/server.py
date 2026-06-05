@@ -57,7 +57,7 @@ _CORS_ORIGINS: set[str] = set(
 )
 
 # Paths that bypass auth (always public)
-_PUBLIC_PATHS = {"/api/health", "/"}
+_PUBLIC_PATHS = {"/api/health", "/", "/auth/login", "/auth/signup", "/auth/me"}
 
 
 def _cors_headers(origin: str | None) -> dict[str, str]:
@@ -144,14 +144,22 @@ class _Handler(BaseHTTPRequestHandler):
             return True  # auth disabled — local dev
         if path in _PUBLIC_PATHS or path.startswith("/static") or not path.startswith("/api"):
             return True
-        # Accept Bearer token in Authorization header or ?token= query param
+        # Accept static API token or a valid user JWT
         auth_header = self.headers.get("Authorization", "")
-        if auth_header.startswith("Bearer ") and auth_header[7:] == _API_TOKEN:
-            return True
+        if auth_header.startswith("Bearer "):
+            token = auth_header[7:]
+            if token == _API_TOKEN:
+                return True
+            from rehearse.dashboard.auth_store import decode_token
+            if decode_token(token) is not None:
+                return True
         qs = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
         if (qs.get("token") or [""])[0] == _API_TOKEN:
             return True
-        self._send_json({"error": "Unauthorized — set Authorization: Bearer <REHEARSE_API_TOKEN>"}, status=401)
+        self._send_json(
+            {"error": "Unauthorized — sign in at /auth/login or set Authorization: Bearer <REHEARSE_API_TOKEN>"},
+            status=401,
+        )
         return False
 
     def do_OPTIONS(self) -> None:  # noqa: N802
@@ -168,6 +176,21 @@ class _Handler(BaseHTTPRequestHandler):
 
         if path == "/api/health":
             self._send_json({"ok": True, "artifacts": str(root)})
+            return
+
+        if path == "/auth/me":
+            auth_header = self.headers.get("Authorization", "")
+            if auth_header.startswith("Bearer "):
+                from rehearse.dashboard.auth_store import decode_token
+                payload = decode_token(auth_header[7:])
+                if payload:
+                    self._send_json({
+                        "id": payload["sub"],
+                        "email": payload["email"],
+                        "name": payload["name"],
+                    })
+                    return
+            self._send_json({"error": "Not authenticated"}, status=401)
             return
 
         if not self._check_auth(path):
@@ -437,6 +460,39 @@ class _Handler(BaseHTTPRequestHandler):
         parsed = urllib.parse.urlparse(self.path)
         path = parsed.path.rstrip("/") or "/"
         root = self.server.artifacts_root
+
+        # Auth endpoints — handled before token check (always public)
+        if path == "/auth/signup":
+            body = self._read_json_body()
+            from rehearse.dashboard.auth_store import create_user, issue_token
+            user = create_user(
+                root,
+                email=str(body.get("email") or ""),
+                password=str(body.get("password") or ""),
+                name=str(body.get("name") or ""),
+            )
+            if not user:
+                self._send_json({"error": "Email already in use"}, status=409)
+                return
+            self._send_json(
+                {"token": issue_token(user), "user": user},
+                status=201,
+            )
+            return
+
+        if path == "/auth/login":
+            body = self._read_json_body()
+            from rehearse.dashboard.auth_store import authenticate_user, issue_token
+            user = authenticate_user(
+                root,
+                email=str(body.get("email") or ""),
+                password=str(body.get("password") or ""),
+            )
+            if not user:
+                self._send_json({"error": "Invalid email or password"}, status=401)
+                return
+            self._send_json({"token": issue_token(user), "user": user})
+            return
 
         if not self._check_auth(path):
             return
@@ -796,6 +852,9 @@ class _Handler(BaseHTTPRequestHandler):
 
 def serve_dashboard(artifacts_root: Path, host: str = "127.0.0.1", port: int = 8765) -> None:
     artifacts_root = artifacts_root.resolve()
+    # Ensure users table exists (idempotent)
+    from rehearse.dashboard.auth_store import ensure_users_table
+    ensure_users_table(artifacts_root)
     # Migrate legacy jobs.json → SQLite on first boot
     from rehearse.dashboard.job_store import migrate_from_json
     migrated = migrate_from_json(artifacts_root)

@@ -372,7 +372,7 @@ function RunDetail() {
                     {runJourneys.map((j) => (
                       <th key={j.id} className="text-left p-2 font-normal">
                         <div className="text-xs font-medium">{j.name}</div>
-                        <div className="text-[10px] font-mono text-muted-foreground mt-0.5">
+                        <div className="text-[11px] font-mono text-muted-foreground mt-0.5">
                           {j.category} · {j.steps} steps
                         </div>
                       </th>
@@ -384,7 +384,7 @@ function RunDetail() {
                     <tr key={p.id} className="border-t border-border">
                       <td className="p-2 align-top">
                         <div className="text-sm font-medium">{p.name}</div>
-                        <div className="text-[10px] font-mono text-muted-foreground">{p.role}</div>
+                        <div className="text-[11px] font-mono text-muted-foreground">{p.role}</div>
                       </td>
                       {runJourneys.map((j, ji) => (
                         <td key={j.id} className="p-2">

@@ -270,7 +270,7 @@ function SiteMap() {
                   {p.workflow ? ` · ${p.workflow}` : ""}
                   {p.errors ? ` · ${p.errors} err` : ""}
                 </div>
-                <span className="mt-1 text-[10px] text-primary inline-flex items-center gap-1">
+                <span className="mt-1 text-[11px] text-primary inline-flex items-center gap-1">
                   <Camera className="size-3" /> preview
                 </span>
               </button>

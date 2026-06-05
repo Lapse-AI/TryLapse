@@ -59,7 +59,7 @@ function Agents() {
                       {agentsInPhase.length ? "done" : "skipped"}
                     </Chip>
                     {agentsInPhase[0]?.handoff && (
-                      <div className="text-[10px] font-mono text-muted-foreground mt-2">
+                      <div className="text-[11px] font-mono text-muted-foreground mt-2">
                         {Object.entries(agentsInPhase[0].handoff)
                           .map(([k, v]) => `${k}: ${v}`)
                           .join(" · ")}

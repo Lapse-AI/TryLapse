@@ -17,6 +17,24 @@ from rehearse.workflows import WorkflowGraph
 READINESS_SCORE = {"Green": 85, "Amber": 72, "Red": 38}
 STATUS_MAP = {"Green": "ready", "Amber": "warn", "Red": "danger"}
 EXTRA_DIMENSIONS = ["Performance", "Accessibility", "Trust", "Onboarding", "Recovery"]
+
+
+def _screenshot_path(artifacts_root: Path | None, run_id: str, step_id: str) -> str:
+    """Return the relative artifact path for a step screenshot.
+
+    Prefers the plain .png; falls back to -error.png when a step timed out or
+    failed (the runner saves those with an -error suffix). Returns the plain
+    path when artifacts_root is unknown (frontend will get a 404 rather than
+    a wrong filename).
+    """
+    rel_plain = f"artifacts/{run_id}/{step_id}.png"
+    rel_error = f"artifacts/{run_id}/{step_id}-error.png"
+    if artifacts_root is not None:
+        plain = artifacts_root / "artifacts" / run_id / f"{step_id}.png"
+        error = artifacts_root / "artifacts" / run_id / f"{step_id}-error.png"
+        if not plain.is_file() and error.is_file():
+            return rel_error
+    return rel_plain
 # Heuristic run cost when LLM token usage is unavailable (USD)
 _HEURISTIC_BASE_USD = 0.05
 _HEURISTIC_PER_AGENT_USD = 0.02
@@ -78,7 +96,8 @@ def _compute_cost_estimate(
 
 
 def _named_error_issues(
-    config: RunConfig, evidence: RunEvidence, existing_step_ids: set[str]
+    config: RunConfig, evidence: RunEvidence, existing_step_ids: set[str],
+    artifacts_root: Path | None = None,
 ) -> list[dict[str, Any]]:
     """Surface failed steps with named error types as bundle issues."""
     issues: list[dict[str, Any]] = []
@@ -106,7 +125,7 @@ def _named_error_issues(
                 "errorType": step.error_type,
                 "severityReason": f"Named error {step.error_type}",
                 "suggestion": None,
-                "screenshotPath": f"artifacts/{evidence.run_id}/{step.step_id}.png",
+                "screenshotPath": _screenshot_path(artifacts_root, evidence.run_id, step.step_id),
             }
         )
         existing_step_ids.add(step.step_id)
@@ -498,7 +517,7 @@ def _serialize_steps(evidence: RunEvidence, artifacts_root: Path, output_dir: Pa
     return out
 
 
-def _serialize_issues(config: RunConfig, evidence: RunEvidence, analysis: AnalysisResult) -> list[dict[str, Any]]:
+def _serialize_issues(config: RunConfig, evidence: RunEvidence, analysis: AnalysisResult, artifacts_root: Path | None = None) -> list[dict[str, Any]]:
     issues: list[dict[str, Any]] = []
     for i, f in enumerate(analysis.issues):
         sev = _severity_to_ui(f.severity, f, evidence)
@@ -525,7 +544,7 @@ def _serialize_issues(config: RunConfig, evidence: RunEvidence, analysis: Analys
                 "evidence": f.detail,
                 "severityReason": f"P{sev[-1]} from automated heuristics" if sev.startswith("P") else None,
                 "suggestion": None,
-                "screenshotPath": f"artifacts/{evidence.run_id}/{f.step_id}.png",
+                "screenshotPath": _screenshot_path(artifacts_root, evidence.run_id, f.step_id),
             }
         if step and step.error_type:
             issue["errorType"] = step.error_type
@@ -718,9 +737,9 @@ def build_run_bundle(
 ) -> dict[str, Any]:
     band = analysis.readiness
     status = STATUS_MAP.get(band, "neutral")
-    issues = _serialize_issues(config, evidence, analysis)
+    issues = _serialize_issues(config, evidence, analysis, artifacts_root=output_dir)
     issue_step_ids = {i["stepId"] for i in issues if i.get("stepId")}
-    issues.extend(_named_error_issues(config, evidence, issue_step_ids))
+    issues.extend(_named_error_issues(config, evidence, issue_step_ids, artifacts_root=output_dir))
     _enrich_unlabeled_issue_totals(issues, evidence)
     dimensions = _expand_dimensions(analysis.dimensions, evidence)
     _append_dimension_rollup_issues(issues, evidence, dimensions, config)

@@ -32,7 +32,7 @@ export function RunHistoryLiveRows({ jobs, group }: { jobs: JobRecord[]; group: 
               ) : (
                 <span className="font-mono text-xs text-muted-foreground">pending…</span>
               )}
-              <Link to="/runner" className="font-mono text-[10px] text-info hover:underline">
+              <Link to="/runner" className="font-mono text-[11px] text-info hover:underline">
                 job {j.id}
               </Link>
             </div>

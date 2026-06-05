@@ -87,7 +87,7 @@ function RunsList() {
                     <div className="flex items-center gap-2">
                       <StatusDot status={r.status} />
                       <span className="font-mono tabular-nums">{r.readiness}</span>
-                      <span className="text-[10px] text-muted-foreground">{r.readinessBand}</span>
+                      <span className="text-[11px] text-muted-foreground">{r.readinessBand}</span>
                     </div>
                   </td>
                   <td className="px-5 py-3 font-mono tabular-nums text-danger">{r.blockers}</td>

@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@400;450;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
 
 /* G12: hide Lovable dev tagger badge during partner screen shares */
 [data-lovable-tagger],
@@ -16,8 +16,14 @@
 @theme inline {
   --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* 5-step semantic type scale (product register: fixed rem, 1.18 ratio) */
+  --text-label: 0.6875rem;   /* 11px — chips, badges, metadata labels */
+  --text-meta:  0.8125rem;   /* 13px — secondary UI, table cells, hints */
+  --text-body:  0.9375rem;   /* 15px — body copy, form inputs, card content */
+  --text-sub:   1.125rem;    /* 18px — section headings, subheadings */
+  --text-head:  1.5rem;      /* 24px — page titles */
 
   --radius-sm: 6px;
   --radius-md: 8px;
@@ -66,51 +72,71 @@
 }
 
 :root {
-  /* Light, classy SaaS — warm off-white canvas, slate ink, indigo accent */
-  --background: oklch(0.985 0.003 260);
-  --foreground: oklch(0.24 0.02 260);
-  --surface: oklch(1 0 0);
-  --surface-2: oklch(0.975 0.004 260);
-  --surface-3: oklch(0.955 0.006 260);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.24 0.02 260);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.24 0.02 260);
+  /* Elevated B2B palette — cool indigo-blue foundation with depth layers */
+  --background: oklch(0.967 0.01 265);
+  --foreground: oklch(0.21 0.025 260);
+  --surface: oklch(0.998 0.002 260);
+  --surface-2: oklch(0.972 0.007 263);
+  --surface-3: oklch(0.952 0.01 263);
+  --card: oklch(0.998 0.002 260);
+  --card-foreground: oklch(0.21 0.025 260);
+  --popover: oklch(0.998 0.002 260);
+  --popover-foreground: oklch(0.21 0.025 260);
 
-  --primary: oklch(0.5 0.14 265);
-  --primary-foreground: oklch(0.99 0.005 260);
-  --secondary: oklch(0.955 0.006 260);
-  --secondary-foreground: oklch(0.28 0.02 260);
-  --muted: oklch(0.965 0.005 260);
-  --muted-foreground: oklch(0.52 0.015 260);
-  --accent: oklch(0.96 0.01 265);
-  --accent-foreground: oklch(0.28 0.02 260);
-  --destructive: oklch(0.6 0.2 25);
-  --destructive-foreground: oklch(0.99 0.005 260);
-  --border: oklch(0.92 0.006 260);
-  --border-strong: oklch(0.87 0.008 260);
-  --input: oklch(0.92 0.006 260);
-  --ring: oklch(0.5 0.14 265);
+  --primary: oklch(0.52 0.18 265);
+  --primary-foreground: oklch(0.99 0.003 260);
+  --secondary: oklch(0.952 0.009 263);
+  --secondary-foreground: oklch(0.26 0.022 260);
+  --muted: oklch(0.962 0.007 263);
+  --muted-foreground: oklch(0.50 0.018 260);
+  --accent: oklch(0.955 0.014 265);
+  --accent-foreground: oklch(0.26 0.022 260);
+  --destructive: oklch(0.58 0.22 25);
+  --destructive-foreground: oklch(0.99 0.003 260);
+  --border: oklch(0.905 0.009 262);
+  --border-strong: oklch(0.855 0.012 262);
+  --input: oklch(0.905 0.009 262);
+  --ring: oklch(0.52 0.18 265);
 
-  --ready: oklch(0.58 0.13 160);
-  --warn: oklch(0.7 0.13 70);
-  --danger: oklch(0.6 0.2 25);
-  --info: oklch(0.58 0.12 235);
-  --violet: oklch(0.55 0.16 295);
+  --ready: oklch(0.56 0.14 160);
+  --warn: oklch(0.68 0.14 68);
+  --danger: oklch(0.58 0.22 25);
+  --info: oklch(0.56 0.14 235);
+  --violet: oklch(0.54 0.18 295);
 
-  --sidebar: oklch(0.975 0.004 260);
-  --sidebar-foreground: oklch(0.3 0.018 260);
-  --sidebar-primary: oklch(0.5 0.14 265);
-  --sidebar-primary-foreground: oklch(0.99 0.005 260);
-  --sidebar-accent: oklch(0.95 0.008 260);
-  --sidebar-accent-foreground: oklch(0.28 0.02 260);
-  --sidebar-border: oklch(0.91 0.006 260);
-  --sidebar-ring: oklch(0.5 0.14 265);
+  --sidebar: oklch(0.97 0.009 265);
+  --sidebar-foreground: oklch(0.28 0.02 262);
+  --sidebar-primary: oklch(0.52 0.18 265);
+  --sidebar-primary-foreground: oklch(0.99 0.003 260);
+  --sidebar-accent: oklch(0.945 0.012 264);
+  --sidebar-accent-foreground: oklch(0.26 0.022 260);
+  --sidebar-border: oklch(0.895 0.011 264);
+  --sidebar-ring: oklch(0.52 0.18 265);
 
   --grid-line: color-mix(in oklab, var(--foreground) 4%, transparent);
+
+  /* Shadow system — layered depth with primary color tints */
+  --shadow-xs:
+    0 1px 2px color-mix(in oklab, var(--foreground) 5%, transparent);
+  --shadow-sm:
+    0 1px 3px color-mix(in oklab, var(--foreground) 6%, transparent),
+    0 0 0 1px color-mix(in oklab, white 55%, transparent) inset;
+  --shadow-md:
+    0 4px 16px -4px color-mix(in oklab, var(--foreground) 10%, transparent),
+    0 1px 4px color-mix(in oklab, var(--foreground) 5%, transparent),
+    0 0 0 1px color-mix(in oklab, white 45%, transparent) inset;
+  --shadow-primary:
+    0 4px 24px -4px color-mix(in oklab, var(--primary) 35%, transparent),
+    0 1px 6px color-mix(in oklab, var(--primary) 12%, transparent);
   --shadow-soft:
-    0 1px 2px 0 color-mix(in oklab, var(--foreground) 4%, transparent),
-    0 1px 0 0 color-mix(in oklab, var(--foreground) 2%, transparent);
+    0 1px 3px color-mix(in oklab, var(--foreground) 6%, transparent),
+    0 0 0 1px color-mix(in oklab, white 50%, transparent) inset;
+
+  /* Glow tokens — used on status indicators and the readiness gauge */
+  --glow-ready: 0 0 28px -4px color-mix(in oklab, var(--ready) 45%, transparent);
+  --glow-warn:  0 0 28px -4px color-mix(in oklab, var(--warn)  45%, transparent);
+  --glow-danger:0 0 28px -4px color-mix(in oklab, var(--danger) 45%, transparent);
+  --glow-primary:0 0 28px -4px color-mix(in oklab, var(--primary) 40%, transparent);
 }
 
 .dark {
@@ -121,9 +147,16 @@
   * {
     border-color: var(--color-border);
   }
-  html,
-  body {
+  html {
     background-color: var(--color-background);
+  }
+  body {
+    /* Atmosphere gradient — gives glass surfaces something to blur against */
+    background-color: var(--color-background);
+    background-image:
+      radial-gradient(ellipse 55% 48% at 2% 0%,   oklch(0.87 0.07 268 / 0.22), transparent 62%),
+      radial-gradient(ellipse 40% 35% at 98% 96%,  oklch(0.87 0.06 288 / 0.18), transparent 55%),
+      radial-gradient(ellipse 30% 25% at 60% 10%,  oklch(0.90 0.04 260 / 0.10), transparent 50%);
     color: var(--color-foreground);
     font-family: var(--font-sans);
     font-feature-settings: "ss01", "cv11";
@@ -136,6 +169,7 @@
     font-family: var(--font-display);
     letter-spacing: -0.02em;
     font-weight: 600;
+    text-wrap: balance;
   }
   ::selection {
     background: color-mix(in oklab, var(--primary) 22%, transparent);
@@ -148,9 +182,6 @@
 }
 @utility font-display {
   font-family: var(--font-display);
-}
-@utility font-serif {
-  font-family: var(--font-serif);
 }
 
 @utility grid-bg {
@@ -171,34 +202,69 @@
   font-weight: 500;
   letter-spacing: 0;
   border: 1px solid var(--border);
-  background: var(--surface);
+  background: color-mix(in oklab, white 70%, var(--surface-2));
+  backdrop-filter: blur(8px);
   color: var(--muted-foreground);
 }
 
+/* Solid card — primary content surface */
 @utility panel {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 12px;
-  box-shadow: var(--shadow-soft);
+  box-shadow: var(--shadow-sm);
 }
 
+/* Frosted glass panel — top bar, sidebar, hero stat cards */
+@utility panel-glass {
+  background: color-mix(in oklab, white 80%, transparent);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid color-mix(in oklab, white 72%, var(--border));
+  border-radius: 14px;
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, white 55%, transparent) inset,
+    0 4px 24px -4px color-mix(in oklab, var(--foreground) 8%, transparent),
+    0 1px 4px color-mix(in oklab, var(--foreground) 4%, transparent);
+}
+
+/* Elevated solid panel — used for readiness gauge container */
+@utility panel-elevated {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, white 60%, transparent) inset,
+    0 8px 36px -8px color-mix(in oklab, var(--primary) 14%, transparent),
+    0 2px 10px -2px color-mix(in oklab, var(--foreground) 8%, transparent);
+}
+
+/* Recessed / secondary surface */
 @utility panel-quiet {
-  background: color-mix(in oklab, var(--surface-2) 55%, var(--surface));
-  border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+  background: color-mix(in oklab, var(--surface-2) 60%, transparent);
+  backdrop-filter: blur(8px);
+  border: 1px solid color-mix(in oklab, var(--border) 60%, transparent);
   border-radius: 12px;
   box-shadow: none;
 }
 
-@keyframes pulse-ready {
+/* Status glow utilities */
+@utility glow-ready   { box-shadow: var(--glow-ready);   }
+@utility glow-warn    { box-shadow: var(--glow-warn);    }
+@utility glow-danger  { box-shadow: var(--glow-danger);  }
+@utility glow-primary { box-shadow: var(--glow-primary); }
+
+/* Pulse reserved for warn/danger — healthy state is silent */
+@keyframes pulse-warn {
   0%,
   100% {
-    box-shadow: 0 0 0 0 color-mix(in oklab, var(--ready) 45%, transparent);
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--warn) 50%, transparent);
   }
   50% {
-    box-shadow: 0 0 0 6px color-mix(in oklab, var(--ready) 0%, transparent);
+    box-shadow: 0 0 0 5px color-mix(in oklab, var(--warn) 0%, transparent);
   }
 }
 
 @utility pulse-dot {
-  animation: pulse-ready 2.4s ease-in-out infinite;
+  animation: pulse-warn 2.2s ease-in-out infinite;
 }
