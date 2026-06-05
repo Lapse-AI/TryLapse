@@ -457,20 +457,95 @@ def _expand_dimensions(raw: dict[str, tuple[int, str]], evidence: RunEvidence) -
     base = sum(i["score"] for i in items) / len(items)
     for extra in EXTRA_DIMENSIONS:
         bump = 0
-        signal = "Phase 2 heuristic from step evidence"
+        signal = "Estimated — no unique signal yet (see issue #23)"
+        automated = False
+
         if extra == "Performance":
             bump, signal = _performance_dimension_bump_from_steps(evidence.steps)
+            automated = bool(evidence.steps)
+
         elif extra == "Accessibility":
-            unlabeled = sum(s.unlabeled_button_count for s in evidence.steps)
-            bump = -15 if unlabeled > 5 else 0
+            # Use both unlabeled buttons AND input label ratio (issue #25)
+            unlabeled_btns = sum(s.unlabeled_button_count for s in evidence.steps)
+            total_inputs = sum(getattr(s, "input_count", 0) for s in evidence.steps)
+            labeled_inputs = sum(getattr(s, "labeled_input_count", 0) for s in evidence.steps)
+            unlabeled_inputs = max(0, total_inputs - labeled_inputs)
+            # Tighter threshold: >2 unlabeled buttons already matters for enterprise
+            btn_bump = -20 if unlabeled_btns > 5 else -10 if unlabeled_btns > 2 else 0
+            input_bump = -15 if unlabeled_inputs > 3 else -5 if unlabeled_inputs > 0 else 5
+            bump = btn_bump + input_bump
+            parts = []
+            if unlabeled_btns:
+                parts.append(f"{unlabeled_btns} unlabeled buttons")
+            if total_inputs:
+                parts.append(f"{labeled_inputs}/{total_inputs} inputs labeled")
+            signal = "; ".join(parts) if parts else "No interactive elements found"
+            automated = True
+
         elif extra == "Trust":
-            bump = -20 if evidence.auth_outcome and "fail" in evidence.auth_outcome else 5
+            auth_fail = evidence.auth_outcome and "fail" in evidence.auth_outcome
+            # Check network failure rate as additional trust signal
+            net_failures = sum(len(getattr(s, "network_failures", None) or []) for s in evidence.steps)
+            trust_bump = -20 if auth_fail else 5
+            if net_failures > 3:
+                trust_bump -= 10
+            bump = trust_bump
+            parts = []
+            if auth_fail:
+                parts.append("auth failed")
+            if net_failures:
+                parts.append(f"{net_failures} network failures")
+            signal = "; ".join(parts) if parts else ("auth success" if evidence.auth_outcome else "no auth attempted")
+            automated = True
+
+        elif extra == "Onboarding":
+            # Real signals: auth success on first journey, onboarding paths in sitemap, first-journey pass rate
+            first_journey_steps = []
+            all_journey_ids = list(dict.fromkeys(s.journey_id for s in evidence.steps if s.journey_id))
+            if all_journey_ids:
+                first_jid = all_journey_ids[0]
+                first_journey_steps = [s for s in evidence.steps if s.journey_id == first_jid]
+            first_pass_rate = (
+                sum(1 for s in first_journey_steps if s.outcome == "pass") / len(first_journey_steps)
+                if first_journey_steps else 0.5
+            )
+            auth_ok = evidence.auth_outcome and "success" in evidence.auth_outcome
+            onboard_bump = 5 if auth_ok else -5
+            onboard_bump += 5 if first_pass_rate >= 0.8 else (-10 if first_pass_rate < 0.5 else 0)
+            bump = onboard_bump
+            parts = []
+            if evidence.auth_outcome:
+                parts.append(f"auth: {evidence.auth_outcome}")
+            if first_journey_steps:
+                parts.append(f"first journey {first_pass_rate:.0%} pass")
+            signal = "; ".join(parts) if parts else "first journey pass rate"
+            automated = True
+
+        elif extra == "Recovery":
+            # Real signals: error pages from crawl steps, network failures, error-type steps
+            error_steps = sum(1 for s in evidence.steps if s.error_type)
+            net_failures = sum(len(getattr(s, "network_failures", None) or []) for s in evidence.steps)
+            error_phrases = sum(len(getattr(s, "error_phrases_found", None) or []) for s in evidence.steps)
+            recovery_bump = -10 if error_steps > 2 else -5 if error_steps > 0 else 5
+            recovery_bump -= min(15, 5 * (net_failures // 2))
+            recovery_bump -= 5 if error_phrases > 2 else 0
+            bump = recovery_bump
+            parts = []
+            if error_steps:
+                parts.append(f"{error_steps} steps errored")
+            if net_failures:
+                parts.append(f"{net_failures} network failures")
+            if error_phrases:
+                parts.append(f"{error_phrases} error phrases found")
+            signal = "; ".join(parts) if parts else "no error signals detected"
+            automated = True
+
         items.append(
             {
                 "name": extra,
                 "score": max(20, min(95, int(base + bump))),
                 "signal": signal,
-                "automated": extra == "Performance" and bool(evidence.steps),
+                "automated": automated,
             }
         )
     return items

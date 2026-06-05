@@ -31,8 +31,8 @@ function DimensionCard({
     relatedCount > 0
       ? `${relatedCount} related finding${relatedCount === 1 ? "" : "s"}`
       : d.automated
-        ? "Automated rubric"
-        : "Phase 2 heuristic";
+        ? "Automated from step evidence"
+        : "Estimated — signal pending";
 
   const inner = (
     <>
@@ -159,7 +159,7 @@ export function DimensionBreakdownBanner({
               {dimension.score}
             </span>
             <span className="text-[11px] px-1.5 py-0.5 rounded border border-border text-muted-foreground">
-              {dimension.automated ? "Automated rubric" : "Phase 2 heuristic"}
+              {dimension.automated ? "Automated from step evidence" : "Estimated — signal pending"}
             </span>
           </div>
           {dimension.signal && (

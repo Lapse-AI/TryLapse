@@ -1,7 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { PageHeader, Panel, Chip } from "@/components/ui-bits";
 import { DiffPanel } from "@/components/run-detail";
-import { useScopedRunSummaries } from "@/lib/api/hooks";
+import { LiftCard } from "@/components/lift-card";
+import { useScopedRunSummaries, useRunDiff } from "@/lib/api/hooks";
 import { useTestGroup } from "@/hooks/use-test-group";
 import { z } from "zod";
 
@@ -38,6 +39,20 @@ function ComparePage() {
   const swapRuns = () => {
     void navigate({ search: { a: runB, b: runA } });
   };
+
+  // Pull numeric readiness from summaries for the lift card
+  const summaryA = runSummaries.find((r) => r.id === runA);
+  const summaryB = runSummaries.find((r) => r.id === runB);
+  const scoreA = (summaryA as Record<string, number> | undefined)?.readiness ?? 0;
+  const scoreB = (summaryB as Record<string, number> | undefined)?.readiness ?? 0;
+  const bandA = (summaryA as Record<string, string> | undefined)?.readinessBand;
+  const bandB = (summaryB as Record<string, string> | undefined)?.readinessBand;
+
+  const { data: diff } = useRunDiff(runA !== runB ? runA : "", runA !== runB ? runB : "");
+  const newIssueCount = diff?.newIssues?.length ?? 0;
+  const resolvedIssueCount = diff?.resolvedIssues?.length ?? 0;
+  const delta = scoreB - scoreA;
+  const verdict = delta > 2 ? "held" : delta < -2 ? "regressed" : "inconclusive";
 
   return (
     <div>
@@ -97,6 +112,19 @@ function ComparePage() {
             CLI: rehearse diff {runA} {runB}
           </Chip>
         </Panel>
+
+        {runA && runB && runA !== runB && scoreA > 0 && scoreB > 0 && (
+          <LiftCard
+            readinessA={scoreA}
+            readinessB={scoreB}
+            bandA={bandA}
+            bandB={bandB}
+            newIssues={newIssueCount}
+            resolvedIssues={resolvedIssueCount}
+            verdict={verdict}
+            label="Retrospective"
+          />
+        )}
 
         <Panel className="overflow-hidden">
           {runA && runB && runA !== runB ? (
