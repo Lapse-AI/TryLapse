@@ -263,9 +263,10 @@ def _resolve_locator(page: Page, step: Step) -> tuple[Locator, str]:
 
 
 class BrowserSession:
-    def __init__(self, config: RunConfig, artifacts_dir: Path) -> None:
+    def __init__(self, config: RunConfig, artifacts_dir: Path, record_video: bool = False) -> None:
         self.config = config
         self.artifacts_dir = artifacts_dir
+        self.record_video = record_video
         self.console_errors: list[str] = []
         self.console_warnings: list[str] = []
         self.network_failures: list[str] = []
@@ -281,7 +282,14 @@ class BrowserSession:
         self._pw = sync_playwright().start()
         self._browser = self._pw.chromium.launch(headless=True)
         first = normalize_viewports(self.config.viewports)[0]
-        self._context = self._browser.new_context(viewport=VIEWPORT_PROFILES[first])
+
+        context_opts = {"viewport": VIEWPORT_PROFILES[first]}
+        if self.record_video:
+            video_dir = self.artifacts_dir / "videos"
+            video_dir.mkdir(parents=True, exist_ok=True)
+            context_opts["record_video_dir"] = str(video_dir)
+
+        self._context = self._browser.new_context(**context_opts)
         self.page = self._context.new_page()
         self._viewport = first
         self.page.on("console", self._on_console)

@@ -128,6 +128,30 @@ class _Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(data)
 
+    def _send_file(self, filepath: str, content_type: str) -> None:
+        """Stream a file to the client."""
+        from pathlib import Path
+        path = Path(filepath)
+        if not path.is_file():
+            self._send_json({"error": "File not found"}, status=404)
+            return
+        file_size = path.stat().st_size
+        self.send_response(200)
+        self.send_header("Content-Type", content_type)
+        self.send_header("Content-Length", str(file_size))
+        for k, v in _cors_headers(self._origin).items():
+            self.send_header(k, v)
+        self.end_headers()
+        try:
+            with open(filepath, "rb") as f:
+                while True:
+                    chunk = f.read(65536)  # 64KB chunks
+                    if not chunk:
+                        break
+                    self.wfile.write(chunk)
+        except (BrokenPipeError, IOError):
+            pass
+
     def _read_json_body(self) -> dict:
         length = int(self.headers.get("Content-Length", 0))
         if not length or length > 10_000_000:  # 10 MB hard cap
@@ -203,8 +227,11 @@ class _Handler(BaseHTTPRequestHandler):
             if not payload:
                 self._send_json({"error": "Authentication required"}, status=401)
                 return
-            from rehearse.dashboard.workspace_store import get_workspaces_for_user
-            self._send_json(get_workspaces_for_user(root, payload["sub"]))
+            from rehearse.dashboard.workspace_store import get_workspaces_for_user, backfill_config_paths
+            workspaces = get_workspaces_for_user(root, payload["sub"])
+            # Backfill configPath for workspaces created before this feature
+            workspaces = backfill_config_paths(root, workspaces)
+            self._send_json(workspaces)
             return
 
         if not self._check_auth(path):
@@ -712,6 +739,25 @@ class _Handler(BaseHTTPRequestHandler):
             self._send_json(result)
             return
 
+        if path == "/api/journeys/import":
+            body = self._read_json_body()
+            config_id = str(body.get("configId") or "").strip()
+            journeys = list(body.get("journeys") or [])
+            if not config_id:
+                self._send_json({"error": "configId required"}, status=400)
+                return
+            if not journeys:
+                self._send_json({"error": "journeys list required"}, status=400)
+                return
+            from rehearse.dashboard.config_yaml import append_discovered_journeys
+            try:
+                result = append_discovered_journeys(root, config_id=config_id, journeys=journeys)
+            except ValueError as exc:
+                self._send_json({"error": str(exc)}, status=400)
+                return
+            self._send_json(result)
+            return
+
         if path == "/api/personas/suggest":
             body = self._read_json_body()
             from rehearse.dashboard.persona_draft import suggest_personas_for_product
@@ -722,6 +768,77 @@ class _Handler(BaseHTTPRequestHandler):
                 existing_ids=list(body.get("existingIds") or []),
             )
             self._send_json(result)
+            return
+
+        if path == "/api/recordings/save":
+            body = self._read_json_body()
+            run_id = str(body.get("runId") or "").strip()
+            journey_id = str(body.get("journeyId") or "").strip()
+            events = body.get("events") or []
+            if not run_id or not journey_id or not events:
+                self._send_json({"error": "runId, journeyId, and events required"}, status=400)
+                return
+            from rehearse.recording import save_rrweb_recording
+            try:
+                path = save_rrweb_recording(root, run_id, journey_id, events)
+                self._send_json({"ok": True, "path": str(path), "eventCount": len(events)})
+            except Exception as exc:
+                self._send_json({"error": str(exc)}, status=500)
+            return
+
+        if path == "/api/recordings/list":
+            run_id = self._get_query_param("runId") or ""
+            if not run_id:
+                self._send_json({"error": "runId required"}, status=400)
+                return
+            from rehearse.recording import list_recordings_for_run
+            recordings = list_recordings_for_run(root, run_id)
+            self._send_json({"runId": run_id, "recordings": recordings})
+            return
+
+        # GET /api/recordings/{runId}/{journeyId}
+        if path.startswith("/api/recordings/") and path.count("/") == 4:
+            parts = path.split("/")
+            run_id, journey_id = parts[3], parts[4]
+            from rehearse.recording import load_rrweb_recording, get_video_path
+            recording = load_rrweb_recording(root, run_id, journey_id)
+            if not recording:
+                self._send_json({"error": "Recording not found"}, status=404)
+                return
+            video_path = get_video_path(root, run_id, journey_id)
+            self._send_json({
+                "journeyId": journey_id,
+                "eventCount": recording.get("eventCount", 0),
+                "hasVideo": video_path is not None,
+            })
+            return
+
+        # GET /api/recordings/{runId}/{journeyId}/video
+        if path.endswith("/video") and path.startswith("/api/recordings/"):
+            parts = path.split("/")
+            run_id, journey_id = parts[3], parts[4]
+            from rehearse.recording import get_video_path
+            video_path = get_video_path(root, run_id, journey_id)
+            if not video_path or not video_path.is_file():
+                self._send_json({"error": "Video not found"}, status=404)
+                return
+            self._send_file(str(video_path), "video/webm")
+            return
+
+        # GET /api/recordings/{runId}/{journeyId}/export
+        if path.endswith("/export") and path.startswith("/api/recordings/"):
+            parts = path.split("/")
+            run_id, journey_id = parts[3], parts[4]
+            from rehearse.recording import load_rrweb_recording
+            recording = load_rrweb_recording(root, run_id, journey_id)
+            if not recording:
+                self._send_json({"error": "Recording not found"}, status=404)
+                return
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Content-Disposition", f'attachment; filename="{journey_id}-events.json"')
+            self.end_headers()
+            self.wfile.write(json.dumps(recording, indent=2).encode())
             return
 
         if path == "/api/configs/append-persona":
