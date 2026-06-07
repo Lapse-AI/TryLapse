@@ -113,7 +113,7 @@ def crawl_cmd(config: Path, output: Path) -> None:
         artifacts = output / "artifacts" / run_id
         started = time.perf_counter()
 
-        with BrowserSession(cfg, artifacts) as session:
+        with BrowserSession(cfg, artifacts, record_video=True) as session:
             if cfg.auth:
                 session.perform_auth(cfg.auth)
             pages = crawl_site(

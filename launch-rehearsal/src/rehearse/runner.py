@@ -59,7 +59,8 @@ def run_rehearsal(
     ctx = RunContext(config=config, evidence=evidence)
     ctx.metadata = {"output_dir": str(output_dir), "deadline": deadline}
 
-    with BrowserSession(config, artifacts_root) as session:
+    # Enable video recording for journey execution
+    with BrowserSession(config, artifacts_root, record_video=True) as session:
         ctx.metadata["page"] = session.page
 
         if config.auth:

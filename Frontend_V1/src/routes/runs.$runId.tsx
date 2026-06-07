@@ -27,6 +27,7 @@ import {
 } from "@/components/run-detail";
 import { ManualAnnotationPanel } from "@/components/manual-annotation-panel";
 import { ExperimentRunBanner } from "@/components/experiment-spec-panel";
+import { JourneyRecordingPlayer } from "@/components/journey-recording-player";
 import {
   formatDuration,
   bandFromIssues,
@@ -34,6 +35,7 @@ import {
   bundlePersonas,
   bundleJourneys,
   cellGrade,
+  matrixGrade,
   type Severity,
   type Issue,
 } from "@/lib/mock-data";
@@ -333,6 +335,10 @@ function RunDetail() {
             <TabsTrigger value="annotations" className="text-xs">
               <MessageSquare className="size-3 mr-1 inline" />
               Annotations
+            </TabsTrigger>
+            <TabsTrigger value="recordings" className="text-xs">
+              <Camera className="size-3 mr-1 inline" />
+              Recording
             </TabsTrigger>
           </TabsList>
 
@@ -657,6 +663,28 @@ function RunDetail() {
             <ManualAnnotationPanel runId={run.id} />
             <Panel className="overflow-hidden">
               <AnnotationsPanel runId={run.id} annotations={bundle.annotations} />
+            </Panel>
+          </TabsContent>
+          <TabsContent value="recordings">
+            <Panel className="overflow-hidden">
+              <div className="p-4 space-y-4">
+                <h3 className="text-sm font-semibold">Journey Recording</h3>
+                <p className="text-xs text-muted-foreground">
+                  View event replay and video recordings of journeys
+                </p>
+                {runJourneys.length > 0 ? (
+                  <div className="space-y-6">
+                    {runJourneys.map((j) => (
+                      <div key={j.id} className="border-t border-border pt-4">
+                        <h4 className="text-sm font-medium mb-3">{j.name}</h4>
+                        <JourneyRecordingPlayer runId={run.id} journeyId={j.id} />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-xs text-muted-foreground">No journeys available</div>
+                )}
+              </div>
             </Panel>
           </TabsContent>
         </Tabs>
