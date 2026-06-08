@@ -212,10 +212,18 @@ class JourneyAgent(BaseAgent):
                     f"({per_journey_budget} > {ctx.config.budgets.max_steps_per_journey})"
                 )
 
+        # Live progress tracker
+        tracker = ctx.metadata.get("progress_tracker")
+
         for journey in ctx.config.journeys:
             seed_runs: list[list[StepSnapshot]] = []
             persona_grades: dict[str, str] = {}
             for persona in personas_to_run:
+                if tracker:
+                    try:
+                        tracker.start_journey(persona.id, journey.id)
+                    except Exception:
+                        pass
                 persona_runs: list[list[StepSnapshot]] = []
                 for loop in range(1, loops + 1):
                     for seed in range(1, seeds + 1):
@@ -237,6 +245,11 @@ class JourneyAgent(BaseAgent):
                     persona_runs[0] if persona_runs else [],
                 )
                 persona_grades[persona.id] = _journey_status_from_snaps(canonical)
+                if tracker:
+                    try:
+                        tracker.done_journey(persona.id, journey.id, persona_grades[persona.id])
+                    except Exception:
+                        pass
 
             _mark_flaky_steps(seed_runs)
             flaky_count += sum(1 for run in seed_runs for s in run if s.flaky)

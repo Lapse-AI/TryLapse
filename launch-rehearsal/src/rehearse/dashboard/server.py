@@ -386,6 +386,19 @@ class _Handler(BaseHTTPRequestHandler):
             self._send_json(diff_runs(root, run_a, run_b, refresh=refresh))
             return
 
+        if path == "/api/progress":
+            run_id = (qs.get("runId") or [""])[0].strip()
+            from rehearse.progress import load_progress, latest_running_progress
+            if run_id:
+                data = load_progress(root, run_id)
+            else:
+                data = latest_running_progress(root)
+            if not data:
+                self._send_json({"error": "no progress found"}, status=404)
+                return
+            self._send_json(data)
+            return
+
         if path == "/api/trends":
             refresh = (qs.get("refresh") or [""])[0].lower() in ("1", "true", "yes")
             # Filter by workspace if user is authenticated

@@ -7,6 +7,7 @@ import { useTestGroup } from "@/hooks/use-test-group";
 import { ActiveJobsBanner, JobQueueTable } from "@/components/job-queue-status";
 import { VariantRehearsalPanel } from "@/components/variant-rehearsal-panel";
 import { CohortRehearsalPanel } from "@/components/cohort-rehearsal-panel";
+import { RunLiveGraph } from "@/components/run-live-graph";
 import { Loader2, Play, Network, FlaskConical, Settings } from "lucide-react";
 import { toast } from "sonner";
 
@@ -82,6 +83,17 @@ function RunnerPage() {
       />
       <div className="p-8 max-w-[1400px] space-y-6">
         <ActiveJobsBanner jobs={jobs} />
+
+        {/* Live run visualization — shown when a run is in progress */}
+        {jobs.some(j => j.status === "running") && (
+          <Panel className="p-5">
+            <div className="text-sm font-semibold mb-4 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+              Live run
+            </div>
+            <RunLiveGraph pollingMs={2000} />
+          </Panel>
+        )}
 
         <Panel className="p-5 space-y-4">
           <div className="text-sm font-medium">Readiness</div>

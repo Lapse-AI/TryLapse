@@ -6,6 +6,10 @@ run:
   - desktop
   allow_localhost: false
   persona_lens: true
+budgets:
+  max_run_seconds: 7200
+  max_steps_per_journey: 30
+  step_timeout_ms: 30000
 crawl:
   enabled: true
   max_depth: 2
@@ -46,18 +50,18 @@ personas:
   - Manage their professional profile and search for colleagues.
   - The product is named 'Faculty Dashboard' and includes features like AI Search
     and Add Faculty.
-- id: p4-champion
-  name: Internal champion
-  role: team lead / champion
-  goals:
-  - Validate rollout to their team
-  - Find blockers before wider launch
 - id: model-1-admin
   name: Admin
   role: Manage user accounts and oversee the database.
   goals:
   - Manage user accounts and oversee the database.
   - There is an /admin endpoint and an admin panel.
+- id: p4-champion
+  name: Internal champion
+  role: team lead / champion
+  goals:
+  - Validate rollout to their team
+  - Find blockers before wider launch
 journeys:
 - id: j-load-dashboard
   name: Load main dashboard
@@ -2945,3 +2949,65 @@ journeys:
   - action: click
     intent: Database tab
     selector: a[href='/admin/database']
+- id: j-2-oerato-13
+  name: 'Onboarding: first login and profile setup'
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Open the dashboard URL
+  - action: fill
+    intent: Email input field
+    selector: input[type='email']
+    value: ${REHEARSE_EMAIL}
+  - action: fill
+    intent: Password input field
+    selector: input[type='password']
+    value: ${REHEARSE_PASSWORD}
+  - action: click
+    intent: Sign In button
+    selector: button:has-text('Sign In')
+  - action: wait
+    value: '3000'
+  - action: click
+    intent: Welcome modal dismiss button
+    selector: button:has-text('Got it')
+  - action: hover
+    intent: AI Search input field
+    selector: input[placeholder*='Search']
+  - action: click
+    intent: Quick Start Guide link
+    selector: a:has-text('Quick Start Guide')
+  - action: click
+    intent: Quick Start Guide close button
+    selector: button[aria-label='Close']
+  - action: click
+    intent: First faculty profile link
+    selector: table tbody tr:first-child a
+  - action: assert_url_contains
+    value: /profile/
+  - action: click
+    intent: Back to Database button
+    selector: button:has-text('Back to Database')
+- id: j-2-oerato-14
+  name: Recover from session timeout
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/login
+    intent: Login page
+  - action: fill
+    intent: Email input field
+    selector: input[type='email']
+    value: ${REHEARSE_EMAIL}
+  - action: fill
+    intent: Password input field
+    selector: input[type='password']
+    value: ${REHEARSE_PASSWORD}
+  - action: click
+    intent: Sign In button
+    selector: button:has-text('Sign In')
+  - action: assert_url_contains
+    url: /database
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    url: /database

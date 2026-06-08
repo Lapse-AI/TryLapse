@@ -101,8 +101,8 @@ class ExperimentSpec:
 
 @dataclass
 class Budgets:
-    max_steps_per_journey: int = 20
-    max_run_seconds: int = 1800
+    max_steps_per_journey: int = 30
+    max_run_seconds: int = 7200  # 2 hours — was 30 min, not enough for multi-persona runs
     step_timeout_ms: int = 30000
     parallel_seeds: int = 1
     repeat_micro_loop: int = 1
