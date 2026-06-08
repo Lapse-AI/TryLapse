@@ -18,6 +18,7 @@ type Props = {
   live: boolean;
   personas: PersonaDraft[];
   configId?: string | null;
+  productModel?: Record<string, unknown> | null;
 };
 
 function JourneyRow({ j }: { j: DiscoveredJourney }) {
@@ -101,7 +102,7 @@ function JourneyRow({ j }: { j: DiscoveredJourney }) {
   );
 }
 
-export function JourneyDiscoveryPanel({ live, personas, configId }: Props) {
+export function JourneyDiscoveryPanel({ live, personas, configId, productModel }: Props) {
   const [results, setResults] = useState<PersonaJourneys[]>([]);
   const [loading, setLoading] = useState(false);
   const [importing, setImporting] = useState(false);
@@ -119,7 +120,7 @@ export function JourneyDiscoveryPanel({ live, personas, configId }: Props) {
     setLoading(true);
     setResults([]);
     try {
-      const res = await api.discoverJourneys(personas, configId);
+      const res = await api.discoverJourneys(personas, configId, productModel);
       const journeys = (res.personaJourneys ?? []) as PersonaJourneys[];
       setResults(journeys);
       if (journeys.length > 0) setActivePersona(personas[0]?.id ?? null);
@@ -224,12 +225,43 @@ export function JourneyDiscoveryPanel({ live, personas, configId }: Props) {
         </div>
       </div>
 
+      {/* Product model context — shown before discovery runs */}
+      {productModel && results.length === 0 && (
+        <div className="px-4 pt-3 pb-0">
+          <div className="rounded-lg border border-border bg-surface-2/30 p-3 space-y-2">
+            <div className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">
+              Product context for journey generation
+            </div>
+            <div className="text-xs text-foreground">{String(productModel.purpose ?? "")}</div>
+            {Array.isArray(productModel.core_features) && productModel.core_features.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {(productModel.core_features as string[]).slice(0, 6).map((f) => (
+                  <span key={f} className="px-1.5 py-0.5 rounded bg-surface text-[10px] border border-border">{f}</span>
+                ))}
+              </div>
+            )}
+            {Array.isArray(productModel.quality_concerns) && productModel.quality_concerns.length > 0 && (
+              <div className="text-[10px] text-warn">
+                {(productModel.quality_concerns as Array<Record<string, string>>)
+                  .filter(c => c.severity === "critical")
+                  .slice(0, 2)
+                  .map((c, i) => <div key={i}>⚠ {c.concern}</div>)}
+              </div>
+            )}
+            <div className="text-[10px] text-muted-foreground">
+              This context will guide journey generation — personas will test features and workflows specific to this product.
+            </div>
+          </div>
+        </div>
+      )}
+
       {results.length === 0 ? (
         <div className="p-8 text-center text-sm text-muted-foreground space-y-2">
           <Map className="size-8 mx-auto opacity-30" />
           <p>
-            Each persona independently discovers its own journeys based on the product model. Can
-            include 10–100 journeys per persona, with sub-flows for chatbots, filters, dashboards.
+            {productModel
+              ? "Product analyzed ✓ — click Discover to generate journeys tailored to what was found."
+              : "Each persona independently discovers its own journeys based on the product model."}
           </p>
           {!live && <p className="text-xs text-warn">Start rehearse serve to enable discovery</p>}
         </div>

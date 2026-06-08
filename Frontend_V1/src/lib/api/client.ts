@@ -236,15 +236,17 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ ...updates, configId: configId || "" }),
     }),
-  discoverJourneys: (personas: unknown[], configId?: string | null) =>
+  discoverJourneys: (personas: unknown[], configId?: string | null, productModel?: unknown) =>
     apiFetch<{ personaJourneys: unknown[]; count: number }>("/api/journeys/discover", {
       method: "POST",
-      body: JSON.stringify({ personas, configId: configId || "" }),
+      body: JSON.stringify({ personas, configId: configId || "", productModel: productModel || null }),
+      timeoutMs: 180000,
     }),
-  discoverJourneysForPersona: (persona: unknown, configId?: string | null) =>
+  discoverJourneysForPersona: (persona: unknown, configId?: string | null, productModel?: unknown) =>
     apiFetch<Record<string, unknown>>("/api/journeys/discover/persona", {
       method: "POST",
-      body: JSON.stringify({ persona, configId: configId || "" }),
+      body: JSON.stringify({ persona, configId: configId || "", productModel: productModel || null }),
+      timeoutMs: 120000,
     }),
   importJourneysToConfig: (configId: string, journeys: unknown[]) =>
     apiFetch<{ configId: string; added: number; skipped: number; total: number }>(

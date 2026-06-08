@@ -796,9 +796,12 @@ class _Handler(BaseHTTPRequestHandler):
                 return
             from rehearse.product_intelligence import load_product_model
             from rehearse.persona_journey_discovery import discover_journeys_for_all_personas
-            product_model = load_product_model(root, config_id or None) or {}
+            # Use product model from request body if provided (live from UI), else load from disk
+            product_model = dict(body.get("productModel") or {})
             if not product_model:
-                self._send_json({"error": "No product model — run POST /api/product/analyze first"}, status=400)
+                product_model = load_product_model(root, config_id or None) or {}
+            if not product_model:
+                self._send_json({"error": "No product model — run product analysis first"}, status=400)
                 return
             results = discover_journeys_for_all_personas(personas, product_model)
             self._send_json({"personaJourneys": results, "count": len(results)})
@@ -813,7 +816,9 @@ class _Handler(BaseHTTPRequestHandler):
                 return
             from rehearse.product_intelligence import load_product_model
             from rehearse.persona_journey_discovery import discover_journeys_for_persona
-            product_model = load_product_model(root, config_id or None) or {}
+            product_model = dict(body.get("productModel") or {})
+            if not product_model:
+                product_model = load_product_model(root, config_id or None) or {}
             result = discover_journeys_for_persona(persona, product_model)
             self._send_json(result)
             return

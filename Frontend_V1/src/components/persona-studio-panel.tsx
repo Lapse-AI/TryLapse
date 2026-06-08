@@ -21,6 +21,7 @@ type Props = {
   targetUrl: string;
   productName: string;
   configId?: string;
+  productModel?: Record<string, unknown> | null;
   personaLens: boolean;
   onPersonaLensChange: (value: boolean) => void;
   coreEnabled: Record<string, boolean>;
@@ -35,6 +36,7 @@ export function PersonaStudioPanel({
   targetUrl,
   productName,
   configId,
+  productModel,
   personaLens,
   onPersonaLensChange,
   coreEnabled,
@@ -55,6 +57,18 @@ export function PersonaStudioPanel({
     [corePersonas, stagedExtras],
   );
 
+  // Derive model-based suggestions from user_types_observed
+  const modelSuggested = useMemo<PersonaDraft[]>(() => {
+    if (!productModel) return [];
+    const userTypes = (productModel.user_types_observed as Array<Record<string, string>>) ?? [];
+    return userTypes.slice(0, 3).map((u, i) => ({
+      id: `model-${i}-${u.type?.toLowerCase().replace(/\s+/g, "-")}`,
+      name: u.type ?? "User",
+      role: u.primary_goal ?? u.type ?? "user",
+      goals: [u.primary_goal ?? "", u.evidence ?? ""].filter(Boolean),
+    }));
+  }, [productModel]);
+
   const loadSuggestions = useCallback(async () => {
     if (!live || !targetUrl.trim()) return;
     try {
@@ -70,9 +84,10 @@ export function PersonaStudioPanel({
     }
   }, [live, targetUrl, productName, existingIds]);
 
+  // Reload suggestions when product model changes (after analysis)
   useEffect(() => {
     void loadSuggestions();
-  }, [loadSuggestions]);
+  }, [loadSuggestions, productModel]);
 
   const draftPersona = async () => {
     if (!live) {
@@ -182,6 +197,40 @@ export function PersonaStudioPanel({
           ))}
         </div>
       </div>
+
+      {/* Personas derived from product intelligence user_types_observed */}
+      {modelSuggested.length > 0 && (
+        <div>
+          <div className="text-xs text-muted-foreground mb-2 flex items-center gap-1">
+            <Sparkles className="size-3" />
+            <span>Detected in your product</span>
+            <span className="ml-1 px-1.5 py-0.5 rounded bg-primary/10 text-primary text-[10px]">from analysis</span>
+          </div>
+          <div className="space-y-2">
+            {modelSuggested.map((p) => (
+              <div
+                key={p.id}
+                className="flex flex-wrap items-start justify-between gap-2 border border-primary/20 rounded-lg px-3 py-2 bg-primary/5"
+              >
+                <div>
+                  <div className="text-sm font-medium">{p.name}</div>
+                  <div className="text-[11px] text-muted-foreground">{p.role}</div>
+                  {p.goals[1] && (
+                    <div className="text-[10px] text-muted-foreground/70 mt-0.5 italic">{p.goals[1]}</div>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  className="text-xs px-2 py-1 rounded border border-primary/30 text-primary hover:bg-primary/10"
+                  onClick={() => void addToConfig(p)}
+                >
+                  Add
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {suggested.length > 0 && (
         <div>

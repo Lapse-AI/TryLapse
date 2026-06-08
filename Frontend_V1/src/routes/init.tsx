@@ -189,6 +189,7 @@ function InitPage() {
     "p3-admin": { name: "Admin / buyer", role: "IT admin" },
   };
   const [stagedExtras, setStagedExtras] = useState<PersonaDraft[]>([]);
+  const [productModel, setProductModel] = useState<Record<string, unknown> | null>(null);
 
   const localhostTarget = useMemo(() => isLocalhostUrl(targetUrl), [targetUrl]);
   const preflightNeedsLocalhost = selfTest || allowLocalhost || localhostTarget;
@@ -485,13 +486,20 @@ function InitPage() {
         </Panel>}
 
         {/* Product Intelligence — analyze target URL, build editable product model */}
-        <ProductIntelligencePanel live={!!live} targetUrl={targetUrl} productName={productName} configId={workspaceConfigId} />
+        <ProductIntelligencePanel
+          live={!!live}
+          targetUrl={targetUrl}
+          productName={productName}
+          configId={workspaceConfigId}
+          onModelReady={(m) => setProductModel(m)}
+        />
 
         <PersonaStudioPanel
           live={!!live}
           targetUrl={targetUrl}
           productName={productName}
           configId={workspaceConfigId ?? undefined}
+          productModel={productModel}
           personaLens={personaLens}
           onPersonaLensChange={setPersonaLens}
           coreEnabled={coreEnabled}
@@ -517,6 +525,7 @@ function InitPage() {
         <JourneyDiscoveryPanel
           live={!!live}
           configId={workspaceConfigId}
+          productModel={productModel}
           personas={[
             ...Object.keys(coreEnabled)
               .filter((id) => coreEnabled[id] !== false)
