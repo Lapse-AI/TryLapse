@@ -57,17 +57,22 @@ export function PersonaStudioPanel({
     [corePersonas, stagedExtras],
   );
 
-  // Derive model-based suggestions from user_types_observed
+  // Track which model-detected personas have been added
+  const [addedModelIds, setAddedModelIds] = useState<Set<string>>(new Set());
+
+  // Derive model-based suggestions from user_types_observed, excluding already added
   const modelSuggested = useMemo<PersonaDraft[]>(() => {
     if (!productModel) return [];
     const userTypes = (productModel.user_types_observed as Array<Record<string, string>>) ?? [];
-    return userTypes.slice(0, 3).map((u, i) => ({
-      id: `model-${i}-${u.type?.toLowerCase().replace(/\s+/g, "-")}`,
-      name: u.type ?? "User",
-      role: u.primary_goal ?? u.type ?? "user",
-      goals: [u.primary_goal ?? "", u.evidence ?? ""].filter(Boolean),
-    }));
-  }, [productModel]);
+    return userTypes.slice(0, 3)
+      .map((u, i) => ({
+        id: `model-${i}-${(u.type ?? "user").toLowerCase().replace(/\s+/g, "-")}`,
+        name: u.type ?? "User",
+        role: u.primary_goal ?? u.type ?? "user",
+        goals: [u.primary_goal ?? "", u.evidence ?? ""].filter(Boolean),
+      }))
+      .filter((p) => !addedModelIds.has(p.id) && !stagedExtras.some((s) => s.id === p.id));
+  }, [productModel, addedModelIds, stagedExtras]);
 
   const loadSuggestions = useCallback(async () => {
     if (!live || !targetUrl.trim()) return;
@@ -126,7 +131,11 @@ export function PersonaStudioPanel({
     if (configId && live) {
       try {
         await api.appendPersonaToConfig({ configId, persona });
-        toast.success(`Added ${persona.name} to ${configId}`);
+        // Mark as added so it disappears from the suggestions list
+        setAddedModelIds((prev) => new Set([...prev, persona.id]));
+        // Also stage it so it shows up in the staged list immediately
+        onStageExtra(persona);
+        toast.success(`Added ${persona.name} to config`);
         void loadSuggestions();
         return;
       } catch (e) {
