@@ -93,7 +93,7 @@ function LibraryPage() {
               Workflow-suggested journeys
             </div>
             <div className="divide-y divide-border">
-              {library!.suggested.map((s: { id: string; title: string; reason: string }) => (
+              {(library!.suggested as { id: string; title: string; reason: string }[]).map((s) => (
                 <div key={s.id} className="p-5">
                   <div className="font-medium">{s.title}</div>
                   <div className="text-xs text-muted-foreground mt-1">{s.reason}</div>

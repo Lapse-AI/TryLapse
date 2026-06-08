@@ -330,6 +330,28 @@ export type RunBundle = {
     signals: string[];
   }[];
   suggestedJourneys?: SuggestedJourney[];
+  // Deep analysis engine fields
+  productModel?: Record<string, unknown>;
+  interactionMap?: {
+    buttonCount: number;
+    formCount: number;
+    apiCallCount: number;
+    errorCount: number;
+    chatbotDetected: boolean;
+  } | null;
+  behavioralJourneys?: Record<
+    string,
+    {
+      behavioral_journey_verdict: string;
+      goal_completion: string;
+      friction_score: number;
+      key_friction_points: string[];
+      ux_improvements: { type: string; finding: string; recommendation: string }[];
+      information_access_issues: string[];
+      journey_length_assessment: string;
+      behavioral_summary: string;
+    }
+  > | null;
 };
 
 export type Workspace = {

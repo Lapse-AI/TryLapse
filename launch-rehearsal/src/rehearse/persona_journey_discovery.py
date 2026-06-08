@@ -99,7 +99,7 @@ Return JSON only:
   "journey_id": "{journey_id}",
   "steps": [
     {{
-      "action": "navigate|click|fill|wait|assert_text|scroll|hover|select|press",
+      "action": "navigate|click|fill|wait|scroll|hover|select|press|assert_url_contains|open_link|explore|dismiss",
       "description": "<what you do and why>",
       "url": "<full URL or path, for navigate steps>",
       "intent": "<natural language description of the element, for click/fill/scroll>",
@@ -439,14 +439,14 @@ def discovered_journey_to_config_entry(journey: dict[str, Any]) -> dict[str, Any
     _ALLOWED = {
         "navigate", "click", "fill", "wait", "hover", "scroll",
         "select", "press", "assert_url_contains", "open_link",
-        "explore", "dismiss", "assert_text",
+        "explore", "dismiss",
     }
     clean_steps: list[dict[str, Any]] = []
     for raw in journey.get("steps") or []:
         action = str(raw.get("action") or "").strip()
         if action not in _ALLOWED:
             # Map common LLM aliases
-            action = {"type": "fill", "go_to": "navigate", "assert": "assert_text"}.get(action, "")
+            action = {"type": "fill", "go_to": "navigate"}.get(action, "")
             if not action:
                 continue
         step: dict[str, Any] = {"action": action}

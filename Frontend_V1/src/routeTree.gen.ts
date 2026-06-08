@@ -12,8 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorkflowsRouteImport } from './routes/workflows'
 import { Route as TrendsRouteImport } from './routes/trends'
 import { Route as SitemapRouteImport } from './routes/sitemap'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as SigninRouteImport } from './routes/signin'
 import { Route as RunnerRouteImport } from './routes/runner'
 import { Route as RecommendationsRouteImport } from './routes/recommendations'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LibraryRouteImport } from './routes/library'
 import { Route as IntegrationsRouteImport } from './routes/integrations'
 import { Route as InitRouteImport } from './routes/init'
@@ -22,11 +25,16 @@ import { Route as CompareRouteImport } from './routes/compare'
 import { Route as CliRouteImport } from './routes/cli'
 import { Route as AlertsRouteImport } from './routes/alerts'
 import { Route as AgentsRouteImport } from './routes/agents'
+import { Route as WorkspaceSlugRouteImport } from './routes/$workspaceSlug'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RunsIndexRouteImport } from './routes/runs.index'
 import { Route as RunsRunIdRouteImport } from './routes/runs.$runId'
 import { Route as ExperimentJobIdRouteImport } from './routes/experiment.$jobId'
 import { Route as CohortJobIdRouteImport } from './routes/cohort.$jobId'
+import { Route as WorkspaceSlugRunsRouteImport } from './routes/$workspaceSlug.runs'
+import { Route as WorkspaceSlugDashboardRouteImport } from './routes/$workspaceSlug.dashboard'
+import { Route as WorkspaceSlugRunsIndexRouteImport } from './routes/$workspaceSlug.runs.index'
+import { Route as WorkspaceSlugRunsRunIdRouteImport } from './routes/$workspaceSlug.runs.$runId'
 
 const WorkflowsRoute = WorkflowsRouteImport.update({
   id: '/workflows',
@@ -43,6 +51,16 @@ const SitemapRoute = SitemapRouteImport.update({
   path: '/sitemap',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SigninRoute = SigninRouteImport.update({
+  id: '/signin',
+  path: '/signin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RunnerRoute = RunnerRouteImport.update({
   id: '/runner',
   path: '/runner',
@@ -51,6 +69,11 @@ const RunnerRoute = RunnerRouteImport.update({
 const RecommendationsRoute = RecommendationsRouteImport.update({
   id: '/recommendations',
   path: '/recommendations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LibraryRoute = LibraryRouteImport.update({
@@ -93,6 +116,11 @@ const AgentsRoute = AgentsRouteImport.update({
   path: '/agents',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WorkspaceSlugRoute = WorkspaceSlugRouteImport.update({
+  id: '/$workspaceSlug',
+  path: '/$workspaceSlug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -118,9 +146,30 @@ const CohortJobIdRoute = CohortJobIdRouteImport.update({
   path: '/cohort/$jobId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WorkspaceSlugRunsRoute = WorkspaceSlugRunsRouteImport.update({
+  id: '/runs',
+  path: '/runs',
+  getParentRoute: () => WorkspaceSlugRoute,
+} as any)
+const WorkspaceSlugDashboardRoute = WorkspaceSlugDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => WorkspaceSlugRoute,
+} as any)
+const WorkspaceSlugRunsIndexRoute = WorkspaceSlugRunsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => WorkspaceSlugRunsRoute,
+} as any)
+const WorkspaceSlugRunsRunIdRoute = WorkspaceSlugRunsRunIdRouteImport.update({
+  id: '/$runId',
+  path: '/$runId',
+  getParentRoute: () => WorkspaceSlugRunsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$workspaceSlug': typeof WorkspaceSlugRouteWithChildren
   '/agents': typeof AgentsRoute
   '/alerts': typeof AlertsRoute
   '/cli': typeof CliRoute
@@ -129,18 +178,26 @@ export interface FileRoutesByFullPath {
   '/init': typeof InitRoute
   '/integrations': typeof IntegrationsRoute
   '/library': typeof LibraryRoute
+  '/onboarding': typeof OnboardingRoute
   '/recommendations': typeof RecommendationsRoute
   '/runner': typeof RunnerRoute
+  '/signin': typeof SigninRoute
+  '/signup': typeof SignupRoute
   '/sitemap': typeof SitemapRoute
   '/trends': typeof TrendsRoute
   '/workflows': typeof WorkflowsRoute
+  '/$workspaceSlug/dashboard': typeof WorkspaceSlugDashboardRoute
+  '/$workspaceSlug/runs': typeof WorkspaceSlugRunsRouteWithChildren
   '/cohort/$jobId': typeof CohortJobIdRoute
   '/experiment/$jobId': typeof ExperimentJobIdRoute
   '/runs/$runId': typeof RunsRunIdRoute
   '/runs/': typeof RunsIndexRoute
+  '/$workspaceSlug/runs/$runId': typeof WorkspaceSlugRunsRunIdRoute
+  '/$workspaceSlug/runs/': typeof WorkspaceSlugRunsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$workspaceSlug': typeof WorkspaceSlugRouteWithChildren
   '/agents': typeof AgentsRoute
   '/alerts': typeof AlertsRoute
   '/cli': typeof CliRoute
@@ -149,19 +206,26 @@ export interface FileRoutesByTo {
   '/init': typeof InitRoute
   '/integrations': typeof IntegrationsRoute
   '/library': typeof LibraryRoute
+  '/onboarding': typeof OnboardingRoute
   '/recommendations': typeof RecommendationsRoute
   '/runner': typeof RunnerRoute
+  '/signin': typeof SigninRoute
+  '/signup': typeof SignupRoute
   '/sitemap': typeof SitemapRoute
   '/trends': typeof TrendsRoute
   '/workflows': typeof WorkflowsRoute
+  '/$workspaceSlug/dashboard': typeof WorkspaceSlugDashboardRoute
   '/cohort/$jobId': typeof CohortJobIdRoute
   '/experiment/$jobId': typeof ExperimentJobIdRoute
   '/runs/$runId': typeof RunsRunIdRoute
   '/runs': typeof RunsIndexRoute
+  '/$workspaceSlug/runs/$runId': typeof WorkspaceSlugRunsRunIdRoute
+  '/$workspaceSlug/runs': typeof WorkspaceSlugRunsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/$workspaceSlug': typeof WorkspaceSlugRouteWithChildren
   '/agents': typeof AgentsRoute
   '/alerts': typeof AlertsRoute
   '/cli': typeof CliRoute
@@ -170,20 +234,28 @@ export interface FileRoutesById {
   '/init': typeof InitRoute
   '/integrations': typeof IntegrationsRoute
   '/library': typeof LibraryRoute
+  '/onboarding': typeof OnboardingRoute
   '/recommendations': typeof RecommendationsRoute
   '/runner': typeof RunnerRoute
+  '/signin': typeof SigninRoute
+  '/signup': typeof SignupRoute
   '/sitemap': typeof SitemapRoute
   '/trends': typeof TrendsRoute
   '/workflows': typeof WorkflowsRoute
+  '/$workspaceSlug/dashboard': typeof WorkspaceSlugDashboardRoute
+  '/$workspaceSlug/runs': typeof WorkspaceSlugRunsRouteWithChildren
   '/cohort/$jobId': typeof CohortJobIdRoute
   '/experiment/$jobId': typeof ExperimentJobIdRoute
   '/runs/$runId': typeof RunsRunIdRoute
   '/runs/': typeof RunsIndexRoute
+  '/$workspaceSlug/runs/$runId': typeof WorkspaceSlugRunsRunIdRoute
+  '/$workspaceSlug/runs/': typeof WorkspaceSlugRunsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/$workspaceSlug'
     | '/agents'
     | '/alerts'
     | '/cli'
@@ -192,18 +264,26 @@ export interface FileRouteTypes {
     | '/init'
     | '/integrations'
     | '/library'
+    | '/onboarding'
     | '/recommendations'
     | '/runner'
+    | '/signin'
+    | '/signup'
     | '/sitemap'
     | '/trends'
     | '/workflows'
+    | '/$workspaceSlug/dashboard'
+    | '/$workspaceSlug/runs'
     | '/cohort/$jobId'
     | '/experiment/$jobId'
     | '/runs/$runId'
     | '/runs/'
+    | '/$workspaceSlug/runs/$runId'
+    | '/$workspaceSlug/runs/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/$workspaceSlug'
     | '/agents'
     | '/alerts'
     | '/cli'
@@ -212,18 +292,25 @@ export interface FileRouteTypes {
     | '/init'
     | '/integrations'
     | '/library'
+    | '/onboarding'
     | '/recommendations'
     | '/runner'
+    | '/signin'
+    | '/signup'
     | '/sitemap'
     | '/trends'
     | '/workflows'
+    | '/$workspaceSlug/dashboard'
     | '/cohort/$jobId'
     | '/experiment/$jobId'
     | '/runs/$runId'
     | '/runs'
+    | '/$workspaceSlug/runs/$runId'
+    | '/$workspaceSlug/runs'
   id:
     | '__root__'
     | '/'
+    | '/$workspaceSlug'
     | '/agents'
     | '/alerts'
     | '/cli'
@@ -232,19 +319,27 @@ export interface FileRouteTypes {
     | '/init'
     | '/integrations'
     | '/library'
+    | '/onboarding'
     | '/recommendations'
     | '/runner'
+    | '/signin'
+    | '/signup'
     | '/sitemap'
     | '/trends'
     | '/workflows'
+    | '/$workspaceSlug/dashboard'
+    | '/$workspaceSlug/runs'
     | '/cohort/$jobId'
     | '/experiment/$jobId'
     | '/runs/$runId'
     | '/runs/'
+    | '/$workspaceSlug/runs/$runId'
+    | '/$workspaceSlug/runs/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  WorkspaceSlugRoute: typeof WorkspaceSlugRouteWithChildren
   AgentsRoute: typeof AgentsRoute
   AlertsRoute: typeof AlertsRoute
   CliRoute: typeof CliRoute
@@ -253,8 +348,11 @@ export interface RootRouteChildren {
   InitRoute: typeof InitRoute
   IntegrationsRoute: typeof IntegrationsRoute
   LibraryRoute: typeof LibraryRoute
+  OnboardingRoute: typeof OnboardingRoute
   RecommendationsRoute: typeof RecommendationsRoute
   RunnerRoute: typeof RunnerRoute
+  SigninRoute: typeof SigninRoute
+  SignupRoute: typeof SignupRoute
   SitemapRoute: typeof SitemapRoute
   TrendsRoute: typeof TrendsRoute
   WorkflowsRoute: typeof WorkflowsRoute
@@ -287,6 +385,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signin': {
+      id: '/signin'
+      path: '/signin'
+      fullPath: '/signin'
+      preLoaderRoute: typeof SigninRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/runner': {
       id: '/runner'
       path: '/runner'
@@ -299,6 +411,13 @@ declare module '@tanstack/react-router' {
       path: '/recommendations'
       fullPath: '/recommendations'
       preLoaderRoute: typeof RecommendationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/library': {
@@ -357,6 +476,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AgentsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$workspaceSlug': {
+      id: '/$workspaceSlug'
+      path: '/$workspaceSlug'
+      fullPath: '/$workspaceSlug'
+      preLoaderRoute: typeof WorkspaceSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -392,11 +518,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CohortJobIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$workspaceSlug/runs': {
+      id: '/$workspaceSlug/runs'
+      path: '/runs'
+      fullPath: '/$workspaceSlug/runs'
+      preLoaderRoute: typeof WorkspaceSlugRunsRouteImport
+      parentRoute: typeof WorkspaceSlugRoute
+    }
+    '/$workspaceSlug/dashboard': {
+      id: '/$workspaceSlug/dashboard'
+      path: '/dashboard'
+      fullPath: '/$workspaceSlug/dashboard'
+      preLoaderRoute: typeof WorkspaceSlugDashboardRouteImport
+      parentRoute: typeof WorkspaceSlugRoute
+    }
+    '/$workspaceSlug/runs/': {
+      id: '/$workspaceSlug/runs/'
+      path: '/'
+      fullPath: '/$workspaceSlug/runs/'
+      preLoaderRoute: typeof WorkspaceSlugRunsIndexRouteImport
+      parentRoute: typeof WorkspaceSlugRunsRoute
+    }
+    '/$workspaceSlug/runs/$runId': {
+      id: '/$workspaceSlug/runs/$runId'
+      path: '/$runId'
+      fullPath: '/$workspaceSlug/runs/$runId'
+      preLoaderRoute: typeof WorkspaceSlugRunsRunIdRouteImport
+      parentRoute: typeof WorkspaceSlugRunsRoute
+    }
   }
 }
 
+interface WorkspaceSlugRunsRouteChildren {
+  WorkspaceSlugRunsRunIdRoute: typeof WorkspaceSlugRunsRunIdRoute
+  WorkspaceSlugRunsIndexRoute: typeof WorkspaceSlugRunsIndexRoute
+}
+
+const WorkspaceSlugRunsRouteChildren: WorkspaceSlugRunsRouteChildren = {
+  WorkspaceSlugRunsRunIdRoute: WorkspaceSlugRunsRunIdRoute,
+  WorkspaceSlugRunsIndexRoute: WorkspaceSlugRunsIndexRoute,
+}
+
+const WorkspaceSlugRunsRouteWithChildren =
+  WorkspaceSlugRunsRoute._addFileChildren(WorkspaceSlugRunsRouteChildren)
+
+interface WorkspaceSlugRouteChildren {
+  WorkspaceSlugDashboardRoute: typeof WorkspaceSlugDashboardRoute
+  WorkspaceSlugRunsRoute: typeof WorkspaceSlugRunsRouteWithChildren
+}
+
+const WorkspaceSlugRouteChildren: WorkspaceSlugRouteChildren = {
+  WorkspaceSlugDashboardRoute: WorkspaceSlugDashboardRoute,
+  WorkspaceSlugRunsRoute: WorkspaceSlugRunsRouteWithChildren,
+}
+
+const WorkspaceSlugRouteWithChildren = WorkspaceSlugRoute._addFileChildren(
+  WorkspaceSlugRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  WorkspaceSlugRoute: WorkspaceSlugRouteWithChildren,
   AgentsRoute: AgentsRoute,
   AlertsRoute: AlertsRoute,
   CliRoute: CliRoute,
@@ -405,8 +587,11 @@ const rootRouteChildren: RootRouteChildren = {
   InitRoute: InitRoute,
   IntegrationsRoute: IntegrationsRoute,
   LibraryRoute: LibraryRoute,
+  OnboardingRoute: OnboardingRoute,
   RecommendationsRoute: RecommendationsRoute,
   RunnerRoute: RunnerRoute,
+  SigninRoute: SigninRoute,
+  SignupRoute: SignupRoute,
   SitemapRoute: SitemapRoute,
   TrendsRoute: TrendsRoute,
   WorkflowsRoute: WorkflowsRoute,

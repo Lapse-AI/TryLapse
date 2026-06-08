@@ -21,6 +21,7 @@ import {
 import { uiModeLabel } from "@/lib/ui-mode";
 import { TestGroupAuth } from "@/components/test-group-auth";
 import { useTestGroup, displayTargetForGroup } from "@/hooks/use-test-group";
+import { getWorkspace } from "@/lib/workspace";
 
 const ENVS = [
   { id: "prod-canary", label: "prod-canary", hint: "Production canary slice" },
@@ -34,13 +35,16 @@ export function RehearseTopBar() {
   const { data: summaries = [] } = useScopedRunSummaries();
   const trigger = useTriggerJob();
   const { group } = useTestGroup();
-  const [env, setEnv] = useState(workspace?.env ?? "staging");
+  const [env, setEnv] = useState<"prod-canary" | "staging" | "demo" | "local">("staging");
   const [query, setQuery] = useState("");
   const [showResults, setShowResults] = useState(false);
   const { data: searchResults } = useSearch(query);
 
-  const host = displayTargetForGroup(group);
-  const slug = workspace?.slug ?? "workspace";
+  const userWorkspace = getWorkspace();
+  const host = userWorkspace
+    ? userWorkspace.targetUrl.replace(/^https?:\/\//, "")
+    : displayTargetForGroup(group);
+  const slug = userWorkspace?.slug ?? workspace?.slug ?? "workspace";
 
   const runJob = (mode: "run" | "crawl") => {
     trigger.mutate({ mode, noCrawl: mode === "run" ? false : undefined });
@@ -55,45 +59,48 @@ export function RehearseTopBar() {
       <div className="hidden md:flex items-center gap-2 text-xs font-mono text-muted-foreground">
         <span className="px-2 py-0.5 rounded bg-surface-2 border border-border">{slug}</span>
         <span>/</span>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button
-              aria-label={`Environment: ${env}`}
-              className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded border border-border bg-surface-2 hover:bg-surface-3 text-foreground"
-            >
-              {env} <ChevronDown className="size-3 opacity-60" />
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-56">
-            <DropdownMenuLabel>Environment</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {ENVS.map((e) => (
-              <DropdownMenuItem
-                key={e.id}
-                onSelect={() => setEnv(e.id)}
-                className="flex items-start gap-2"
-              >
-                <Check
-                  className={`size-3.5 mt-0.5 ${e.id === env ? "opacity-100" : "opacity-0"}`}
-                />
-                <div>
-                  <div className="text-sm">{e.label}</div>
-                  <div className="text-[11px] text-muted-foreground">{e.hint}</div>
-                </div>
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <span>/</span>
-        <span className="text-foreground">{host}</span>
-        {live ? (
-          <span className="text-ready text-[11px]">· API live</span>
+        {userWorkspace ? (
+          <span className="text-foreground truncate max-w-[240px]">{host}</span>
         ) : (
-          <span className="text-warn text-[11px]">· mock data</span>
+          <>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  aria-label={`Environment: ${env}`}
+                  className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded border border-border bg-surface-2 hover:bg-surface-3 text-foreground"
+                >
+                  {env} <ChevronDown className="size-3 opacity-60" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-56">
+                <DropdownMenuLabel>Environment</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {ENVS.map((e) => (
+                  <DropdownMenuItem
+                    key={e.id}
+                    onSelect={() => setEnv(e.id as "prod-canary" | "staging" | "demo" | "local")}
+                    className="flex items-start gap-2"
+                  >
+                    <Check
+                      className={`size-3.5 mt-0.5 ${e.id === env ? "opacity-100" : "opacity-0"}`}
+                    />
+                    <div>
+                      <div className="text-sm">{e.label}</div>
+                      <div className="text-[11px] text-muted-foreground">{e.hint}</div>
+                    </div>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <span>/</span>
+            <span className="text-foreground">{host}</span>
+          </>
         )}
-        <span className="text-[11px] px-1.5 py-0.5 rounded border border-violet/30 text-violet">
-          Vision UI · {uiModeLabel()}
-        </span>
+        {live ? (
+          <span className="text-ready text-[11px]">· live</span>
+        ) : (
+          <span className="text-warn text-[11px]">· offline</span>
+        )}
       </div>
 
       <div className="flex-1 max-w-md relative">
@@ -128,9 +135,9 @@ export function RehearseTopBar() {
                     run · {r.id}
                   </Link>
                 ))}
-                {searchResults.issues
+                {(searchResults.issues as { id: string; title: string; runId: string }[])
                   .slice(0, 5)
-                  .map((i: { id: string; title: string; runId: string }) => (
+                  .map((i) => (
                     <Link
                       key={i.id}
                       to="/runs/$runId"
@@ -147,7 +154,7 @@ export function RehearseTopBar() {
       </div>
 
       <div className="flex items-center gap-2">
-        <TestGroupAuth />
+        {!userWorkspace && <TestGroupAuth />}
         <button
           type="button"
           disabled={!live || trigger.isPending}

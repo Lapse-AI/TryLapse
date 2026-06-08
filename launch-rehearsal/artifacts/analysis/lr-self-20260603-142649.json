@@ -1,0 +1,3134 @@
+{
+  "summary": {
+    "id": "lr-self-20260603-142649",
+    "productName": "Launch Rehearsal Dashboard",
+    "target": "127.0.0.1:8081",
+    "targetUrl": "http://127.0.0.1:8081",
+    "env": "staging",
+    "workspaceId": "ws_default",
+    "startedAt": "2026-06-03T14:26:49.258484+00:00",
+    "finishedAt": "2026-06-03T14:30:52.655488+00:00",
+    "durationSec": 243,
+    "readiness": 91,
+    "readinessBand": "Green",
+    "status": "ready",
+    "blockers": 2,
+    "issues": 10,
+    "delights": 3,
+    "pages": 14,
+    "pagesCrawled": 14,
+    "stepCount": 54,
+    "agentCost": 0.3745,
+    "costEstimate": {
+      "usd": 0.3745,
+      "source": "heuristic",
+      "inputTokens": null,
+      "outputTokens": null,
+      "totalTokens": null,
+      "durationSec": 243,
+      "agentsRun": 0
+    },
+    "outcome": "complete",
+    "configHash": "31f26e",
+    "agentsRun": 0,
+    "authAttempted": false,
+    "authOutcome": null,
+    "llmEnabled": false,
+    "crawlEnabled": true,
+    "orphans": 0,
+    "authGated": 0,
+    "networkLogPath": null,
+    "webVitalsPath": null,
+    "experiment": null
+  },
+  "steps": [
+    {
+      "stepId": "j1-command-center-p1-evaluator-s1-desktop-seed1-loop1",
+      "journeyId": "j1-command-center",
+      "journeyName": "Command center",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/",
+      "finalUrl": "http://127.0.0.1:8081/",
+      "outcome": "pass",
+      "durationMs": 1864,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {
+        "lcp": null,
+        "cls": 0.0,
+        "inp": null,
+        "fcp": 216.0,
+        "ttfb": 106.0
+      },
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j1-command-center-p1-evaluator-s1-desktop-seed1-loop1-aria.json",
+        "artifacts/lr-self-20260603-142649/j1-command-center-p1-evaluator-s1-desktop-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j1-command-center-p1-evaluator-s1-desktop-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j1-command-center-p1-evaluator-s2-desktop-seed1-loop1",
+      "journeyId": "j1-command-center",
+      "journeyName": "Command center",
+      "personaId": "p1-evaluator",
+      "action": "wait",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/",
+      "outcome": "pass",
+      "durationMs": 2806,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j1-command-center-p1-evaluator-s2-desktop-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j1-command-center-p1-evaluator-s2-desktop-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j1-command-center-p1-evaluator-s1-tablet-seed1-loop1",
+      "journeyId": "j1-command-center",
+      "journeyName": "Command center",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/",
+      "finalUrl": "http://127.0.0.1:8081/",
+      "outcome": "pass",
+      "durationMs": 1700,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {
+        "lcp": null,
+        "cls": 0.0,
+        "inp": null,
+        "fcp": 408.0,
+        "ttfb": 301.0
+      },
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j1-command-center-p1-evaluator-s1-tablet-seed1-loop1-aria.json",
+        "artifacts/lr-self-20260603-142649/j1-command-center-p1-evaluator-s1-tablet-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j1-command-center-p1-evaluator-s1-tablet-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j1-command-center-p1-evaluator-s2-tablet-seed1-loop1",
+      "journeyId": "j1-command-center",
+      "journeyName": "Command center",
+      "personaId": "p1-evaluator",
+      "action": "wait",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/",
+      "outcome": "pass",
+      "durationMs": 2634,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j1-command-center-p1-evaluator-s2-tablet-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j1-command-center-p1-evaluator-s2-tablet-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j1-command-center-p1-evaluator-s1-mobile-seed1-loop1",
+      "journeyId": "j1-command-center",
+      "journeyName": "Command center",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/",
+      "finalUrl": "http://127.0.0.1:8081/",
+      "outcome": "pass",
+      "durationMs": 1844,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {
+        "lcp": null,
+        "cls": 0.0,
+        "inp": null,
+        "fcp": 652.0,
+        "ttfb": 475.0
+      },
+      "bodyTextExcerpt": "Self-test (this UI) Self-test (this UI) Run rehearsal Rehearsal in progress running job_cc714f88 run run id pending\u2026 Status updates every ~1.5s. Live jobs also appear at the top of Run history before ",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j1-command-center-p1-evaluator-s1-mobile-seed1-loop1-aria.json",
+        "artifacts/lr-self-20260603-142649/j1-command-center-p1-evaluator-s1-mobile-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j1-command-center-p1-evaluator-s1-mobile-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j1-command-center-p1-evaluator-s2-mobile-seed1-loop1",
+      "journeyId": "j1-command-center",
+      "journeyName": "Command center",
+      "personaId": "p1-evaluator",
+      "action": "wait",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/",
+      "outcome": "pass",
+      "durationMs": 2599,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Self-test (this UI) Self-test (this UI) Run rehearsal Rehearsal in progress running job_cc714f88 run run id pending\u2026 Status updates every ~1.5s. Live jobs also appear at the top of Run history before ",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j1-command-center-p1-evaluator-s2-mobile-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j1-command-center-p1-evaluator-s2-mobile-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j2-runs-p1-evaluator-s1-desktop-seed1-loop1",
+      "journeyId": "j2-runs",
+      "journeyName": "Runs list",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/runs",
+      "finalUrl": "http://127.0.0.1:8081/runs",
+      "outcome": "pass",
+      "durationMs": 1501,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {
+        "lcp": null,
+        "cls": 0.0,
+        "inp": null,
+        "fcp": 344.0,
+        "ttfb": 232.0
+      },
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j2-runs-p1-evaluator-s1-desktop-seed1-loop1-aria.json",
+        "artifacts/lr-self-20260603-142649/j2-runs-p1-evaluator-s1-desktop-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j2-runs-p1-evaluator-s1-desktop-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j2-runs-p1-evaluator-s2-desktop-seed1-loop1",
+      "journeyId": "j2-runs",
+      "journeyName": "Runs list",
+      "personaId": "p1-evaluator",
+      "action": "wait",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/runs",
+      "outcome": "pass",
+      "durationMs": 2202,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j2-runs-p1-evaluator-s2-desktop-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j2-runs-p1-evaluator-s2-desktop-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j2-runs-p1-evaluator-s1-tablet-seed1-loop1",
+      "journeyId": "j2-runs",
+      "journeyName": "Runs list",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/runs",
+      "finalUrl": "http://127.0.0.1:8081/runs",
+      "outcome": "pass",
+      "durationMs": 1052,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {
+        "lcp": null,
+        "cls": 0.0,
+        "inp": null,
+        "fcp": 144.0,
+        "ttfb": 66.0
+      },
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j2-runs-p1-evaluator-s1-tablet-seed1-loop1-aria.json",
+        "artifacts/lr-self-20260603-142649/j2-runs-p1-evaluator-s1-tablet-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j2-runs-p1-evaluator-s1-tablet-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j2-runs-p1-evaluator-s2-tablet-seed1-loop1",
+      "journeyId": "j2-runs",
+      "journeyName": "Runs list",
+      "personaId": "p1-evaluator",
+      "action": "wait",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/runs",
+      "outcome": "pass",
+      "durationMs": 2196,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j2-runs-p1-evaluator-s2-tablet-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j2-runs-p1-evaluator-s2-tablet-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j2-runs-p1-evaluator-s1-mobile-seed1-loop1",
+      "journeyId": "j2-runs",
+      "journeyName": "Runs list",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/runs",
+      "finalUrl": "http://127.0.0.1:8081/runs",
+      "outcome": "pass",
+      "durationMs": 907,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {
+        "lcp": null,
+        "cls": 0.0,
+        "inp": null,
+        "fcp": 68.0,
+        "ttfb": 41.0
+      },
+      "bodyTextExcerpt": "Self-test (this UI) Self-test (this UI) Run rehearsal runs Run history 1 live \u00b7 31 completed for Self-test (this UI) (49 total). In-progress jobs appear at the top until the run finishes. Diff last tw",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j2-runs-p1-evaluator-s1-mobile-seed1-loop1-aria.json",
+        "artifacts/lr-self-20260603-142649/j2-runs-p1-evaluator-s1-mobile-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j2-runs-p1-evaluator-s1-mobile-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j2-runs-p1-evaluator-s2-mobile-seed1-loop1",
+      "journeyId": "j2-runs",
+      "journeyName": "Runs list",
+      "personaId": "p1-evaluator",
+      "action": "wait",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/runs",
+      "outcome": "pass",
+      "durationMs": 2074,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Self-test (this UI) Self-test (this UI) Run rehearsal runs Run history 1 live \u00b7 31 completed for Self-test (this UI) (49 total). In-progress jobs appear at the top until the run finishes. Diff last tw",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j2-runs-p1-evaluator-s2-mobile-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j2-runs-p1-evaluator-s2-mobile-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j3-compare-p1-evaluator-s1-desktop-seed1-loop1",
+      "journeyId": "j3-compare",
+      "journeyName": "Compare runs",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/compare",
+      "finalUrl": "http://127.0.0.1:8081/compare",
+      "outcome": "pass",
+      "durationMs": 1123,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path."
+      ],
+      "networkFailures": [],
+      "webVitals": {
+        "lcp": null,
+        "cls": 0.0,
+        "inp": null,
+        "fcp": 208.0,
+        "ttfb": 78.0
+      },
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j3-compare-p1-evaluator-s1-desktop-seed1-loop1-aria.json",
+        "artifacts/lr-self-20260603-142649/j3-compare-p1-evaluator-s1-desktop-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j3-compare-p1-evaluator-s1-desktop-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j3-compare-p1-evaluator-s2-desktop-seed1-loop1",
+      "journeyId": "j3-compare",
+      "journeyName": "Compare runs",
+      "personaId": "p1-evaluator",
+      "action": "wait",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/compare",
+      "outcome": "pass",
+      "durationMs": 2169,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j3-compare-p1-evaluator-s2-desktop-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j3-compare-p1-evaluator-s2-desktop-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j3-compare-p1-evaluator-s1-tablet-seed1-loop1",
+      "journeyId": "j3-compare",
+      "journeyName": "Compare runs",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/compare",
+      "finalUrl": "http://127.0.0.1:8081/compare",
+      "outcome": "pass",
+      "durationMs": 1057,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path."
+      ],
+      "networkFailures": [],
+      "webVitals": {
+        "lcp": null,
+        "cls": 0.0,
+        "inp": null,
+        "fcp": 184.0,
+        "ttfb": 119.0
+      },
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j3-compare-p1-evaluator-s1-tablet-seed1-loop1-aria.json",
+        "artifacts/lr-self-20260603-142649/j3-compare-p1-evaluator-s1-tablet-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j3-compare-p1-evaluator-s1-tablet-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j3-compare-p1-evaluator-s2-tablet-seed1-loop1",
+      "journeyId": "j3-compare",
+      "journeyName": "Compare runs",
+      "personaId": "p1-evaluator",
+      "action": "wait",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/compare",
+      "outcome": "pass",
+      "durationMs": 2137,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j3-compare-p1-evaluator-s2-tablet-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j3-compare-p1-evaluator-s2-tablet-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j3-compare-p1-evaluator-s1-mobile-seed1-loop1",
+      "journeyId": "j3-compare",
+      "journeyName": "Compare runs",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/compare",
+      "finalUrl": "http://127.0.0.1:8081/compare",
+      "outcome": "pass",
+      "durationMs": 946,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path.",
+        "Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route templates resolve to the same URL. Use the route template that matches the intended route, or adjust params.stringify if it changed the target path."
+      ],
+      "networkFailures": [],
+      "webVitals": {
+        "lcp": null,
+        "cls": 0.0,
+        "inp": null,
+        "fcp": 120.0,
+        "ttfb": 51.0
+      },
+      "bodyTextExcerpt": "Self-test (this UI) Self-test (this UI) Run rehearsal monitor Run diff Compare runs for Self-test (this UI) \u2014 readiness, sitemap, step outcomes. Only runs matching this product are listed. Run A (base",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j3-compare-p1-evaluator-s1-mobile-seed1-loop1-aria.json",
+        "artifacts/lr-self-20260603-142649/j3-compare-p1-evaluator-s1-mobile-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j3-compare-p1-evaluator-s1-mobile-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j3-compare-p1-evaluator-s2-mobile-seed1-loop1",
+      "journeyId": "j3-compare",
+      "journeyName": "Compare runs",
+      "personaId": "p1-evaluator",
+      "action": "wait",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/compare",
+      "outcome": "pass",
+      "durationMs": 2094,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Self-test (this UI) Self-test (this UI) Run rehearsal monitor Run diff Compare runs for Self-test (this UI) \u2014 readiness, sitemap, step outcomes. Only runs matching this product are listed. Run A (base",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j3-compare-p1-evaluator-s2-mobile-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j3-compare-p1-evaluator-s2-mobile-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j4-init-dogfood-p1-evaluator-s1-desktop-seed1-loop1",
+      "journeyId": "j4-init-dogfood",
+      "journeyName": "Init dogfood flow",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/init",
+      "finalUrl": null,
+      "outcome": "fail",
+      "durationMs": 15488,
+      "note": "Timeout 15000ms exceeded.\n=========================== logs ===========================\n\"load\" event fired\n============================================================",
+      "errorType": "BrowserStepTimeout",
+      "flaky": true,
+      "behavior": "abandon",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": null,
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s1-desktop-seed1-loop1-error.png"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j4-init-dogfood-p1-evaluator-s2-desktop-seed1-loop1",
+      "journeyId": "j4-init-dogfood",
+      "journeyName": "Init dogfood flow",
+      "personaId": "p1-evaluator",
+      "action": "wait",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/init",
+      "outcome": "pass",
+      "durationMs": 1757,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s2-desktop-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s2-desktop-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j4-init-dogfood-p1-evaluator-s3-desktop-seed1-loop1",
+      "journeyId": "j4-init-dogfood",
+      "journeyName": "Init dogfood flow",
+      "personaId": "p1-evaluator",
+      "action": "click",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/init",
+      "outcome": "pass",
+      "durationMs": 853,
+      "note": "resolved=getByRole(button)('Use http://127.0.0.1:8081')",
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s3-desktop-seed1-loop1-aria.json",
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s3-desktop-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s3-desktop-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": {
+        "x": 297.0,
+        "y": 331.8,
+        "width": 162.4,
+        "height": 30.0,
+        "viewportWidth": 1280,
+        "viewportHeight": 900,
+        "label": "Use http://127.0.0.1:8081"
+      }
+    },
+    {
+      "stepId": "j4-init-dogfood-p1-evaluator-s4-desktop-seed1-loop1",
+      "journeyId": "j4-init-dogfood",
+      "journeyName": "Init dogfood flow",
+      "personaId": "p1-evaluator",
+      "action": "click",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/init",
+      "outcome": "pass",
+      "durationMs": 638,
+      "note": "resolved=getByRole(button)('Preflight HEAD')",
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s4-desktop-seed1-loop1-aria.json",
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s4-desktop-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s4-desktop-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": {
+        "x": 297.0,
+        "y": 648.8,
+        "width": 110.1,
+        "height": 30.0,
+        "viewportWidth": 1280,
+        "viewportHeight": 900,
+        "label": "Preflight HEAD"
+      }
+    },
+    {
+      "stepId": "j4-init-dogfood-p1-evaluator-s5-desktop-seed1-loop1",
+      "journeyId": "j4-init-dogfood",
+      "journeyName": "Init dogfood flow",
+      "personaId": "p1-evaluator",
+      "action": "wait",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/init",
+      "outcome": "pass",
+      "durationMs": 2818,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s5-desktop-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s5-desktop-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j4-init-dogfood-p1-evaluator-s1-tablet-seed1-loop1",
+      "journeyId": "j4-init-dogfood",
+      "journeyName": "Init dogfood flow",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/init",
+      "finalUrl": null,
+      "outcome": "fail",
+      "durationMs": 17726,
+      "note": "Timeout 15000ms exceeded.\n=========================== logs ===========================\n\"load\" event fired\n============================================================",
+      "errorType": "BrowserStepTimeout",
+      "flaky": true,
+      "behavior": "abandon",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": null,
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s1-tablet-seed1-loop1-error.png"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j4-init-dogfood-p1-evaluator-s2-tablet-seed1-loop1",
+      "journeyId": "j4-init-dogfood",
+      "journeyName": "Init dogfood flow",
+      "personaId": "p1-evaluator",
+      "action": "wait",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/init",
+      "outcome": "pass",
+      "durationMs": 1700,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s2-tablet-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s2-tablet-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j4-init-dogfood-p1-evaluator-s3-tablet-seed1-loop1",
+      "journeyId": "j4-init-dogfood",
+      "journeyName": "Init dogfood flow",
+      "personaId": "p1-evaluator",
+      "action": "click",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/init",
+      "outcome": "pass",
+      "durationMs": 220,
+      "note": "resolved=getByRole(button)('Use http://127.0.0.1:8081')",
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s3-tablet-seed1-loop1-aria.json",
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s3-tablet-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s3-tablet-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": {
+        "x": 297.0,
+        "y": 351.8,
+        "width": 162.4,
+        "height": 30.0,
+        "viewportWidth": 768,
+        "viewportHeight": 1024,
+        "label": "Use http://127.0.0.1:8081"
+      }
+    },
+    {
+      "stepId": "j4-init-dogfood-p1-evaluator-s4-tablet-seed1-loop1",
+      "journeyId": "j4-init-dogfood",
+      "journeyName": "Init dogfood flow",
+      "personaId": "p1-evaluator",
+      "action": "click",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/init",
+      "outcome": "pass",
+      "durationMs": 209,
+      "note": "resolved=getByRole(button)('Preflight HEAD')",
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s4-tablet-seed1-loop1-aria.json",
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s4-tablet-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s4-tablet-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": {
+        "x": 297.0,
+        "y": 723.2,
+        "width": 110.1,
+        "height": 30.0,
+        "viewportWidth": 768,
+        "viewportHeight": 1024,
+        "label": "Preflight HEAD"
+      }
+    },
+    {
+      "stepId": "j4-init-dogfood-p1-evaluator-s5-tablet-seed1-loop1",
+      "journeyId": "j4-init-dogfood",
+      "journeyName": "Init dogfood flow",
+      "personaId": "p1-evaluator",
+      "action": "wait",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/init",
+      "outcome": "pass",
+      "durationMs": 1661,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s5-tablet-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s5-tablet-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j4-init-dogfood-p1-evaluator-s1-mobile-seed1-loop1",
+      "journeyId": "j4-init-dogfood",
+      "journeyName": "Init dogfood flow",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/init",
+      "finalUrl": null,
+      "outcome": "fail",
+      "durationMs": 15743,
+      "note": "Timeout 15000ms exceeded.\n=========================== logs ===========================\n\"load\" event fired\n============================================================",
+      "errorType": "BrowserStepTimeout",
+      "flaky": true,
+      "behavior": "abandon",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": null,
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s1-mobile-seed1-loop1-error.png"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j4-init-dogfood-p1-evaluator-s2-mobile-seed1-loop1",
+      "journeyId": "j4-init-dogfood",
+      "journeyName": "Init dogfood flow",
+      "personaId": "p1-evaluator",
+      "action": "wait",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/init",
+      "outcome": "pass",
+      "durationMs": 2145,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Self-test (this UI) Self-test (this UI) Run rehearsal configure rehearse init wizard rehearse init -c config.yaml && rehearse run -c config.yaml Dogfood this dashboard Paste this dashboard URL to rehe",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s2-mobile-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s2-mobile-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j4-init-dogfood-p1-evaluator-s3-mobile-seed1-loop1",
+      "journeyId": "j4-init-dogfood",
+      "journeyName": "Init dogfood flow",
+      "personaId": "p1-evaluator",
+      "action": "click",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/init",
+      "outcome": "pass",
+      "durationMs": 893,
+      "note": "resolved=getByRole(button)('Use http://127.0.0.1:8081')",
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Self-test (this UI) Self-test (this UI) Run rehearsal configure rehearse init wizard rehearse init -c config.yaml && rehearse run -c config.yaml Dogfood this dashboard Paste this dashboard URL to rehe",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s3-mobile-seed1-loop1-aria.json",
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s3-mobile-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s3-mobile-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": {
+        "x": 57.0,
+        "y": 394.5,
+        "width": 162.4,
+        "height": 30.0,
+        "viewportWidth": 390,
+        "viewportHeight": 844,
+        "label": "Use http://127.0.0.1:8081"
+      }
+    },
+    {
+      "stepId": "j4-init-dogfood-p1-evaluator-s4-mobile-seed1-loop1",
+      "journeyId": "j4-init-dogfood",
+      "journeyName": "Init dogfood flow",
+      "personaId": "p1-evaluator",
+      "action": "click",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/init",
+      "outcome": "pass",
+      "durationMs": 273,
+      "note": "resolved=getByRole(button)('Preflight HEAD')",
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Self-test (this UI) Self-test (this UI) Run rehearsal configure rehearse init wizard rehearse init -c config.yaml && rehearse run -c config.yaml Dogfood this dashboard Paste this dashboard URL to rehe",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s4-mobile-seed1-loop1-aria.json",
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s4-mobile-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s4-mobile-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": {
+        "x": 57.0,
+        "y": 813.5,
+        "width": 110.1,
+        "height": 30.0,
+        "viewportWidth": 390,
+        "viewportHeight": 844,
+        "label": "Preflight HEAD"
+      }
+    },
+    {
+      "stepId": "j4-init-dogfood-p1-evaluator-s5-mobile-seed1-loop1",
+      "journeyId": "j4-init-dogfood",
+      "journeyName": "Init dogfood flow",
+      "personaId": "p1-evaluator",
+      "action": "wait",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/init",
+      "outcome": "pass",
+      "durationMs": 1869,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Self-test (this UI) Self-test (this UI) Run rehearsal configure rehearse init wizard rehearse init -c config.yaml && rehearse run -c config.yaml Dogfood this dashboard Paste this dashboard URL to rehe",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s5-mobile-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s5-mobile-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j5-runner-p1-evaluator-s1-desktop-seed1-loop1",
+      "journeyId": "j5-runner",
+      "journeyName": "Runner page (observe only \u2014 no self-trigger)",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/runner",
+      "finalUrl": "http://127.0.0.1:8081/runner",
+      "outcome": "pass",
+      "durationMs": 2322,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {
+        "lcp": null,
+        "cls": 0.0,
+        "inp": null,
+        "fcp": 796.0,
+        "ttfb": 221.0
+      },
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j5-runner-p1-evaluator-s1-desktop-seed1-loop1-aria.json",
+        "artifacts/lr-self-20260603-142649/j5-runner-p1-evaluator-s1-desktop-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j5-runner-p1-evaluator-s1-desktop-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j5-runner-p1-evaluator-s2-desktop-seed1-loop1",
+      "journeyId": "j5-runner",
+      "journeyName": "Runner page (observe only \u2014 no self-trigger)",
+      "personaId": "p1-evaluator",
+      "action": "wait",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/runner",
+      "outcome": "pass",
+      "durationMs": 2324,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j5-runner-p1-evaluator-s2-desktop-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j5-runner-p1-evaluator-s2-desktop-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j5-runner-p1-evaluator-s3-desktop-seed1-loop1",
+      "journeyId": "j5-runner",
+      "journeyName": "Runner page (observe only \u2014 no self-trigger)",
+      "personaId": "p1-evaluator",
+      "action": "assert_url_contains",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/runner",
+      "outcome": "pass",
+      "durationMs": 327,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j5-runner-p1-evaluator-s3-desktop-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j5-runner-p1-evaluator-s3-desktop-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j5-runner-p1-evaluator-s1-tablet-seed1-loop1",
+      "journeyId": "j5-runner",
+      "journeyName": "Runner page (observe only \u2014 no self-trigger)",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/runner",
+      "finalUrl": "http://127.0.0.1:8081/runner",
+      "outcome": "pass",
+      "durationMs": 2373,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {
+        "lcp": null,
+        "cls": 0.0,
+        "inp": null,
+        "fcp": 316.0,
+        "ttfb": 168.0
+      },
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j5-runner-p1-evaluator-s1-tablet-seed1-loop1-aria.json",
+        "artifacts/lr-self-20260603-142649/j5-runner-p1-evaluator-s1-tablet-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j5-runner-p1-evaluator-s1-tablet-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j5-runner-p1-evaluator-s2-tablet-seed1-loop1",
+      "journeyId": "j5-runner",
+      "journeyName": "Runner page (observe only \u2014 no self-trigger)",
+      "personaId": "p1-evaluator",
+      "action": "wait",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/runner",
+      "outcome": "pass",
+      "durationMs": 2390,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j5-runner-p1-evaluator-s2-tablet-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j5-runner-p1-evaluator-s2-tablet-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j5-runner-p1-evaluator-s3-tablet-seed1-loop1",
+      "journeyId": "j5-runner",
+      "journeyName": "Runner page (observe only \u2014 no self-trigger)",
+      "personaId": "p1-evaluator",
+      "action": "assert_url_contains",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/runner",
+      "outcome": "pass",
+      "durationMs": 354,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j5-runner-p1-evaluator-s3-tablet-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j5-runner-p1-evaluator-s3-tablet-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j5-runner-p1-evaluator-s1-mobile-seed1-loop1",
+      "journeyId": "j5-runner",
+      "journeyName": "Runner page (observe only \u2014 no self-trigger)",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/runner",
+      "finalUrl": "http://127.0.0.1:8081/runner",
+      "outcome": "pass",
+      "durationMs": 2013,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {
+        "lcp": null,
+        "cls": 0.0,
+        "inp": null,
+        "fcp": 432.0,
+        "ttfb": 239.0
+      },
+      "bodyTextExcerpt": "Self-test (this UI) Self-test (this UI) Run rehearsal author & rehearse Run & crawl triggers POST /api/jobs \u2014 background CLI runs with live status. Pick a config, then run or crawl. Config (YAML) Rehe",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j5-runner-p1-evaluator-s1-mobile-seed1-loop1-aria.json",
+        "artifacts/lr-self-20260603-142649/j5-runner-p1-evaluator-s1-mobile-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j5-runner-p1-evaluator-s1-mobile-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j5-runner-p1-evaluator-s2-mobile-seed1-loop1",
+      "journeyId": "j5-runner",
+      "journeyName": "Runner page (observe only \u2014 no self-trigger)",
+      "personaId": "p1-evaluator",
+      "action": "wait",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/runner",
+      "outcome": "pass",
+      "durationMs": 2271,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Self-test (this UI) Self-test (this UI) Run rehearsal author & rehearse Run & crawl triggers POST /api/jobs \u2014 background CLI runs with live status. Pick a config, then run or crawl. Config (YAML) Rehe",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j5-runner-p1-evaluator-s2-mobile-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j5-runner-p1-evaluator-s2-mobile-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j5-runner-p1-evaluator-s3-mobile-seed1-loop1",
+      "journeyId": "j5-runner",
+      "journeyName": "Runner page (observe only \u2014 no self-trigger)",
+      "personaId": "p1-evaluator",
+      "action": "assert_url_contains",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/runner",
+      "outcome": "pass",
+      "durationMs": 96,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Self-test (this UI) Self-test (this UI) Run rehearsal author & rehearse Run & crawl triggers POST /api/jobs \u2014 background CLI runs with live status. Pick a config, then run or crawl. Config (YAML) Rehe",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j5-runner-p1-evaluator-s3-mobile-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j5-runner-p1-evaluator-s3-mobile-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j6-trends-p1-evaluator-s1-desktop-seed1-loop1",
+      "journeyId": "j6-trends",
+      "journeyName": "Trends monitoring",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/trends",
+      "finalUrl": "http://127.0.0.1:8081/trends",
+      "outcome": "pass",
+      "durationMs": 2643,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {
+        "lcp": null,
+        "cls": 0.0,
+        "inp": null,
+        "fcp": 876.0,
+        "ttfb": 512.0
+      },
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j6-trends-p1-evaluator-s1-desktop-seed1-loop1-aria.json",
+        "artifacts/lr-self-20260603-142649/j6-trends-p1-evaluator-s1-desktop-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j6-trends-p1-evaluator-s1-desktop-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j6-trends-p1-evaluator-s2-desktop-seed1-loop1",
+      "journeyId": "j6-trends",
+      "journeyName": "Trends monitoring",
+      "personaId": "p1-evaluator",
+      "action": "wait",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/trends",
+      "outcome": "pass",
+      "durationMs": 2938,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j6-trends-p1-evaluator-s2-desktop-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j6-trends-p1-evaluator-s2-desktop-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j6-trends-p1-evaluator-s1-tablet-seed1-loop1",
+      "journeyId": "j6-trends",
+      "journeyName": "Trends monitoring",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/trends",
+      "finalUrl": "http://127.0.0.1:8081/trends",
+      "outcome": "pass",
+      "durationMs": 2828,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {
+        "lcp": null,
+        "cls": 0.0,
+        "inp": null,
+        "fcp": 728.0,
+        "ttfb": 567.0
+      },
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j6-trends-p1-evaluator-s1-tablet-seed1-loop1-aria.json",
+        "artifacts/lr-self-20260603-142649/j6-trends-p1-evaluator-s1-tablet-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j6-trends-p1-evaluator-s1-tablet-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j6-trends-p1-evaluator-s2-tablet-seed1-loop1",
+      "journeyId": "j6-trends",
+      "journeyName": "Trends monitoring",
+      "personaId": "p1-evaluator",
+      "action": "wait",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/trends",
+      "outcome": "pass",
+      "durationMs": 3281,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j6-trends-p1-evaluator-s2-tablet-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j6-trends-p1-evaluator-s2-tablet-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j6-trends-p1-evaluator-s1-mobile-seed1-loop1",
+      "journeyId": "j6-trends",
+      "journeyName": "Trends monitoring",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/trends",
+      "finalUrl": "http://127.0.0.1:8081/trends",
+      "outcome": "pass",
+      "durationMs": 4676,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {
+        "lcp": null,
+        "cls": 0.0,
+        "inp": null,
+        "fcp": 2416.0,
+        "ttfb": 458.0
+      },
+      "bodyTextExcerpt": "Self-test (this UI) Self-test (this UI) Run rehearsal monitor Trends & monitoring Readiness drift, recurring issues, flake rate, crawl size \u2014 observe the curve, not the snapshot. Trends insight mixed ",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j6-trends-p1-evaluator-s1-mobile-seed1-loop1-aria.json",
+        "artifacts/lr-self-20260603-142649/j6-trends-p1-evaluator-s1-mobile-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j6-trends-p1-evaluator-s1-mobile-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j6-trends-p1-evaluator-s2-mobile-seed1-loop1",
+      "journeyId": "j6-trends",
+      "journeyName": "Trends monitoring",
+      "personaId": "p1-evaluator",
+      "action": "wait",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/trends",
+      "outcome": "pass",
+      "durationMs": 2114,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Self-test (this UI) Self-test (this UI) Run rehearsal monitor Trends & monitoring Readiness drift, recurring issues, flake rate, crawl size \u2014 observe the curve, not the snapshot. Trends insight mixed ",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/j6-trends-p1-evaluator-s2-mobile-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/j6-trends-p1-evaluator-s2-mobile-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "auto-j1-dashboard-p1-evaluator-s1-desktop-seed1-loop1",
+      "journeyId": "auto-j1-dashboard",
+      "journeyName": "Auto: Dashboard",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/config",
+      "finalUrl": "http://127.0.0.1:8081/config",
+      "outcome": "pass",
+      "durationMs": 4025,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {
+        "lcp": null,
+        "cls": 0.0,
+        "inp": null,
+        "fcp": 1368.0,
+        "ttfb": 858.0
+      },
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/auto-j1-dashboard-p1-evaluator-s1-desktop-seed1-loop1-aria.json",
+        "artifacts/lr-self-20260603-142649/auto-j1-dashboard-p1-evaluator-s1-desktop-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/auto-j1-dashboard-p1-evaluator-s1-desktop-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "auto-j1-dashboard-p1-evaluator-s1-tablet-seed1-loop1",
+      "journeyId": "auto-j1-dashboard",
+      "journeyName": "Auto: Dashboard",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/config",
+      "finalUrl": "http://127.0.0.1:8081/config",
+      "outcome": "pass",
+      "durationMs": 2242,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {
+        "lcp": null,
+        "cls": 0.0,
+        "inp": null,
+        "fcp": 652.0,
+        "ttfb": 308.0
+      },
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/auto-j1-dashboard-p1-evaluator-s1-tablet-seed1-loop1-aria.json",
+        "artifacts/lr-self-20260603-142649/auto-j1-dashboard-p1-evaluator-s1-tablet-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/auto-j1-dashboard-p1-evaluator-s1-tablet-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "auto-j1-dashboard-p1-evaluator-s1-mobile-seed1-loop1",
+      "journeyId": "auto-j1-dashboard",
+      "journeyName": "Auto: Dashboard",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/config",
+      "finalUrl": "http://127.0.0.1:8081/config",
+      "outcome": "pass",
+      "durationMs": 1122,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {
+        "lcp": null,
+        "cls": 0.0,
+        "inp": null,
+        "fcp": 220.0,
+        "ttfb": 142.0
+      },
+      "bodyTextExcerpt": "Self-test (this UI) Self-test (this UI) Run rehearsal configure Workspace \u00b7 rehearse.yaml Versioned config. Secrets only via env vars \u2014 never in YAML or scorecards. Workspace Faculty-Dashboard-Eight W",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/auto-j1-dashboard-p1-evaluator-s1-mobile-seed1-loop1-aria.json",
+        "artifacts/lr-self-20260603-142649/auto-j1-dashboard-p1-evaluator-s1-mobile-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/auto-j1-dashboard-p1-evaluator-s1-mobile-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "auto-j4-explore-p1-evaluator-s1-desktop-seed1-loop1",
+      "journeyId": "auto-j4-explore",
+      "journeyName": "Auto: Explore /recommendations",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/recommendations",
+      "finalUrl": "http://127.0.0.1:8081/recommendations",
+      "outcome": "pass",
+      "durationMs": 2161,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {
+        "lcp": null,
+        "cls": 0.0,
+        "inp": null,
+        "fcp": 524.0,
+        "ttfb": 112.0
+      },
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/auto-j4-explore-p1-evaluator-s1-desktop-seed1-loop1-aria.json",
+        "artifacts/lr-self-20260603-142649/auto-j4-explore-p1-evaluator-s1-desktop-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/auto-j4-explore-p1-evaluator-s1-desktop-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "auto-j4-explore-p1-evaluator-s1-tablet-seed1-loop1",
+      "journeyId": "auto-j4-explore",
+      "journeyName": "Auto: Explore /recommendations",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/recommendations",
+      "finalUrl": "http://127.0.0.1:8081/recommendations",
+      "outcome": "pass",
+      "durationMs": 2284,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {
+        "lcp": null,
+        "cls": 0.0,
+        "inp": null,
+        "fcp": 668.0,
+        "ttfb": 438.0
+      },
+      "bodyTextExcerpt": "Rehearsal Monitor Self-test (this UI) 127.0.0.1:8081 Launch Rehearsal self-test tester lr-self Monitor Command center Runs Compare runs Trends Alerts Recommendations Author & rehearse Init wizard Jour",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/auto-j4-explore-p1-evaluator-s1-tablet-seed1-loop1-aria.json",
+        "artifacts/lr-self-20260603-142649/auto-j4-explore-p1-evaluator-s1-tablet-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/auto-j4-explore-p1-evaluator-s1-tablet-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "auto-j4-explore-p1-evaluator-s1-mobile-seed1-loop1",
+      "journeyId": "auto-j4-explore",
+      "journeyName": "Auto: Explore /recommendations",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/recommendations",
+      "finalUrl": "http://127.0.0.1:8081/recommendations",
+      "outcome": "pass",
+      "durationMs": 2671,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {
+        "lcp": null,
+        "cls": 0.0,
+        "inp": null,
+        "fcp": 612.0,
+        "ttfb": 309.0
+      },
+      "bodyTextExcerpt": "Self-test (this UI) Self-test (this UI) Run rehearsal analysis Recommendations & backlog Prioritized export \u2014 no auto-fix. Evidence-bound suggestions aligned with Evaluation rubric. Export to Linear F",
+      "artifactPaths": [
+        "artifacts/lr-self-20260603-142649/auto-j4-explore-p1-evaluator-s1-mobile-seed1-loop1-aria.json",
+        "artifacts/lr-self-20260603-142649/auto-j4-explore-p1-evaluator-s1-mobile-seed1-loop1.png",
+        "artifacts/lr-self-20260603-142649/auto-j4-explore-p1-evaluator-s1-mobile-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    }
+  ],
+  "issues": [
+    {
+      "id": "I1",
+      "runId": "lr-self-20260603-142649",
+      "severity": "P2",
+      "title": "Form inputs missing labels",
+      "detail": "5 of 11 inputs lack label, aria-label, or placeholder.",
+      "persona": "First-time evaluator",
+      "personaId": "p1-evaluator",
+      "journey": "auto-j1-dashboard",
+      "journeyId": "auto-j1-dashboard",
+      "stepId": "auto-j1-dashboard-p1-evaluator-s1-desktop-seed1-loop1",
+      "dimension": "Accessibility",
+      "relatedDimensions": [
+        "UI/UX"
+      ],
+      "confidence": "high",
+      "owner": "frontend",
+      "recurring": 1,
+      "evidence": "5 of 11 inputs lack label, aria-label, or placeholder.",
+      "severityReason": "P2 from automated heuristics",
+      "suggestion": null,
+      "screenshotPath": "artifacts/lr-self-20260603-142649/auto-j1-dashboard-p1-evaluator-s1-desktop-seed1-loop1.png"
+    },
+    {
+      "id": "I2",
+      "runId": "lr-self-20260603-142649",
+      "severity": "P3",
+      "title": "Console warnings on page",
+      "detail": "16 warning(s): Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route tem",
+      "persona": "Daily operator",
+      "personaId": "p2-operator",
+      "journey": "Compare runs",
+      "journeyId": "j3-compare",
+      "stepId": "j3-compare-p1-evaluator-s1-desktop-seed1-loop1",
+      "dimension": "Functionality",
+      "relatedDimensions": [],
+      "confidence": "high",
+      "owner": "frontend",
+      "recurring": 1,
+      "evidence": "16 warning(s): Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route tem",
+      "severityReason": "P3 from automated heuristics",
+      "suggestion": null,
+      "screenshotPath": "artifacts/lr-self-20260603-142649/j3-compare-p1-evaluator-s1-desktop-seed1-loop1.png"
+    },
+    {
+      "id": "I3",
+      "runId": "lr-self-20260603-142649",
+      "severity": "P3",
+      "title": "Slow step completion",
+      "detail": "Step took 15488ms (>8s perceived delay threshold).",
+      "persona": "Daily operator",
+      "personaId": "p2-operator",
+      "journey": "Init dogfood flow",
+      "journeyId": "j4-init-dogfood",
+      "stepId": "j4-init-dogfood-p1-evaluator-s1-desktop-seed1-loop1",
+      "dimension": "Performance",
+      "relatedDimensions": [
+        "UI/UX"
+      ],
+      "confidence": "high",
+      "owner": "frontend",
+      "recurring": 1,
+      "evidence": "Step took 15488ms (>8s perceived delay threshold).",
+      "severityReason": "P3 from automated heuristics",
+      "suggestion": null,
+      "screenshotPath": "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s1-desktop-seed1-loop1-error.png",
+      "errorType": "BrowserStepTimeout"
+    },
+    {
+      "id": "I4",
+      "runId": "lr-self-20260603-142649",
+      "severity": "P2",
+      "title": "Sparse page content",
+      "detail": "Page body has very little text \u2014 value proposition may be unclear.",
+      "persona": "First-time evaluator",
+      "personaId": "p1-evaluator",
+      "journey": "Init dogfood flow",
+      "journeyId": "j4-init-dogfood",
+      "stepId": "j4-init-dogfood-p1-evaluator-s1-desktop-seed1-loop1",
+      "dimension": "Information",
+      "relatedDimensions": [],
+      "confidence": "high",
+      "owner": "frontend",
+      "recurring": 1,
+      "evidence": "Page body has very little text \u2014 value proposition may be unclear.",
+      "severityReason": "P2 from automated heuristics",
+      "suggestion": null,
+      "screenshotPath": "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s1-desktop-seed1-loop1-error.png",
+      "errorType": "BrowserStepTimeout"
+    },
+    {
+      "id": "I5",
+      "runId": "lr-self-20260603-142649",
+      "severity": "P2",
+      "title": "Console noise spike across run",
+      "detail": "Captured 0 console error(s) and 16 warning(s) across canonical steps \u2014 review network-log and step artifacts.",
+      "persona": "Daily operator",
+      "personaId": "p2-operator",
+      "journey": "auto-j1-dashboard",
+      "journeyId": "auto-j1-dashboard",
+      "stepId": "auto-j1-dashboard-p1-evaluator-s1-desktop-seed1-loop1",
+      "dimension": "Functionality",
+      "relatedDimensions": [],
+      "confidence": "high",
+      "owner": "backend",
+      "recurring": 1,
+      "evidence": "Captured 0 console error(s) and 16 warning(s) across canonical steps \u2014 review network-log and step artifacts.",
+      "severityReason": "P2 from automated heuristics",
+      "suggestion": null,
+      "screenshotPath": "artifacts/lr-self-20260603-142649/auto-j1-dashboard-p1-evaluator-s1-desktop-seed1-loop1.png"
+    },
+    {
+      "id": "E4",
+      "runId": "lr-self-20260603-142649",
+      "severity": "P1",
+      "title": "BrowserStepTimeout: Init dogfood flow",
+      "detail": "Timeout 15000ms exceeded.\n=========================== logs ===========================\n\"load\" event fired\n============================================================",
+      "persona": "First-time evaluator",
+      "personaId": "p1-evaluator",
+      "journey": "Init dogfood flow",
+      "journeyId": "j4-init-dogfood",
+      "stepId": "j4-init-dogfood-p1-evaluator-s1-tablet-seed1-loop1",
+      "dimension": "Functionality",
+      "confidence": "high",
+      "owner": "frontend",
+      "recurring": 1,
+      "evidence": "Timeout 15000ms exceeded.\n=========================== logs ===========================\n\"load\" event fired\n============================================================",
+      "errorType": "BrowserStepTimeout",
+      "severityReason": "Named error BrowserStepTimeout",
+      "suggestion": null,
+      "screenshotPath": "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s1-tablet-seed1-loop1-error.png"
+    },
+    {
+      "id": "E5",
+      "runId": "lr-self-20260603-142649",
+      "severity": "P1",
+      "title": "BrowserStepTimeout: Init dogfood flow",
+      "detail": "Timeout 15000ms exceeded.\n=========================== logs ===========================\n\"load\" event fired\n============================================================",
+      "persona": "First-time evaluator",
+      "personaId": "p1-evaluator",
+      "journey": "Init dogfood flow",
+      "journeyId": "j4-init-dogfood",
+      "stepId": "j4-init-dogfood-p1-evaluator-s1-mobile-seed1-loop1",
+      "dimension": "Functionality",
+      "confidence": "high",
+      "owner": "frontend",
+      "recurring": 1,
+      "evidence": "Timeout 15000ms exceeded.\n=========================== logs ===========================\n\"load\" event fired\n============================================================",
+      "errorType": "BrowserStepTimeout",
+      "severityReason": "Named error BrowserStepTimeout",
+      "suggestion": null,
+      "screenshotPath": "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s1-mobile-seed1-loop1-error.png"
+    },
+    {
+      "id": "DIM-TRUST-ROLLUP",
+      "runId": "lr-self-20260603-142649",
+      "severity": "P3",
+      "title": "Trust signal from run evidence",
+      "detail": "Phase 2 heuristic from step evidence",
+      "persona": "First-time evaluator",
+      "personaId": "p1-evaluator",
+      "journey": "Run rollup",
+      "journeyId": "rollup",
+      "stepId": "run-rollup",
+      "dimension": "Trust",
+      "relatedDimensions": [],
+      "confidence": "high",
+      "owner": "frontend",
+      "recurring": 1,
+      "evidence": "Phase 2 heuristic from step evidence",
+      "severityReason": "P3 from automated dimension rollup",
+      "suggestion": null
+    },
+    {
+      "id": "DIM-ONBOARDING-ROLLUP",
+      "runId": "lr-self-20260603-142649",
+      "severity": "P3",
+      "title": "Onboarding signal from run evidence",
+      "detail": "Phase 2 heuristic from step evidence",
+      "persona": "First-time evaluator",
+      "personaId": "p1-evaluator",
+      "journey": "Run rollup",
+      "journeyId": "rollup",
+      "stepId": "run-rollup",
+      "dimension": "Onboarding",
+      "relatedDimensions": [],
+      "confidence": "high",
+      "owner": "frontend",
+      "recurring": 1,
+      "evidence": "Phase 2 heuristic from step evidence",
+      "severityReason": "P3 from automated dimension rollup",
+      "suggestion": null
+    },
+    {
+      "id": "DIM-RECOVERY-ROLLUP",
+      "runId": "lr-self-20260603-142649",
+      "severity": "P3",
+      "title": "Recovery signal from run evidence",
+      "detail": "Phase 2 heuristic from step evidence",
+      "persona": "First-time evaluator",
+      "personaId": "p1-evaluator",
+      "journey": "Run rollup",
+      "journeyId": "rollup",
+      "stepId": "run-rollup",
+      "dimension": "Recovery",
+      "relatedDimensions": [],
+      "confidence": "high",
+      "owner": "frontend",
+      "recurring": 1,
+      "evidence": "Phase 2 heuristic from step evidence",
+      "severityReason": "P3 from automated dimension rollup",
+      "suggestion": null
+    }
+  ],
+  "delights": [
+    {
+      "id": "D1",
+      "runId": "lr-self-20260603-142649",
+      "title": "Clear navigation structure",
+      "quote": "Page has 19 links and 1 headings.",
+      "persona": "First-time evaluator",
+      "journey": "auto-j1-dashboard",
+      "stepId": "auto-j1-dashboard-p1-evaluator-s1-desktop-seed1-loop1",
+      "marketingReady": true,
+      "confidence": "high"
+    },
+    {
+      "id": "D2",
+      "runId": "lr-self-20260603-142649",
+      "title": "Informative landing content",
+      "quote": "Page includes headings and substantive body copy for first-time evaluators.",
+      "persona": "First-time evaluator",
+      "journey": "auto-j1-dashboard",
+      "stepId": "auto-j1-dashboard-p1-evaluator-s1-desktop-seed1-loop1",
+      "marketingReady": true,
+      "confidence": "high"
+    },
+    {
+      "id": "D3",
+      "runId": "lr-self-20260603-142649",
+      "title": "Accessible form labels",
+      "quote": "All 2 form inputs have labels or placeholders.",
+      "persona": "Admin / buyer",
+      "journey": "auto-j4-explore",
+      "stepId": "auto-j4-explore-p1-evaluator-s1-desktop-seed1-loop1",
+      "marketingReady": true,
+      "confidence": "high"
+    }
+  ],
+  "agents": [
+    {
+      "id": "ag_compl",
+      "runId": "lr-self-20260603-142649",
+      "name": "Compliance",
+      "role": "PII, auth boundary signals (Phase 2)",
+      "phase": "compliance",
+      "status": "idle",
+      "durationSec": 0,
+      "costUsd": 0,
+      "lastSummary": "Not enabled for this run."
+    },
+    {
+      "id": "ag_perf",
+      "runId": "lr-self-20260603-142649",
+      "name": "Performance",
+      "role": "Latency, Web Vitals (Phase 2)",
+      "phase": "performance",
+      "status": "idle",
+      "durationSec": 0,
+      "costUsd": 0,
+      "lastSummary": "Not enabled for this run."
+    }
+  ],
+  "matrix": [
+    {
+      "personaId": "p1-evaluator",
+      "journeyId": "j1-command-center",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p2-operator",
+      "journeyId": "j1-command-center",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p3-admin",
+      "journeyId": "j1-command-center",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p4-competitor-analyst",
+      "journeyId": "j1-command-center",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p1-evaluator",
+      "journeyId": "j2-runs",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p2-operator",
+      "journeyId": "j2-runs",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p3-admin",
+      "journeyId": "j2-runs",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p4-competitor-analyst",
+      "journeyId": "j2-runs",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p1-evaluator",
+      "journeyId": "j3-compare",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p2-operator",
+      "journeyId": "j3-compare",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p3-admin",
+      "journeyId": "j3-compare",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p4-competitor-analyst",
+      "journeyId": "j3-compare",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p1-evaluator",
+      "journeyId": "j4-init-dogfood",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-operator",
+      "journeyId": "j4-init-dogfood",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-admin",
+      "journeyId": "j4-init-dogfood",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-competitor-analyst",
+      "journeyId": "j4-init-dogfood",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-evaluator",
+      "journeyId": "j5-runner",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p2-operator",
+      "journeyId": "j5-runner",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p3-admin",
+      "journeyId": "j5-runner",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p4-competitor-analyst",
+      "journeyId": "j5-runner",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p1-evaluator",
+      "journeyId": "j6-trends",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p2-operator",
+      "journeyId": "j6-trends",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p3-admin",
+      "journeyId": "j6-trends",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p4-competitor-analyst",
+      "journeyId": "j6-trends",
+      "grade": "pass"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "Functionality",
+      "score": 80,
+      "signal": "94% steps pass; 3 failures",
+      "automated": true
+    },
+    {
+      "name": "UI/UX",
+      "score": 100,
+      "signal": "0 unlabeled buttons; ~2673ms avg step",
+      "automated": true
+    },
+    {
+      "name": "Information",
+      "score": 40,
+      "signal": "3 sparse-content pages",
+      "automated": true
+    },
+    {
+      "name": "Performance",
+      "score": 78,
+      "signal": "~2673ms avg step",
+      "automated": true
+    },
+    {
+      "name": "Accessibility",
+      "score": 73,
+      "signal": "Phase 2 heuristic from step evidence",
+      "automated": false
+    },
+    {
+      "name": "Trust",
+      "score": 78,
+      "signal": "Phase 2 heuristic from step evidence",
+      "automated": false
+    },
+    {
+      "name": "Onboarding",
+      "score": 73,
+      "signal": "Phase 2 heuristic from step evidence",
+      "automated": false
+    },
+    {
+      "name": "Recovery",
+      "score": 73,
+      "signal": "Phase 2 heuristic from step evidence",
+      "automated": false
+    }
+  ],
+  "scorecardMd": "# Launch Rehearsal \u2014 Scorecard\n\n| Field | Value |\n|-------|--------|\n| **Run ID** | `lr-self-20260603-142649` |\n| **Date** | 2026-06-03 |\n| **Target** | http://127.0.0.1:8081 |\n| **Product** | Launch Rehearsal Dashboard |\n| **Outcome** | complete |\n| **Duration** | 243s |\n\n---\n\n## Executive summary\n\n| | |\n|---|---|\n| **Readiness** | **Amber** |\n| **Top blocker** | Form inputs missing labels |\n| **Top delight** | Clear navigation structure |\n| **Issues** | 11 |\n| **Delights** | 8 |\n\n| **Pages crawled** | 14 |\n| **Auto journeys added** | 2 |\n\n---\n\n## Persona \u00d7 journey matrix\n\n| Journey | P1 First-time | P2 Daily | P3 Admin | P4 Competitive |\n|---------|--------|--------|--------|--------|\n| **j1-command-center** Command center | **Pass** | **Pass** | **Pass** | **Pass** |\n| **j2-runs** Runs list | **Pass** | **Pass** | **Pass** | **Pass** |\n| **j3-compare** Compare runs | **Pass** | **Pass** | **Pass** | **Pass** |\n| **j4-init-dogfood** Init dogfood flow | **Fail** | **Fail** | **Fail** | **Fail** |\n| **j5-runner** Runner page (observe only \u2014 no | **Pass** | **Pass** | **Pass** | **Pass** |\n| **j6-trends** Trends monitoring | **Pass** | **Pass** | **Pass** | **Pass** |\n| **auto-j1-dashboard** Auto: Dashboard | **Pass** | **Pass** | **Pass** | **Pass** |\n| **auto-j4-explore** Auto: Explore /recommendations | **Pass** | **Pass** | **Pass** | **Pass** |\n\n---\n\n## Site map (crawl)\n\n# Site map\n\n**Origin:** http://127.0.0.1:8081  \n**Pages crawled:** 14  \n\n## Hub pages (most outbound links)\n\n- `/runner` \u2014 Runner \u2014 Launch Rehearsal\n- `/` \u2014 Command center \u2014 Launch Rehearsal\n- `/compare` \u2014 Compare runs \u2014 Launch Rehearsal\n- `/library` \u2014 Journey library \u2014 Launch Rehearsal\n- `/agents` \u2014 Agents \u2014 Launch Rehearsal\n- `/alerts` \u2014 Alerts \u2014 Launch Rehearsal\n- `/cli` \u2014 CLI \u2014 Launch Rehearsal\n- `/config` \u2014 Workspace \u2014 Launch Rehearsal\n\n## All pages\n\n| Path | Title | Depth | Links | Forms | Words |\n|------|-------|-------|-------|-------|-------|\n| `/` | Command center \u2014 Launch Rehearsal | 0 | 38 | 0 | 592 |\n| `/agents` | Agents \u2014 Launch Rehearsal | 1 | 17 | 0 | 524 |\n| `/alerts` | Alerts \u2014 Launch Rehearsal | 1 | 17 | 0 | 179 |\n| `/cli` | CLI \u2014 Launch Rehearsal | 1 | 17 | 0 | 424 |\n| `/compare` | Compare runs \u2014 Launch Rehearsal | 1 | 19 | 0 | 449 |\n| `/config` | Workspace \u2014 Launch Rehearsal | 1 | 19 | 0 | 317 |\n| `/init` |  | 1 | 0 | 0 | 0 |\n| `/integrations` | Integrations \u2014 Launch Rehearsal | 1 | 17 | 0 | 152 |\n| `/library` | Journey library \u2014 Launch Rehearsal | 1 | 19 | 0 | 185 |\n| `/recommendations` | Recommendations \u2014 Launch Rehearsal | 1 | 22 | 0 | 259 |\n| `/runner` | Runner \u2014 Launch Rehearsal | 1 | 34 | 0 | 694 |\n| `/sitemap` | Site map \u2014 Launch Rehearsal | 1 | 17 | 0 | 83 |\n| `/trends` | Trends \u2014 Launch Rehearsal | 1 | 17 | 0 | 539 |\n| `/workflows` | Workflows \u2014 Launch Rehearsal | 1 | 17 | 0 | 311 |\n\n---\n\n## Detected workflows\n\n| Type | Path | Title | Signals |\n|------|------|-------|---------|\n| dashboard | `/config` | Workspace \u2014 Launch Rehearsal | 11 inputs |\n| integration | `/integrations` | Integrations \u2014 Launch Rehearsal | \u2014 |\n\n---\n\n## Multi-agent collaboration\n\n| Agent | Role | Summary |\n|-------|------|---------|\n| `crawler` | Site structure discovery | Crawled 14 pages; 0 auth-gated; 0 orphans |\n| `workflow` | Workflow & journey planning | Detected workflow types: dashboard, integration |\n| `journey-runner` | E2E journey execution | Executed 54 steps across 8 journeys (3 failures, 0 flaky steps, seeds=1, viewpor |\n| `performance-v1` | Web Vitals (lab) | Web Vitals captured for 7 journey(s); no threshold breaches |\n| `persona-p1-evaluator` | Evaluator: First-time evaluator (prospect / new user) | Analysis from prospect / new user perspective |\n| `persona-p2-operator` | Evaluator: Daily operator (power user) | Analysis from power user perspective |\n| `persona-p3-admin` | Evaluator: Admin / buyer (IT admin) | Analysis from IT admin perspective |\n| `persona-p4-competitor-analyst` | Evaluator: Competitive Analyst (Competitor evaluating feature parity and gaps) | Analysis from Competitor evaluating feature parity and gaps perspective |\n| `llm-p1-evaluator` | LLM evaluator: First-time evaluator | First-time evaluator sees live rehearsal status and run history, but initial nav |\n| `llm-p2-operator` | LLM evaluator: Daily operator | The dashboard is largely functional and responsive, but the Init wizard journey  |\n| `llm-p3-admin` | LLM evaluator: Admin / buyer | Admin can access all core pages but the Init wizard fails on first load across d |\n| `llm-p4-competitor-analyst` | LLM evaluator: Competitive Analyst | The Launch Rehearsal Dashboard shows a rich feature set for competitive analysis |\n| `synthesizer` | Cross-agent synthesis | Synthesized 11 issues, 8 delights from 12 agent reports |\n\n---\n\n## Dimension rollup (automated subset)\n\n| Dimension | Score 1\u20135 | Signal |\n|-----------|-----------|--------|\n| Functionality | 4 | 94% steps pass; 3 failures |\n| UI/UX | 5 | 0 unlabeled buttons; ~2673ms avg step |\n| Information clarity | 2 | 3 sparse-content pages |\n\n---\n\n## Issues (evidence-bound)\n\n### P1\n\n| ID | Finding | Personas | Evidence |\n|----|---------|----------|----------|\n| **I6** | Crawl found error pages \u2014 Paths: /init | p3-admin | `crawl-graph` |\n\n### P2\n\n| ID | Finding | Personas | Evidence |\n|----|---------|----------|----------|\n| **I1** | Form inputs missing labels \u2014 5 of 11 inputs lack label, aria-label, or placeholder. | p1-evaluator, p3-admin, p4-competitor-analyst | `auto-j1-dashboard-p1-evaluator-s1-desktop-seed1-loop1` |\n| **I4** | Sparse page content \u2014 Page body has very little text \u2014 value proposition may be unclear. | p1-evaluator | `j4-init-dogfood-p1-evaluator-s1-desktop-seed1-loop1` |\n| **I5** | Console noise spike across run \u2014 Captured 0 console error(s) and 16 warning(s) across canonical steps \u2014 review network-log and step artifacts. | p2-operator | `auto-j1-dashboard-p1-evaluator-s1-desktop-seed1-loop1` |\n| **I7** | Init wizard page fails to load on first navigation attempt \u2014 On all device types, navigating to /init results in a timeout or blank page (outcome: fail) before eventually loading after a wait. This confuses new users who may think the page is broken. | p1-evaluator | `j4-init-dogfood-p1-evaluator-s1-desktop-seed1-loop1` |\n| **I8** | Init wizard initial page load fails on first attempt \u2014 On all device sizes (desktop, tablet, mobile), the first navigation to /init fails (empty title, long duration ~15-17s) before subsequent steps succeed, indicating a timeout or rendering issue that slows down the operator. | p2-operator | `j4-init-dogfood-p1-evaluator-s1-desktop-seed1-loop1` |\n| **I9** | Init wizard page consistently fails on first navigation \u2014 On desktop, tablet, and mobile, the first navigation to /init fails (no title, long duration ~15-17s) before succeeding on retry. This unreliability undermines trust for an admin verifying access boundaries. | p3-admin | `j4-init-dogfood-p1-evaluator-s1-desktop-seed1-loop1` |\n| **I10** | Init wizard page times out on first load across devices \u2014 The /init page failed to load on first navigation (timeout >15s) on desktop, tablet, and mobile, though it succeeded on retry. This could indicate a server-side bottleneck or heavy initialization that may frustrate users and suggests reliability concerns. | p4-competitor-analyst | `j4-init-dogfood-p1-evaluator-s1-desktop-seed1-loop1` |\n\n### P3\n\n| ID | Finding | Personas | Evidence |\n|----|---------|----------|----------|\n| **I2** | Console warnings on page \u2014 16 warning(s): Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route tem | p2-operator | `j3-compare-p1-evaluator-s1-desktop-seed1-loop1` |\n| **I3** | Slow step completion \u2014 Step took 15488ms (>8s perceived delay threshold). | p2-operator | `j4-init-dogfood-p1-evaluator-s1-desktop-seed1-loop1` |\n| **I11** | Mobile command center may be missing navigation items (hypothesis) \u2014 The mobile command center excerpt shows fewer navigation links (e.g., no 'Monitor', 'Runs', 'Compare runs') compared to desktop. While this could be due to truncation or a responsive menu, it may limit feature discoverability on mobile, a potential gap for competitive parity. | p4-competitor-analyst | `j1-command-center-p1-evaluator-s1-mobile-seed1-loop1` |\n\n---\n\n## Delights & strengths (required)\n\n| ID | Delight | Personas | Evidence |\n|----|---------|----------|----------|\n| **D1** | Clear navigation structure \u2014 Page has 19 links and 1 headings. | p1-evaluator, p2-operator | `auto-j1-dashboard-p1-evaluator-s1-desktop-seed1-loop1` |\n| **D2** | Informative landing content \u2014 Page includes headings and substantive body copy for first-time evaluators. | p1-evaluator | `auto-j1-dashboard-p1-evaluator-s1-desktop-seed1-loop1` |\n| **D3** | Accessible form labels \u2014 All 2 form inputs have labels or placeholders. | p3-admin, p4-competitor-analyst | `auto-j4-explore-p1-evaluator-s1-desktop-seed1-loop1` |\n| **D4** | Fast interactions for repeat tasks \u2014 48 steps completed under 3s. | p2-operator | `j1-command-center-p1-evaluator-s1-desktop-seed1-loop1` |\n| **D5** | Live rehearsal status displayed prominently on command center \u2014 The command center shows a live rehearsal job with status 'running', giving immediate visibility into ongoing activity. | p1-evaluator | `j1-command-center-p1-evaluator-s2-desktop-seed1-loop1` |\n| **D6** | Run history with clear summary of completed and live runs \u2014 The Runs page shows a concise summary of 1 live and 31 completed runs, making it easy to understand system activity at a glance. | p1-evaluator | `j2-runs-p1-evaluator-s1-desktop-seed1-loop1` |\n| **D7** | Run comparison with 'Diff last two' button \u2014 The Runs page includes a 'Diff last two' button that enables quick side-by-side comparison of recent runs, a powerful feature for competitive analysts tracking changes over time. | p4-competitor-analyst | `j2-runs-p1-evaluator-s1-mobile-seed1-loop1` |\n| **D8** | Dogfood self-test capability \u2014 The Init wizard provides a 'Dogfood this dashboard' feature that allows users to test the dashboard itself, showcasing a unique differentiator and a strong selling point for competitive advantage. | p4-competitor-analyst | `j4-init-dogfood-p1-evaluator-s2-mobile-seed1-loop1` |\n\n---\n\n## Run log\n\n| Step | Journey | Action | Outcome | URL |\n|------|---------|--------|---------|-----|\n| `j1-command-center-p1-evaluator-s1-desktop-seed1-loop1` | j1-command-center | navigate | pass | http://127.0.0.1:8081/ |\n| `j1-command-center-p1-evaluator-s2-desktop-seed1-loop1` | j1-command-center | wait | pass | http://127.0.0.1:8081/ |\n| `j1-command-center-p1-evaluator-s1-tablet-seed1-loop1` | j1-command-center | navigate | pass | http://127.0.0.1:8081/ |\n| `j1-command-center-p1-evaluator-s2-tablet-seed1-loop1` | j1-command-center | wait | pass | http://127.0.0.1:8081/ |\n| `j1-command-center-p1-evaluator-s1-mobile-seed1-loop1` | j1-command-center | navigate | pass | http://127.0.0.1:8081/ |\n| `j1-command-center-p1-evaluator-s2-mobile-seed1-loop1` | j1-command-center | wait | pass | http://127.0.0.1:8081/ |\n| `j2-runs-p1-evaluator-s1-desktop-seed1-loop1` | j2-runs | navigate | pass | http://127.0.0.1:8081/runs |\n| `j2-runs-p1-evaluator-s2-desktop-seed1-loop1` | j2-runs | wait | pass | http://127.0.0.1:8081/runs |\n| `j2-runs-p1-evaluator-s1-tablet-seed1-loop1` | j2-runs | navigate | pass | http://127.0.0.1:8081/runs |\n| `j2-runs-p1-evaluator-s2-tablet-seed1-loop1` | j2-runs | wait | pass | http://127.0.0.1:8081/runs |\n| `j2-runs-p1-evaluator-s1-mobile-seed1-loop1` | j2-runs | navigate | pass | http://127.0.0.1:8081/runs |\n| `j2-runs-p1-evaluator-s2-mobile-seed1-loop1` | j2-runs | wait | pass | http://127.0.0.1:8081/runs |\n| `j3-compare-p1-evaluator-s1-desktop-seed1-loop1` | j3-compare | navigate | pass | http://127.0.0.1:8081/compare |\n| `j3-compare-p1-evaluator-s2-desktop-seed1-loop1` | j3-compare | wait | pass | http://127.0.0.1:8081/compare |\n| `j3-compare-p1-evaluator-s1-tablet-seed1-loop1` | j3-compare | navigate | pass | http://127.0.0.1:8081/compare |\n| `j3-compare-p1-evaluator-s2-tablet-seed1-loop1` | j3-compare | wait | pass | http://127.0.0.1:8081/compare |\n| `j3-compare-p1-evaluator-s1-mobile-seed1-loop1` | j3-compare | navigate | pass | http://127.0.0.1:8081/compare |\n| `j3-compare-p1-evaluator-s2-mobile-seed1-loop1` | j3-compare | wait | pass | http://127.0.0.1:8081/compare |\n| `j4-init-dogfood-p1-evaluator-s1-desktop-seed1-loop1` | j4-init-dogfood | navigate | fail | http://127.0.0.1:8081/init |\n| `j4-init-dogfood-p1-evaluator-s2-desktop-seed1-loop1` | j4-init-dogfood | wait | pass | http://127.0.0.1:8081/init |\n| `j4-init-dogfood-p1-evaluator-s3-desktop-seed1-loop1` | j4-init-dogfood | click | pass | http://127.0.0.1:8081/init |\n| `j4-init-dogfood-p1-evaluator-s4-desktop-seed1-loop1` | j4-init-dogfood | click | pass | http://127.0.0.1:8081/init |\n| `j4-init-dogfood-p1-evaluator-s5-desktop-seed1-loop1` | j4-init-dogfood | wait | pass | http://127.0.0.1:8081/init |\n| `j4-init-dogfood-p1-evaluator-s1-tablet-seed1-loop1` | j4-init-dogfood | navigate | fail | http://127.0.0.1:8081/init |\n| `j4-init-dogfood-p1-evaluator-s2-tablet-seed1-loop1` | j4-init-dogfood | wait | pass | http://127.0.0.1:8081/init |\n| `j4-init-dogfood-p1-evaluator-s3-tablet-seed1-loop1` | j4-init-dogfood | click | pass | http://127.0.0.1:8081/init |\n| `j4-init-dogfood-p1-evaluator-s4-tablet-seed1-loop1` | j4-init-dogfood | click | pass | http://127.0.0.1:8081/init |\n| `j4-init-dogfood-p1-evaluator-s5-tablet-seed1-loop1` | j4-init-dogfood | wait | pass | http://127.0.0.1:8081/init |\n| `j4-init-dogfood-p1-evaluator-s1-mobile-seed1-loop1` | j4-init-dogfood | navigate | fail | http://127.0.0.1:8081/init |\n| `j4-init-dogfood-p1-evaluator-s2-mobile-seed1-loop1` | j4-init-dogfood | wait | pass | http://127.0.0.1:8081/init |\n| `j4-init-dogfood-p1-evaluator-s3-mobile-seed1-loop1` | j4-init-dogfood | click | pass | http://127.0.0.1:8081/init |\n| `j4-init-dogfood-p1-evaluator-s4-mobile-seed1-loop1` | j4-init-dogfood | click | pass | http://127.0.0.1:8081/init |\n| `j4-init-dogfood-p1-evaluator-s5-mobile-seed1-loop1` | j4-init-dogfood | wait | pass | http://127.0.0.1:8081/init |\n| `j5-runner-p1-evaluator-s1-desktop-seed1-loop1` | j5-runner | navigate | pass | http://127.0.0.1:8081/runner |\n| `j5-runner-p1-evaluator-s2-desktop-seed1-loop1` | j5-runner | wait | pass | http://127.0.0.1:8081/runner |\n| `j5-runner-p1-evaluator-s3-desktop-seed1-loop1` | j5-runner | assert_url_contains | pass | http://127.0.0.1:8081/runner |\n| `j5-runner-p1-evaluator-s1-tablet-seed1-loop1` | j5-runner | navigate | pass | http://127.0.0.1:8081/runner |\n| `j5-runner-p1-evaluator-s2-tablet-seed1-loop1` | j5-runner | wait | pass | http://127.0.0.1:8081/runner |\n| `j5-runner-p1-evaluator-s3-tablet-seed1-loop1` | j5-runner | assert_url_contains | pass | http://127.0.0.1:8081/runner |\n| `j5-runner-p1-evaluator-s1-mobile-seed1-loop1` | j5-runner | navigate | pass | http://127.0.0.1:8081/runner |\n| `j5-runner-p1-evaluator-s2-mobile-seed1-loop1` | j5-runner | wait | pass | http://127.0.0.1:8081/runner |\n| `j5-runner-p1-evaluator-s3-mobile-seed1-loop1` | j5-runner | assert_url_contains | pass | http://127.0.0.1:8081/runner |\n| `j6-trends-p1-evaluator-s1-desktop-seed1-loop1` | j6-trends | navigate | pass | http://127.0.0.1:8081/trends |\n| `j6-trends-p1-evaluator-s2-desktop-seed1-loop1` | j6-trends | wait | pass | http://127.0.0.1:8081/trends |\n| `j6-trends-p1-evaluator-s1-tablet-seed1-loop1` | j6-trends | navigate | pass | http://127.0.0.1:8081/trends |\n| `j6-trends-p1-evaluator-s2-tablet-seed1-loop1` | j6-trends | wait | pass | http://127.0.0.1:8081/trends |\n| `j6-trends-p1-evaluator-s1-mobile-seed1-loop1` | j6-trends | navigate | pass | http://127.0.0.1:8081/trends |\n| `j6-trends-p1-evaluator-s2-mobile-seed1-loop1` | j6-trends | wait | pass | http://127.0.0.1:8081/trends |\n| `auto-j1-dashboard-p1-evaluator-s1-desktop-seed1-loop1` | auto-j1-dashboard | navigate | pass | http://127.0.0.1:8081/config |\n| `auto-j1-dashboard-p1-evaluator-s1-tablet-seed1-loop1` | auto-j1-dashboard | navigate | pass | http://127.0.0.1:8081/config |\n| `auto-j1-dashboard-p1-evaluator-s1-mobile-seed1-loop1` | auto-j1-dashboard | navigate | pass | http://127.0.0.1:8081/config |\n| `auto-j4-explore-p1-evaluator-s1-desktop-seed1-loop1` | auto-j4-explore | navigate | pass | http://127.0.0.1:8081/recommendations |\n| `auto-j4-explore-p1-evaluator-s1-tablet-seed1-loop1` | auto-j4-explore | navigate | pass | http://127.0.0.1:8081/recommendations |\n| `auto-j4-explore-p1-evaluator-s1-mobile-seed1-loop1` | auto-j4-explore | navigate | pass | http://127.0.0.1:8081/recommendations |\n\n---\n\n*Generated by Launch Rehearsal CLI \u2014 product-agnostic heuristics. Findings require human review before production decisions.*\n",
+  "sitemapMd": "# Site map\n\n**Origin:** http://127.0.0.1:8081  \n**Pages crawled:** 14  \n\n## Hub pages (most outbound links)\n\n- `/runner` \u2014 Runner \u2014 Launch Rehearsal\n- `/` \u2014 Command center \u2014 Launch Rehearsal\n- `/compare` \u2014 Compare runs \u2014 Launch Rehearsal\n- `/library` \u2014 Journey library \u2014 Launch Rehearsal\n- `/agents` \u2014 Agents \u2014 Launch Rehearsal\n- `/alerts` \u2014 Alerts \u2014 Launch Rehearsal\n- `/cli` \u2014 CLI \u2014 Launch Rehearsal\n- `/config` \u2014 Workspace \u2014 Launch Rehearsal\n\n## All pages\n\n| Path | Title | Depth | Links | Forms | Words |\n|------|-------|-------|-------|-------|-------|\n| `/` | Command center \u2014 Launch Rehearsal | 0 | 38 | 0 | 592 |\n| `/agents` | Agents \u2014 Launch Rehearsal | 1 | 17 | 0 | 524 |\n| `/alerts` | Alerts \u2014 Launch Rehearsal | 1 | 17 | 0 | 179 |\n| `/cli` | CLI \u2014 Launch Rehearsal | 1 | 17 | 0 | 424 |\n| `/compare` | Compare runs \u2014 Launch Rehearsal | 1 | 19 | 0 | 449 |\n| `/config` | Workspace \u2014 Launch Rehearsal | 1 | 19 | 0 | 317 |\n| `/init` |  | 1 | 0 | 0 | 0 |\n| `/integrations` | Integrations \u2014 Launch Rehearsal | 1 | 17 | 0 | 152 |\n| `/library` | Journey library \u2014 Launch Rehearsal | 1 | 19 | 0 | 185 |\n| `/recommendations` | Recommendations \u2014 Launch Rehearsal | 1 | 22 | 0 | 259 |\n| `/runner` | Runner \u2014 Launch Rehearsal | 1 | 34 | 0 | 694 |\n| `/sitemap` | Site map \u2014 Launch Rehearsal | 1 | 17 | 0 | 83 |\n| `/trends` | Trends \u2014 Launch Rehearsal | 1 | 17 | 0 | 539 |\n| `/workflows` | Workflows \u2014 Launch Rehearsal | 1 | 17 | 0 | 311 |",
+  "sitemapPages": [
+    {
+      "id": "pg_1",
+      "path": "/",
+      "title": "Command center \u2014 Launch Rehearsal",
+      "type": "hub",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_2",
+      "path": "/agents",
+      "title": "Agents \u2014 Launch Rehearsal",
+      "type": "hub",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_3",
+      "path": "/alerts",
+      "title": "Alerts \u2014 Launch Rehearsal",
+      "type": "hub",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_4",
+      "path": "/cli",
+      "title": "CLI \u2014 Launch Rehearsal",
+      "type": "hub",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_5",
+      "path": "/compare",
+      "title": "Compare runs \u2014 Launch Rehearsal",
+      "type": "hub",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_6",
+      "path": "/config",
+      "title": "Workspace \u2014 Launch Rehearsal",
+      "type": "hub",
+      "workflow": "dashboard",
+      "errors": 0
+    },
+    {
+      "id": "pg_7",
+      "path": "/init",
+      "title": "/init",
+      "type": "leaf",
+      "workflow": null,
+      "errors": 1
+    },
+    {
+      "id": "pg_8",
+      "path": "/integrations",
+      "title": "Integrations \u2014 Launch Rehearsal",
+      "type": "hub",
+      "workflow": "integration",
+      "errors": 0
+    },
+    {
+      "id": "pg_9",
+      "path": "/library",
+      "title": "Journey library \u2014 Launch Rehearsal",
+      "type": "hub",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_10",
+      "path": "/recommendations",
+      "title": "Recommendations \u2014 Launch Rehearsal",
+      "type": "hub",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_11",
+      "path": "/runner",
+      "title": "Runner \u2014 Launch Rehearsal",
+      "type": "hub",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_12",
+      "path": "/sitemap",
+      "title": "Site map \u2014 Launch Rehearsal",
+      "type": "leaf",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_13",
+      "path": "/trends",
+      "title": "Trends \u2014 Launch Rehearsal",
+      "type": "leaf",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_14",
+      "path": "/workflows",
+      "title": "Workflows \u2014 Launch Rehearsal",
+      "type": "leaf",
+      "workflow": null,
+      "errors": 0
+    }
+  ],
+  "sitemapEdges": [
+    {
+      "from": "pg_1",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_2",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_2",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_3",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_3",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_3",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_4",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_4",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_4",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_4",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_5",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_5",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_5",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_5",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_5",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_6",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_6",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_6",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_6",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_6",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_6",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_8",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_8",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_8",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_8",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_8",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_8",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_8",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_8",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_9",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_9",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_9",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_9",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_9",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_9",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_9",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_9",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_9",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_10",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_10",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_10",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_10",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_10",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_10",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_10",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_10",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_10",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_10",
+      "to": "pg_10"
+    },
+    {
+      "from": "pg_11",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_11",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_11",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_11",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_11",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_11",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_11",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_11",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_11",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_11",
+      "to": "pg_10"
+    },
+    {
+      "from": "pg_11",
+      "to": "pg_11"
+    },
+    {
+      "from": "pg_12",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_12",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_12",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_12",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_12",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_12",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_12",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_12",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_12",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_12",
+      "to": "pg_10"
+    },
+    {
+      "from": "pg_12",
+      "to": "pg_11"
+    },
+    {
+      "from": "pg_12",
+      "to": "pg_12"
+    },
+    {
+      "from": "pg_13",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_13",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_13",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_13",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_13",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_13",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_13",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_13",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_13",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_13",
+      "to": "pg_10"
+    },
+    {
+      "from": "pg_13",
+      "to": "pg_11"
+    },
+    {
+      "from": "pg_13",
+      "to": "pg_12"
+    },
+    {
+      "from": "pg_13",
+      "to": "pg_13"
+    },
+    {
+      "from": "pg_14",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_14",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_14",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_14",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_14",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_14",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_14",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_14",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_14",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_14",
+      "to": "pg_10"
+    },
+    {
+      "from": "pg_14",
+      "to": "pg_11"
+    },
+    {
+      "from": "pg_14",
+      "to": "pg_12"
+    },
+    {
+      "from": "pg_14",
+      "to": "pg_13"
+    },
+    {
+      "from": "pg_14",
+      "to": "pg_14"
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "artifacts/lr-self-20260603-142649/j1-command-center-p1-evaluator-s1-desktop-seed1-loop1.png",
+      "stepId": "j1-command-center-p1-evaluator-s1-desktop-seed1-loop1",
+      "label": "Command center"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j1-command-center-p1-evaluator-s2-desktop-seed1-loop1.png",
+      "stepId": "j1-command-center-p1-evaluator-s2-desktop-seed1-loop1",
+      "label": "Command center"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j1-command-center-p1-evaluator-s1-tablet-seed1-loop1.png",
+      "stepId": "j1-command-center-p1-evaluator-s1-tablet-seed1-loop1",
+      "label": "Command center"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j1-command-center-p1-evaluator-s2-tablet-seed1-loop1.png",
+      "stepId": "j1-command-center-p1-evaluator-s2-tablet-seed1-loop1",
+      "label": "Command center"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j1-command-center-p1-evaluator-s1-mobile-seed1-loop1.png",
+      "stepId": "j1-command-center-p1-evaluator-s1-mobile-seed1-loop1",
+      "label": "Command center"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j1-command-center-p1-evaluator-s2-mobile-seed1-loop1.png",
+      "stepId": "j1-command-center-p1-evaluator-s2-mobile-seed1-loop1",
+      "label": "Command center"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j2-runs-p1-evaluator-s1-desktop-seed1-loop1.png",
+      "stepId": "j2-runs-p1-evaluator-s1-desktop-seed1-loop1",
+      "label": "Runs list"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j2-runs-p1-evaluator-s2-desktop-seed1-loop1.png",
+      "stepId": "j2-runs-p1-evaluator-s2-desktop-seed1-loop1",
+      "label": "Runs list"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j2-runs-p1-evaluator-s1-tablet-seed1-loop1.png",
+      "stepId": "j2-runs-p1-evaluator-s1-tablet-seed1-loop1",
+      "label": "Runs list"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j2-runs-p1-evaluator-s2-tablet-seed1-loop1.png",
+      "stepId": "j2-runs-p1-evaluator-s2-tablet-seed1-loop1",
+      "label": "Runs list"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j2-runs-p1-evaluator-s1-mobile-seed1-loop1.png",
+      "stepId": "j2-runs-p1-evaluator-s1-mobile-seed1-loop1",
+      "label": "Runs list"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j2-runs-p1-evaluator-s2-mobile-seed1-loop1.png",
+      "stepId": "j2-runs-p1-evaluator-s2-mobile-seed1-loop1",
+      "label": "Runs list"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j3-compare-p1-evaluator-s1-desktop-seed1-loop1.png",
+      "stepId": "j3-compare-p1-evaluator-s1-desktop-seed1-loop1",
+      "label": "Compare runs"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j3-compare-p1-evaluator-s2-desktop-seed1-loop1.png",
+      "stepId": "j3-compare-p1-evaluator-s2-desktop-seed1-loop1",
+      "label": "Compare runs"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j3-compare-p1-evaluator-s1-tablet-seed1-loop1.png",
+      "stepId": "j3-compare-p1-evaluator-s1-tablet-seed1-loop1",
+      "label": "Compare runs"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j3-compare-p1-evaluator-s2-tablet-seed1-loop1.png",
+      "stepId": "j3-compare-p1-evaluator-s2-tablet-seed1-loop1",
+      "label": "Compare runs"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j3-compare-p1-evaluator-s1-mobile-seed1-loop1.png",
+      "stepId": "j3-compare-p1-evaluator-s1-mobile-seed1-loop1",
+      "label": "Compare runs"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j3-compare-p1-evaluator-s2-mobile-seed1-loop1.png",
+      "stepId": "j3-compare-p1-evaluator-s2-mobile-seed1-loop1",
+      "label": "Compare runs"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s1-desktop-seed1-loop1-error.png",
+      "stepId": "j4-init-dogfood-p1-evaluator-s1-desktop-seed1-loop1",
+      "label": "Init dogfood flow"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s2-desktop-seed1-loop1.png",
+      "stepId": "j4-init-dogfood-p1-evaluator-s2-desktop-seed1-loop1",
+      "label": "Init dogfood flow"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s3-desktop-seed1-loop1.png",
+      "stepId": "j4-init-dogfood-p1-evaluator-s3-desktop-seed1-loop1",
+      "label": "Init dogfood flow"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s4-desktop-seed1-loop1.png",
+      "stepId": "j4-init-dogfood-p1-evaluator-s4-desktop-seed1-loop1",
+      "label": "Init dogfood flow"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s5-desktop-seed1-loop1.png",
+      "stepId": "j4-init-dogfood-p1-evaluator-s5-desktop-seed1-loop1",
+      "label": "Init dogfood flow"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s1-tablet-seed1-loop1-error.png",
+      "stepId": "j4-init-dogfood-p1-evaluator-s1-tablet-seed1-loop1",
+      "label": "Init dogfood flow"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s2-tablet-seed1-loop1.png",
+      "stepId": "j4-init-dogfood-p1-evaluator-s2-tablet-seed1-loop1",
+      "label": "Init dogfood flow"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s3-tablet-seed1-loop1.png",
+      "stepId": "j4-init-dogfood-p1-evaluator-s3-tablet-seed1-loop1",
+      "label": "Init dogfood flow"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s4-tablet-seed1-loop1.png",
+      "stepId": "j4-init-dogfood-p1-evaluator-s4-tablet-seed1-loop1",
+      "label": "Init dogfood flow"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s5-tablet-seed1-loop1.png",
+      "stepId": "j4-init-dogfood-p1-evaluator-s5-tablet-seed1-loop1",
+      "label": "Init dogfood flow"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s1-mobile-seed1-loop1-error.png",
+      "stepId": "j4-init-dogfood-p1-evaluator-s1-mobile-seed1-loop1",
+      "label": "Init dogfood flow"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s2-mobile-seed1-loop1.png",
+      "stepId": "j4-init-dogfood-p1-evaluator-s2-mobile-seed1-loop1",
+      "label": "Init dogfood flow"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s3-mobile-seed1-loop1.png",
+      "stepId": "j4-init-dogfood-p1-evaluator-s3-mobile-seed1-loop1",
+      "label": "Init dogfood flow"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s4-mobile-seed1-loop1.png",
+      "stepId": "j4-init-dogfood-p1-evaluator-s4-mobile-seed1-loop1",
+      "label": "Init dogfood flow"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j4-init-dogfood-p1-evaluator-s5-mobile-seed1-loop1.png",
+      "stepId": "j4-init-dogfood-p1-evaluator-s5-mobile-seed1-loop1",
+      "label": "Init dogfood flow"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j5-runner-p1-evaluator-s1-desktop-seed1-loop1.png",
+      "stepId": "j5-runner-p1-evaluator-s1-desktop-seed1-loop1",
+      "label": "Runner page (observe only \u2014 no self-trigger)"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j5-runner-p1-evaluator-s2-desktop-seed1-loop1.png",
+      "stepId": "j5-runner-p1-evaluator-s2-desktop-seed1-loop1",
+      "label": "Runner page (observe only \u2014 no self-trigger)"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j5-runner-p1-evaluator-s3-desktop-seed1-loop1.png",
+      "stepId": "j5-runner-p1-evaluator-s3-desktop-seed1-loop1",
+      "label": "Runner page (observe only \u2014 no self-trigger)"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j5-runner-p1-evaluator-s1-tablet-seed1-loop1.png",
+      "stepId": "j5-runner-p1-evaluator-s1-tablet-seed1-loop1",
+      "label": "Runner page (observe only \u2014 no self-trigger)"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j5-runner-p1-evaluator-s2-tablet-seed1-loop1.png",
+      "stepId": "j5-runner-p1-evaluator-s2-tablet-seed1-loop1",
+      "label": "Runner page (observe only \u2014 no self-trigger)"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j5-runner-p1-evaluator-s3-tablet-seed1-loop1.png",
+      "stepId": "j5-runner-p1-evaluator-s3-tablet-seed1-loop1",
+      "label": "Runner page (observe only \u2014 no self-trigger)"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j5-runner-p1-evaluator-s1-mobile-seed1-loop1.png",
+      "stepId": "j5-runner-p1-evaluator-s1-mobile-seed1-loop1",
+      "label": "Runner page (observe only \u2014 no self-trigger)"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j5-runner-p1-evaluator-s2-mobile-seed1-loop1.png",
+      "stepId": "j5-runner-p1-evaluator-s2-mobile-seed1-loop1",
+      "label": "Runner page (observe only \u2014 no self-trigger)"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j5-runner-p1-evaluator-s3-mobile-seed1-loop1.png",
+      "stepId": "j5-runner-p1-evaluator-s3-mobile-seed1-loop1",
+      "label": "Runner page (observe only \u2014 no self-trigger)"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j6-trends-p1-evaluator-s1-desktop-seed1-loop1.png",
+      "stepId": "j6-trends-p1-evaluator-s1-desktop-seed1-loop1",
+      "label": "Trends monitoring"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j6-trends-p1-evaluator-s2-desktop-seed1-loop1.png",
+      "stepId": "j6-trends-p1-evaluator-s2-desktop-seed1-loop1",
+      "label": "Trends monitoring"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j6-trends-p1-evaluator-s1-tablet-seed1-loop1.png",
+      "stepId": "j6-trends-p1-evaluator-s1-tablet-seed1-loop1",
+      "label": "Trends monitoring"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j6-trends-p1-evaluator-s2-tablet-seed1-loop1.png",
+      "stepId": "j6-trends-p1-evaluator-s2-tablet-seed1-loop1",
+      "label": "Trends monitoring"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j6-trends-p1-evaluator-s1-mobile-seed1-loop1.png",
+      "stepId": "j6-trends-p1-evaluator-s1-mobile-seed1-loop1",
+      "label": "Trends monitoring"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/j6-trends-p1-evaluator-s2-mobile-seed1-loop1.png",
+      "stepId": "j6-trends-p1-evaluator-s2-mobile-seed1-loop1",
+      "label": "Trends monitoring"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/auto-j1-dashboard-p1-evaluator-s1-desktop-seed1-loop1.png",
+      "stepId": "auto-j1-dashboard-p1-evaluator-s1-desktop-seed1-loop1",
+      "label": "Auto: Dashboard"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/auto-j1-dashboard-p1-evaluator-s1-tablet-seed1-loop1.png",
+      "stepId": "auto-j1-dashboard-p1-evaluator-s1-tablet-seed1-loop1",
+      "label": "Auto: Dashboard"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/auto-j1-dashboard-p1-evaluator-s1-mobile-seed1-loop1.png",
+      "stepId": "auto-j1-dashboard-p1-evaluator-s1-mobile-seed1-loop1",
+      "label": "Auto: Dashboard"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/auto-j4-explore-p1-evaluator-s1-desktop-seed1-loop1.png",
+      "stepId": "auto-j4-explore-p1-evaluator-s1-desktop-seed1-loop1",
+      "label": "Auto: Explore /recommendations"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/auto-j4-explore-p1-evaluator-s1-tablet-seed1-loop1.png",
+      "stepId": "auto-j4-explore-p1-evaluator-s1-tablet-seed1-loop1",
+      "label": "Auto: Explore /recommendations"
+    },
+    {
+      "path": "artifacts/lr-self-20260603-142649/auto-j4-explore-p1-evaluator-s1-mobile-seed1-loop1.png",
+      "stepId": "auto-j4-explore-p1-evaluator-s1-mobile-seed1-loop1",
+      "label": "Auto: Explore /recommendations"
+    }
+  ],
+  "annotations": [],
+  "personas": [
+    {
+      "id": "p1-evaluator",
+      "name": "First-time evaluator",
+      "role": "prospect / new user",
+      "goal": "Understand value from landing and primary workflow",
+      "patience": "medium"
+    },
+    {
+      "id": "p2-operator",
+      "name": "Daily operator",
+      "role": "power user",
+      "goal": "Complete core tasks quickly and reliably",
+      "patience": "medium"
+    },
+    {
+      "id": "p3-admin",
+      "name": "Admin / buyer",
+      "role": "IT admin",
+      "goal": "Verify access boundaries and trust signals",
+      "patience": "medium"
+    },
+    {
+      "id": "p4-competitor-analyst",
+      "name": "Competitive Analyst",
+      "role": "Competitor evaluating feature parity and gaps",
+      "goal": "Compare all features against own product",
+      "patience": "medium"
+    }
+  ],
+  "journeys": [
+    {
+      "id": "j1-command-center",
+      "name": "Command center",
+      "steps": 2,
+      "category": "dashboard"
+    },
+    {
+      "id": "j2-runs",
+      "name": "Runs list",
+      "steps": 2,
+      "category": "dashboard"
+    },
+    {
+      "id": "j3-compare",
+      "name": "Compare runs",
+      "steps": 2,
+      "category": "dashboard"
+    },
+    {
+      "id": "j4-init-dogfood",
+      "name": "Init dogfood flow",
+      "steps": 5,
+      "category": "dashboard"
+    },
+    {
+      "id": "j5-runner",
+      "name": "Runner page (observe only \u2014 no self-trigger)",
+      "steps": 3,
+      "category": "dashboard"
+    },
+    {
+      "id": "j6-trends",
+      "name": "Trends monitoring",
+      "steps": 2,
+      "category": "dashboard"
+    }
+  ],
+  "workflows": [
+    {
+      "category": "dashboard",
+      "path": "/config",
+      "title": "Workspace \u2014 Launch Rehearsal",
+      "confidence": 0.7999999999999999,
+      "signals": [
+        "11 inputs"
+      ]
+    },
+    {
+      "category": "integration",
+      "path": "/integrations",
+      "title": "Integrations \u2014 Launch Rehearsal",
+      "confidence": 0.7,
+      "signals": []
+    }
+  ],
+  "suggestedJourneys": [
+    {
+      "id": "auto-j1-dashboard",
+      "name": "Auto: Dashboard",
+      "steps": [
+        {
+          "action": "navigate",
+          "url": "http://127.0.0.1:8081/config"
+        }
+      ]
+    },
+    {
+      "id": "auto-j2-hub",
+      "name": "Auto: Navigation hub",
+      "steps": [
+        {
+          "action": "navigate",
+          "url": "http://127.0.0.1:8081/runner"
+        }
+      ]
+    },
+    {
+      "id": "auto-j3-explore",
+      "name": "Auto: Explore /",
+      "steps": [
+        {
+          "action": "navigate",
+          "url": "http://127.0.0.1:8081/"
+        }
+      ]
+    },
+    {
+      "id": "auto-j4-explore",
+      "name": "Auto: Explore /recommendations",
+      "steps": [
+        {
+          "action": "navigate",
+          "url": "http://127.0.0.1:8081/recommendations"
+        }
+      ]
+    },
+    {
+      "id": "auto-j5-explore",
+      "name": "Auto: Explore /compare",
+      "steps": [
+        {
+          "action": "navigate",
+          "url": "http://127.0.0.1:8081/compare"
+        }
+      ]
+    }
+  ],
+  "narrative": {
+    "executiveSummary": "Launch Rehearsal Dashboard at http://127.0.0.1:8081 rehearsed as **Green** readiness. 17/18 canonical steps passed (94%). 5 issue(s) and 3 delight(s) recorded. Primary concern: Form inputs missing labels. Bright spot: Clear navigation structure.",
+    "forFounders": "**Launch readiness: Green** \u2014 suitable for a confident partner readout.\nBroken journeys: Init dogfood flow.",
+    "forEngineering": "Run `lr-self-20260603-142649` \u00b7 243s \u00b7 54 step records (incl. viewport/seed replays).\nCrawl: 14 pages, 1 error paths, 0 orphans.\nNotable P2: Form inputs missing labels; Sparse page content; Console noise spike across run.",
+    "suggestedQuestions": [
+      "What polish items (P3) are worth doing before GA?",
+      "Why did Init dogfood flow fail?",
+      "Did any step show flaky behavior across seeds or viewports?"
+    ],
+    "source": "template",
+    "readinessBand": "Green",
+    "issueCount": 5,
+    "delightCount": 3
+  }
+}

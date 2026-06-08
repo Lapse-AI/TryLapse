@@ -2,7 +2,7 @@
   "id": "ws_default",
   "name": "Faculty-Dashboard-Eight Workspace",
   "slug": "faculty-dashboard-eight-vercel-app",
-  "targetUrl": "https://faculty-dashboard-eight.vercel.app",
+  "targetUrl": "http://127.0.0.1:8081",
   "members": 1,
   "products": 1,
   "configVersion": "1.0",

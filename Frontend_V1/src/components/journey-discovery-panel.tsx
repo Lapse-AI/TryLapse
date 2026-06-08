@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Panel, Chip } from "@/components/ui-bits";
 import { api } from "@/lib/api/client";
 import { toast } from "sonner";
-import { Map, Loader2, Sparkles, ChevronDown, ChevronUp } from "lucide-react";
+import { Map, Loader2, Sparkles, ChevronDown, ChevronUp, Download } from "lucide-react";
 
 type PersonaDraft = { id: string; name: string; role: string; goals: string[] };
 type DiscoveredJourney = Record<string, unknown>;
@@ -17,6 +17,7 @@ type PersonaJourneys = {
 type Props = {
   live: boolean;
   personas: PersonaDraft[];
+  configId?: string | null;
 };
 
 function JourneyRow({ j }: { j: DiscoveredJourney }) {
@@ -67,7 +68,7 @@ function JourneyRow({ j }: { j: DiscoveredJourney }) {
               ))}
             </div>
           )}
-          {j.behavioral_intent && (
+          {!!j.behavioral_intent && (
             <div>
               <div className="text-[11px] text-muted-foreground">Behavioral intent</div>
               <p className="text-xs">{String(j.behavioral_intent)}</p>
@@ -100,9 +101,10 @@ function JourneyRow({ j }: { j: DiscoveredJourney }) {
   );
 }
 
-export function JourneyDiscoveryPanel({ live, personas }: Props) {
+export function JourneyDiscoveryPanel({ live, personas, configId }: Props) {
   const [results, setResults] = useState<PersonaJourneys[]>([]);
   const [loading, setLoading] = useState(false);
+  const [importing, setImporting] = useState(false);
   const [activePersona, setActivePersona] = useState<string | null>(null);
 
   const discover = async () => {
@@ -117,7 +119,7 @@ export function JourneyDiscoveryPanel({ live, personas }: Props) {
     setLoading(true);
     setResults([]);
     try {
-      const res = await api.discoverJourneys(personas);
+      const res = await api.discoverJourneys(personas, configId);
       const journeys = (res.personaJourneys ?? []) as PersonaJourneys[];
       setResults(journeys);
       if (journeys.length > 0) setActivePersona(personas[0]?.id ?? null);
@@ -152,6 +154,27 @@ export function JourneyDiscoveryPanel({ live, personas }: Props) {
     }
   };
 
+  const importToConfig = async () => {
+    if (!configId) {
+      toast.error("No config ID — workspace config not found");
+      return;
+    }
+    const allJourneys = results.flatMap((r) => (r.journeys as DiscoveredJourney[]) ?? []);
+    if (allJourneys.length === 0) {
+      toast.error("No journeys to import — run discovery first");
+      return;
+    }
+    setImporting(true);
+    try {
+      const res = await api.importJourneysToConfig(configId, allJourneys);
+      toast.success(`Imported ${res.added} journeys to config (${res.skipped} skipped)`);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Import failed");
+    } finally {
+      setImporting(false);
+    }
+  };
+
   const activeResult =
     results.find((r) => personas.find((p) => p.id === activePersona)?.name === r.personaName) ??
     results[0];
@@ -170,6 +193,21 @@ export function JourneyDiscoveryPanel({ live, personas }: Props) {
           )}
         </div>
         <div className="flex gap-2">
+          {results.length > 0 && configId && (
+            <button
+              type="button"
+              disabled={importing}
+              onClick={() => void importToConfig()}
+              className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-md border border-border hover:bg-surface-2/30 disabled:opacity-40"
+            >
+              {importing ? (
+                <Loader2 className="size-3.5 animate-spin" />
+              ) : (
+                <Download className="size-3.5" />
+              )}
+              {importing ? "Importing…" : "Import to config"}
+            </button>
+          )}
           <button
             type="button"
             disabled={loading || personas.length === 0 || !live}

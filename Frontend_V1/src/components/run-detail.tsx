@@ -626,7 +626,7 @@ export function AnnotationsPanel({
   );
 }
 
-type AnnotationAction = Extract<Annotation["action"], "agreed" | "disagree" | "false positive">;
+type AnnotationAction = Extract<Annotation["action"], "agreed" | "disagree" | "false positive" | "pinned">;
 
 const ANNOTATION_ACTIONS: {
   action: AnnotationAction;

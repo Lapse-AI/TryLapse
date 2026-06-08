@@ -1,0 +1,61 @@
+run:
+  target_url: http://127.0.0.1:5173
+  product_name: "LR Test"
+  allow_localhost: true
+  persona_lens: true
+
+personas:
+  - id: p1-evaluator
+    name: "Product Evaluator"
+    role: "Product Manager"
+    goals: ["Evaluate the product"]
+  - id: p2-operator
+    name: "System Operator"
+    role: "DevOps Engineer"
+    goals: ["Monitor system"]
+  - id: p3-admin
+    name: "Admin User"
+    role: "Administrator"
+    goals: ["Configure settings"]
+
+journeys:
+  - id: j-test-1
+    name: "Landing page"
+    priority: smoke
+    steps:
+      - action: navigate
+        url: /
+      - action: wait
+        value: "2000"
+  - id: j-test-2
+    name: "Runs page"
+    priority: smoke
+    steps:
+      - action: navigate
+        url: /runs
+      - action: wait
+        value: "1500"
+  - id: j-test-3
+    name: "Agents"
+    priority: smoke
+    steps:
+      - action: navigate
+        url: /agents
+      - action: wait
+        value: "1500"
+  - id: j-test-4
+    name: "Trends"
+    priority: smoke
+    steps:
+      - action: navigate
+        url: /trends
+      - action: wait
+        value: "1500"
+  - id: j-test-5
+    name: "Library"
+    priority: smoke
+    steps:
+      - action: navigate
+        url: /library
+      - action: wait
+        value: "1500"

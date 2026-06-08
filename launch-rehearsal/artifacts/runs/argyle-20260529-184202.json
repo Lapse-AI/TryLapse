@@ -1,0 +1,278 @@
+{
+  "run_id": "argyle-20260529-184202",
+  "target_url": "https://faculty-dashboard-eight.vercel.app",
+  "started_at": "2026-05-29T18:42:02.889281+00:00",
+  "steps": [
+    {
+      "step_id": "j1-deep-link-database-p1-jordan-s1",
+      "journey_id": "j1-deep-link-database",
+      "persona_id": "p1-jordan",
+      "action": "navigate",
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j2-login-form-p1-jordan-s1",
+      "journey_id": "j2-login-form",
+      "persona_id": "p1-jordan",
+      "action": "navigate",
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j2-login-form-p1-jordan-s2",
+      "journey_id": "j2-login-form",
+      "persona_id": "p1-jordan",
+      "action": "fill",
+      "url": null,
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j2-login-form-p1-jordan-s3",
+      "journey_id": "j2-login-form",
+      "persona_id": "p1-jordan",
+      "action": "fill",
+      "url": null,
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j3-invalid-login-p1-jordan-s1",
+      "journey_id": "j3-invalid-login",
+      "persona_id": "p1-jordan",
+      "action": "navigate",
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j3-invalid-login-p1-jordan-s2",
+      "journey_id": "j3-invalid-login",
+      "persona_id": "p1-jordan",
+      "action": "click",
+      "url": null,
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j4-accessibility-p1-jordan-s1",
+      "journey_id": "j4-accessibility",
+      "persona_id": "p1-jordan",
+      "action": "navigate",
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j5-wayfinding-p1-jordan-s1",
+      "journey_id": "j5-wayfinding",
+      "persona_id": "p1-jordan",
+      "action": "navigate",
+      "url": "https://faculty-dashboard-eight.vercel.app/",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j5-wayfinding-p1-jordan-s2",
+      "journey_id": "j5-wayfinding",
+      "persona_id": "p1-jordan",
+      "action": "navigate",
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j1-deep-link-database-p2-sam-s1",
+      "journey_id": "j1-deep-link-database",
+      "persona_id": "p2-sam",
+      "action": "navigate",
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j2-login-form-p2-sam-s1",
+      "journey_id": "j2-login-form",
+      "persona_id": "p2-sam",
+      "action": "navigate",
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j2-login-form-p2-sam-s2",
+      "journey_id": "j2-login-form",
+      "persona_id": "p2-sam",
+      "action": "fill",
+      "url": null,
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j2-login-form-p2-sam-s3",
+      "journey_id": "j2-login-form",
+      "persona_id": "p2-sam",
+      "action": "fill",
+      "url": null,
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j3-invalid-login-p2-sam-s1",
+      "journey_id": "j3-invalid-login",
+      "persona_id": "p2-sam",
+      "action": "navigate",
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j3-invalid-login-p2-sam-s2",
+      "journey_id": "j3-invalid-login",
+      "persona_id": "p2-sam",
+      "action": "click",
+      "url": null,
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j4-accessibility-p2-sam-s1",
+      "journey_id": "j4-accessibility",
+      "persona_id": "p2-sam",
+      "action": "navigate",
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j5-wayfinding-p2-sam-s1",
+      "journey_id": "j5-wayfinding",
+      "persona_id": "p2-sam",
+      "action": "navigate",
+      "url": "https://faculty-dashboard-eight.vercel.app/",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j5-wayfinding-p2-sam-s2",
+      "journey_id": "j5-wayfinding",
+      "persona_id": "p2-sam",
+      "action": "navigate",
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j1-deep-link-database-p3-alex-s1",
+      "journey_id": "j1-deep-link-database",
+      "persona_id": "p3-alex",
+      "action": "navigate",
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j2-login-form-p3-alex-s1",
+      "journey_id": "j2-login-form",
+      "persona_id": "p3-alex",
+      "action": "navigate",
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j2-login-form-p3-alex-s2",
+      "journey_id": "j2-login-form",
+      "persona_id": "p3-alex",
+      "action": "fill",
+      "url": null,
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j2-login-form-p3-alex-s3",
+      "journey_id": "j2-login-form",
+      "persona_id": "p3-alex",
+      "action": "fill",
+      "url": null,
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j3-invalid-login-p3-alex-s1",
+      "journey_id": "j3-invalid-login",
+      "persona_id": "p3-alex",
+      "action": "navigate",
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j3-invalid-login-p3-alex-s2",
+      "journey_id": "j3-invalid-login",
+      "persona_id": "p3-alex",
+      "action": "click",
+      "url": null,
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j4-accessibility-p3-alex-s1",
+      "journey_id": "j4-accessibility",
+      "persona_id": "p3-alex",
+      "action": "navigate",
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j5-wayfinding-p3-alex-s1",
+      "journey_id": "j5-wayfinding",
+      "persona_id": "p3-alex",
+      "action": "navigate",
+      "url": "https://faculty-dashboard-eight.vercel.app/",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j5-wayfinding-p3-alex-s2",
+      "journey_id": "j5-wayfinding",
+      "persona_id": "p3-alex",
+      "action": "navigate",
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    }
+  ],
+  "outcome": "dry_run_complete"
+}

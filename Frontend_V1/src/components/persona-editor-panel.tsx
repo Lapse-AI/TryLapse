@@ -2,7 +2,21 @@ import { useEffect, useState } from "react";
 import { Panel, Chip } from "@/components/ui-bits";
 import { api } from "@/lib/api/client";
 import { toast } from "sonner";
-import { Users, Trash2, Plus, ChevronDown, ChevronUp, Sparkles } from "lucide-react";
+import { Users, Trash2, Plus, ChevronDown, ChevronUp, Sparkles, Map } from "lucide-react";
+
+async function triggerJourneyDiscovery(persona: {
+  id: string;
+  name: string;
+  role: string;
+  goals: string[];
+}) {
+  try {
+    await api.discoverJourneysForPersona(persona);
+    toast.success(`Journey discovery started for ${persona.name}`);
+  } catch {
+    // silent — non-blocking
+  }
+}
 
 type Persona = {
   id: string;
@@ -95,12 +109,15 @@ export function PersonaEditorPanel({ configId, live }: Props) {
       .split("\n")
       .map((g) => g.trim())
       .filter(Boolean);
-    mark((prev) => [...prev, { id, name: newName, role: newRole, goals, enabled: true }]);
+    const newPersona = { id, name: newName, role: newRole, goals, enabled: true };
+    mark((prev) => [...prev, newPersona]);
     setNewName("");
     setNewRole("");
     setNewGoals("");
     setShowAddForm(false);
     setExpanded(id);
+    // Auto-trigger journey discovery for the new persona
+    void triggerJourneyDiscovery({ id, name: newName, role: newRole, goals });
   };
 
   const draftWithAI = async () => {
@@ -116,6 +133,8 @@ export function PersonaEditorPanel({ configId, live }: Props) {
       mark((prev) => [...prev, { ...p, enabled: true }]);
       setDraftPrompt("");
       setExpanded(p.id);
+      // Auto-trigger journey discovery for the AI-drafted persona
+      void triggerJourneyDiscovery({ id: p.id, name: p.name, role: p.role, goals: p.goals || [] });
       setShowAddForm(false);
       toast.success(
         out.source === "llm" ? "Persona drafted with AI" : "Persona drafted (template)",

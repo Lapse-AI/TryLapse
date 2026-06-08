@@ -51,7 +51,7 @@ _CORS_ORIGINS: set[str] = set(
     o.strip()
     for o in (
         os.environ.get("REHEARSE_CORS_ORIGIN")
-        or "http://localhost:8081,http://127.0.0.1:8081,http://localhost:8080,http://127.0.0.1:8080"
+        or "http://localhost:8081,http://127.0.0.1:8081,http://localhost:8080,http://127.0.0.1:8080,http://localhost:8082,http://127.0.0.1:8082,http://localhost:8083,http://127.0.0.1:8083"
     ).split(",")
     if o.strip()
 )
@@ -713,11 +713,20 @@ class _Handler(BaseHTTPRequestHandler):
         if path == "/api/journeys/discover":
             body = self._read_json_body()
             personas = list(body.get("personas") or [])
+            config_id = str(body.get("configId") or "").strip()
             if not personas:
                 self._send_json({"error": "personas list required"}, status=400)
                 return
             from rehearse.product_intelligence import load_product_model
             from rehearse.persona_journey_discovery import discover_journeys_for_all_personas
+            from rehearse.dashboard.config_yaml import load_config
+
+            # Load config to get workspace context
+            cfg = load_config(root, config_id) if config_id else None
+            if not cfg:
+                self._send_json({"error": "Config not found or not provided"}, status=400)
+                return
+
             product_model = load_product_model(root) or {}
             if not product_model:
                 self._send_json({"error": "No product model — run POST /api/product/analyze first"}, status=400)

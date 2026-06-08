@@ -1,0 +1,104 @@
+{
+  "purpose": "Argyle Faculty Dashboard is a command center for faculty to manage agents, alerts, CLI, integrations, and workflows, with a focus on launching rehearsals.",
+  "product_type": "saas-dashboard",
+  "core_features": [
+    "Launch Rehearsal",
+    "Agent management",
+    "Alert configuration",
+    "CLI access",
+    "Run comparison",
+    "Workspace configuration",
+    "Integration management",
+    "Journey library",
+    "Recommendations",
+    "Workflow management"
+  ],
+  "primary_workflows": [
+    {
+      "name": "Launch Rehearsal",
+      "description": "User initiates a rehearsal run from any hub page",
+      "entry_point": "/ (hub)",
+      "steps_estimate": 3,
+      "frequency": "daily"
+    },
+    {
+      "name": "Manage Agents",
+      "description": "User views and manages AI agents",
+      "entry_point": "/agents",
+      "steps_estimate": 3,
+      "frequency": "weekly"
+    },
+    {
+      "name": "Configure Alerts",
+      "description": "User sets up alerts for system events",
+      "entry_point": "/alerts",
+      "steps_estimate": 4,
+      "frequency": "occasional"
+    },
+    {
+      "name": "Compare Runs",
+      "description": "User compares different rehearsal runs",
+      "entry_point": "/compare",
+      "steps_estimate": 3,
+      "frequency": "weekly"
+    },
+    {
+      "name": "Manage Integrations",
+      "description": "User connects external services",
+      "entry_point": "/integrations",
+      "steps_estimate": 4,
+      "frequency": "occasional"
+    }
+  ],
+  "information_architecture": {
+    "depth_concern": false,
+    "dashboard_gaps": [
+      "No overview of recent activity or system health on the main dashboard"
+    ],
+    "navigation_issues": [
+      "All hub pages appear identical with only a 'Launch Rehearsal' button, making it unclear what distinguishes each page"
+    ]
+  },
+  "technical_surface": {
+    "has_chatbot": false,
+    "has_search": false,
+    "has_filters": false,
+    "has_realtime": false,
+    "has_forms": false,
+    "api_heavy": false,
+    "auth_required": true
+  },
+  "user_types_observed": [
+    {
+      "type": "Faculty Administrator",
+      "evidence": "Dashboard is named 'Faculty Dashboard' and includes workspace configuration",
+      "primary_goal": "Oversee and manage rehearsal runs and system settings"
+    },
+    {
+      "type": "Developer/Researcher",
+      "evidence": "Presence of CLI, agents, and integrations pages",
+      "primary_goal": "Develop and test AI agents and workflows"
+    }
+  ],
+  "quality_concerns": [
+    {
+      "area": "UX",
+      "concern": "All hub pages have identical content (only 'Launch Rehearsal' button), providing no unique information per section",
+      "severity": "critical"
+    },
+    {
+      "area": "Information",
+      "concern": "No data or metrics displayed on any page; all pages appear empty except for the button",
+      "severity": "critical"
+    },
+    {
+      "area": "Performance",
+      "concern": "Crawl detected 0 words on all pages, suggesting content may be loaded dynamically or missing",
+      "severity": "moderate"
+    }
+  ],
+  "source": "llm",
+  "targetUrl": "https://faculty-dashboard-eight.vercel.app/database",
+  "productName": "Argyle Faculty Dashboard",
+  "pageCount": 14
+}

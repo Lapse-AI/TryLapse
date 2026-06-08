@@ -1,0 +1,1604 @@
+run:
+  target_url: https://faculty-dashboard-eight.vercel.app/database
+  run_id_prefix: argyle
+  product_name: Argyle Faculty Dashboard
+  viewports:
+  - desktop
+  - tablet
+  - mobile
+  allow_localhost: false
+  persona_lens: true
+crawl:
+  enabled: true
+  max_depth: 2
+  max_pages: 24
+  supplement_journeys: true
+personas:
+- id: p1-new-signup
+  name: New signup
+  role: first-time user
+  goals:
+  - Complete onboarding and reach first success
+  - Identify missing docs or confusing steps
+- id: p2-power-user
+  name: Power user
+  role: experienced user
+  goals:
+  - Complete core tasks quickly
+  - Test integrations and API surfaces
+- id: p3-dogfood
+  name: Developer dogfooder
+  role: internal engineer
+  goals:
+  - Use dev-facing features and find rough edges
+  - Validate that error messages are actionable
+- id: p4-internal-champion
+  name: Internal champion
+  role: team lead / champion
+  goals:
+  - Validate admin features work correctly
+  - Test team collaboration and permissions
+  - Find feature gaps for internal adoption
+- id: p4-champion
+  name: Internal champion
+  role: team lead / champion
+  goals:
+  - Validate rollout to their team
+  - Find blockers before wider launch
+journeys:
+- id: j-argyle-login
+  name: Login to Argyle
+  priority: smoke
+  steps:
+  - action: navigate
+    url: /
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: login button
+  - action: wait
+    value: '1500'
+- id: j-argyle-explore-dashboard
+  name: Explore Dashboard
+  priority: smoke
+  steps:
+  - action: navigate
+    url: /database
+  - action: wait
+    value: '2000'
+  - action: scroll
+    intent: down
+- id: j-argyle-view-users
+  name: View Users List
+  priority: smoke
+  steps:
+  - action: navigate
+    url: /database
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: users tab or menu
+- id: j-argyle-admin-settings
+  name: Access Admin Settings
+  priority: smoke
+  steps:
+  - action: navigate
+    url: /database
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: admin or settings menu
+- id: j-argyle-team-collaboration
+  name: Test Team Collaboration
+  priority: smoke
+  steps:
+  - action: navigate
+    url: /database
+  - action: wait
+    value: '2000'
+  - action: explore
+    intent: team collaboration features
+- id: j-1-evalua-1
+  name: Launch a rehearsal from hub
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/
+    intent: Go to the main hub page
+  - action: click
+    intent: Click the 'Launch Rehearsal' button on the hub page
+    selector: button:has-text('Launch Rehearsal')
+  - action: wait
+    intent: Wait for rehearsal configuration modal
+    value: '2000'
+  - action: fill
+    intent: Fill in the rehearsal name field
+    selector: input[placeholder='Rehearsal Name']
+    value: Test Rehearsal 1
+  - action: click
+    intent: Click the agent dropdown to select an agent
+    selector: select#agent-select
+  - action: select
+    intent: Select an agent from the dropdown
+    selector: select#agent-select
+    value: agent-1
+  - action: click
+    intent: Click the 'Start Rehearsal' button in the modal
+    selector: button:has-text('Start Rehearsal')
+  - action: wait
+    intent: Wait for rehearsal progress indicator
+    value: '5000'
+  - action: assert_url_contains
+    intent: Check URL for rehearsal status page
+    value: /rehearsals
+  - action: wait
+    intent: Wait for rehearsal completion
+    value: '10000'
+  - action: assert_url_contains
+    intent: Confirm rehearsal details page
+    value: /rehearsals/
+- id: j-1-evalua-2
+  name: View and manage agents
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/agents
+    intent: Go to agents page
+  - action: wait
+    intent: Wait for content
+    value: '5000'
+  - action: assert_url_contains
+    intent: Check URL
+    value: /agents
+  - action: click
+    intent: Open agent detail modal
+    selector: .agent-list-item:first-child
+  - action: wait
+    intent: Wait for modal
+    selector: .agent-detail-modal
+    value: '3000'
+  - action: click
+    intent: Edit agent
+    selector: .agent-detail-modal .edit-button
+  - action: fill
+    intent: Update agent name
+    selector: .agent-edit-form input[name='name']
+    value: Test Agent
+  - action: click
+    intent: Save agent changes
+    selector: .agent-edit-form .save-button
+  - action: wait
+    intent: Wait for modal close
+    value: '2000'
+  - action: click
+    intent: Open status filter
+    selector: .status-filter-dropdown
+  - action: click
+    intent: Filter by active status
+    selector: .status-filter-dropdown option[value='active']
+  - action: assert_url_contains
+    intent: Check URL unchanged
+    value: /agents
+  - action: click
+    intent: Open agent detail modal from filtered list
+    selector: .agent-list-item:first-child
+  - action: click
+    intent: Delete agent
+    selector: .agent-detail-modal .delete-button
+  - action: click
+    intent: Confirm deletion
+    selector: .confirm-dialog .confirm-button
+- id: j-1-evalua-3
+  name: Configure an alert
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/alerts
+    intent: Go to alerts page
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: Create Alert button
+  - action: fill
+    intent: Alert name input field
+    value: High CPU Usage Alert
+  - action: fill
+    intent: Alert description textarea
+    value: Triggers when CPU usage exceeds 90% for 5 minutes
+  - action: click
+    intent: Add Condition button
+  - action: select
+    intent: Metric dropdown
+    value: CPU Usage
+  - action: select
+    intent: Operator dropdown
+    value: Greater than
+  - action: fill
+    intent: Threshold input field
+    value: '90'
+  - action: click
+    intent: Add Action button
+  - action: select
+    intent: Action type dropdown
+    value: Email Notification
+  - action: fill
+    intent: Email recipient input
+    value: admin@example.com
+  - action: click
+    intent: Save Alert button
+  - action: assert_url_contains
+    value: /alerts
+- id: j-1-evalua-4
+  name: Compare rehearsal runs
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/compare
+    intent: Open the compare rehearsal runs page
+  - action: wait
+    intent: Wait for content to render
+    value: '5000'
+  - action: click
+    intent: Select the first rehearsal run to compare
+    selector: .run-selector .run-item:first-child
+  - action: click
+    intent: Select the second rehearsal run to compare
+    selector: .run-selector .run-item:nth-child(2)
+  - action: click
+    intent: Trigger the comparison of selected runs
+    selector: button:has-text('Compare')
+  - action: wait
+    intent: Wait for metrics to be displayed
+    value: '3000'
+  - action: assert_url_contains
+    intent: Confirm no navigation away
+    value: /compare
+  - action: click
+    intent: Sort the comparison table by a specific metric
+    selector: .metric-table th:first-child
+  - action: click
+    intent: View detailed metrics for a specific run
+    selector: .metric-table tbody tr:first-child
+  - action: assert_url_contains
+    intent: Confirm no unexpected navigation
+    value: /compare
+- id: j-1-evalua-5
+  name: Manage integrations
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/integrations
+    intent: Go to integrations page
+  - action: assert_url_contains
+    intent: Confirm on integrations page
+    value: /integrations
+  - action: click
+    intent: Click Connect button for Slack
+    selector: button[aria-label='Connect Slack']
+  - action: wait
+    intent: Wait for OAuth popup
+    value: '5000'
+  - action: explore
+    intent: Focus on OAuth popup
+  - action: fill
+    intent: Fill email field in OAuth form
+    selector: input[name='email']
+    value: ${REHEARSE_EMAIL}
+  - action: fill
+    intent: Fill password field in OAuth form
+    selector: input[name='password']
+    value: ${REHEARSE_PASSWORD}
+  - action: click
+    intent: Click Sign In button
+    selector: button[type='submit']
+  - action: wait
+    intent: Wait for OAuth completion
+    value: '10000'
+  - action: assert_url_contains
+    intent: Confirm return to integrations page
+    value: /integrations
+  - action: click
+    intent: Click Disconnect button for Slack
+    selector: button[aria-label='Disconnect Slack']
+  - action: click
+    intent: Confirm disconnect
+    selector: button:has-text('Confirm')
+  - action: assert_url_contains
+    intent: Confirm still on integrations page
+    value: /integrations
+- id: j-1-evalua-6
+  name: Access CLI commands
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/cli
+    intent: Go to CLI commands page
+  - action: wait
+    intent: Wait for CLI commands list to appear
+    value: '5000'
+  - action: assert_url_contains
+    intent: Confirm we are on the CLI page
+    value: /cli
+  - action: explore
+    intent: Find the command list element
+  - action: click
+    intent: Copy the first CLI command to clipboard
+    selector: button:has-text('Copy')
+  - action: assert_url_contains
+    intent: Ensure no navigation occurred
+    value: /cli
+  - action: explore
+    intent: Look for a filter to narrow down commands
+    selector: input[placeholder*='Search' i], input[placeholder*='Filter' i]
+  - action: fill
+    intent: Filter commands by keyword
+    selector: input[placeholder*='Search' i], input[placeholder*='Filter' i]
+    value: run
+  - action: click
+    intent: Expand command details
+    selector: tr:first-child td:first-child a, .command-item:first-child
+  - action: assert_url_contains
+    intent: Ensure we stay on CLI page
+    value: /cli
+  - action: dismiss
+    intent: Close the details panel
+    selector: button:has-text('Close'), button[aria-label='Close']
+- id: j-1-evalua-7
+  name: Explore journey library
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/journeys
+    intent: Go to journey library
+  - action: wait
+    intent: Wait for content to appear
+    value: '5000'
+  - action: assert_url_contains
+    intent: Confirm correct page
+    value: /journeys
+  - action: click
+    intent: Open journey details
+    selector: .journey-card:first-child
+  - action: wait
+    intent: Wait for modal
+    value: '3000'
+  - action: assert_url_contains
+    intent: Confirm journey detail view
+    value: /journeys/
+  - action: dismiss
+    intent: Close modal
+    selector: .modal-close-button
+  - action: click
+    intent: Focus search bar
+    selector: input[placeholder='Search journeys...']
+  - action: fill
+    intent: Filter journeys by keyword
+    selector: input[placeholder='Search journeys...']
+    value: onboarding
+  - action: wait
+    intent: Wait for filtering
+    value: '2000'
+  - action: assert_url_contains
+    intent: Confirm search is reflected in URL
+    value: ?search=onboarding
+  - action: click
+    intent: Open filtered journey details
+    selector: .journey-card:first-child
+  - action: click
+    intent: Launch rehearsal from journey
+    selector: .launch-rehearsal-button
+  - action: assert_url_contains
+    intent: Confirm rehearsal launch
+    value: /rehearsal
+- id: j-1-evalua-8
+  name: View recommendations
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/recommendations
+    intent: Navigate to recommendations page
+  - action: wait
+    intent: Wait for recommendation cards to appear
+    value: '5000'
+  - action: assert_url_contains
+    intent: Check URL
+    value: /recommendations
+  - action: click
+    intent: Click on first recommendation card
+    selector: .recommendation-card:first-child
+  - action: wait
+    intent: Wait for details
+    value: '2000'
+  - action: click
+    intent: Dismiss recommendation
+    selector: .dismiss-button
+  - action: wait
+    intent: Wait for dismissal
+    value: '2000'
+  - action: assert_url_contains
+    intent: Check URL unchanged
+    value: /recommendations
+- id: j-1-evalua-9
+  name: Manage workflows
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/workflows
+    intent: Go to workflows management page
+  - action: click
+    intent: Initiate workflow creation
+    selector: button:has-text('Create Workflow')
+  - action: fill
+    intent: Name the workflow
+    selector: input[placeholder='Workflow name']
+    value: My Test Workflow
+  - action: click
+    intent: Add a step to the workflow
+    selector: button:has-text('Add Step')
+  - action: select
+    intent: Choose step type
+    selector: select[data-testid='step-type-select']
+    value: run_rehearsal
+  - action: fill
+    intent: Name the step
+    selector: input[placeholder='Step name']
+    value: Rehearse Agent A
+  - action: click
+    intent: Save the step
+    selector: button:has-text('Save Step')
+  - action: click
+    intent: Add another step
+    selector: button:has-text('Add Step')
+  - action: select
+    intent: Choose step type for second step
+    selector: select[data-testid='step-type-select']
+    value: send_alert
+  - action: fill
+    intent: Name the second step
+    selector: input[placeholder='Step name']
+    value: Notify Team
+  - action: click
+    intent: Save the second step
+    selector: button:has-text('Save Step')
+  - action: click
+    intent: Save the entire workflow
+    selector: button:has-text('Save Workflow')
+  - action: assert_url_contains
+    intent: Confirm navigation to workflows list
+    value: /workflows
+  - action: wait
+    intent: Wait for list to render
+    value: '2000'
+- id: j-1-evalua-10
+  name: Configure workspace settings
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/workspace
+    intent: Open workspace settings page
+  - action: wait
+    intent: Wait for form elements
+    value: '2000'
+  - action: click
+    intent: Focus on workspace name input
+    selector: input[name='workspaceName']
+  - action: fill
+    intent: Update workspace name to 'My Research Lab'
+    selector: input[name='workspaceName']
+    value: My Research Lab
+  - action: click
+    intent: Open timezone dropdown
+    selector: select[name='timezone']
+  - action: select
+    intent: Change timezone to Eastern Time
+    selector: select[name='timezone']
+    value: America/New_York
+  - action: click
+    intent: Expand permissions settings
+    selector: button:has-text('Permissions')
+  - action: click
+    intent: Enable member invitation permission
+    selector: input[name='allowInvite']
+  - action: click
+    intent: Save workspace settings
+    selector: button:has-text('Save Changes')
+  - action: wait
+    intent: Wait for save confirmation
+    value: '3000'
+  - action: assert_url_contains
+    intent: Confirm no redirect
+    value: /workspace
+  - action: click
+    intent: Verify workspace name is saved
+    selector: input[name='workspaceName']
+- id: j-1-evalua-11
+  name: Onboarding walkthrough
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/onboarding
+    intent: Go to onboarding page
+  - action: wait
+    intent: Wait for welcome modal
+    value: '3000'
+  - action: click
+    intent: Click 'Get Started' button
+    selector: button:has-text('Get Started')
+  - action: wait
+    intent: Wait for progress bar
+    value: '2000'
+  - action: fill
+    intent: Fill email field
+    selector: input[type='email']
+    value: ${REHEARSE_EMAIL}
+  - action: fill
+    intent: Fill password field
+    selector: input[type='password']
+    value: ${REHEARSE_PASSWORD}
+  - action: click
+    intent: Click 'Next' button
+    selector: button:has-text('Next')
+  - action: click
+    intent: Select default agent template
+    selector: input[type='radio'][value='default']
+  - action: click
+    intent: Click 'Next' button
+    selector: button:has-text('Next')
+  - action: click
+    intent: Enable email alerts
+    selector: label:has-text('Enable email alerts') .toggle-switch
+  - action: click
+    intent: Click 'Next' button
+    selector: button:has-text('Next')
+  - action: click
+    intent: Click 'Finish' button
+    selector: button:has-text('Finish')
+  - action: assert_url_contains
+    intent: Assert URL contains /database
+    value: /database
+- id: j-1-evalua-12
+  name: Recover from failed rehearsal launch
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/
+    intent: Go to the main dashboard
+  - action: click
+    intent: Initiate a rehearsal launch
+    selector: button:has-text('Launch Rehearsal')
+  - action: fill
+    intent: Name the rehearsal
+    selector: input[placeholder='Rehearsal Name']
+    value: Test Rehearsal 1
+  - action: click
+    intent: Submit the rehearsal launch
+    selector: button:has-text('Start Rehearsal')
+  - action: wait
+    intent: Observe error feedback
+    value: '5000'
+  - action: assert_url_contains
+    intent: Confirm no navigation occurred
+    value: /
+  - action: click
+    intent: Access error details
+    selector: div[role='alert'] a:has-text('View Logs')
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/logs
+    intent: Go to log viewer to diagnose failure
+  - action: wait
+    intent: Ensure logs are rendered
+    value: '3000'
+  - action: click
+    intent: View error details
+    selector: div.log-entry:first-child
+  - action: assert_url_contains
+    intent: Confirm location
+    value: /logs
+  - action: click
+    intent: Retry the rehearsal launch
+    selector: button:has-text('Retry')
+  - action: wait
+    intent: Observe outcome of retry
+    value: '5000'
+  - action: assert_url_contains
+    intent: Confirm final state
+    value: /logs
+- id: j-2-oerato-1
+  name: Launch a rehearsal from the hub
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/
+    intent: Open the Argyle Faculty Dashboard
+  - action: assert_url_contains
+    intent: Confirm URL is /
+    value: /
+  - action: click
+    intent: Open the launch rehearsal modal
+    selector: button:has-text('Launch Rehearsal')
+  - action: wait
+    intent: Ensure modal is interactive
+    value: '1000'
+  - action: click
+    intent: Open rehearsal type options
+    selector: select#rehearsal-type
+  - action: select
+    intent: Choose rehearsal type
+    selector: select#rehearsal-type
+    value: standard
+  - action: fill
+    intent: Name the rehearsal run
+    selector: input#rehearsal-name
+    value: Test Rehearsal Run 1
+  - action: click
+    intent: Show advanced settings
+    selector: button:has-text('Advanced Options')
+  - action: fill
+    intent: Configure iteration count
+    selector: input#iterations
+    value: '5'
+  - action: click
+    intent: Submit the rehearsal configuration
+    selector: button:has-text('Launch')
+  - action: wait
+    intent: Allow processing
+    value: '2000'
+  - action: assert_url_contains
+    intent: Confirm rehearsal launch success
+    value: /run
+- id: j-2-oerato-2
+  name: View and manage AI agents
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/agents
+    intent: Go to agent management page
+  - action: wait
+    intent: Wait for dynamic content to render
+    value: '3000'
+  - action: assert_url_contains
+    intent: Confirm correct page
+    value: /agents
+  - action: click
+    intent: Open agent detail panel for the first agent
+    selector: .agent-list-item:first-child
+  - action: wait
+    intent: Allow panel animation
+    value: '2000'
+  - action: click
+    intent: Close the detail panel
+    selector: .agent-detail-panel .close-button
+  - action: click
+    intent: Open add agent modal
+    selector: .add-agent-button
+  - action: fill
+    intent: Fill agent name input
+    selector: '#agent-name'
+    value: Test Agent 42
+  - action: fill
+    intent: Fill agent description input
+    selector: '#agent-description'
+    value: Agent for testing purposes
+  - action: select
+    intent: Choose agent type
+    selector: '#agent-type'
+    value: research
+  - action: click
+    intent: Submit the add agent form
+    selector: .modal .save-button
+  - action: wait
+    intent: Allow list refresh
+    value: '2000'
+  - action: assert_url_contains
+    intent: Confirm no navigation away
+    value: /agents
+- id: j-2-oerato-3
+  name: Configure alerts for system events
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/alerts
+    intent: Go to alerts page
+  - action: click
+    intent: Click 'Create Alert' button
+    selector: button:has-text('Create Alert')
+  - action: fill
+    intent: Fill alert name input
+    selector: input[name='alertName']
+    value: Rehearsal Failure Alert
+  - action: select
+    intent: Select event type dropdown
+    selector: select[name='eventType']
+    value: rehearsal_failure
+  - action: fill
+    intent: Fill threshold input
+    selector: input[name='threshold']
+    value: '1'
+  - action: click
+    intent: Click 'Add Condition' button
+    selector: button:has-text('Add Condition')
+  - action: select
+    intent: Select condition field dropdown
+    selector: select[name='conditionField']
+    value: agent_name
+  - action: select
+    intent: Select condition operator dropdown
+    selector: select[name='conditionOperator']
+    value: equals
+  - action: fill
+    intent: Fill condition value input
+    selector: input[name='conditionValue']
+    value: Agent-X
+  - action: click
+    intent: Click 'Next' button
+    selector: button:has-text('Next')
+  - action: click
+    intent: Click email notification checkbox
+    selector: input[type='checkbox'][value='email']
+  - action: fill
+    intent: Fill email input
+    selector: input[name='notificationEmail']
+    value: ${REHEARSE_EMAIL}
+  - action: click
+    intent: Click 'Save Alert' button
+    selector: button:has-text('Save Alert')
+  - action: assert_url_contains
+    url: https://faculty-dashboard-eight.vercel.app/alerts
+    intent: Assert URL contains /alerts
+- id: j-2-oerato-4
+  name: Compare rehearsal runs
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/compare
+    intent: Go to the compare page to start comparing rehearsal runs
+  - action: click
+    intent: Open the run selector modal to choose runs for comparison
+    selector: button:has-text('Select Runs')
+  - action: click
+    intent: Choose the first run to compare
+    selector: .run-list-item:first-child input[type='checkbox']
+  - action: click
+    intent: Choose the second run to compare
+    selector: .run-list-item:nth-child(2) input[type='checkbox']
+  - action: click
+    intent: Initiate the side-by-side comparison of selected runs
+    selector: button:has-text('Compare')
+  - action: wait
+    intent: Ensure the metrics are fully rendered
+    value: '3000'
+  - action: assert_url_contains
+    intent: Confirm no navigation away
+    value: /compare
+  - action: click
+    intent: Open the metric overlay to see detailed metrics
+    selector: button:has-text('Metrics Overlay')
+  - action: wait
+    intent: Allow overlay animation to complete
+    value: '1000'
+  - action: assert_url_contains
+    intent: Confirm overlay is shown without navigation
+    value: /compare
+  - action: click
+    intent: Dismiss the overlay to return to main comparison view
+    selector: .overlay-close-button
+  - action: click
+    intent: Export the side-by-side metrics for external analysis
+    selector: button:has-text('Export Comparison')
+  - action: wait
+    intent: Allow download to finish
+    value: '2000'
+- id: j-2-oerato-5
+  name: Manage integrations with external services
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/integrations
+    intent: Go to integrations management page
+  - action: wait
+    intent: Wait for dynamic content to render
+    value: '5000'
+  - action: assert_url_contains
+    url: /integrations
+    intent: Confirm URL contains /integrations
+  - action: click
+    intent: Initiate Slack integration connection
+    selector: button:has-text('Connect Slack')
+  - action: wait
+    intent: Wait for OAuth flow to start
+    value: '3000'
+  - action: click
+    intent: Authorize Argyle to access Slack
+    selector: button:has-text('Authorize')
+  - action: wait
+    intent: Wait for callback processing
+    value: '5000'
+  - action: assert_url_contains
+    url: /integrations
+    intent: Confirm successful callback
+  - action: click
+    intent: Disconnect Slack integration
+    selector: button:has-text('Disconnect')
+  - action: click
+    intent: Confirm disconnection of Slack
+    selector: button:has-text('Confirm')
+  - action: assert_url_contains
+    url: /integrations
+    intent: Confirm page did not change
+  - action: wait
+    intent: Wait for UI to update
+    value: '2000'
+  - action: assert_url_contains
+    url: /integrations
+    intent: Confirm final state
+- id: j-2-oerato-6
+  name: Access CLI for advanced operations
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/cli
+    intent: Go to CLI page
+  - action: wait
+    value: '5000'
+  - action: click
+    intent: Click on the terminal input field
+    selector: .terminal-input
+  - action: fill
+    intent: Type 'list-agents' command
+    selector: .terminal-input
+    value: list-agents
+  - action: press
+    value: Enter
+  - action: wait
+    value: '3000'
+  - action: assert_url_contains
+    value: /cli
+  - action: click
+    intent: Click on history icon
+    selector: .history-button
+  - action: click
+    intent: Click on a history entry
+    selector: .history-entry:first-child
+  - action: press
+    value: Enter
+  - action: wait
+    value: '3000'
+  - action: click
+    intent: Click close button on history panel
+    selector: .history-close
+- id: j-2-oerato-7
+  name: Configure workspace settings
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/workspace
+    intent: Go to workspace configuration
+  - action: wait
+    intent: Wait for form load
+    value: '2000'
+  - action: click
+    intent: Open timezone dropdown
+    selector: select[name='timezone']
+  - action: select
+    intent: Choose timezone
+    selector: select[name='timezone']
+    value: America/New_York
+  - action: click
+    intent: Open default agent dropdown
+    selector: select[name='defaultAgent']
+  - action: select
+    intent: Choose default agent
+    selector: select[name='defaultAgent']
+    value: Agent Alpha
+  - action: click
+    intent: Submit workspace settings
+    selector: button:has-text('Save Changes')
+  - action: wait
+    intent: Wait for save confirmation
+    value: '2000'
+  - action: assert_url_contains
+    url: /workspace
+    intent: Check URL unchanged
+- id: j-2-oerato-8
+  name: Browse journey library for templates
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/journeys
+    intent: Go to journey library
+  - action: wait
+    intent: Wait for journey cards
+    value: '3000'
+  - action: assert_url_contains
+    intent: Check URL
+    value: /journeys
+  - action: click
+    intent: Open journey details
+    selector: .journey-card:first-child
+  - action: wait
+    intent: Wait for detail
+    value: '2000'
+  - action: click
+    intent: Close modal
+    selector: .modal-close-button
+  - action: click
+    intent: Open filter dropdown
+    selector: .filter-dropdown-trigger
+  - action: click
+    intent: Select category filter
+    selector: .filter-option[data-category='onboarding']
+  - action: wait
+    intent: Wait for filter
+    value: '2000'
+  - action: assert_url_contains
+    intent: Check filter in URL
+    value: ?category=onboarding
+  - action: click
+    intent: Preview filtered journey
+    selector: .journey-card:first-child
+  - action: click
+    intent: Close modal
+    selector: .modal-close-button
+  - action: click
+    intent: Clear filter
+    selector: .filter-clear-button
+- id: j-2-oerato-9
+  name: View recommendations for optimization
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/recommendations
+    intent: Go to the recommendations hub to view AI-generated suggestions
+  - action: wait
+    intent: Wait for content to appear
+    value: '5000'
+  - action: assert_url_contains
+    intent: Confirm URL includes /recommendations
+    value: /recommendations
+  - action: click
+    intent: Select the first recommendation to see more information
+    selector: .recommendation-item:first-child
+  - action: wait
+    intent: Allow detail content to render
+    value: '3000'
+  - action: click
+    intent: Apply the selected recommendation to improve rehearsal performance
+    selector: .apply-button
+  - action: wait
+    intent: Allow modal to render
+    value: '2000'
+  - action: click
+    intent: Confirm the application of the recommendation
+    selector: .confirm-button
+  - action: assert_url_contains
+    intent: Confirm no unexpected navigation
+    value: /recommendations
+- id: j-2-oerato-10
+  name: Manage workflow definitions
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/workflows
+    intent: Go to workflow management page
+  - action: assert_url_contains
+    url: /workflows
+    intent: Confirm URL contains /workflows
+  - action: click
+    intent: Create a new workflow
+    selector: button:has-text('Create Workflow')
+  - action: fill
+    intent: Workflow name input field
+    selector: input[name='workflowName']
+    value: Daily Rehearsal Pipeline
+  - action: fill
+    intent: Workflow description textarea
+    selector: textarea[name='description']
+    value: Runs daily rehearsal steps for agent validation
+  - action: click
+    intent: Add step button
+    selector: button:has-text('Add Step')
+  - action: select
+    intent: Step type dropdown
+    selector: select[name='stepType']
+    value: rehearsal
+  - action: fill
+    intent: Step name input
+    selector: input[name='stepName']
+    value: Run Agent A
+  - action: click
+    intent: Add step button
+    selector: button:has-text('Add Step')
+  - action: select
+    intent: Step type dropdown
+    selector: select[name='stepType']
+    value: compare
+  - action: fill
+    intent: Step name input
+    selector: input[name='stepName']
+    value: Compare Results
+  - action: click
+    intent: Save workflow button
+    selector: button:has-text('Save Workflow')
+  - action: assert_url_contains
+    url: /workflows
+    intent: Confirm URL contains /workflows
+  - action: click
+    intent: Workflow name link
+    selector: a:has-text('Daily Rehearsal Pipeline')
+- id: j-2-oerato-11
+  name: Troubleshoot a failed rehearsal
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/
+    intent: Go to main dashboard
+  - action: click
+    intent: Open rehearsal launch modal
+    selector: button:has-text('Launch Rehearsal')
+  - action: fill
+    intent: Fill rehearsal name
+    selector: input[placeholder='Rehearsal Name']
+    value: Test Rehearsal - Debug
+  - action: fill
+    intent: Fill agent ID
+    selector: input[placeholder='Agent ID']
+    value: agent-123
+  - action: click
+    intent: Start rehearsal run
+    selector: button:has-text('Start Rehearsal')
+  - action: wait
+    intent: Wait for run to finish
+    value: '5000'
+  - action: click
+    intent: Open run detail page
+    selector: a:has-text('Test Rehearsal - Debug')
+  - action: assert_url_contains
+    url: /run/
+    intent: Check run detail page URL
+  - action: click
+    intent: Open log viewer
+    selector: button:has-text('View Logs')
+  - action: scroll
+    intent: Scroll logs
+    selector: .log-viewer
+    value: down
+  - action: click
+    intent: Open agent status tab
+    selector: button:has-text('Agent Status')
+  - action: click
+    intent: Rerun rehearsal
+    selector: button:has-text('Rerun')
+  - action: assert_url_contains
+    url: /
+    intent: Check navigation after rerun
+- id: j-2-oerato-12
+  name: Onboard a new team member
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/
+    intent: Open the dashboard
+  - action: click
+    intent: Click the 'Launch Rehearsal' button
+    selector: button:has-text('Launch Rehearsal')
+  - action: wait
+    intent: Wait for welcome modal
+    value: '2000'
+  - action: click
+    intent: Click 'Got it' on welcome modal
+    selector: button:has-text('Got it')
+  - action: click
+    intent: Open Quick Start Guide
+    selector: a:has-text('Quick Start Guide'), button:has-text('Quick Start Guide')
+  - action: scroll
+    intent: Scroll down in the guide
+    selector: .quick-start-guide
+  - action: click
+    intent: Close Quick Start Guide
+    selector: button[aria-label='Close'], .close-button
+  - action: click
+    intent: Click 'Launch Rehearsal' button
+    selector: button:has-text('Launch Rehearsal')
+  - action: fill
+    intent: Fill email field
+    selector: input[type='email'], input[name='email']
+    value: ${REHEARSE_EMAIL}
+  - action: fill
+    intent: Fill password field
+    selector: input[type='password'], input[name='password']
+    value: ${REHEARSE_PASSWORD}
+  - action: click
+    intent: Click 'Start Rehearsal' button
+    selector: button:has-text('Start Rehearsal')
+  - action: assert_url_contains
+    intent: Check URL for rehearsal path
+    value: /rehearsal
+- id: j-3-admin-1
+  name: Launch a rehearsal
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/
+    intent: Open the main dashboard
+  - action: click
+    intent: Open the Launch Rehearsal modal
+    selector: button:has-text('Launch Rehearsal')
+  - action: wait
+    intent: Ensure modal is ready
+    value: '2000'
+  - action: fill
+    intent: Set rehearsal name
+    selector: input[name='rehearsalName']
+    value: Test Rehearsal - Q3 Review
+  - action: select
+    intent: Choose an agent for the rehearsal
+    selector: select[name='agent']
+    value: agent-alpha
+  - action: fill
+    intent: Set iterations count
+    selector: input[name='iterations']
+    value: '10'
+  - action: select
+    intent: Choose environment (e.g., staging)
+    selector: select[name='environment']
+    value: staging
+  - action: click
+    intent: Submit the rehearsal launch
+    selector: button:has-text('Start Rehearsal')
+  - action: assert_url_contains
+    intent: Confirm successful launch redirects to rehearsals page
+    value: /rehearsals
+  - action: wait
+    intent: Ensure page content is loaded
+    value: '3000'
+  - action: assert_url_contains
+    intent: Confirm rehearsal is created
+    selector: text=Test Rehearsal - Q3 Review
+    value: Test Rehearsal - Q3 Review
+- id: j-3-admin-2
+  name: Check agent status
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/agents
+    intent: Go to agent management page
+  - action: wait
+    intent: Wait for agent list to load
+    selector: table
+    value: '5000'
+  - action: assert_url_contains
+    url: https://faculty-dashboard-eight.vercel.app/agents
+    intent: Confirm navigation to agents page
+    value: /agents
+  - action: click
+    intent: Open status filter dropdown
+    selector: select[aria-label='Status filter']
+  - action: select
+    intent: Filter agents to show only active ones
+    selector: select[aria-label='Status filter']
+    value: Active
+  - action: wait
+    intent: Wait for filtered results
+    selector: table
+    value: '3000'
+  - action: assert_url_contains
+    url: https://faculty-dashboard-eight.vercel.app/agents
+    intent: Confirm no navigation away
+    value: /agents
+  - action: click
+    intent: Open agent details modal
+    selector: table tbody tr:first-child
+  - action: wait
+    intent: Wait for agent details modal
+    selector: div[role='dialog']
+    value: '3000'
+  - action: click
+    intent: Close agent details modal
+    selector: button[aria-label='Close']
+  - action: click
+    intent: Open status filter to clear selection
+    selector: select[aria-label='Status filter']
+  - action: select
+    intent: Reset filter to show all agents
+    selector: select[aria-label='Status filter']
+    value: All
+  - action: wait
+    intent: Wait for unfiltered results
+    selector: table
+    value: '3000'
+- id: j-3-admin-3
+  name: Configure alerts
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/alerts
+    intent: Go to Alerts page
+  - action: assert_url_contains
+    value: /alerts
+  - action: click
+    intent: Click the 'Create Alert' button
+    selector: button:has-text('Create Alert')
+  - action: wait
+    value: '2000'
+  - action: fill
+    intent: Fill in the Alert Name field
+    selector: input[name='alertName']
+    value: High Error Rate Alert
+  - action: fill
+    intent: Fill in the Description field
+    selector: textarea[name='description']
+    value: Triggers when error rate exceeds 5% in the last 10 minutes.
+  - action: click
+    intent: Expand Condition Builder
+    selector: button:has-text('Condition Builder')
+  - action: select
+    intent: Select metric for condition
+    selector: select[name='metric']
+    value: Error Rate
+  - action: select
+    intent: Select operator for condition
+    selector: select[name='operator']
+    value: Greater than
+  - action: fill
+    intent: Enter threshold value
+    selector: input[name='threshold']
+    value: '5'
+  - action: select
+    intent: Select time window
+    selector: select[name='timeWindow']
+    value: Last 10 minutes
+  - action: click
+    intent: Save the new alert
+    selector: button:has-text('Save Alert')
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    value: /alerts
+- id: j-3-admin-4
+  name: Compare rehearsal runs
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/compare
+    intent: Go to compare page
+  - action: wait
+    intent: Wait for page load
+    value: '2000'
+  - action: click
+    intent: Open run selector dropdown
+    selector: button[data-testid='run-selector-1']
+  - action: click
+    intent: Select first run
+    selector: li[data-testid='run-option-1']
+  - action: click
+    intent: Open second run selector dropdown
+    selector: button[data-testid='run-selector-2']
+  - action: click
+    intent: Select second run
+    selector: li[data-testid='run-option-2']
+  - action: click
+    intent: Initiate comparison
+    selector: button[data-testid='compare-button']
+  - action: wait
+    intent: Wait for comparison results
+    value: '3000'
+  - action: assert_url_contains
+    intent: Assert compare page URL
+    value: /compare
+  - action: hover
+    intent: View metric tooltip
+    selector: div[data-testid='metric-accuracy']
+- id: j-3-admin-5
+  name: Manage integrations
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/integrations
+    intent: Go to the integrations management page
+  - action: wait
+    intent: Ensure dynamic content is rendered
+    value: '3000'
+  - action: assert_url_contains
+    value: /integrations
+  - action: click
+    intent: Initiate connection to Slack
+    selector: button[data-testid='connect-slack']
+  - action: wait
+    intent: Allow OAuth redirect to complete
+    value: '2000'
+  - action: assert_url_contains
+    value: slack.com
+  - action: fill
+    intent: Provide Slack workspace URL in the OAuth form
+    selector: input[name='workspace']
+    value: https://argyle-faculty.slack.com
+  - action: click
+    intent: Proceed with OAuth authorization
+    selector: button[type='submit']
+  - action: wait
+    intent: Allow OAuth callback to complete
+    value: '3000'
+  - action: assert_url_contains
+    value: /integrations
+  - action: wait
+    intent: Allow UI to reflect connected state
+    value: '2000'
+- id: j-3-admin-6
+  name: Access CLI
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/cli
+    intent: Open the CLI page to access the terminal emulator
+  - action: wait
+    intent: Ensure the terminal emulator is fully loaded
+    value: '2000'
+  - action: assert_url_contains
+    intent: Confirm correct page
+    value: /cli
+  - action: click
+    intent: Focus the terminal input field
+    selector: .terminal-input
+  - action: fill
+    intent: Enter command in terminal
+    selector: .terminal-input
+    value: list-agents
+  - action: press
+    intent: Execute the command
+    value: Enter
+  - action: wait
+    intent: Allow time for response
+    value: '3000'
+  - action: assert_url_contains
+    intent: Verify no unexpected redirect
+    value: /cli
+  - action: click
+    intent: Open command history panel
+    selector: .command-history-tab
+  - action: assert_url_contains
+    intent: Verify no navigation away
+    value: /cli
+  - action: click
+    intent: Select a command from history
+    selector: .history-item:first-child
+  - action: press
+    intent: Re-run the command
+    value: Enter
+  - action: wait
+    intent: Allow response time
+    value: '3000'
+- id: j-3-admin-7
+  name: Browse journey library
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/journeys
+    intent: Open the journey library to browse predefined templates
+  - action: wait
+    intent: Ensure journey cards are visible
+    value: '5000'
+  - action: assert_url_contains
+    intent: Confirm we are on the journey library page
+    value: /journeys
+  - action: click
+    intent: Select a journey template to inspect
+    selector: .journey-card:first-child
+  - action: wait
+    intent: Ensure modal is fully loaded
+    selector: .journey-detail-modal
+    value: '3000'
+  - action: click
+    intent: Return to the journey list
+    selector: .journey-detail-modal .close-button
+  - action: click
+    intent: Prepare to search for a specific journey
+    selector: input[placeholder='Search journeys...']
+  - action: fill
+    intent: Find a journey by keyword
+    selector: input[placeholder='Search journeys...']
+    value: onboarding
+  - action: wait
+    intent: Allow filtering to complete
+    value: '2000'
+  - action: assert_url_contains
+    intent: Confirm search is applied
+    value: /journeys
+  - action: click
+    intent: Select a journey from search results
+    selector: .journey-card:first-child
+  - action: click
+    intent: Initiate a rehearsal using the selected journey template
+    selector: .journey-detail-modal .use-template-button
+  - action: assert_url_contains
+    intent: Confirm we have moved to the rehearsal launch page
+    value: /rehearsal
+- id: j-3-admin-8
+  name: View recommendations
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/recommendations
+    intent: Open recommendations page
+  - action: wait
+    intent: Wait for dynamic content
+    value: '5000'
+  - action: assert_url_contains
+    intent: Confirm correct page
+    value: /recommendations
+  - action: scroll
+    intent: Scroll to load more items if any
+  - action: click
+    intent: Open recommendation details
+    selector: .recommendation-card:first-child
+  - action: wait
+    intent: Wait for modal animation
+    value: '3000'
+  - action: click
+    intent: Apply the recommendation
+    selector: .recommendation-detail .apply-button
+  - action: wait
+    intent: Wait for toast notification
+    value: '2000'
+  - action: click
+    intent: Dismiss confirmation
+    selector: .toast .dismiss-button
+  - action: click
+    intent: Open filter options
+    selector: .filter-button
+  - action: select
+    intent: Filter by category
+    selector: .filter-dropdown select
+    value: workflow
+  - action: wait
+    intent: Wait for update
+    value: '3000'
+  - action: assert_url_contains
+    intent: Confirm no navigation away
+    value: /recommendations
+- id: j-3-admin-9
+  name: Manage workflows
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/workflows
+    intent: Go to workflow management
+  - action: click
+    intent: Create new workflow
+    selector: button:has-text('Create Workflow')
+  - action: fill
+    intent: Workflow name input
+    selector: input[name='workflowName']
+    value: Daily Rehearsal Trigger
+  - action: fill
+    intent: Workflow description input
+    selector: textarea[name='workflowDescription']
+    value: Triggers a rehearsal run every day at 9 AM
+  - action: click
+    intent: Proceed to trigger configuration
+    selector: button:has-text('Next')
+  - action: select
+    intent: Choose trigger type
+    selector: select[name='triggerType']
+    value: schedule
+  - action: fill
+    intent: Cron expression input
+    selector: input[name='cronExpression']
+    value: 0 9 * * *
+  - action: click
+    intent: Proceed to action configuration
+    selector: button:has-text('Next')
+  - action: select
+    intent: Choose action type
+    selector: select[name='actionType']
+    value: launch_rehearsal
+  - action: fill
+    intent: Rehearsal agent ID input
+    selector: input[name='agentId']
+    value: agent-123
+  - action: click
+    intent: Save workflow
+    selector: button:has-text('Save Workflow')
+  - action: assert_url_contains
+    url: https://faculty-dashboard-eight.vercel.app/workflows
+    intent: Check navigation back to workflows list
+  - action: wait
+    intent: Wait for list to refresh
+    value: '2000'
+  - action: click
+    intent: Open workflow details
+    selector: text=Daily Rehearsal Trigger
+- id: j-3-admin-10
+  name: Configure workspace
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/workspace
+    intent: Go to workspace configuration page
+  - action: assert_url_contains
+    intent: Confirm navigation to workspace page
+    value: /workspace
+  - action: wait
+    intent: Wait for form elements to load
+    value: '2000'
+  - action: click
+    intent: Select workspace name input
+    selector: input[name='workspaceName']
+  - action: fill
+    intent: Update workspace name
+    selector: input[name='workspaceName']
+    value: Argyle Research Lab
+  - action: click
+    intent: Save workspace name
+    selector: button:has-text('Save Changes')
+  - action: wait
+    intent: Wait for save confirmation
+    value: '2000'
+  - action: assert_url_contains
+    intent: Confirm no navigation away
+    value: /workspace
+  - action: click
+    intent: Open add user modal
+    selector: button:has-text('Add User')
+  - action: wait
+    intent: Wait for modal animation
+    value: '1000'
+  - action: fill
+    intent: Enter new user email
+    selector: input[type='email']
+    value: ${REHEARSE_EMAIL}
+  - action: select
+    intent: Choose user role
+    selector: select[name='role']
+    value: Admin
+  - action: click
+    intent: Send invitation to new user
+    selector: button:has-text('Invite')
+  - action: assert_url_contains
+    intent: Confirm no navigation away
+    value: /workspace
+- id: j-3-admin-11
+  name: Troubleshoot empty pages
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Access the dashboard entry point
+  - action: assert_url_contains
+    intent: Confirm we are on the dashboard
+    value: /database
+  - action: wait
+    intent: Allow dynamic content to render
+    value: '3000'
+  - action: explore
+    intent: Inspect network requests for data loading
+  - action: click
+    intent: Trigger a rehearsal launch and observe network calls
+    selector: button:has-text('Launch Rehearsal')
+  - action: wait
+    intent: Allow any API calls to finish
+    value: '5000'
+  - action: explore
+    intent: Identify data-fetching endpoints
+  - action: click
+    intent: Check if the API returns data or an error
+    selector: //div[@class='network-log']//a[1]
+  - action: assert_url_contains
+    intent: Verify that data is returned
+    value: '200'
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/agents
+    intent: Compare with another hub page
+  - action: explore
+    intent: Identify any loading errors
+  - action: assert_url_contains
+    intent: Ensure no blocking errors
+    value: agents
+  - action: click
+    intent: Confirm button functionality is consistent
+    selector: button:has-text('Launch Rehearsal')
+  - action: wait
+    intent: Check if any content appears after interaction
+    value: '2000'
+- id: j-3-admin-12
+  name: Review recent activity
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/
+    intent: Access the main dashboard to review recent activity
+  - action: click
+    intent: Open the activity log page to view recent actions
+    selector: a[href='/activity']
+  - action: wait
+    intent: Ensure the list of activities is rendered
+    value: '3000'
+  - action: assert_url_contains
+    intent: Confirm navigation to activity log page
+    value: /activity
+  - action: click
+    intent: Open filter options to narrow down activity types
+    selector: select[aria-label='Filter by type']
+  - action: select
+    intent: Filter activity log to show only rehearsal-related events
+    selector: select[aria-label='Filter by type']
+    value: Rehearsal
+  - action: wait
+    intent: Ensure the list is updated after filtering
+    value: '2000'
+  - action: click
+    intent: Open details of a specific rehearsal event
+    selector: .activity-item:first-child
+  - action: assert_url_contains
+    intent: Confirm that details are shown in-page without navigation
+    value: /activity
+  - action: dismiss
+    intent: Return to the activity list
+    selector: button[aria-label='Close details']
+  - action: click
+    intent: Reset filter to show all activity types
+    selector: select[aria-label='Filter by type']
+    value: All

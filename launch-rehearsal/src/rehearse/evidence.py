@@ -43,6 +43,11 @@ class StepSnapshot:
     focus_region: dict[str, Any] | None = None
     explore_log: list[dict[str, Any]] = field(default_factory=list)
     explore_summary: str | None = None
+    # Behavioral judge verdict (L3 deep analysis)
+    behavioral_verdict: str | None = None        # pass | partial | fail
+    behavioral_friction: list[str] = field(default_factory=list)
+    behavioral_ux_concerns: list[str] = field(default_factory=list)
+    chatbot_quality: dict[str, Any] | None = None
 
 
 @dataclass

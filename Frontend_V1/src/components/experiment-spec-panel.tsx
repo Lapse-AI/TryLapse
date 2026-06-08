@@ -122,7 +122,7 @@ export function ExperimentRunBanner({
     <Panel className="p-4 md:p-5 space-y-2 border-primary/15 bg-primary/5">
       <div className="text-xs text-muted-foreground uppercase tracking-wider">Experiment</div>
       {experiment.variantLabel && (
-        <Chip tone="violet" className="font-mono">
+        <Chip tone="violet">
           {experiment.variantLabel}
         </Chip>
       )}

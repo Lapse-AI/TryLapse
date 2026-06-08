@@ -1,0 +1,624 @@
+{
+  "summary": {
+    "id": "cal-20260529-192901",
+    "productName": "Cal.com (practice target)",
+    "target": "cal.com",
+    "targetUrl": "https://cal.com",
+    "env": "staging",
+    "workspaceId": "ws_default",
+    "startedAt": "2026-05-29T19:29:01.430152+00:00",
+    "finishedAt": "2026-05-29T19:29:13.381062+00:00",
+    "durationSec": 11,
+    "readiness": 95,
+    "readinessBand": "Green",
+    "status": "ready",
+    "blockers": 0,
+    "issues": 3,
+    "delights": 2,
+    "pages": 0,
+    "pagesCrawled": 0,
+    "stepCount": 8,
+    "agentCost": 0.0659,
+    "costEstimate": {
+      "usd": 0.0659,
+      "source": "heuristic",
+      "inputTokens": null,
+      "outputTokens": null,
+      "totalTokens": null,
+      "durationSec": 11,
+      "agentsRun": 0
+    },
+    "outcome": "complete",
+    "configHash": "d6e76f",
+    "agentsRun": 0,
+    "authAttempted": false,
+    "authOutcome": null,
+    "llmEnabled": false,
+    "crawlEnabled": false,
+    "orphans": 0,
+    "authGated": 0,
+    "networkLogPath": null,
+    "webVitalsPath": null,
+    "experiment": null
+  },
+  "steps": [
+    {
+      "stepId": "j1-land-p1-evaluator-s1",
+      "journeyId": "j1-land",
+      "journeyName": "Land and grasp value",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "https://cal.com/",
+      "finalUrl": "https://cal.com/",
+      "outcome": "pass",
+      "durationMs": 3431,
+      "note": null,
+      "errorType": null,
+      "flaky": true,
+      "behavior": "continue",
+      "consoleErrors": [
+        "Fetch failed: Error: Key 'user.name' not found in response"
+      ],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Solutions Enterprise Cal.ai Developer Resources Pricing Sign in Get started Cal.com launches v6.5 The better way to schedule your meetings A fully customizable scheduling software for individuals, bus",
+      "artifactPaths": [
+        "artifacts/cal-20260529-192901/j1-land-p1-evaluator-s1.png"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j2-signup-path-p1-evaluator-s1",
+      "journeyId": "j2-signup-path",
+      "journeyName": "Start signup path",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "https://cal.com/",
+      "finalUrl": "https://cal.com/",
+      "outcome": "pass",
+      "durationMs": 1532,
+      "note": null,
+      "errorType": null,
+      "flaky": true,
+      "behavior": "continue",
+      "consoleErrors": [
+        "Fetch failed: Error: Key 'user.name' not found in response"
+      ],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Solutions Enterprise Cal.ai Developer Resources Pricing Sign in Get started Cal.com launches v6.5 The better way to schedule your meetings A fully customizable scheduling software for individuals, bus",
+      "artifactPaths": [
+        "artifacts/cal-20260529-192901/j2-signup-path-p1-evaluator-s1.png"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j2-signup-path-p1-evaluator-s2",
+      "journeyId": "j2-signup-path",
+      "journeyName": "Start signup path",
+      "personaId": "p1-evaluator",
+      "action": "click",
+      "requestedUrl": null,
+      "finalUrl": "https://cal.com/",
+      "outcome": "pass",
+      "durationMs": 381,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Solutions Enterprise Cal.ai Developer Resources Pricing Sign in Get started Cal.com launches v6.5 The better way to schedule your meetings A fully customizable scheduling software for individuals, bus",
+      "artifactPaths": [
+        "artifacts/cal-20260529-192901/j2-signup-path-p1-evaluator-s2.png"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j3-product-depth-p1-evaluator-s1",
+      "journeyId": "j3-product-depth",
+      "journeyName": "Explore product depth",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "https://cal.com/",
+      "finalUrl": "https://cal.com/",
+      "outcome": "pass",
+      "durationMs": 1399,
+      "note": null,
+      "errorType": null,
+      "flaky": true,
+      "behavior": "continue",
+      "consoleErrors": [
+        "Fetch failed: Error: Key 'user.name' not found in response"
+      ],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Solutions Enterprise Cal.ai Developer Resources Pricing Sign in Get started Cal.com launches v6.5 The better way to schedule your meetings A fully customizable scheduling software for individuals, bus",
+      "artifactPaths": [
+        "artifacts/cal-20260529-192901/j3-product-depth-p1-evaluator-s1.png"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j3-product-depth-p1-evaluator-s2",
+      "journeyId": "j3-product-depth",
+      "journeyName": "Explore product depth",
+      "personaId": "p1-evaluator",
+      "action": "click",
+      "requestedUrl": null,
+      "finalUrl": "https://cal.com/",
+      "outcome": "pass",
+      "durationMs": 329,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Solutions Enterprise Cal.ai Developer Resources Pricing Sign in Get started Cal.com launches v6.5 The better way to schedule your meetings A fully customizable scheduling software for individuals, bus",
+      "artifactPaths": [
+        "artifacts/cal-20260529-192901/j3-product-depth-p1-evaluator-s2.png"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j4-pricing-p1-evaluator-s1",
+      "journeyId": "j4-pricing",
+      "journeyName": "Pricing evaluation",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "https://cal.com/pricing",
+      "finalUrl": "https://cal.com/pricing",
+      "outcome": "pass",
+      "durationMs": 1310,
+      "note": null,
+      "errorType": null,
+      "flaky": true,
+      "behavior": "continue",
+      "consoleErrors": [
+        "Fetch failed: Error: Key 'user.name' not found in response"
+      ],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Solutions Enterprise Cal.ai Developer Resources Pricing Sign in Get started Pricing Choose your Cal.com subscription Start scheduling for free, with no usage limits. For collaborative features, choose",
+      "artifactPaths": [
+        "artifacts/cal-20260529-192901/j4-pricing-p1-evaluator-s1.png"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j5-return-nav-p1-evaluator-s1",
+      "journeyId": "j5-return-nav",
+      "journeyName": "Return visitor navigation",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "https://cal.com/pricing",
+      "finalUrl": "https://cal.com/pricing",
+      "outcome": "pass",
+      "durationMs": 1350,
+      "note": null,
+      "errorType": null,
+      "flaky": true,
+      "behavior": "continue",
+      "consoleErrors": [
+        "Fetch failed: Error: Key 'user.name' not found in response"
+      ],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Solutions Enterprise Cal.ai Developer Resources Pricing Sign in Get started Pricing Choose your Cal.com subscription Start scheduling for free, with no usage limits. For collaborative features, choose",
+      "artifactPaths": [
+        "artifacts/cal-20260529-192901/j5-return-nav-p1-evaluator-s1.png"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j5-return-nav-p1-evaluator-s2",
+      "journeyId": "j5-return-nav",
+      "journeyName": "Return visitor navigation",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "https://cal.com/",
+      "finalUrl": "https://cal.com/",
+      "outcome": "pass",
+      "durationMs": 1486,
+      "note": null,
+      "errorType": null,
+      "flaky": true,
+      "behavior": "continue",
+      "consoleErrors": [
+        "Fetch failed: Error: Key 'user.name' not found in response"
+      ],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Solutions Enterprise Cal.ai Developer Resources Pricing Sign in Get started Cal.com launches v6.5 The better way to schedule your meetings A fully customizable scheduling software for individuals, bus",
+      "artifactPaths": [
+        "artifacts/cal-20260529-192901/j5-return-nav-p1-evaluator-s2.png"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    }
+  ],
+  "issues": [
+    {
+      "id": "I1",
+      "runId": "cal-20260529-192901",
+      "severity": "P3",
+      "title": "Duplicate primary CTAs",
+      "detail": "Detected 5 similar signup CTAs \u2014 may confuse return visitors.",
+      "persona": "Daily operator",
+      "personaId": "p2-operator",
+      "journey": "Land and grasp value",
+      "journeyId": "j1-land",
+      "stepId": "j1-land-p1-evaluator-s1",
+      "dimension": "UI/UX",
+      "relatedDimensions": [],
+      "confidence": "hypothesis",
+      "owner": "frontend",
+      "recurring": 1,
+      "evidence": "Detected 5 similar signup CTAs \u2014 may confuse return visitors.",
+      "severityReason": "P3 from automated heuristics",
+      "suggestion": null,
+      "screenshotPath": "artifacts/cal-20260529-192901/j1-land-p1-evaluator-s1.png"
+    },
+    {
+      "id": "I2",
+      "runId": "cal-20260529-192901",
+      "severity": "P2",
+      "title": "Console errors on page",
+      "detail": "1 console error(s): Fetch failed: Error: Key 'user.name' not found in response",
+      "persona": "Daily operator",
+      "personaId": "p2-operator",
+      "journey": "Land and grasp value",
+      "journeyId": "j1-land",
+      "stepId": "j1-land-p1-evaluator-s1",
+      "dimension": "Functionality",
+      "relatedDimensions": [],
+      "confidence": "high",
+      "owner": "frontend",
+      "recurring": 1,
+      "evidence": "1 console error(s): Fetch failed: Error: Key 'user.name' not found in response",
+      "severityReason": "P2 from automated heuristics",
+      "suggestion": null,
+      "screenshotPath": "artifacts/cal-20260529-192901/j1-land-p1-evaluator-s1.png"
+    },
+    {
+      "id": "I3",
+      "runId": "cal-20260529-192901",
+      "severity": "P2",
+      "title": "Console noise spike across run",
+      "detail": "Captured 5 console error(s) and 0 warning(s) across canonical steps \u2014 review network-log and step artifacts.",
+      "persona": "Daily operator",
+      "personaId": "p2-operator",
+      "journey": "Land and grasp value",
+      "journeyId": "j1-land",
+      "stepId": "j1-land-p1-evaluator-s1",
+      "dimension": "Functionality",
+      "relatedDimensions": [],
+      "confidence": "high",
+      "owner": "backend",
+      "recurring": 1,
+      "evidence": "Captured 5 console error(s) and 0 warning(s) across canonical steps \u2014 review network-log and step artifacts.",
+      "severityReason": "P2 from automated heuristics",
+      "suggestion": null,
+      "screenshotPath": "artifacts/cal-20260529-192901/j1-land-p1-evaluator-s1.png"
+    }
+  ],
+  "delights": [
+    {
+      "id": "D1",
+      "runId": "cal-20260529-192901",
+      "title": "Clear navigation structure",
+      "quote": "Page has 92 links and 29 headings.",
+      "persona": "First-time evaluator",
+      "journey": "Land and grasp value",
+      "stepId": "j1-land-p1-evaluator-s1",
+      "marketingReady": true,
+      "confidence": "high"
+    },
+    {
+      "id": "D2",
+      "runId": "cal-20260529-192901",
+      "title": "Informative landing content",
+      "quote": "Page includes headings and substantive body copy for first-time evaluators.",
+      "persona": "First-time evaluator",
+      "journey": "Land and grasp value",
+      "stepId": "j1-land-p1-evaluator-s1",
+      "marketingReady": true,
+      "confidence": "high"
+    }
+  ],
+  "agents": [
+    {
+      "id": "ag_compl",
+      "runId": "cal-20260529-192901",
+      "name": "Compliance",
+      "role": "PII, auth boundary signals (Phase 2)",
+      "phase": "compliance",
+      "status": "idle",
+      "durationSec": 0,
+      "costUsd": 0,
+      "lastSummary": "Not enabled for this run."
+    },
+    {
+      "id": "ag_perf",
+      "runId": "cal-20260529-192901",
+      "name": "Performance",
+      "role": "Latency, Web Vitals (Phase 2)",
+      "phase": "performance",
+      "status": "idle",
+      "durationSec": 0,
+      "costUsd": 0,
+      "lastSummary": "Not enabled for this run."
+    }
+  ],
+  "matrix": [
+    {
+      "personaId": "p1-evaluator",
+      "journeyId": "j1-land",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p2-operator",
+      "journeyId": "j1-land",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p3-admin",
+      "journeyId": "j1-land",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p1-evaluator",
+      "journeyId": "j2-signup-path",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p2-operator",
+      "journeyId": "j2-signup-path",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p3-admin",
+      "journeyId": "j2-signup-path",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p1-evaluator",
+      "journeyId": "j3-product-depth",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p2-operator",
+      "journeyId": "j3-product-depth",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p3-admin",
+      "journeyId": "j3-product-depth",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p1-evaluator",
+      "journeyId": "j4-pricing",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p2-operator",
+      "journeyId": "j4-pricing",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p3-admin",
+      "journeyId": "j4-pricing",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p1-evaluator",
+      "journeyId": "j5-return-nav",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p2-operator",
+      "journeyId": "j5-return-nav",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p3-admin",
+      "journeyId": "j5-return-nav",
+      "grade": "pass"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "Functionality",
+      "score": 100,
+      "signal": "100% steps pass; 0 failures",
+      "automated": true
+    },
+    {
+      "name": "UI/UX",
+      "score": 100,
+      "signal": "0 unlabeled buttons; ~1402ms avg step",
+      "automated": true
+    },
+    {
+      "name": "Information",
+      "score": 100,
+      "signal": "0 sparse-content pages",
+      "automated": true
+    },
+    {
+      "name": "Performance",
+      "score": 95,
+      "signal": "~1402ms avg step",
+      "automated": true
+    },
+    {
+      "name": "Accessibility",
+      "score": 95,
+      "signal": "Phase 2 heuristic from step evidence",
+      "automated": false
+    },
+    {
+      "name": "Trust",
+      "score": 95,
+      "signal": "Phase 2 heuristic from step evidence",
+      "automated": false
+    },
+    {
+      "name": "Onboarding",
+      "score": 95,
+      "signal": "Phase 2 heuristic from step evidence",
+      "automated": false
+    },
+    {
+      "name": "Recovery",
+      "score": 95,
+      "signal": "Phase 2 heuristic from step evidence",
+      "automated": false
+    }
+  ],
+  "scorecardMd": "# Launch Rehearsal \u2014 Scorecard\n\n| Field | Value |\n|-------|--------|\n| **Run ID** | `cal-20260529-192901` |\n| **Date** | 2026-05-29 |\n| **Target** | https://cal.com |\n| **Product** | Cal.com (practice target) |\n| **Outcome** | complete |\n| **Duration** | 11s |\n\n---\n\n## Executive summary\n\n| | |\n|---|---|\n| **Readiness** | **Green** |\n| **Top blocker** | Duplicate primary CTAs |\n| **Top delight** | Clear navigation structure |\n| **Issues** | 1 |\n| **Delights** | 2 |\n\n---\n\n## Persona \u00d7 journey matrix\n\n| Journey | P1 First-time | P2 Daily | P3 Admin |\n|---------|--------|--------|--------|\n| **j1-land** Land and grasp value | **Pass** | **Pass** | **Pass** |\n| **j2-signup-path** Start signup path | **Pass** | **Pass** | **Pass** |\n| **j3-product-depth** Explore product depth | **Pass** | **Pass** | **Pass** |\n| **j4-pricing** Pricing evaluation | **Pass** | **Pass** | **Pass** |\n| **j5-return-nav** Return visitor navigation | **Pass** | **Pass** | **Pass** |\n\n---\n\n## Dimension rollup (automated subset)\n\n| Dimension | Score 1\u20135 | Signal |\n|-----------|-----------|--------|\n| Functionality | 5 | 100% steps pass; 0 failures |\n| UI/UX | 5 | 0 unlabeled buttons; ~1402ms avg step |\n| Information clarity | 5 | 0 sparse-content pages |\n\n---\n\n## Issues (evidence-bound)\n\n### P3\n\n| ID | Finding | Personas | Evidence |\n|----|---------|----------|----------|\n| **I1** | Duplicate primary CTAs (hypothesis) \u2014 Detected 5 similar signup CTAs \u2014 may confuse return visitors. | p2-operator | `j1-land-p1-evaluator-s1` |\n\n---\n\n## Delights & strengths (required)\n\n| ID | Delight | Personas | Evidence |\n|----|---------|----------|----------|\n| **D1** | Clear navigation structure \u2014 Page has 92 links and 29 headings. | p1-evaluator, p2-operator | `j1-land-p1-evaluator-s1` |\n| **D2** | Informative landing content \u2014 Page includes headings and substantive body copy for first-time evaluators. | p1-evaluator | `j1-land-p1-evaluator-s1` |\n\n---\n\n## Run log\n\n| Step | Journey | Action | Outcome | URL |\n|------|---------|--------|---------|-----|\n| `j1-land-p1-evaluator-s1` | j1-land | navigate | pass | https://cal.com/ |\n| `j2-signup-path-p1-evaluator-s1` | j2-signup-path | navigate | pass | https://cal.com/ |\n| `j2-signup-path-p1-evaluator-s2` | j2-signup-path | click | pass | https://cal.com/ |\n| `j3-product-depth-p1-evaluator-s1` | j3-product-depth | navigate | pass | https://cal.com/ |\n| `j3-product-depth-p1-evaluator-s2` | j3-product-depth | click | pass | https://cal.com/ |\n| `j4-pricing-p1-evaluator-s1` | j4-pricing | navigate | pass | https://cal.com/pricing |\n| `j5-return-nav-p1-evaluator-s1` | j5-return-nav | navigate | pass | https://cal.com/pricing |\n| `j5-return-nav-p1-evaluator-s2` | j5-return-nav | navigate | pass | https://cal.com/ |\n\n---\n\n*Generated by Launch Rehearsal CLI \u2014 product-agnostic heuristics. Findings require human review before production decisions.*\n",
+  "sitemapMd": "No sitemap \u2014 crawl disabled or not run.",
+  "sitemapPages": [],
+  "sitemapEdges": [],
+  "screenshots": [
+    {
+      "path": "artifacts/cal-20260529-192901/j1-land-p1-evaluator-s1.png",
+      "stepId": "j1-land-p1-evaluator-s1",
+      "label": "Land and grasp value"
+    },
+    {
+      "path": "artifacts/cal-20260529-192901/j2-signup-path-p1-evaluator-s1.png",
+      "stepId": "j2-signup-path-p1-evaluator-s1",
+      "label": "Start signup path"
+    },
+    {
+      "path": "artifacts/cal-20260529-192901/j2-signup-path-p1-evaluator-s2.png",
+      "stepId": "j2-signup-path-p1-evaluator-s2",
+      "label": "Start signup path"
+    },
+    {
+      "path": "artifacts/cal-20260529-192901/j3-product-depth-p1-evaluator-s1.png",
+      "stepId": "j3-product-depth-p1-evaluator-s1",
+      "label": "Explore product depth"
+    },
+    {
+      "path": "artifacts/cal-20260529-192901/j3-product-depth-p1-evaluator-s2.png",
+      "stepId": "j3-product-depth-p1-evaluator-s2",
+      "label": "Explore product depth"
+    },
+    {
+      "path": "artifacts/cal-20260529-192901/j4-pricing-p1-evaluator-s1.png",
+      "stepId": "j4-pricing-p1-evaluator-s1",
+      "label": "Pricing evaluation"
+    },
+    {
+      "path": "artifacts/cal-20260529-192901/j5-return-nav-p1-evaluator-s1.png",
+      "stepId": "j5-return-nav-p1-evaluator-s1",
+      "label": "Return visitor navigation"
+    },
+    {
+      "path": "artifacts/cal-20260529-192901/j5-return-nav-p1-evaluator-s2.png",
+      "stepId": "j5-return-nav-p1-evaluator-s2",
+      "label": "Return visitor navigation"
+    }
+  ],
+  "annotations": [],
+  "personas": [
+    {
+      "id": "p1-evaluator",
+      "name": "First-time evaluator",
+      "role": "prospect / founder",
+      "goal": "Grasp product value in one scroll",
+      "patience": "medium"
+    },
+    {
+      "id": "p2-operator",
+      "name": "Daily operator",
+      "role": "power user",
+      "goal": "Find pricing and signup quickly on repeat visits",
+      "patience": "medium"
+    },
+    {
+      "id": "p3-admin",
+      "name": "Admin / buyer",
+      "role": "team admin",
+      "goal": "Compare plans and enterprise signals",
+      "patience": "medium"
+    }
+  ],
+  "journeys": [
+    {
+      "id": "j1-land",
+      "name": "Land and grasp value",
+      "steps": 1,
+      "category": "dashboard"
+    },
+    {
+      "id": "j2-signup-path",
+      "name": "Start signup path",
+      "steps": 2,
+      "category": "dashboard"
+    },
+    {
+      "id": "j3-product-depth",
+      "name": "Explore product depth",
+      "steps": 2,
+      "category": "dashboard"
+    },
+    {
+      "id": "j4-pricing",
+      "name": "Pricing evaluation",
+      "steps": 1,
+      "category": "dashboard"
+    },
+    {
+      "id": "j5-return-nav",
+      "name": "Return visitor navigation",
+      "steps": 2,
+      "category": "dashboard"
+    }
+  ],
+  "workflows": [],
+  "suggestedJourneys": [],
+  "narrative": {
+    "executiveSummary": "Cal.com (practice target) at https://cal.com rehearsed as **Green** readiness. 5/5 canonical steps passed (100%). 3 issue(s) and 2 delight(s) recorded. Primary concern: Duplicate primary CTAs. Bright spot: Clear navigation structure.",
+    "forFounders": "**Launch readiness: Green** \u2014 suitable for a confident partner readout.",
+    "forEngineering": "Run `cal-20260529-192901` \u00b7 11s \u00b7 8 step records (incl. viewport/seed replays).\nNotable P2: Console errors on page; Console noise spike across run.",
+    "suggestedQuestions": [
+      "What polish items (P3) are worth doing before GA?",
+      "Which journey had the worst persona \u00d7 path outcome?",
+      "Did any step show flaky behavior across seeds or viewports?"
+    ],
+    "source": "template",
+    "readinessBand": "Green",
+    "issueCount": 3,
+    "delightCount": 2
+  }
+}

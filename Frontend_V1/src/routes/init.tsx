@@ -1,19 +1,64 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageHeader, Panel, Chip } from "@/components/ui-bits";
-import { useInitWizard, useApiHealth, useSaveConfig } from "@/lib/api/hooks";
+import { useInitWizard, useApiHealth, useSaveConfig, useTriggerJob } from "@/lib/api/hooks";
 import { useEffect, useMemo, useState } from "react";
 import { api } from "@/lib/api/client";
 import { toast } from "sonner";
 import { JourneyDraftPanel } from "@/components/journey-draft-panel";
 import { PersonaStudioPanel, type PersonaDraft } from "@/components/persona-studio-panel";
+import { ProductIntelligencePanel } from "@/components/product-intelligence-panel";
+import { JourneyDiscoveryPanel } from "@/components/journey-discovery-panel";
 import { setSelectedConfigId } from "@/lib/selected-config";
 import { useTestGroup } from "@/hooks/use-test-group";
 import { groupInitPreset } from "@/lib/test-groups";
+import { getWorkspace, type WorkspaceRecord } from "@/lib/workspace";
+import { Play, Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/init")({
   head: () => ({ meta: [{ title: "Init wizard — Launch Rehearsal" }] }),
   component: InitPage,
 });
+
+function WorkspaceLaunchPanel({ workspace, live }: { workspace: WorkspaceRecord; live: boolean }) {
+  const trigger = useTriggerJob();
+  return (
+    <Panel className="p-6 flex flex-wrap items-center justify-between gap-4 border-primary/20 bg-primary/3">
+      <div>
+        <div className="font-medium">Ready to run your first rehearsal?</div>
+        <p className="text-sm text-muted-foreground mt-1">
+          Your personas and journeys are configured for{" "}
+          <span className="font-mono text-foreground text-xs">{workspace.targetUrl}</span>. Start the
+          TryLapse CLI then hit run.
+        </p>
+        <p className="text-[11px] text-muted-foreground mt-1 font-mono">
+          rehearse serve -o artifacts --port 8765
+        </p>
+      </div>
+      <div className="flex items-center gap-3">
+        <Link
+          to="/$workspaceSlug/dashboard"
+          params={{ workspaceSlug: workspace.slug }}
+          className="text-xs px-3 py-1.5 rounded-md border border-border hover:bg-surface-2"
+        >
+          Go to dashboard
+        </Link>
+        <button
+          type="button"
+          disabled={!live || trigger.isPending}
+          onClick={() => trigger.mutate({ mode: "run" })}
+          className="flex items-center gap-1.5 text-xs px-4 py-2 rounded-md bg-primary text-primary-foreground font-medium disabled:opacity-50"
+        >
+          {trigger.isPending ? (
+            <Loader2 className="size-3.5 animate-spin" />
+          ) : (
+            <Play className="size-3.5" />
+          )}
+          {trigger.isPending ? "Queuing…" : "Run rehearsal"}
+        </button>
+      </div>
+    </Panel>
+  );
+}
 
 function isLocalhostUrl(url: string): boolean {
   try {
@@ -103,11 +148,15 @@ function InitPage() {
   const { data: wizard } = useInitWizard();
   const saveConfig = useSaveConfig();
   const { isSignedIn, group, resolvedConfigId } = useTestGroup();
+  const userWorkspace = getWorkspace();
+  const workspaceConfigId = userWorkspace?.configPath
+    ? (userWorkspace.configPath.split("/").pop()?.replace(/\.ya?ml$/, "") ?? null)
+    : null;
   const allConfigs = wizard?.configs ?? [];
   const exampleConfigs = allConfigs.slice(0, 8);
   const hiddenConfigCount = Math.max(0, allConfigs.length - exampleConfigs.length);
   const dogfoodDefault =
-    (wizard?.dogfood as { targetUrl?: string } | undefined)?.targetUrl ?? "http://127.0.0.1:8081";
+    ((wizard as unknown as { dogfood?: { targetUrl?: string } } | undefined)?.dogfood?.targetUrl) ?? "http://127.0.0.1:8081";
 
   const [targetUrl, setTargetUrl] = useState("");
   const [productName, setProductName] = useState("");
@@ -133,17 +182,31 @@ function InitPage() {
     "p2-operator": true,
     "p3-admin": true,
   });
+
+  const CORE_PERSONA_META: Record<string, { name: string; role: string }> = {
+    "p1-evaluator": { name: "First-time evaluator", role: "prospect / new user" },
+    "p2-operator": { name: "Daily operator", role: "power user" },
+    "p3-admin": { name: "Admin / buyer", role: "IT admin" },
+  };
   const [stagedExtras, setStagedExtras] = useState<PersonaDraft[]>([]);
 
   const localhostTarget = useMemo(() => isLocalhostUrl(targetUrl), [targetUrl]);
   const preflightNeedsLocalhost = selfTest || allowLocalhost || localhostTarget;
 
   useEffect(() => {
-    const defaultUrl = wizard?.defaults?.targetUrl;
-    if (typeof defaultUrl === "string" && defaultUrl && !targetUrl) {
-      setTargetUrl(defaultUrl);
+    // Workspace users: seed from their account record (takes priority)
+    if (userWorkspace?.targetUrl && !targetUrl) {
+      setTargetUrl(userWorkspace.targetUrl);
+    } else {
+      const defaultUrl = wizard?.defaults?.targetUrl;
+      if (typeof defaultUrl === "string" && defaultUrl && !targetUrl) {
+        setTargetUrl(defaultUrl);
+      }
     }
-  }, [wizard?.defaults?.targetUrl, targetUrl]);
+    if (userWorkspace?.productName && !productName) {
+      setProductName(userWorkspace.productName);
+    }
+  }, [userWorkspace?.targetUrl, userWorkspace?.productName, wizard?.defaults?.targetUrl, targetUrl, productName]);
 
   useEffect(() => {
     if (selfTest) {
@@ -226,18 +289,22 @@ function InitPage() {
   ];
 
   const dogfoodHint =
-    (wizard?.dogfood as { hint?: string } | undefined)?.hint ??
+    (wizard as unknown as { dogfood?: { hint?: string } } | undefined)?.dogfood?.hint ??
     "Paste this dashboard URL to rehearse Launch Rehearsal with Launch Rehearsal.";
 
   return (
     <div>
       <PageHeader
-        eyebrow="configure"
-        title="rehearse init wizard"
-        description={wizard?.cliHint ?? "Scaffold rehearse.yaml — mirrors CLI init flow."}
+        eyebrow={userWorkspace ? userWorkspace.slug : "configure"}
+        title={userWorkspace ? `Set up ${userWorkspace.productName || userWorkspace.name}` : "rehearse init wizard"}
+        description={
+          userWorkspace
+            ? `Analyze your product, configure personas, and discover journeys for ${userWorkspace.targetUrl}.`
+            : (wizard?.cliHint ?? "Scaffold rehearse.yaml — mirrors CLI init flow.")
+        }
       />
       <div className="p-8 max-w-[900px] space-y-6">
-        {isSignedIn && (
+        {isSignedIn && !userWorkspace && (
           <Panel className="p-6 space-y-3 border-violet/30 bg-violet/5">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
@@ -263,7 +330,7 @@ function InitPage() {
           </Panel>
         )}
 
-        <Panel className="p-6 space-y-4 border-primary/30 bg-primary/5">
+        {!userWorkspace && <Panel className="p-6 space-y-4 border-primary/30 bg-primary/5">
           <div>
             <div className="font-medium">Dogfood this dashboard</div>
             <p className="text-sm text-muted-foreground mt-1">{dogfoodHint}</p>
@@ -295,9 +362,9 @@ function InitPage() {
             Requires Frontend_V1 (npm run dev) and rehearse serve. Config sets allow_localhost and
             journeys for /, /runs, /compare, /init, /runner.
           </p>
-        </Panel>
+        </Panel>}
 
-        <Panel className="p-6 space-y-4">
+        {!userWorkspace && <Panel className="p-6 space-y-4">
           <div>
             <label htmlFor="init-target-url" className="text-xs text-muted-foreground">
               Target URL
@@ -415,13 +482,16 @@ function InitPage() {
               </label>
             ))}
           </fieldset>
-        </Panel>
+        </Panel>}
+
+        {/* Product Intelligence — analyze target URL, build editable product model */}
+        <ProductIntelligencePanel live={!!live} targetUrl={targetUrl} productName={productName} />
 
         <PersonaStudioPanel
           live={!!live}
           targetUrl={targetUrl}
           productName={productName}
-          configId={undefined}
+          configId={workspaceConfigId ?? undefined}
           personaLens={personaLens}
           onPersonaLensChange={setPersonaLens}
           coreEnabled={coreEnabled}
@@ -429,15 +499,40 @@ function InitPage() {
             setCoreEnabled((prev) => ({ ...prev, [id]: enabled }))
           }
           stagedExtras={stagedExtras}
-          onStageExtra={(p) =>
-            setStagedExtras((prev) => (prev.some((x) => x.id === p.id) ? prev : [...prev, p]))
-          }
+          onStageExtra={(p) => {
+            setStagedExtras((prev) => {
+              if (prev.some((x) => x.id === p.id)) return prev;
+              // Auto-trigger journey discovery for new persona (non-blocking)
+              if (live) {
+                api.discoverJourneysForPersona(p).catch(() => {});
+                toast.info(`Discovering journeys for ${p.name}…`, { duration: 2500 });
+              }
+              return [...prev, p];
+            });
+          }}
           onRemoveStaged={(id) => setStagedExtras((prev) => prev.filter((p) => p.id !== id))}
+        />
+
+        {/* Journey Discovery — each persona autonomously discovers its own journeys */}
+        <JourneyDiscoveryPanel
+          live={!!live}
+          configId={workspaceConfigId}
+          personas={[
+            ...Object.keys(coreEnabled)
+              .filter((id) => coreEnabled[id] !== false)
+              .map((id) => ({
+                id,
+                name: CORE_PERSONA_META[id]?.name ?? id,
+                role: CORE_PERSONA_META[id]?.role ?? id,
+                goals: [],
+              })),
+            ...stagedExtras,
+          ]}
         />
 
         <JourneyDraftPanel live={!!live} targetUrl={targetUrl} />
 
-        <Panel className="p-6 space-y-4">
+        {!userWorkspace && <Panel className="p-6 space-y-4">
           <div>
             <div className="font-display font-semibold">Journey recorder (Phase C)</div>
             <p className="text-sm text-muted-foreground mt-1">
@@ -445,9 +540,9 @@ function InitPage() {
             </p>
           </div>
           <RecorderCompile live={!!live} />
-        </Panel>
+        </Panel>}
 
-        <Panel className="p-6">
+        {!userWorkspace && <Panel className="p-6">
           <div className="text-xs text-muted-foreground mb-4">Wizard steps</div>
           <ol className="space-y-4">
             {steps.map((s, i) => (
@@ -460,16 +555,18 @@ function InitPage() {
               </li>
             ))}
           </ol>
-        </Panel>
+        </Panel>}
 
-        <Panel className="p-6">
-          <div className="text-xs text-muted-foreground mb-2">Defaults from workspace</div>
-          <pre className="text-[11px] font-mono bg-surface-2 border border-border rounded-lg p-4 overflow-x-auto">
-            {JSON.stringify(wizard?.defaults ?? {}, null, 2)}
-          </pre>
-        </Panel>
+        {!userWorkspace && (
+          <Panel className="p-6">
+            <div className="text-xs text-muted-foreground mb-2">Defaults from workspace</div>
+            <pre className="text-[11px] font-mono bg-surface-2 border border-border rounded-lg p-4 overflow-x-auto">
+              {JSON.stringify(wizard?.defaults ?? {}, null, 2)}
+            </pre>
+          </Panel>
+        )}
 
-        {allConfigs.length > 0 && (
+        {!userWorkspace && allConfigs.length > 0 && (
           <Panel className="p-6">
             <div className="text-xs text-muted-foreground mb-3">Start from example config</div>
             <ul className="font-mono text-xs space-y-1">
@@ -486,22 +583,26 @@ function InitPage() {
           </Panel>
         )}
 
-        <Panel className="p-6 flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <div className="font-medium">Generate & write YAML</div>
-            <div className="text-sm text-muted-foreground mt-1">
-              {wizard?.writeHint ?? "POST /api/configs — writes artifacts/configs/{slug}.yaml"}
+        {userWorkspace ? (
+          <WorkspaceLaunchPanel workspace={userWorkspace} live={!!live} />
+        ) : (
+          <Panel className="p-6 flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <div className="font-medium">Generate & write YAML</div>
+              <div className="text-sm text-muted-foreground mt-1">
+                {wizard?.writeHint ?? "POST /api/configs — writes artifacts/configs/{slug}.yaml"}
+              </div>
             </div>
-          </div>
-          <button
-            type="button"
-            disabled={!live || !targetUrl.trim() || saveConfig.isPending}
-            onClick={() => handleGenerate()}
-            className="text-xs px-4 py-2 rounded-md bg-primary text-primary-foreground font-medium disabled:opacity-50"
-          >
-            {saveConfig.isPending ? "Writing…" : "Generate & write YAML"}
-          </button>
-        </Panel>
+            <button
+              type="button"
+              disabled={!live || !targetUrl.trim() || saveConfig.isPending}
+              onClick={() => handleGenerate()}
+              className="text-xs px-4 py-2 rounded-md bg-primary text-primary-foreground font-medium disabled:opacity-50"
+            >
+              {saveConfig.isPending ? "Writing…" : "Generate & write YAML"}
+            </button>
+          </Panel>
+        )}
       </div>
     </div>
   );

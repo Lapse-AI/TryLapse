@@ -27,7 +27,24 @@ def _replay_journey_from_start(
     viewport: str,
 ) -> list[StepSnapshot]:
     """Run all steps for one journey; return snapshots for this seed/loop/viewport."""
+    from rehearse.llm import llm_enabled
+
+    # Look up the persona dict for the behavioral judge
+    persona_obj = next(
+        ({"id": p.id, "name": p.name, "role": p.role, "goals": list(p.goals)}
+         for p in ctx.config.personas if p.id == primary),
+        {"id": primary, "name": primary, "role": "user", "goals": []},
+    )
+    # Try to get discovered journey metadata (behavioral intent, failure signals)
+    discovered = ctx.metadata.get("discovered_journeys", {}).get(primary, {})
+    journey_meta = next(
+        (j for j in (discovered.get("journeys") or []) if j.get("id") == journey.id),
+        {"name": journey.name, "behavioral_intent": "", "failure_signals": []},
+    )
+
+    use_behavioral_judge = llm_enabled() or ctx.metadata.get("force_llm")
     snaps: list[StepSnapshot] = []
+    step_dicts: list[dict] = []
 
     for i, step in enumerate(journey.steps):
         if time.perf_counter() > deadline:
@@ -42,11 +59,53 @@ def _replay_journey_from_start(
             viewport=viewport,
         )
         snap.seed_index = seed
+
+        # Behavioral judge: LLM evaluates each step from persona's perspective
+        if use_behavioral_judge and seed == 1 and loop == 1 and viewport == "desktop":
+            try:
+                from rehearse.behavioral_judge import judge_step
+                step_dict = {
+                    "action": step.action,
+                    "finalUrl": snap.final_url,
+                    "requestedUrl": snap.requested_url,
+                    "outcome": snap.outcome,
+                    "bodyTextExcerpt": snap.body_text_excerpt,
+                    "durationMs": snap.duration_ms,
+                    "consoleErrors": snap.console_errors,
+                    "networkFailures": snap.network_failures,
+                    "headingCount": snap.heading_count,
+                    "linkCount": snap.link_count,
+                    "unlabeledButtonCount": snap.unlabeled_button_count,
+                    "expected_outcome": getattr(step, "expected_outcome", ""),
+                }
+                verdict = judge_step(step_dict, persona=persona_obj, journey=journey_meta)
+                snap.behavioral_verdict = verdict.get("behavioral_verdict")
+                snap.behavioral_friction = verdict.get("friction_signals") or []
+                snap.behavioral_ux_concerns = verdict.get("ux_concerns") or []
+                snap.chatbot_quality = verdict.get("chatbot_quality")
+                step_dicts.append({**step_dict, **verdict})
+            except Exception:
+                step_dicts.append({"action": step.action, "outcome": snap.outcome})
+        else:
+            step_dicts.append({"action": step.action, "outcome": snap.outcome})
+
         snaps.append(snap)
         ctx.evidence.add_step(snap)
 
         if step.action == "navigate" and step.url and i == 0 and seed > 1:
             pass
+
+    # Journey-level behavioral synthesis (first seed, desktop only)
+    if use_behavioral_judge and seed == 1 and loop == 1 and viewport == "desktop" and step_dicts:
+        try:
+            from rehearse.behavioral_judge import judge_journey
+            step_verdicts = [{"behavioral_verdict": s.get("behavioral_verdict", "pass"),
+                              "note": s.get("note", "")} for s in step_dicts]
+            jverdict = judge_journey(step_dicts, step_verdicts, persona=persona_obj, journey=journey_meta)
+            ctx.metadata.setdefault("behavioral_journeys", {})[f"{journey.id}:{primary}"] = jverdict
+        except Exception:
+            pass
+
     return snaps
 
 

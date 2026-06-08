@@ -13,19 +13,33 @@
     "readinessBand": "Green",
     "status": "ready",
     "blockers": 0,
-    "issues": 5,
-    "delights": 7,
+    "issues": 2,
+    "delights": 2,
     "pages": 16,
+    "pagesCrawled": 16,
     "stepCount": 8,
-    "agentCost": 0.0,
+    "agentCost": 0.1105,
+    "costEstimate": {
+      "usd": 0.1105,
+      "source": "heuristic",
+      "inputTokens": null,
+      "outputTokens": null,
+      "totalTokens": null,
+      "durationSec": 45,
+      "agentsRun": 0
+    },
     "outcome": "complete",
-    "configHash": "97bd91",
+    "configHash": "2d7bed",
+    "agentsRun": 0,
     "authAttempted": true,
     "authOutcome": "success",
     "llmEnabled": false,
     "crawlEnabled": true,
     "orphans": 0,
-    "authGated": 0
+    "authGated": 0,
+    "networkLogPath": null,
+    "webVitalsPath": null,
+    "experiment": null
   },
   "steps": [
     {
@@ -39,14 +53,21 @@
       "outcome": "pass",
       "durationMs": 1589,
       "note": null,
+      "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
+      "consoleWarnings": [],
       "networkFailures": [],
+      "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
         "artifacts/enterprise-20260530-234459/j1-deep-link-p1-evaluator-s1.png",
         "artifacts/enterprise-20260530-234459/j1-deep-link-p1-evaluator-s1.txt"
-      ]
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
     },
     {
       "stepId": "j2-primary-list-p1-evaluator-s1",
@@ -59,14 +80,21 @@
       "outcome": "pass",
       "durationMs": 1619,
       "note": null,
+      "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
+      "consoleWarnings": [],
       "networkFailures": [],
+      "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
         "artifacts/enterprise-20260530-234459/j2-primary-list-p1-evaluator-s1.png",
         "artifacts/enterprise-20260530-234459/j2-primary-list-p1-evaluator-s1.txt"
-      ]
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
     },
     {
       "stepId": "j2-primary-list-p1-evaluator-s2",
@@ -79,14 +107,21 @@
       "outcome": "pass",
       "durationMs": 2079,
       "note": null,
+      "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
+      "consoleWarnings": [],
       "networkFailures": [],
+      "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
         "artifacts/enterprise-20260530-234459/j2-primary-list-p1-evaluator-s2.png",
         "artifacts/enterprise-20260530-234459/j2-primary-list-p1-evaluator-s2.txt"
-      ]
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
     },
     {
       "stepId": "j3-secondary-module-p1-evaluator-s1",
@@ -99,14 +134,21 @@
       "outcome": "pass",
       "durationMs": 1331,
       "note": null,
+      "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
+      "consoleWarnings": [],
       "networkFailures": [],
+      "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Analytics Total Profiles 1809 candidates in the database Avg. Experience (Est.) 10 years estim",
       "artifactPaths": [
         "artifacts/enterprise-20260530-234459/j3-secondary-module-p1-evaluator-s1.png",
         "artifacts/enterprise-20260530-234459/j3-secondary-module-p1-evaluator-s1.txt"
-      ]
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
     },
     {
       "stepId": "j4-search-surface-p1-evaluator-s1",
@@ -119,14 +161,21 @@
       "outcome": "pass",
       "durationMs": 635,
       "note": null,
+      "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
+      "consoleWarnings": [],
       "networkFailures": [],
+      "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com AI Search AI Candidate Search Ask questions about candidates in natural language. Powered by A",
       "artifactPaths": [
         "artifacts/enterprise-20260530-234459/j4-search-surface-p1-evaluator-s1.png",
         "artifacts/enterprise-20260530-234459/j4-search-surface-p1-evaluator-s1.txt"
-      ]
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
     },
     {
       "stepId": "j5-admin-boundary-p1-evaluator-s1",
@@ -139,14 +188,21 @@
       "outcome": "pass",
       "durationMs": 682,
       "note": null,
+      "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
+      "consoleWarnings": [],
       "networkFailures": [],
+      "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Admin Admin Dashboard Manage file updates and system operations File Update Processor Process ",
       "artifactPaths": [
         "artifacts/enterprise-20260530-234459/j5-admin-boundary-p1-evaluator-s1.png",
         "artifacts/enterprise-20260530-234459/j5-admin-boundary-p1-evaluator-s1.txt"
-      ]
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
     },
     {
       "stepId": "auto-j1-dashboard-p1-evaluator-s1",
@@ -159,14 +215,21 @@
       "outcome": "pass",
       "durationMs": 675,
       "note": null,
+      "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
+      "consoleWarnings": [],
       "networkFailures": [],
+      "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Resume Parser Resume Parser Parse resumes using Gemini AI with intelligent rate limit handling",
       "artifactPaths": [
         "artifacts/enterprise-20260530-234459/auto-j1-dashboard-p1-evaluator-s1.png",
         "artifacts/enterprise-20260530-234459/auto-j1-dashboard-p1-evaluator-s1.txt"
-      ]
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
     },
     {
       "stepId": "auto-j5-explore-p1-evaluator-s1",
@@ -179,14 +242,21 @@
       "outcome": "pass",
       "durationMs": 835,
       "note": null,
+      "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
+      "consoleWarnings": [],
       "networkFailures": [],
+      "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Argyle Analytics Back to Database Gursharan Singh #49, City Enclave, Manakwal, Ludhiana - 1411",
       "artifactPaths": [
         "artifacts/enterprise-20260530-234459/auto-j5-explore-p1-evaluator-s1.png",
         "artifacts/enterprise-20260530-234459/auto-j5-explore-p1-evaluator-s1.txt"
-      ]
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
     }
   ],
   "issues": [
@@ -194,99 +264,45 @@
       "id": "I1",
       "runId": "enterprise-20260530-234459",
       "severity": "P2",
-      "title": "Icon-only or unlabeled buttons",
-      "detail": "1 button(s) lack accessible name on page.",
-      "persona": "Daily operator",
-      "personaId": "p2-operator",
-      "journey": "Deep link to primary surface",
-      "journeyId": "j1-deep-link",
-      "stepId": "j1-deep-link-p1-evaluator-s1",
-      "dimension": "Functionality",
+      "title": "Form inputs missing labels",
+      "detail": "1 of 1 inputs lack label, aria-label, or placeholder.",
+      "persona": "First-time evaluator",
+      "personaId": "p1-evaluator",
+      "journey": "auto-j1-dashboard",
+      "journeyId": "auto-j1-dashboard",
+      "stepId": "auto-j1-dashboard-p1-evaluator-s1",
+      "dimension": "Accessibility",
+      "relatedDimensions": [
+        "UI/UX"
+      ],
       "confidence": "high",
       "owner": "frontend",
       "recurring": 1,
-      "evidence": "1 button(s) lack accessible name on page.",
+      "evidence": "1 of 1 inputs lack label, aria-label, or placeholder.",
       "severityReason": "P2 from automated heuristics",
       "suggestion": null,
-      "screenshotPath": "artifacts/enterprise-20260530-234459/j1-deep-link-p1-evaluator-s1.png"
+      "screenshotPath": "artifacts/enterprise-20260530-234459/auto-j1-dashboard-p1-evaluator-s1.png"
     },
     {
       "id": "I2",
       "runId": "enterprise-20260530-234459",
       "severity": "P2",
-      "title": "Form inputs missing labels",
-      "detail": "1 of 9 inputs lack label, aria-label, or placeholder.",
-      "persona": "First-time evaluator",
-      "personaId": "p1-evaluator",
-      "journey": "Deep link to primary surface",
-      "journeyId": "j1-deep-link",
-      "stepId": "j1-deep-link-p1-evaluator-s1",
-      "dimension": "Functionality",
-      "confidence": "high",
-      "owner": "frontend",
-      "recurring": 1,
-      "evidence": "1 of 9 inputs lack label, aria-label, or placeholder.",
-      "severityReason": "P2 from automated heuristics",
-      "suggestion": null,
-      "screenshotPath": "artifacts/enterprise-20260530-234459/j1-deep-link-p1-evaluator-s1.png"
-    },
-    {
-      "id": "I3",
-      "runId": "enterprise-20260530-234459",
-      "severity": "P3",
-      "title": "Unlabeled navigation button on dashboard",
-      "detail": "The dashboard has 1 unlabeled button, which may confuse first-time users about its function, especially when trying to navigate from a shared link.",
-      "persona": "First-time evaluator",
-      "personaId": "p1-evaluator",
-      "journey": "Deep link to primary surface",
-      "journeyId": "j1-deep-link",
-      "stepId": "j1-deep-link-p1-evaluator-s1",
-      "dimension": "Functionality",
-      "confidence": "high",
-      "owner": "frontend",
-      "recurring": 1,
-      "evidence": "The dashboard has 1 unlabeled button, which may confuse first-time users about its function, especially when trying to navigate from a shared link.",
-      "severityReason": "P3 from automated heuristics",
-      "suggestion": null,
-      "screenshotPath": "artifacts/enterprise-20260530-234459/j1-deep-link-p1-evaluator-s1.png"
-    },
-    {
-      "id": "I4",
-      "runId": "enterprise-20260530-234459",
-      "severity": "P3",
-      "title": "Unlabeled button on candidate database page",
-      "detail": "The database page has one unlabeled button. For a daily operator relying on efficient navigation, this button's purpose is unclear, potentially causing confusion or extra clicks.",
+      "title": "Icon-only or unlabeled buttons",
+      "detail": "3 button(s) lack accessible name across 3 step(s).",
       "persona": "Daily operator",
       "personaId": "p2-operator",
       "journey": "Deep link to primary surface",
       "journeyId": "j1-deep-link",
       "stepId": "j1-deep-link-p1-evaluator-s1",
-      "dimension": "Functionality",
+      "dimension": "UI/UX",
+      "relatedDimensions": [
+        "Accessibility"
+      ],
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
-      "evidence": "The database page has one unlabeled button. For a daily operator relying on efficient navigation, this button's purpose is unclear, potentially causing confusion or extra clicks.",
-      "severityReason": "P3 from automated heuristics",
-      "suggestion": null,
-      "screenshotPath": "artifacts/enterprise-20260530-234459/j1-deep-link-p1-evaluator-s1.png"
-    },
-    {
-      "id": "I5",
-      "runId": "enterprise-20260530-234459",
-      "severity": "P3",
-      "title": "Unlabeled button on database page",
-      "detail": "One button on the database page lacks an accessible label, which may hinder screen reader users and reduce trust in accessibility compliance.",
-      "persona": "Admin / buyer",
-      "personaId": "p3-admin",
-      "journey": "Deep link to primary surface",
-      "journeyId": "j1-deep-link",
-      "stepId": "j1-deep-link-p1-evaluator-s1",
-      "dimension": "Functionality",
-      "confidence": "high",
-      "owner": "frontend",
-      "recurring": 1,
-      "evidence": "One button on the database page lacks an accessible label, which may hinder screen reader users and reduce trust in accessibility compliance.",
-      "severityReason": "P3 from automated heuristics",
+      "recurring": 3,
+      "evidence": "3 button(s) lack accessible name across 3 step(s).",
+      "severityReason": "P2 from automated heuristics",
       "suggestion": null,
       "screenshotPath": "artifacts/enterprise-20260530-234459/j1-deep-link-p1-evaluator-s1.png"
     }
@@ -296,11 +312,12 @@
       "id": "D1",
       "runId": "enterprise-20260530-234459",
       "title": "Clear navigation structure",
-      "quote": "Page has 16 links and 2 headings.",
+      "quote": "Page has 6 links and 1 headings.",
       "persona": "First-time evaluator",
-      "journey": "Deep link to primary surface",
-      "stepId": "j1-deep-link-p1-evaluator-s1",
-      "marketingReady": true
+      "journey": "auto-j1-dashboard",
+      "stepId": "auto-j1-dashboard-p1-evaluator-s1",
+      "marketingReady": true,
+      "confidence": "high"
     },
     {
       "id": "D2",
@@ -308,252 +325,13 @@
       "title": "Informative landing content",
       "quote": "Page includes headings and substantive body copy for first-time evaluators.",
       "persona": "First-time evaluator",
-      "journey": "Deep link to primary surface",
-      "stepId": "j1-deep-link-p1-evaluator-s1",
-      "marketingReady": true
-    },
-    {
-      "id": "D3",
-      "runId": "enterprise-20260530-234459",
-      "title": "Interactive forms discovered",
-      "quote": "1 pages with forms \u2014 workflow automation candidate.",
-      "persona": "First-time evaluator",
-      "journey": "unknown",
-      "stepId": "crawl-graph",
-      "marketingReady": true
-    },
-    {
-      "id": "D4",
-      "runId": "enterprise-20260530-234459",
-      "title": "Multi-workflow product surface",
-      "quote": "Discovered workflow types: admin, dashboard, search.",
-      "persona": "First-time evaluator",
-      "journey": "unknown",
-      "stepId": "workflow-graph",
-      "marketingReady": true
-    },
-    {
-      "id": "D5",
-      "runId": "enterprise-20260530-234459",
-      "title": "Fast interactions for repeat tasks",
-      "quote": "8 steps completed under 3s.",
-      "persona": "Daily operator",
-      "journey": "Deep link to primary surface",
-      "stepId": "j1-deep-link-p1-evaluator-s1",
-      "marketingReady": true
-    },
-    {
-      "id": "D6",
-      "runId": "enterprise-20260530-234459",
-      "title": "Fast page loads from shared link",
-      "quote": "The deep link to /database loaded in 1.6 seconds, providing a quick entry to the primary workflow.",
-      "persona": "First-time evaluator",
-      "journey": "Deep link to primary surface",
-      "stepId": "j1-deep-link-p1-evaluator-s1",
-      "marketingReady": true
-    },
-    {
-      "id": "D7",
-      "runId": "enterprise-20260530-234459",
-      "title": "Clear user identity display",
-      "quote": "The dashboard prominently shows the logged-in user's email ('Logged in as: 0sparsh2@gmail.com'), providing a strong trust signal for admin verification.",
-      "persona": "Admin / buyer",
-      "journey": "Deep link to primary surface",
-      "stepId": "j1-deep-link-p1-evaluator-s1",
-      "marketingReady": true
+      "journey": "auto-j1-dashboard",
+      "stepId": "auto-j1-dashboard-p1-evaluator-s1",
+      "marketingReady": true,
+      "confidence": "high"
     }
   ],
   "agents": [
-    {
-      "id": "crawler",
-      "runId": "enterprise-20260530-234459",
-      "name": "crawler",
-      "role": "Site structure discovery",
-      "phase": "crawl",
-      "status": "done",
-      "durationSec": 0,
-      "costUsd": 0.0,
-      "lastSummary": "Crawled 16 pages; 0 auth-gated; 0 orphans",
-      "findingsCount": 0,
-      "delightsCount": 0,
-      "handoff": {
-        "page_count": 16,
-        "hub_paths": [
-          "/database",
-          "/",
-          "/admin",
-          "/ai-search",
-          "/analytics"
-        ]
-      }
-    },
-    {
-      "id": "workflow",
-      "runId": "enterprise-20260530-234459",
-      "name": "workflow",
-      "role": "Workflow & journey planning",
-      "phase": "workflow",
-      "status": "done",
-      "durationSec": 0,
-      "costUsd": 0.0,
-      "lastSummary": "Detected workflow types: admin, dashboard, search",
-      "findingsCount": 0,
-      "delightsCount": 1,
-      "handoff": {
-        "workflow_types": [
-          "admin",
-          "dashboard",
-          "search"
-        ],
-        "suggested_journeys": 5,
-        "auto_journeys_added": [
-          "auto-j1-dashboard",
-          "auto-j5-explore"
-        ]
-      }
-    },
-    {
-      "id": "journey-runner",
-      "runId": "enterprise-20260530-234459",
-      "name": "journey-runner",
-      "role": "E2E journey execution",
-      "phase": "journey",
-      "status": "done",
-      "durationSec": 0,
-      "costUsd": 0.0,
-      "lastSummary": "Executed 8 steps across 7 journeys (0 failures)",
-      "findingsCount": 0,
-      "delightsCount": 0,
-      "handoff": {
-        "steps_executed": 8,
-        "step_failures": 0
-      }
-    },
-    {
-      "id": "persona-p1-evaluator",
-      "runId": "enterprise-20260530-234459",
-      "name": "First-time evaluator (prospect / new user)",
-      "role": "Evaluator: First-time evaluator (prospect / new user)",
-      "phase": "persona",
-      "status": "done",
-      "durationSec": 0,
-      "costUsd": 0.0,
-      "lastSummary": "Analysis from prospect / new user perspective",
-      "findingsCount": 0,
-      "delightsCount": 0,
-      "handoff": {
-        "persona_id": "p1-evaluator",
-        "journeys_graded": 7
-      }
-    },
-    {
-      "id": "persona-p2-operator",
-      "runId": "enterprise-20260530-234459",
-      "name": "Daily operator (power user)",
-      "role": "Evaluator: Daily operator (power user)",
-      "phase": "persona",
-      "status": "done",
-      "durationSec": 0,
-      "costUsd": 0.0,
-      "lastSummary": "Analysis from power user perspective",
-      "findingsCount": 0,
-      "delightsCount": 1,
-      "handoff": {
-        "persona_id": "p2-operator",
-        "journeys_graded": 7
-      }
-    },
-    {
-      "id": "persona-p3-admin",
-      "runId": "enterprise-20260530-234459",
-      "name": "Admin / buyer (IT admin)",
-      "role": "Evaluator: Admin / buyer (IT admin)",
-      "phase": "persona",
-      "status": "done",
-      "durationSec": 0,
-      "costUsd": 0.0,
-      "lastSummary": "Analysis from IT admin perspective",
-      "findingsCount": 0,
-      "delightsCount": 0,
-      "handoff": {
-        "persona_id": "p3-admin",
-        "journeys_graded": 7
-      }
-    },
-    {
-      "id": "llm-p1-evaluator",
-      "runId": "enterprise-20260530-234459",
-      "name": "First-time evaluator",
-      "role": "LLM evaluator: First-time evaluator",
-      "phase": "persona",
-      "status": "done",
-      "durationSec": 0,
-      "costUsd": 0.0,
-      "lastSummary": "First-time evaluator can reach primary workflow via deep link, but unlabeled navigation button may cause confusion.",
-      "findingsCount": 1,
-      "delightsCount": 1,
-      "handoff": {
-        "provider": "deepseek",
-        "model": "deepseek-v4-flash",
-        "issues": 1,
-        "delights": 1
-      }
-    },
-    {
-      "id": "llm-p2-operator",
-      "runId": "enterprise-20260530-234459",
-      "name": "Daily operator",
-      "role": "LLM evaluator: Daily operator",
-      "phase": "persona",
-      "status": "done",
-      "durationSec": 0,
-      "costUsd": 0.0,
-      "lastSummary": "The candidate database dashboard is largely functional for efficient navigation, but an unlabeled button on the database page reduces discoverability and may slow down power users.",
-      "findingsCount": 1,
-      "delightsCount": 0,
-      "handoff": {
-        "provider": "deepseek",
-        "model": "deepseek-v4-flash",
-        "issues": 1,
-        "delights": 0
-      }
-    },
-    {
-      "id": "llm-p3-admin",
-      "runId": "enterprise-20260530-234459",
-      "name": "Admin / buyer",
-      "role": "LLM evaluator: Admin / buyer",
-      "phase": "persona",
-      "status": "done",
-      "durationSec": 0,
-      "costUsd": 0.0,
-      "lastSummary": "Admin can navigate all pages without access errors, but a minor accessibility issue exists with an unlabeled button.",
-      "findingsCount": 1,
-      "delightsCount": 1,
-      "handoff": {
-        "provider": "deepseek",
-        "model": "deepseek-v4-flash",
-        "issues": 1,
-        "delights": 1
-      }
-    },
-    {
-      "id": "synthesizer",
-      "runId": "enterprise-20260530-234459",
-      "name": "synthesizer",
-      "role": "Cross-agent synthesis",
-      "phase": "synthesis",
-      "status": "done",
-      "durationSec": 0,
-      "costUsd": 0.0,
-      "lastSummary": "Synthesized 5 issues, 7 delights from 9 agent reports",
-      "findingsCount": 0,
-      "delightsCount": 0,
-      "handoff": {
-        "agents_merged": 9,
-        "readiness": "Green"
-      }
-    },
     {
       "id": "ag_compl",
       "runId": "enterprise-20260530-234459",
@@ -652,36 +430,6 @@
       "personaId": "p3-admin",
       "journeyId": "j5-admin-boundary",
       "grade": "pass"
-    },
-    {
-      "personaId": "p1-evaluator",
-      "journeyId": "auto-j1-dashboard",
-      "grade": "pass"
-    },
-    {
-      "personaId": "p2-operator",
-      "journeyId": "auto-j1-dashboard",
-      "grade": "pass"
-    },
-    {
-      "personaId": "p3-admin",
-      "journeyId": "auto-j1-dashboard",
-      "grade": "pass"
-    },
-    {
-      "personaId": "p1-evaluator",
-      "journeyId": "auto-j5-explore",
-      "grade": "pass"
-    },
-    {
-      "personaId": "p2-operator",
-      "journeyId": "auto-j5-explore",
-      "grade": "pass"
-    },
-    {
-      "personaId": "p3-admin",
-      "journeyId": "auto-j5-explore",
-      "grade": "pass"
     }
   ],
   "dimensions": [
@@ -706,8 +454,8 @@
     {
       "name": "Performance",
       "score": 91,
-      "signal": "Phase 2 heuristic from step evidence",
-      "automated": false
+      "signal": "~1180ms avg step",
+      "automated": true
     },
     {
       "name": "Accessibility",
@@ -1288,18 +1036,6 @@
       "name": "Admin boundary check",
       "steps": 1,
       "category": "dashboard"
-    },
-    {
-      "id": "auto-j1-dashboard",
-      "name": "Auto: Dashboard",
-      "steps": 1,
-      "category": "dashboard"
-    },
-    {
-      "id": "auto-j5-explore",
-      "name": "Auto: Explore /database/profile/03ea1ef9-cb02-4e5d-b4b6-b6fff1d94512",
-      "steps": 1,
-      "category": "dashboard"
     }
   ],
   "workflows": [
@@ -1487,5 +1223,19 @@
         }
       ]
     }
-  ]
+  ],
+  "narrative": {
+    "executiveSummary": "Enterprise Dashboard (example) at https://faculty-dashboard-eight.vercel.app rehearsed as **Green** readiness. 7/7 canonical steps passed (100%). 2 issue(s) and 2 delight(s) recorded. Primary concern: Form inputs missing labels. Bright spot: Clear navigation structure.",
+    "forFounders": "**Launch readiness: Green** \u2014 suitable for a confident partner readout.",
+    "forEngineering": "Run `enterprise-20260530-234459` \u00b7 45s \u00b7 8 step records (incl. viewport/seed replays).\nCrawl: 16 pages, 0 error paths, 0 orphans.\nNotable P2: Form inputs missing labels; Icon-only or unlabeled buttons.",
+    "suggestedQuestions": [
+      "What polish items (P3) are worth doing before GA?",
+      "Which journey had the worst persona \u00d7 path outcome?",
+      "Did any step show flaky behavior across seeds or viewports?"
+    ],
+    "source": "template",
+    "readinessBand": "Green",
+    "issueCount": 2,
+    "delightCount": 2
+  }
 }

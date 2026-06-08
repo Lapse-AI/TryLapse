@@ -23,6 +23,7 @@ import { allowsMockFallback } from "@/lib/ui-mode";
 import { jobMatchesTestGroup, runMatchesTestGroup } from "@/lib/test-groups";
 import { getTestGroupId } from "@/lib/test-auth";
 import { getTestGroup } from "@/lib/test-groups";
+import { getWorkspace } from "@/lib/workspace";
 import { api, checkApiHealth, type JobRecord } from "./client";
 
 export type { JobRecord };
@@ -76,17 +77,67 @@ export function useRunSummaries() {
   });
 }
 
-/** Runs for the active test group (Cal.com, Argyle, self-test, staging). */
+/** Runs scoped to the active workspace or test group. */
 export function useScopedRunSummaries() {
   const { data: all = [], ...rest } = useRunSummaries();
+  const userWorkspace = getWorkspace();
+
+  if (userWorkspace) {
+    // Real workspace: filter by matching target URL host
+    const wsHost = (() => {
+      try {
+        return new URL(userWorkspace.targetUrl).hostname;
+      } catch {
+        return "";
+      }
+    })();
+    const scoped = all.filter((r) => {
+      if (!r.targetUrl) return false;
+      try {
+        return new URL(r.targetUrl).hostname === wsHost;
+      } catch {
+        return false;
+      }
+    });
+    const group = getTestGroup(getTestGroupId());
+    return { data: scoped, allRuns: all, group, ...rest };
+  }
+
+  // Demo/test mode: filter by test group
   const group = getTestGroup(getTestGroupId());
   const scoped = all.filter((r) => runMatchesTestGroup(r, group));
   return { data: scoped, allRuns: all, group, ...rest };
 }
 
-/** Active jobs (queued/running) for the current product — shown in Run history before the run exists. */
+/** Active jobs (queued/running) scoped to the active workspace or test group. */
 export function useScopedActiveJobs() {
   const { data: jobs = [], ...rest } = useJobs();
+  const userWorkspace = getWorkspace();
+
+  if (userWorkspace) {
+    const wsHost = (() => {
+      try {
+        return new URL(userWorkspace.targetUrl).hostname;
+      } catch {
+        return "";
+      }
+    })();
+    const active = jobs.filter((j) => {
+      if (j.status !== "queued" && j.status !== "running") return false;
+      if (!j.config) return false;
+      // Match jobs whose target host aligns with workspace
+      try {
+        return (j as { targetUrl?: string }).targetUrl
+          ? new URL((j as { targetUrl?: string }).targetUrl!).hostname === wsHost
+          : true;
+      } catch {
+        return true;
+      }
+    });
+    const group = getTestGroup(getTestGroupId());
+    return { data: active, group, ...rest };
+  }
+
   const group = getTestGroup(getTestGroupId());
   const active = jobs.filter(
     (j) => (j.status === "queued" || j.status === "running") && jobMatchesTestGroup(j, group),
@@ -332,7 +383,14 @@ export function useJobs() {
 export function useTriggerJob() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: api.triggerJob,
+    mutationFn: (body: Parameters<typeof api.triggerJob>[0]) => {
+      // Inject workspace configPath so the run targets the user's product, not the demo config
+      const ws = getWorkspace();
+      if (ws?.configPath && !body.configPath) {
+        return api.triggerJob({ ...body, configPath: ws.configPath });
+      }
+      return api.triggerJob(body);
+    },
     onSuccess: (job) => {
       toast.info(`Job ${job.status}: ${job.id}`, { description: "Watch status on Runner" });
       void qc.invalidateQueries({ queryKey: queryKeys.jobs });

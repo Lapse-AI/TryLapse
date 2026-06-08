@@ -900,6 +900,15 @@ def build_run_bundle(
         "workflows": _serialize_workflows(ctx),
         "suggestedJourneys": (ctx.workflows.suggested_journeys if ctx and ctx.workflows else []),
         "narrative": (ctx.metadata.get("narrative") if ctx else None),
+        "productModel": (ctx.metadata.get("product_model") if ctx else None),
+        "interactionMap": {
+            "buttonCount": len((ctx.metadata.get("interaction_map") or {}).get("buttons", [])),
+            "formCount": len((ctx.metadata.get("interaction_map") or {}).get("forms", [])),
+            "apiCallCount": len((ctx.metadata.get("interaction_map") or {}).get("apiCalls", [])),
+            "errorCount": len((ctx.metadata.get("interaction_map") or {}).get("errorsFound", [])),
+            "chatbotDetected": (ctx.metadata.get("interaction_map") or {}).get("chatbotDetected", False),
+        } if ctx and ctx.metadata.get("interaction_map") else None,
+        "behavioralJourneys": (ctx.metadata.get("behavioral_journeys") if ctx else None),
     }
 
 

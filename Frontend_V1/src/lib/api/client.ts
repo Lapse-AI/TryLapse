@@ -225,16 +225,24 @@ export const api = {
       method: "POST",
       body: JSON.stringify(updates),
     }),
-  discoverJourneys: (personas: unknown[]) =>
+  discoverJourneys: (personas: unknown[], configId?: string | null) =>
     apiFetch<{ personaJourneys: unknown[]; count: number }>("/api/journeys/discover", {
       method: "POST",
-      body: JSON.stringify({ personas }),
+      body: JSON.stringify({ personas, configId: configId || "" }),
     }),
   discoverJourneysForPersona: (persona: unknown) =>
     apiFetch<Record<string, unknown>>("/api/journeys/discover/persona", {
       method: "POST",
       body: JSON.stringify({ persona }),
     }),
+  importJourneysToConfig: (configId: string, journeys: unknown[]) =>
+    apiFetch<{ configId: string; added: number; skipped: number; total: number }>(
+      "/api/journeys/import",
+      {
+        method: "POST",
+        body: JSON.stringify({ configId, journeys }),
+      },
+    ),
   getExperimentReport: (jobId: string) =>
     apiFetch<{
       jobId: string;
@@ -441,6 +449,7 @@ export const api = {
         targetUrl: string;
         productName: string;
         teamRole: string;
+        configPath: string;
         createdAt: string;
       }[]
     >("/api/workspaces/me"),
@@ -458,6 +467,7 @@ export const api = {
       targetUrl: string;
       productName: string;
       teamRole: string;
+      configPath: string;
       createdAt: string;
     }>("/api/workspaces", { method: "POST", body: JSON.stringify(body) }),
 };

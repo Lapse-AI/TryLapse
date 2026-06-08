@@ -1,0 +1,21 @@
+run:
+  target_url: http://127.0.0.1:8081
+  product_name: "LR Test"
+  persona_lens: true
+
+personas:
+  - id: p1-test
+    name: "Test Evaluator"
+    role: "Product Manager"
+    goals:
+      - "Evaluate the product"
+
+journeys:
+  - id: j-test-1
+    name: "Test journey"
+    priority: smoke
+    steps:
+      - action: navigate
+        url: /
+      - action: wait
+        value: "1000"

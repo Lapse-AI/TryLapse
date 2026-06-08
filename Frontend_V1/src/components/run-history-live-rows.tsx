@@ -1,7 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Chip, StatusDot } from "@/components/ui-bits";
 import type { JobRecord } from "@/lib/api/hooks";
-import type { TestGroup } from "@/lib/test-groups";
 import { Loader2 } from "lucide-react";
 
 function statusLabel(status: string): string {
@@ -10,10 +9,12 @@ function statusLabel(status: string): string {
   return status;
 }
 
-export function RunHistoryLiveRows({ jobs, group }: { jobs: JobRecord[]; group: TestGroup }) {
+type GroupMeta = { label: string; targetUrl?: string };
+
+export function RunHistoryLiveRows({ jobs, group }: { jobs: JobRecord[]; group: GroupMeta }) {
   if (!jobs.length) return null;
 
-  const targetHost = group.targetUrl.replace(/^https?:\/\//, "");
+  const targetHost = (group.targetUrl ?? "").replace(/^https?:\/\//, "");
 
   return (
     <>
@@ -45,7 +46,7 @@ export function RunHistoryLiveRows({ jobs, group }: { jobs: JobRecord[]; group: 
           <td className="px-5 py-3">
             <div className="flex items-center gap-2">
               <Loader2 className="size-3.5 animate-spin text-info" />
-              <StatusDot status="info" />
+              <StatusDot status="neutral" />
               <Chip tone={j.status === "queued" ? "warn" : "info"}>{statusLabel(j.status)}</Chip>
             </div>
           </td>

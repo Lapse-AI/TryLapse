@@ -73,7 +73,7 @@ function ConfidenceBand({ agg }: { agg: NonNullable<CohortJob["aggregate"]> }) {
       </div>
 
       <div className="text-xs text-muted-foreground">
-        Spread {agg.spread} pts across {agg.nSeeds} seeds —{" "}
+        Spread {agg.spread} pts —{" "}
         {agg.confidence === "high"
           ? "tight band, high repeatability"
           : agg.confidence === "medium"

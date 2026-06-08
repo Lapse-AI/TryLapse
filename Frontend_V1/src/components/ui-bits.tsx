@@ -61,12 +61,14 @@ export function Panel({
   children,
   className = "",
   as: As = "div",
+  id,
 }: {
   children: ReactNode;
   className?: string;
   as?: ElementType;
+  id?: string;
 }) {
-  return <As className={`panel ${className}`}>{children}</As>;
+  return <As className={`panel ${className}`} id={id}>{children}</As>;
 }
 
 export function SectionTitle({

@@ -1,0 +1,33 @@
+{
+  "origin": "http://127.0.0.1:8081",
+  "page_count": 1,
+  "hub_paths": [
+    "/"
+  ],
+  "orphan_paths": [],
+  "auth_gated_paths": [],
+  "error_paths": [
+    "/"
+  ],
+  "pages": [
+    {
+      "url": "http://127.0.0.1:8081/",
+      "path": "/",
+      "title": "",
+      "depth": 0,
+      "status": null,
+      "h1": "",
+      "link_count": 0,
+      "form_count": 0,
+      "input_count": 0,
+      "button_count": 0,
+      "word_count": 0,
+      "outbound_paths": [],
+      "redirected_to_login": false,
+      "error_phrases": [
+        "nav_failed:Timeout 12000ms exceeded.\n=========================== logs ="
+      ],
+      "duration_ms": 15169
+    }
+  ]
+}
