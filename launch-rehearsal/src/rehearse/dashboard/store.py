@@ -479,7 +479,7 @@ def get_trends(artifacts_root: Path, *, refresh: bool = False, config_prefix: st
         "pages": pages,
         "flakeRate": flake_rates,
         "runIds": [s["id"] for s in summaries],
-        "labels": [s["startedAt"][:10] if s.get("startedAt") else s["id"] for s in summaries],
+        "labels": [str(s["startedAt"])[:10] if s.get("startedAt") else s["id"] for s in summaries],
         "issueRecurrence": recurrence,
         "issuesOpened": issues_opened,
         "issuesResolved": issues_resolved,
