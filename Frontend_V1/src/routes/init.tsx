@@ -247,7 +247,10 @@ function InitPage() {
       {
         onSuccess: (result) => {
           setSelectedConfigId(result.id);
-          toast.success(`Config written to ${result.path}`, {
+          const fileName = `${result.id}.yaml`;
+          toast.success(`Saved as ${fileName}`, {
+            description: `Run with: ./rehearse run -c launch-rehearsal/artifacts/configs/${fileName} -o launch-rehearsal/artifacts/`,
+            duration: 8000,
             action: {
               label: "Open Runner",
               onClick: () => {
@@ -598,8 +601,25 @@ function InitPage() {
           <Panel className="p-6 flex flex-wrap items-center justify-between gap-4">
             <div>
               <div className="font-medium">Generate & write YAML</div>
-              <div className="text-sm text-muted-foreground mt-1">
-                {wizard?.writeHint ?? "POST /api/configs — writes artifacts/configs/{slug}.yaml"}
+              <div className="text-sm text-muted-foreground mt-1 space-y-1">
+                {workspaceConfigId ? (
+                  <>
+                    <div>
+                      Active config:{" "}
+                      <code className="px-1.5 py-0.5 rounded bg-surface-2 text-xs font-mono text-primary">
+                        {workspaceConfigId}.yaml
+                      </code>
+                    </div>
+                    <div className="text-xs font-mono text-muted-foreground/70">
+                      configs/{workspaceConfigId}.yaml · run with:{" "}
+                      <span className="select-all">
+                        ./rehearse run -c launch-rehearsal/artifacts/configs/{workspaceConfigId}.yaml -o launch-rehearsal/artifacts/
+                      </span>
+                    </div>
+                  </>
+                ) : (
+                  <div>Saves to: <code className="text-xs font-mono">configs/[slug].yaml</code> — slug derived from target URL</div>
+                )}
               </div>
             </div>
             <button
@@ -608,7 +628,7 @@ function InitPage() {
               onClick={() => handleGenerate()}
               className="text-xs px-4 py-2 rounded-md bg-primary text-primary-foreground font-medium disabled:opacity-50"
             >
-              {saveConfig.isPending ? "Writing…" : "Generate & write YAML"}
+              {saveConfig.isPending ? "Writing…" : workspaceConfigId ? "Re-save config" : "Generate & write YAML"}
             </button>
           </Panel>
         )}
