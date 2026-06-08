@@ -156,9 +156,17 @@ function PersonaColumn({ persona, progress }: { persona: PersonaProgress; progre
   );
 }
 
-export function RunLiveGraph({ runId, pollingMs = 2000 }: { runId?: string; pollingMs?: number }) {
+export function RunLiveGraph({
+  runId,
+  pollingMs = 2000,
+  jobId,
+}: {
+  runId?: string;
+  pollingMs?: number;
+  jobId?: string;
+}) {
   const [progress, setProgress] = useState<RunProgress | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [noProgress, setNoProgress] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -168,13 +176,16 @@ export function RunLiveGraph({ runId, pollingMs = 2000 }: { runId?: string; poll
         const url = runId ? `/api/progress?runId=${runId}` : "/api/progress";
         const res = await fetch(url);
         if (!res.ok) {
-          setError("No active run found");
+          if (!cancelled) setNoProgress(true);
           return;
         }
         const data = await res.json();
-        if (!cancelled) setProgress(data);
+        if (!cancelled) {
+          setProgress(data);
+          setNoProgress(false);
+        }
       } catch {
-        if (!cancelled) setError("Could not reach backend");
+        if (!cancelled) setNoProgress(true);
       }
     };
 
@@ -186,19 +197,29 @@ export function RunLiveGraph({ runId, pollingMs = 2000 }: { runId?: string; poll
     };
   }, [runId, pollingMs]);
 
-  if (error && !progress) {
+  // Job running but no progress file yet (run just queued, or backend was old)
+  if (noProgress && !progress) {
     return (
-      <div className="text-sm text-muted-foreground p-4 text-center">
-        {error}
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Loader2 className="w-4 h-4 animate-spin text-primary" />
+          <span>Crawling product — detailed step view begins when journeys start</span>
+        </div>
+        <div className="h-1.5 bg-surface-2 rounded-full overflow-hidden">
+          <div className="h-full w-1/3 bg-primary/50 rounded-full animate-pulse" />
+        </div>
+        {jobId && (
+          <div className="text-[11px] text-muted-foreground font-mono">job: {jobId}</div>
+        )}
       </div>
     );
   }
 
   if (!progress) {
     return (
-      <div className="flex items-center gap-2 p-4 text-sm text-muted-foreground">
+      <div className="flex items-center gap-2 p-2 text-sm text-muted-foreground">
         <Loader2 className="w-4 h-4 animate-spin" />
-        Loading run progress…
+        Waiting for progress data…
       </div>
     );
   }

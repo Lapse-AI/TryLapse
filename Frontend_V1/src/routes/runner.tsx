@@ -87,11 +87,15 @@ function RunnerPage() {
         {/* Live run visualization — shown when a run is in progress */}
         {jobs.some(j => j.status === "running") && (
           <Panel className="p-5">
-            <div className="text-sm font-semibold mb-4 flex items-center gap-2">
+            <div className="text-sm font-semibold mb-3 flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
               Live run
             </div>
-            <RunLiveGraph pollingMs={2000} />
+            <RunLiveGraph
+              runId={jobs.find(j => j.status === "running")?.runId ?? undefined}
+              pollingMs={2000}
+              jobId={jobs.find(j => j.status === "running")?.id}
+            />
           </Panel>
         )}
 
