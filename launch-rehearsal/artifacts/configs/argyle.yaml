@@ -1,5 +1,5 @@
 run:
-  target_url: https://faculty-dashboard-eight.vercel.app/database
+  target_url: https://faculty-dashboard-eight.vercel.app
   run_id_prefix: argyle
   product_name: Argyle Faculty Dashboard
   viewports:
@@ -11,7 +11,6 @@ crawl:
   max_depth: 2
   max_pages: 20
   supplement_journeys: true
-
 personas:
 - id: p1-faculty-member
   name: Faculty Member
@@ -34,7 +33,31 @@ personas:
   - Complete onboarding and understand the dashboard
   - Find key data quickly without prior context
   - Identify what data is available for their courses
-
+- id: model-0-university-administrator
+  name: University Administrator
+  role: Manage faculty records and find specific faculty quickly
+  goals:
+  - Manage faculty records
+  - Find specific faculty quickly
+- id: model-0-faculty-member
+  name: Faculty Member
+  role: Manage their professional profile and search for colleagues.
+  goals:
+  - Manage their professional profile and search for colleagues.
+  - The product is named 'Faculty Dashboard' and includes features like AI Search
+    and Add Faculty.
+- id: p4-champion
+  name: Internal champion
+  role: team lead / champion
+  goals:
+  - Validate rollout to their team
+  - Find blockers before wider launch
+- id: model-1-admin
+  name: Admin
+  role: Manage user accounts and oversee the database.
+  goals:
+  - Manage user accounts and oversee the database.
+  - There is an /admin endpoint and an admin panel.
 journeys:
 - id: j-load-dashboard
   name: Load main dashboard
@@ -43,10 +66,9 @@ journeys:
   - action: navigate
     url: /database
   - action: wait
-    value: "4000"
+    value: '4000'
   - action: scroll
     intent: scroll down to see full dashboard content
-
 - id: j-explore-analytics
   name: Explore analytics section
   priority: smoke
@@ -54,12 +76,11 @@ journeys:
   - action: navigate
     url: /database
   - action: wait
-    value: "3000"
+    value: '3000'
   - action: click
     intent: analytics or data section link or tab
   - action: wait
-    value: "2000"
-
+    value: '2000'
 - id: j-view-course-data
   name: View course data
   priority: smoke
@@ -67,14 +88,13 @@ journeys:
   - action: navigate
     url: /database
   - action: wait
-    value: "3000"
+    value: '3000'
   - action: click
     intent: courses or course management section
   - action: wait
-    value: "2000"
+    value: '2000'
   - action: scroll
     intent: scroll through course list
-
 - id: j-check-student-metrics
   name: Check student engagement metrics
   priority: smoke
@@ -82,12 +102,11 @@ journeys:
   - action: navigate
     url: /database
   - action: wait
-    value: "3000"
+    value: '3000'
   - action: click
     intent: student engagement or metrics section
   - action: wait
-    value: "2000"
-
+    value: '2000'
 - id: j-navigate-pages
   name: Navigate between dashboard pages
   priority: smoke
@@ -95,12 +114,2834 @@ journeys:
   - action: navigate
     url: /database
   - action: wait
-    value: "3000"
+    value: '3000'
   - action: click
     intent: navigation menu item or sidebar link
   - action: wait
-    value: "2000"
+    value: '2000'
   - action: click
     intent: another navigation item
   - action: wait
-    value: "1500"
+    value: '1500'
+- id: j-1-evalua-1
+  name: AI Search for Faculty
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Go to the main database page to access the AI search
+  - action: assert_url_contains
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Confirm successful navigation
+    value: /database
+  - action: wait
+    intent: Ensure all elements are rendered
+    value: '3000'
+  - action: click
+    intent: Activate the search bar for typing
+    selector: input[placeholder*='Search']
+  - action: fill
+    intent: Search for faculty with expertise in machine learning
+    selector: input[placeholder*='Search']
+    value: machine learning
+  - action: press
+    intent: Trigger the AI search
+    selector: input[placeholder*='Search']
+    value: Enter
+  - action: wait
+    intent: Allow time for the API response
+    value: '5000'
+  - action: assert_url_contains
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Ensure we remain on the database page
+    value: /database
+  - action: assert_url_contains
+    intent: Confirm search is reflected in URL
+    value: ?q=machine+learning
+  - action: explore
+    intent: Verify that search results are interactive and lead to profile details
+    selector: .profile-card:first-child
+  - action: assert_url_contains
+    intent: Confirm navigation to profile detail page
+    value: /database/profile/
+  - action: click
+    intent: Return to the search results to test other sub-flows
+    value: Back
+- id: j-1-evalua-2
+  name: View Profile Details
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Go to the database page
+  - action: wait
+    intent: Wait for profile list
+    value: '3000'
+  - action: click
+    intent: Click on the first profile link or card
+    selector: .profile-card:first-child a, .profile-row:first-child a, a[href*='/profile/']:first-of-type
+  - action: assert_url_contains
+    intent: Check URL contains profile ID
+    value: /profile/
+  - action: wait
+    intent: Wait for profile data
+    value: '3000'
+  - action: assert_url_contains
+    intent: Assert profile ID in URL
+    value: /profile/
+  - action: click
+    intent: Open Resume Data section
+    selector: button:has-text('Resume Data'), .resume-data-tab, section#resume-data
+  - action: wait
+    intent: Wait for resume parsing results
+    value: '2000'
+  - action: scroll
+    intent: Scroll to bottom of resume data
+    selector: .resume-data-container
+  - action: assert_url_contains
+    intent: Assert URL unchanged
+    value: /profile/
+  - action: click
+    intent: Click on profile header
+    selector: .profile-header, h1, .profile-name
+  - action: assert_url_contains
+    intent: Final URL check
+    value: /profile/
+- id: j-1-evalua-3
+  name: Add New Faculty Profile
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Access the main database page to view faculty profiles and add new ones
+  - action: click
+    intent: Open the modal for adding a new faculty member
+    selector: button:has-text('+ Add Faculty')
+  - action: fill
+    intent: Provide the name of the new faculty member
+    selector: input[name='name']
+    value: Dr. Jane Smith
+  - action: fill
+    intent: Provide email contact for the faculty member
+    selector: input[name='email']
+    value: jane.smith@university.edu
+  - action: fill
+    intent: Specify the department the faculty belongs to
+    selector: input[name='department']
+    value: Computer Science
+  - action: click
+    intent: Initiate resume file upload for parsing
+    selector: button:has-text('Upload Resume')
+  - action: fill
+    intent: Upload a resume file for parsing via Gemini API
+    selector: input[type='file']
+    value: /path/to/resume.pdf
+  - action: wait
+    intent: Allow time for the Gemini API to parse the resume
+    value: '10000'
+  - action: click
+    intent: Save the new faculty member with parsed resume data
+    selector: button:has-text('Save')
+  - action: assert_url_contains
+    intent: Confirm no unexpected navigation occurred
+    value: /database
+  - action: click
+    intent: Open the profile to verify parsed data is displayed correctly
+    selector: text=Dr. Jane Smith
+  - action: assert_url_contains
+    intent: Confirm navigation to the profile detail page
+    value: /database/profile/
+- id: j-1-evalua-4
+  name: Browse Faculty Database
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Access the main database of faculty profiles
+  - action: wait
+    intent: Ensure the table has loaded
+    selector: table
+    value: '5000'
+  - action: scroll
+    intent: Browse through the list of profiles
+    selector: table
+    value: down
+  - action: assert_url_contains
+    intent: Confirm no navigation occurred
+    value: /database
+  - action: click
+    intent: Open the profile detail page
+    selector: table tbody tr:first-child td:first-child a
+  - action: assert_url_contains
+    intent: Confirm profile detail page loaded
+    value: /database/profile/
+  - action: click
+    intent: Go back to the list view
+  - action: wait
+    intent: Ensure the table is visible again
+    selector: table
+    value: '3000'
+  - action: click
+    intent: Navigate to the next page of profiles
+    selector: button:has-text('Next')
+  - action: wait
+    intent: Ensure new data loaded
+    selector: table
+    value: '3000'
+  - action: click
+    intent: Go back to the first page
+    selector: button:has-text('Previous')
+  - action: click
+    intent: Sort the table alphabetically by name
+    selector: th:has-text('Name')
+  - action: click
+    intent: Sort descending by name
+    selector: th:has-text('Name')
+  - action: assert_url_contains
+    intent: Confirm no unexpected navigation
+    value: /database
+- id: j-1-evalua-5
+  name: Filter Faculty by Department or Expertise
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Go to faculty database
+  - action: wait
+    intent: Wait for data to appear
+    value: '3000'
+  - action: click
+    intent: Open department filter dropdown
+    selector: select[aria-label='Department filter']
+  - action: select
+    intent: Filter by Computer Science department
+    selector: select[aria-label='Department filter']
+    value: Computer Science
+  - action: assert_url_contains
+    intent: Check that filter is applied in URL
+    value: department=Computer%20Science
+  - action: wait
+    intent: Wait for list update
+    value: '2000'
+  - action: click
+    intent: Open expertise filter dropdown
+    selector: select[aria-label='Expertise filter']
+  - action: select
+    intent: Filter by Machine Learning expertise
+    selector: select[aria-label='Expertise filter']
+    value: Machine Learning
+  - action: wait
+    intent: Wait for list update
+    value: '2000'
+  - action: click
+    intent: Clear all applied filters
+    selector: button:has-text('Clear Filters')
+  - action: wait
+    intent: Wait for unfiltered list
+    value: '2000'
+  - action: assert_url_contains
+    intent: Check that filters are cleared
+    value: /database
+- id: j-1-evalua-6
+  name: Edit Own Profile
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Go to the main database page to find and click on own profile
+  - action: click
+    intent: Click on the profile link to view details
+    selector: a[href*='/database/profile/']:has-text('John Doe')
+  - action: assert_url_contains
+    intent: Confirm profile detail page is loaded
+    value: /database/profile/
+  - action: click
+    intent: Click the edit button to enable editing of profile fields
+    selector: button:has-text('Edit Profile')
+  - action: fill
+    intent: Change the name field to 'John A. Doe'
+    selector: input[name='name']
+    value: John A. Doe
+  - action: fill
+    intent: Change the email field to 'john.doe@university.edu'
+    selector: input[name='email']
+    value: john.doe@university.edu
+  - action: click
+    intent: Click the Save button to persist the changes
+    selector: button:has-text('Save')
+  - action: wait
+    intent: Wait for the success toast or message
+    value: '2000'
+  - action: assert_url_contains
+    intent: Confirm we are still on the profile detail page
+    value: /database/profile/
+  - action: click
+    intent: Re-enter edit mode to check the updated fields
+    selector: button:has-text('Edit Profile')
+  - action: click
+    intent: Click Cancel to discard any accidental changes
+    selector: button:has-text('Cancel')
+- id: j-1-evalua-7
+  name: Admin User Management
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/admin
+    intent: Go to admin page
+  - action: wait
+    intent: Wait for table to appear
+    value: '3000'
+  - action: assert_url_contains
+    value: /admin
+  - action: click
+    intent: Click role dropdown for first user
+    selector: table tbody tr:first-child select
+  - action: select
+    intent: Change role to Admin
+    selector: table tbody tr:first-child select
+    value: Admin
+  - action: click
+    intent: Click delete button for second user
+    selector: table tbody tr:nth-child(2) button:has-text('Delete')
+  - action: wait
+    intent: Wait for modal to appear
+    value: '2000'
+  - action: click
+    intent: Confirm deletion
+    selector: div.modal button:has-text('Confirm')
+  - action: wait
+    intent: Wait for deletion to complete
+    value: '2000'
+  - action: click
+    intent: Open add user form
+    selector: button:has-text('Add User')
+  - action: fill
+    intent: Fill email input
+    selector: input[name='email']
+    value: newuser@example.com
+  - action: fill
+    intent: Fill password input
+    selector: input[name='password']
+    value: password123
+  - action: select
+    intent: Select role dropdown
+    selector: select[name='role']
+    value: Faculty
+  - action: click
+    intent: Submit new user form
+    selector: button:has-text('Save')
+- id: j-1-evalua-8
+  name: Resume Upload and Parsing
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Open the main database page
+  - action: click
+    intent: Open the modal to add a new faculty member
+    selector: button:has-text('+ Add Faculty')
+  - action: fill
+    intent: Provide the faculty member's name
+    selector: input[name='name']
+    value: Dr. Jane Smith
+  - action: fill
+    intent: Provide the faculty member's email
+    selector: input[name='email']
+    value: jane.smith@university.edu
+  - action: fill
+    intent: Provide the faculty member's department
+    selector: input[name='department']
+    value: Computer Science
+  - action: click
+    intent: Open file picker to select a resume file
+    selector: input[type='file']
+  - action: fill
+    intent: Upload a resume file for parsing
+    selector: input[type='file']
+    value: /path/to/resume.pdf
+  - action: wait
+    intent: Wait for parsing to finish
+    value: '15000'
+  - action: click
+    intent: Submit the new faculty profile
+    selector: button:has-text('Submit')
+  - action: assert_url_contains
+    intent: Confirm no navigation away
+    value: /database
+  - action: click
+    intent: Open profile details to verify parsed data
+    selector: text=Dr. Jane Smith
+  - action: assert_url_contains
+    intent: Confirm navigation to profile detail page
+    value: /database/profile/
+  - action: wait
+    intent: Ensure parsed data is displayed
+    value: '3000'
+  - action: assert_url_contains
+    intent: Confirm the parsed name is correct
+    value: Dr. Jane Smith
+- id: j-1-evalua-9
+  name: Search by Name (Exact Match)
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Open the database page to search for faculty profiles
+  - action: wait
+    intent: Ensure the search input is ready for interaction
+    value: '5000'
+  - action: click
+    intent: Focus the search input to start typing
+    selector: input[placeholder*='Search']
+  - action: fill
+    intent: Enter a faculty member's full name for exact match search
+    selector: input[placeholder*='Search']
+    value: John Doe
+  - action: wait
+    intent: Allow the system to process the search query and display results
+    value: '3000'
+  - action: assert_url_contains
+    intent: Ensure search is performed on the same page without redirect
+    value: /database
+  - action: explore
+    intent: Verify that the searched name appears as the first result
+    selector: div[data-testid='profile-card']:first-child
+  - action: click
+    intent: Open the profile details page for the searched faculty member
+    selector: div[data-testid='profile-card']:first-child
+  - action: assert_url_contains
+    intent: Confirm navigation to the profile detail page
+    value: /database/profile/
+  - action: wait
+    intent: Ensure all profile data is rendered
+    value: '3000'
+  - action: assert_url_contains
+    intent: Confirm the correct profile is displayed
+    selector: h1[data-testid='profile-name']
+    value: John Doe
+- id: j-1-evalua-10
+  name: View Resume Parsed Data
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Go to the main database listing
+  - action: click
+    intent: Click on profile card or link for first faculty member
+    selector: a[href*='/profile/']:first-of-type
+  - action: assert_url_contains
+    intent: Confirm we are on a profile detail page
+    value: /profile/
+  - action: wait
+    intent: Wait for the resume parsed data section to appear
+    value: '3000'
+  - action: scroll
+    intent: Bring the parsed data card into view
+    selector: '[data-testid=''parsed-data-card'']'
+  - action: click
+    intent: Expand the parsed data card to see full details
+    selector: button[aria-label='Expand parsed data']
+  - action: assert_url_contains
+    intent: Check that parsed education data is displayed
+    value: Education
+  - action: click
+    intent: Edit a parsed field to correct inaccuracies
+    selector: button[aria-label='Edit education']
+  - action: fill
+    intent: Modify the parsed education entry
+    selector: input[name='education']
+    value: Ph.D. in Computer Science, MIT
+  - action: click
+    intent: Save the edited parsed field
+    selector: button:has-text('Save')
+  - action: assert_url_contains
+    intent: Confirm the edit was successful
+    value: Ph.D. in Computer Science, MIT
+- id: j-1-evalua-11
+  name: Delete Faculty Profile
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database/profile/1
+    intent: Go to profile page to view details and delete the profile.
+  - action: click
+    intent: Click the Delete button on the profile page.
+    selector: button:has-text('Delete')
+  - action: wait
+    intent: Wait for modal visibility.
+    selector: .modal
+    value: '2000'
+  - action: click
+    intent: Click Cancel to dismiss the modal.
+    selector: button:has-text('Cancel')
+  - action: click
+    intent: Click Delete button again.
+    selector: button:has-text('Delete')
+  - action: click
+    intent: Click Confirm to delete the profile.
+    selector: button:has-text('Confirm')
+  - action: assert_url_contains
+    intent: Check URL after deletion.
+    value: /database
+  - action: wait
+    intent: Wait for success message.
+    selector: .toast
+    value: '3000'
+  - action: click
+    intent: Click Undo to restore the profile.
+    selector: button:has-text('Undo')
+  - action: assert_url_contains
+    intent: Check URL after undo.
+    value: /database/profile/1
+  - action: click
+    intent: Click Delete again.
+    selector: button:has-text('Delete')
+  - action: click
+    intent: Click Confirm.
+    selector: button:has-text('Confirm')
+  - action: wait
+    intent: Wait for undo timeout to expire.
+    selector: .toast
+    value: '5000'
+  - action: assert_url_contains
+    intent: Final URL check.
+    value: /database
+- id: j-1-evalua-12
+  name: 'Onboarding: First Login'
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/login
+    intent: Go to login page
+  - action: fill
+    intent: Email input field
+    selector: input[type='email']
+    value: ${REHEARSE_EMAIL}
+  - action: fill
+    intent: Password input field
+    selector: input[type='password']
+    value: ${REHEARSE_PASSWORD}
+  - action: click
+    intent: Sign In button
+    selector: button:has-text('Sign In')
+  - action: assert_url_contains
+    value: /database
+  - action: wait
+    value: '3000'
+  - action: assert_url_contains
+    value: /database
+  - action: explore
+    intent: Welcome message or tooltip dismiss button
+    selector: button:has-text('Got it'), button[aria-label='Close']
+  - action: explore
+    intent: Empty state message and Add Faculty button
+  - action: click
+    intent: + Add Faculty button
+    selector: button:has-text('+ Add Faculty')
+  - action: dismiss
+    intent: Cancel button or close icon
+    selector: button:has-text('Cancel'), button[aria-label='Close']
+  - action: explore
+    intent: Help tooltips
+    selector: '[role=''tooltip''] button, .onboarding-hint button'
+  - action: assert_url_contains
+    value: /database
+- id: j-1-evalua-13
+  name: Recover from Failed Resume Parse
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Go to the faculty database
+  - action: click
+    intent: Open profile details
+    selector: a[href*='/profile/']
+  - action: assert_url_contains
+    intent: Confirm profile page
+    value: /profile/
+  - action: click
+    intent: Initiate re-upload
+    selector: button:has-text('Retry Upload')
+  - action: fill
+    intent: Select file for upload
+    selector: input[type='file']
+    value: /path/to/resume_v2.pdf
+  - action: wait
+    intent: Allow time for Gemini API parsing
+    value: '5000'
+  - action: assert_url_contains
+    intent: Confirm form state persistence
+    value: /profile/
+  - action: click
+    intent: Save updated profile
+    selector: button:has-text('Save')
+  - action: assert_url_contains
+    intent: Confirm successful save
+    selector: div[role='status']
+    value: Profile updated successfully
+- id: j-1-evalua-14
+  name: Export Profile Data
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Access the main database listing
+  - action: click
+    intent: Open profile details page
+    selector: a[href^='/database/profile/']
+  - action: assert_url_contains
+    value: /database/profile/
+  - action: click
+    intent: Open export options
+    selector: button:has-text('Export')
+  - action: click
+    intent: Choose PDF as export format
+    selector: button:has-text('PDF')
+  - action: click
+    intent: Trigger download of PDF
+    selector: button:has-text('Download')
+  - action: wait
+    value: '10000'
+  - action: assert_url_contains
+    value: /database/profile/
+- id: j-2-oerato-1
+  name: Search faculty profiles by expertise
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Open the database page
+  - action: fill
+    intent: Enter search query in AI search input
+    selector: input[placeholder*='Search']
+    value: machine learning
+  - action: click
+    intent: Submit the search query
+    selector: button[type='submit']
+  - action: wait
+    intent: Wait for results
+    value: '3000'
+  - action: assert_url_contains
+    intent: Assert URL contains search parameter
+    value: ?search=machine+learning
+  - action: click
+    intent: Open first faculty profile
+    selector: .faculty-card:first-child a
+  - action: assert_url_contains
+    intent: Assert profile page URL
+    value: /profile/
+  - action: click
+    intent: Navigate back to database
+    selector: a[href='/database']
+  - action: click
+    intent: Open department filter
+    selector: select[name='department']
+  - action: select
+    intent: Select Computer Science department
+    selector: select[name='department']
+    value: Computer Science
+  - action: wait
+    intent: Wait for filter results
+    value: '2000'
+  - action: assert_url_contains
+    intent: Assert filter parameter in URL
+    value: department=Computer+Science
+- id: j-2-oerato-2
+  name: View profile details
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Go to the faculty database list
+  - action: wait
+    intent: Wait for profile cards to appear
+    value: '5000'
+  - action: click
+    intent: Click on the first profile card
+    selector: .profile-card:first-child
+  - action: assert_url_contains
+    intent: Check URL for profile ID
+    value: /profile/
+  - action: wait
+    intent: Wait for profile details
+    value: '3000'
+  - action: scroll
+    intent: Scroll to resume data
+    selector: .resume-section
+  - action: click
+    intent: Click Edit button
+    selector: button:has-text('Edit')
+  - action: wait
+    intent: Wait for edit form
+    value: '2000'
+  - action: click
+    intent: Click Cancel button
+    selector: button:has-text('Cancel')
+- id: j-2-oerato-3
+  name: Add new faculty profile
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Open the main database view
+  - action: click
+    intent: Open the add faculty form
+    selector: button:has-text('+ Add Faculty')
+  - action: fill
+    intent: First name input field
+    selector: input[name='firstName']
+    value: Jane
+  - action: fill
+    intent: Last name input field
+    selector: input[name='lastName']
+    value: Smith
+  - action: fill
+    intent: Email input field
+    selector: input[name='email']
+    value: jane.smith@university.edu
+  - action: fill
+    intent: Department input field
+    selector: input[name='department']
+    value: Computer Science
+  - action: click
+    intent: Open resume upload modal
+    selector: button:has-text('Upload Resume')
+  - action: fill
+    intent: File input for resume upload
+    selector: input[type='file']
+    value: path/to/resume.pdf
+  - action: wait
+    intent: Wait for parsing
+    value: '5000'
+  - action: click
+    intent: Submit the add faculty form
+    selector: button:has-text('Submit')
+  - action: assert_url_contains
+    intent: Check URL
+    value: /database
+  - action: wait
+    intent: Wait for list update
+    value: '2000'
+  - action: assert_url_contains
+    intent: Check for new profile name
+    selector: text=Jane Smith
+    value: Jane Smith
+- id: j-2-oerato-4
+  name: Filter profiles by department
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Open the main database page to view faculty profiles
+  - action: click
+    intent: Open the department filter dropdown
+    selector: button[aria-label='Filter by department']
+  - action: select
+    intent: Select Computer Science department filter
+    selector: select[aria-label='Filter by department']
+    value: Computer Science
+  - action: assert_url_contains
+    intent: Check that department filter is reflected in URL
+    value: department=Computer+Science
+  - action: wait
+    intent: Wait for filtered results to load
+    value: '2000'
+  - action: click
+    intent: Remove the department filter by clicking its tag
+    selector: .filter-tag[data-value='Computer Science']
+  - action: wait
+    intent: Wait for unfiltered results to load
+    value: '2000'
+- id: j-2-oerato-5
+  name: Edit existing profile
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database/profile/123
+    intent: Open profile page for editing
+  - action: click
+    intent: Edit button
+    selector: button:has-text('Edit')
+  - action: fill
+    intent: Name input field
+    selector: input[name='name']
+    value: Dr. Jane Smith
+  - action: fill
+    intent: Department input field
+    selector: input[name='department']
+    value: Computer Science
+  - action: fill
+    intent: Email input field
+    selector: input[name='email']
+    value: jane.smith@university.edu
+  - action: click
+    intent: Save button
+    selector: button:has-text('Save')
+  - action: assert_url_contains
+    value: /database/profile/123
+  - action: wait
+    value: '2000'
+- id: j-2-oerato-6
+  name: Admin user management
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/admin
+    intent: Access admin user management page
+  - action: assert_url_contains
+    intent: Confirm admin page
+    value: /admin
+  - action: wait
+    intent: Wait for user list
+    value: '2000'
+  - action: click
+    intent: Open add user form
+    selector: button:has-text('Add User')
+  - action: fill
+    intent: Enter new user email
+    selector: input[name='email']
+    value: ${REHEARSE_EMAIL}
+  - action: fill
+    intent: Enter new user password
+    selector: input[name='password']
+    value: ${REHEARSE_PASSWORD}
+  - action: select
+    intent: Assign role to new user
+    selector: select[name='role']
+    value: Faculty
+  - action: click
+    intent: Submit add user form
+    selector: button:has-text('Submit')
+  - action: wait
+    intent: Wait for update
+    value: '2000'
+  - action: assert_url_contains
+    intent: Confirm no navigation away
+    value: /admin
+  - action: click
+    intent: View user details
+    selector: table tbody tr:first-child
+  - action: click
+    intent: Delete user
+    selector: button:has-text('Delete')
+  - action: click
+    intent: Confirm delete
+    selector: button:has-text('Confirm')
+  - action: assert_url_contains
+    intent: Verify admin page
+    value: /admin
+- id: j-2-oerato-7
+  name: Resume re-parsing
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database/profile/1
+    intent: Go to profile details page
+  - action: assert_url_contains
+    intent: Confirm profile page
+    value: /database/profile/
+  - action: click
+    intent: Click the 'Re-parse Resume' button
+    selector: button:has-text('Re-parse Resume')
+  - action: wait
+    intent: Wait for modal
+    value: '2000'
+  - action: click
+    intent: Click 'Confirm' in modal
+    selector: button:has-text('Confirm')
+  - action: wait
+    intent: Wait for parsing completion
+    value: '10000'
+  - action: assert_url_contains
+    intent: Confirm no navigation away
+    value: /database/profile/1
+  - action: click
+    intent: Click 'View Parsed Data'
+    selector: button:has-text('View Parsed Data')
+  - action: assert_url_contains
+    intent: Confirm profile context
+    value: /database/profile/1
+- id: j-2-oerato-8
+  name: Export faculty list
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Open the database page to view faculty profiles
+  - action: wait
+    intent: Ensure data is loaded before interacting
+    value: '3000'
+  - action: click
+    intent: Open export modal or dropdown
+    selector: button:has-text('Export')
+  - action: click
+    intent: Choose CSV as the export format
+    selector: button:has-text('CSV')
+  - action: wait
+    intent: Allow download to finish
+    value: '5000'
+  - action: assert_url_contains
+    intent: Ensure no unintended navigation occurred
+    value: /database
+  - action: click
+    intent: Open export modal to choose PDF format
+    selector: button:has-text('Export')
+  - action: click
+    intent: Choose PDF as the export format
+    selector: button:has-text('PDF')
+  - action: wait
+    intent: Allow download to finish
+    value: '5000'
+  - action: assert_url_contains
+    intent: Ensure no unintended navigation occurred
+    value: /database
+- id: j-2-oerato-9
+  name: Search by resume content
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Go to faculty database
+  - action: wait
+    intent: Wait for page load
+    value: '2000'
+  - action: click
+    intent: Focus AI search input
+    selector: input[placeholder*='AI Search']
+  - action: fill
+    intent: Enter search query
+    selector: input[placeholder*='AI Search']
+    value: machine learning in healthcare
+  - action: click
+    intent: Toggle search scope to resume content
+    selector: button[aria-label*='Resume']
+  - action: click
+    intent: Execute search
+    selector: button[type='submit']
+  - action: wait
+    intent: Wait for results
+    value: '3000'
+  - action: assert_url_contains
+    intent: Assert search executed
+    value: database
+  - action: click
+    intent: Open first profile
+    selector: .profile-card:first-child a
+  - action: wait
+    intent: Wait for profile detail
+    value: '2000'
+  - action: assert_url_contains
+    intent: Assert on profile page
+    value: /profile/
+- id: j-2-oerato-10
+  name: Recover from search failure
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Open the faculty database page
+  - action: fill
+    intent: AI search input field
+    selector: input[placeholder*='Search']
+    value: zzzznonexistent
+  - action: click
+    intent: Search submit button
+    selector: button[type='submit']
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    value: ?q=zzzznonexistent
+  - action: explore
+    intent: No results message element
+    selector: text=No results
+  - action: click
+    intent: Browse all link
+    selector: a:has-text('Browse all')
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    value: /database
+  - action: click
+    intent: First suggested query chip
+    selector: button:has-text('Computer Science')
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    value: ?q=Computer+Science
+- id: j-2-oerato-11
+  name: 'Onboarding: first login'
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Go to the main database page
+  - action: wait
+    intent: Wait for welcome modal
+    value: '3000'
+  - action: click
+    intent: Dismiss welcome modal
+    selector: button:has-text('Got it')
+  - action: hover
+    intent: View tooltip on search input
+    selector: input[placeholder*='Search']
+  - action: click
+    intent: Open first profile details
+    selector: .profile-card:first-child
+  - action: assert_url_contains
+    intent: Confirm profile detail page
+    value: /profile/
+  - action: scroll
+    intent: Scroll to parsed data sections
+    value: '500'
+  - action: click
+    intent: Go back to database list
+  - action: click
+    intent: Open add faculty form
+    selector: button:has-text('Add Faculty')
+  - action: click
+    intent: Cancel adding faculty
+    selector: button:has-text('Cancel')
+  - action: assert_url_contains
+    intent: Confirm return to database
+    value: /database
+- id: j-2-oerato-12
+  name: Check for duplicate profiles
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Open the main database page
+  - action: wait
+    intent: Wait for search input
+    value: '5000'
+  - action: click
+    intent: Focus on the AI search input
+    selector: input[placeholder*='Search']
+  - action: fill
+    intent: Enter search query to find potential duplicates
+    selector: input[placeholder*='Search']
+    value: John Smith
+  - action: press
+    intent: Submit the search query
+    value: Enter
+  - action: wait
+    intent: Wait for results
+    value: '3000'
+  - action: assert_url_contains
+    url: /database
+    intent: Check URL stays on /database
+  - action: explore
+    intent: Look for duplicate profile in search results
+  - action: click
+    intent: Open add faculty form
+    selector: button:has-text('Add Faculty')
+  - action: fill
+    intent: Enter new faculty name
+    selector: input[name='name']
+    value: Jane Doe
+  - action: click
+    intent: Submit the new faculty form
+    selector: button:has-text('Submit')
+  - action: wait
+    intent: Wait for update
+    value: '3000'
+  - action: assert_url_contains
+    url: /database
+    intent: Confirm no unexpected navigation
+- id: j-3-admin-1
+  name: Search for faculty profiles
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Open the main database page to search faculty profiles
+  - action: click
+    intent: Focus the AI search input to type a query
+    selector: input[placeholder*='Search']
+  - action: fill
+    intent: Enter search term to find faculty by expertise
+    selector: input[placeholder*='Search']
+    value: machine learning
+  - action: press
+    intent: Submit the search query
+    selector: input[placeholder*='Search']
+    value: Enter
+  - action: wait
+    intent: Allow time for API response and UI update
+    value: '3000'
+  - action: assert_url_contains
+    intent: Confirm no unexpected navigation occurred
+    value: /database
+  - action: click
+    intent: Filter search results by department
+    selector: select[aria-label*='Department']
+  - action: select
+    intent: Apply department filter to narrow results
+    selector: select[aria-label*='Department']
+    value: Computer Science
+  - action: wait
+    intent: Allow UI to update
+    value: '2000'
+  - action: click
+    intent: Sort results by name
+    selector: select[aria-label*='Sort']
+  - action: select
+    intent: Sort faculty profiles alphabetically by name
+    selector: select[aria-label*='Sort']
+    value: Name
+  - action: wait
+    intent: Allow UI to update
+    value: '2000'
+  - action: click
+    intent: Open profile details page
+    selector: .profile-card:first-child
+  - action: assert_url_contains
+    intent: Confirm navigation to profile details
+    value: /profile/
+- id: j-3-admin-2
+  name: View profile details
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database/profile/1
+    intent: Open profile detail page
+  - action: assert_url_contains
+    intent: Confirm profile detail page
+    value: /database/profile/
+  - action: wait
+    intent: Wait for profile content
+    value: '3000'
+  - action: scroll
+    intent: Scroll to Resume section
+  - action: assert_url_contains
+    intent: Verify Resume section exists
+    selector: h2:has-text('Resume')
+    value: Resume
+  - action: click
+    intent: Open Publications section
+    selector: button:has-text('Publications')
+  - action: wait
+    intent: Wait for publications
+    value: '2000'
+  - action: assert_url_contains
+    intent: Verify publications exist
+    selector: .publication-item
+  - action: scroll
+    intent: Scroll to top
+  - action: assert_url_contains
+    intent: Verify faculty name
+    selector: h1.profile-name
+    value: Dr. Jane Smith
+- id: j-3-admin-3
+  name: Add new faculty profile
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Go to the main database page to view faculty profiles
+  - action: click
+    intent: Open the modal for adding a new faculty profile
+    selector: button:has-text('+ Add Faculty')
+  - action: fill
+    intent: Fill in the name field in the add faculty form
+    selector: input[name='name']
+    value: Dr. Jane Smith
+  - action: fill
+    intent: Fill in the email field
+    selector: input[name='email']
+    value: jane.smith@university.edu
+  - action: fill
+    intent: Fill in the department field
+    selector: input[name='department']
+    value: Computer Science
+  - action: fill
+    intent: Fill in the title field
+    selector: input[name='title']
+    value: Associate Professor
+  - action: click
+    intent: Open file picker to upload a resume for parsing
+    selector: button:has-text('Upload Resume')
+  - action: fill
+    intent: Upload the resume file
+    selector: input[type='file']
+    value: /path/to/resume.pdf
+  - action: wait
+    intent: Allow time for parsing to complete
+    value: '5000'
+  - action: click
+    intent: Submit the form and add the faculty member to the database
+    selector: button:has-text('Save')
+  - action: assert_url_contains
+    intent: Confirm no unexpected navigation
+    value: /database
+  - action: wait
+    intent: Allow UI to refresh with new data
+    value: '2000'
+  - action: click
+    intent: Open the profile detail page to verify parsed data
+    selector: text=Dr. Jane Smith
+  - action: assert_url_contains
+    intent: Confirm navigation to profile detail
+    value: /database/profile/
+- id: j-3-admin-4
+  name: Edit existing faculty profile
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database/profile/1
+    intent: Go to a specific faculty profile page
+  - action: click
+    intent: Click the Edit button on the profile page
+    selector: button:has-text('Edit')
+  - action: fill
+    intent: Fill the email input field with a new email
+    selector: input[name='email']
+    value: john.doe@newuniversity.edu
+  - action: fill
+    intent: Fill the phone input field with a new phone number
+    selector: input[name='phone']
+    value: +1-555-123-4567
+  - action: click
+    intent: Click the Save button to persist edits
+    selector: button:has-text('Save')
+  - action: assert_url_contains
+    intent: Check that we are back on the profile page
+    value: /database/profile/1
+  - action: wait
+    intent: Wait for save confirmation
+    value: '2000'
+  - action: assert_url_contains
+    intent: Verify the email update is reflected
+    selector: text=john.doe@newuniversity.edu
+    value: john.doe@newuniversity.edu
+- id: j-3-admin-5
+  name: Delete faculty profile
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database/profile/123
+    intent: Go to the specific faculty profile that needs to be deleted.
+  - action: wait
+    intent: Wait for page load
+    value: '2000'
+  - action: click
+    intent: Click the Delete button on the profile page.
+    selector: button:has-text('Delete')
+  - action: wait
+    intent: Wait for modal to open
+    value: '1000'
+  - action: click
+    intent: Click the Confirm button in the deletion confirmation modal.
+    selector: button:has-text('Confirm')
+  - action: wait
+    intent: Wait for redirect
+    value: '3000'
+  - action: assert_url_contains
+    intent: Assert that we are on the database page
+    value: /database
+  - action: wait
+    intent: Wait for list update
+    value: '2000'
+  - action: explore
+    intent: Search for the deleted faculty name to verify absence.
+    selector: input[placeholder*='Search']
+    value: John Doe
+- id: j-3-admin-6
+  name: Manage user access (admin panel)
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/admin
+    intent: Go to admin panel
+  - action: wait
+    intent: Wait for table
+    value: '3000'
+  - action: assert_url_contains
+    value: /admin
+  - action: click
+    intent: Click Add User button
+    selector: button:has-text('Add User')
+  - action: wait
+    intent: Wait for modal
+    value: '2000'
+  - action: fill
+    intent: Fill email input
+    selector: input[type='email']
+    value: ${REHEARSE_EMAIL}
+  - action: fill
+    intent: Fill password input
+    selector: input[type='password']
+    value: ${REHEARSE_PASSWORD}
+  - action: select
+    intent: Select role dropdown
+    selector: select[name='role']
+    value: admin
+  - action: click
+    intent: Click Save button
+    selector: button:has-text('Save')
+  - action: wait
+    intent: Wait for update
+    value: '3000'
+  - action: assert_url_contains
+    value: /admin
+  - action: click
+    intent: Click delete button for new user
+    selector: tr:last-child button:has-text('Delete')
+  - action: wait
+    intent: Wait for deletion
+    value: '2000'
+- id: j-3-admin-7
+  name: Review parsing errors
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Go to the main database page to start reviewing parsing errors.
+  - action: click
+    intent: Open notification panel to see parsing error alerts.
+    selector: '[aria-label=''Notifications'']'
+  - action: assert_url_contains
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Check that we are still on the database page.
+  - action: click
+    intent: Navigate to the profile with parsing error.
+    selector: .notification-item:has-text('parsing failed')
+  - action: assert_url_contains
+    url: https://faculty-dashboard-eight.vercel.app/database/profile/
+    intent: Confirm we are on a profile detail page.
+  - action: click
+    intent: Retry parsing the resume for this profile.
+    selector: button:has-text('Retry Parsing')
+  - action: wait
+    intent: Allow time for the API call to finish.
+    value: '5000'
+  - action: click
+    intent: Return to the database to check for other errors.
+    selector: a:has-text('Back to Database')
+  - action: assert_url_contains
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Confirm navigation.
+  - action: click
+    intent: Filter the list to see all profiles with parsing issues.
+    selector: button:has-text('Error')
+  - action: assert_url_contains
+    url: https://faculty-dashboard-eight.vercel.app/database?filter=error
+    intent: Confirm filter is applied.
+  - action: click
+    intent: Open a profile with parsing error to review.
+    selector: .profile-card:first-child
+  - action: assert_url_contains
+    url: https://faculty-dashboard-eight.vercel.app/database/profile/
+    intent: Confirm navigation.
+  - action: click
+    intent: Retry parsing for this profile.
+    selector: button:has-text('Retry Parsing')
+- id: j-3-admin-8
+  name: Export faculty data
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Open the main database page
+  - action: wait
+    intent: Wait for content to render
+    value: '3000'
+  - action: click
+    intent: Click the Export button, typically located near the search bar or top
+      of the table
+    selector: button:has-text('Export')
+  - action: click
+    intent: Click the CSV option in the dropdown
+    selector: button:has-text('CSV')
+  - action: wait
+    intent: Wait for file download
+    value: '5000'
+  - action: assert_url_contains
+    intent: Check URL remains /database
+    value: /database
+  - action: click
+    intent: Open export dropdown again
+    selector: button:has-text('Export')
+  - action: click
+    intent: Click the PDF option
+    selector: button:has-text('PDF')
+  - action: wait
+    intent: Wait for file download
+    value: '5000'
+- id: j-3-admin-9
+  name: Troubleshoot repeated GET requests
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Access the main database view
+  - action: click
+    intent: Open browser developer tools
+  - action: click
+    intent: Switch to Network tab to monitor requests
+  - action: click
+    intent: Filter network requests to show only XHR/fetch calls
+  - action: click
+    intent: Clear previous network logs for a fresh capture
+  - action: click
+    intent: Focus on the AI search input
+    selector: input[placeholder*='Search']
+  - action: fill
+    intent: Enter search query to trigger API calls
+    selector: input[placeholder*='Search']
+    value: machine learning
+  - action: wait
+    intent: Allow time for API calls to be sent and captured
+    value: '3000'
+  - action: click
+    intent: Inspect the first request's headers and response
+  - action: assert_url_contains
+    intent: Confirm we are inspecting the correct API call
+    value: /api/search
+  - action: click
+    intent: Switch to Console tab to check for warnings or errors
+  - action: assert_url_contains
+    intent: Identify potential caching issues or repeated calls
+    value: duplicate
+  - action: click
+    intent: Count repeated requests to the same endpoint
+  - action: assert_url_contains
+    intent: Confirm the repeated request issue
+    value: /api/search
+- id: j-3-admin-10
+  name: Check for missing accessibility labels
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Open the database page to start auditing accessibility labels.
+  - action: wait
+    intent: Ensure all buttons and controls are present before inspection.
+    value: '3000'
+  - action: click
+    intent: Focus the search input to check its aria-label.
+    selector: input[placeholder*='Search']
+  - action: assert_url_contains
+    intent: Confirm no navigation occurred.
+    value: /database
+  - action: explore
+    intent: Check if the search input has a proper aria-label for screen readers.
+    selector: input[placeholder*='Search']
+  - action: click
+    intent: Open the modal to inspect its buttons for aria-labels.
+    selector: button:has-text('Add Faculty')
+  - action: wait
+    intent: Ensure modal is rendered.
+    value: '2000'
+  - action: explore
+    intent: Check if the close button has an accessible label.
+    selector: button[aria-label='Close']
+  - action: click
+    intent: Close the modal to return to the main view.
+    selector: button[aria-label='Close']
+  - action: click
+    intent: Navigate to profile details page to inspect buttons there.
+    selector: table tbody tr:first-child a
+  - action: wait
+    intent: Ensure all elements are rendered.
+    value: '2000'
+  - action: explore
+    intent: Check if the edit button has an accessible label.
+    selector: button:has-text('Edit')
+  - action: assert_url_contains
+    intent: Confirm navigation to profile details.
+    value: /profile/
+- id: j-model-0--1
+  name: Search for colleagues by expertise
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Go to the main database page to access AI search.
+  - action: fill
+    intent: Enter search text into the AI search input field.
+    selector: input[placeholder*='Search']
+    value: machine learning
+  - action: click
+    intent: Submit the search query.
+    selector: button[type='submit']
+  - action: wait
+    intent: Wait for the results list to update.
+    value: '2000'
+  - action: assert_url_contains
+    intent: Check that the search is reflected in the URL.
+    value: machine+learning
+  - action: click
+    intent: Open the department filter dropdown.
+    selector: select[name='department']
+  - action: select
+    intent: Filter results by Computer Science department.
+    selector: select[name='department']
+    value: Computer Science
+  - action: wait
+    intent: Wait for the list to update after filtering.
+    value: '1000'
+  - action: click
+    intent: Open the profile details page.
+    selector: .profile-card:first-child a
+  - action: assert_url_contains
+    intent: Check that we are on a profile detail page.
+    value: /profile/
+  - action: assert_url_contains
+    intent: Check that expertise is displayed.
+    value: machine learning
+- id: j-model-0--2
+  name: View own profile details
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/login
+    intent: Go to login page
+  - action: fill
+    intent: Email input field
+    selector: input[type='email']
+    value: ${REHEARSE_EMAIL}
+  - action: fill
+    intent: Password input field
+    selector: input[type='password']
+    value: ${REHEARSE_PASSWORD}
+  - action: click
+    intent: Sign In button
+    selector: button:has-text('Sign In')
+  - action: assert_url_contains
+    value: /database
+  - action: click
+    intent: First profile link in the table
+    selector: table tbody tr:first-child a
+  - action: assert_url_contains
+    value: /profile/
+  - action: wait
+    value: '3000'
+  - action: scroll
+    intent: Scroll to parsed resume sections
+  - action: click
+    intent: Edit Profile button
+    selector: button:has-text('Edit Profile')
+  - action: dismiss
+    intent: Cancel button in edit modal
+    selector: button:has-text('Cancel')
+- id: j-model-0--3
+  name: Browse all faculty profiles
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Go to the main database page to browse faculty profiles.
+  - action: wait
+    intent: Wait for the list of faculty profiles to be visible.
+    value: '3000'
+  - action: assert_url_contains
+    intent: Confirm we are on the correct page.
+    value: /database
+  - action: scroll
+    intent: Scroll through the list to discover new colleagues.
+    value: '500'
+  - action: click
+    intent: Open the sort dropdown to select a different sort option.
+    selector: select[aria-label='Sort by']
+  - action: select
+    intent: Sort the faculty list by name.
+    selector: select[aria-label='Sort by']
+    value: name
+  - action: click
+    intent: Open the profile details page for a specific faculty member.
+    selector: .profile-card:first-child
+  - action: assert_url_contains
+    intent: Confirm we are on a profile detail page.
+    value: /profile/
+  - action: click
+    intent: Go back to the faculty list.
+  - action: click
+    intent: Navigate to the next page of faculty profiles.
+    selector: button[aria-label='Next page']
+  - action: assert_url_contains
+    intent: Confirm pagination worked.
+    value: page=2
+  - action: click
+    intent: Return to the first page of profiles.
+    selector: button[aria-label='Previous page']
+- id: j-model-0--4
+  name: Update own profile via resume upload
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/login
+    intent: Go to login page
+  - action: fill
+    intent: Email input field
+    selector: input[type='email']
+    value: ${REHEARSE_EMAIL}
+  - action: fill
+    intent: Password input field
+    selector: input[type='password']
+    value: ${REHEARSE_PASSWORD}
+  - action: click
+    intent: Sign In button
+    selector: button:has-text('Sign In')
+  - action: assert_url_contains
+    value: /database
+  - action: click
+    intent: My profile card
+    selector: .profile-card:first-child
+  - action: assert_url_contains
+    value: /database/profile/
+  - action: click
+    intent: Upload Resume button
+    selector: button:has-text('Upload Resume')
+  - action: fill
+    intent: File input for resume upload
+    selector: input[type='file']
+    value: /path/to/new_resume.pdf
+  - action: wait
+    value: '5000'
+  - action: assert_url_contains
+    value: /database/profile/
+  - action: click
+    intent: Research Interests field
+    selector: .editable-field:has-text('Research Interests')
+  - action: fill
+    intent: Research Interests input
+    selector: .editable-field input
+    value: Machine Learning, Natural Language Processing, AI Ethics
+  - action: click
+    intent: Save button
+    selector: button:has-text('Save')
+- id: j-model-0--5
+  name: Add a new faculty profile
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/login
+    intent: Access the application
+  - action: fill
+    intent: Email input field
+    selector: input[type='email']
+    value: ${REHEARSE_EMAIL}
+  - action: fill
+    intent: Password input field
+    selector: input[type='password']
+    value: ${REHEARSE_PASSWORD}
+  - action: click
+    intent: Sign In button
+    selector: button:has-text('Sign In')
+  - action: assert_url_contains
+    value: /database
+  - action: click
+    intent: Add Faculty button
+    selector: button:has-text('Add Faculty')
+  - action: fill
+    intent: Full Name input field
+    selector: input[name='fullName']
+    value: Dr. Jane Smith
+  - action: fill
+    intent: Email input field
+    selector: input[name='email']
+    value: jane.smith@university.edu
+  - action: fill
+    intent: Department input field
+    selector: input[name='department']
+    value: Computer Science
+  - action: fill
+    intent: Title input field
+    selector: input[name='title']
+    value: Associate Professor
+  - action: click
+    intent: Upload Resume button
+    selector: button:has-text('Upload Resume')
+  - action: fill
+    intent: File input field for resume upload
+    selector: input[type='file']
+    value: /path/to/resume.pdf
+  - action: wait
+    value: '5000'
+  - action: click
+    intent: Submit button in the add faculty form
+    selector: button:has-text('Submit')
+  - action: assert_url_contains
+    value: /database
+  - action: wait
+    value: '2000'
+- id: j-model-0--6
+  name: View colleague's profile details
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Go to the main database page to see faculty profiles
+  - action: fill
+    intent: Search for a specific colleague by name
+    selector: input[placeholder*='Search']
+    value: Jane Smith
+  - action: click
+    intent: Open the colleague's profile details page
+    selector: a:has-text('Jane Smith')
+  - action: assert_url_contains
+    intent: Confirm we are on the profile details page
+    value: /database/profile/
+  - action: wait
+    intent: Ensure all profile data is rendered
+    value: '3000'
+  - action: scroll
+    intent: View the colleague's contact information
+    selector: h2:has-text('Contact Info')
+  - action: scroll
+    intent: View the colleague's list of publications
+    selector: h2:has-text('Publications')
+- id: j-model-0--7
+  name: Filter search results by department
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Open the database page to search faculty profiles
+  - action: wait
+    intent: Wait for AI search input field to appear
+    value: '5000'
+  - action: click
+    intent: Open department filter dropdown
+    selector: select[aria-label='Department filter']
+  - action: select
+    intent: Filter results to Computer Science department
+    selector: select[aria-label='Department filter']
+    value: Computer Science
+  - action: wait
+    intent: Wait for filter to apply
+    value: '3000'
+  - action: assert_url_contains
+    intent: Check that filter is reflected in URL
+    value: department=Computer+Science
+  - action: click
+    intent: Open profile details for first result
+    selector: .profile-card:first-child
+  - action: wait
+    intent: Wait for profile details
+    value: '3000'
+  - action: assert_url_contains
+    intent: Confirm navigation to profile detail
+    value: /profile/
+  - action: click
+    intent: Return to filtered list
+    selector: button:has-text('Back to Database')
+  - action: wait
+    intent: Wait for page to load
+    value: '3000'
+  - action: assert_url_contains
+    intent: Check filter persistence
+    value: department=Computer+Science
+- id: j-model-0--8
+  name: Export own profile data
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/login
+    intent: Go to login page
+  - action: fill
+    intent: Email input field
+    selector: input[type='email']
+    value: ${REHEARSE_EMAIL}
+  - action: fill
+    intent: Password input field
+    selector: input[type='password']
+    value: ${REHEARSE_PASSWORD}
+  - action: click
+    intent: Sign In button
+    selector: button[type='submit']
+  - action: assert_url_contains
+    value: /database
+  - action: click
+    intent: Own profile card (e.g., 'Dr. Jane Smith')
+    selector: div.profile-card:first-child
+  - action: assert_url_contains
+    value: /database/profile/
+  - action: click
+    intent: Export button
+    selector: button:has-text('Export')
+  - action: click
+    intent: Format selection option (PDF)
+    selector: div.export-format-option:has-text('PDF')
+  - action: click
+    intent: Download button in export modal
+    selector: button:has-text('Download')
+  - action: wait
+    value: '5000'
+  - action: assert_url_contains
+    value: /database/profile/
+- id: j-model-0--9
+  name: Report incorrect profile data
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/login
+    intent: Open login page
+  - action: fill
+    intent: Email input field
+    selector: input[type='email']
+    value: ${REHEARSE_EMAIL}
+  - action: fill
+    intent: Password input field
+    selector: input[type='password']
+    value: ${REHEARSE_PASSWORD}
+  - action: click
+    intent: Sign In button
+    selector: button:has-text('Sign In')
+  - action: assert_url_contains
+    value: /database
+  - action: click
+    intent: First faculty profile card
+    selector: .profile-card:first-child
+  - action: assert_url_contains
+    value: /database/profile/
+  - action: click
+    intent: Report button
+    selector: button:has-text('Report')
+  - action: select
+    intent: Reason dropdown
+    selector: select[name='reason']
+    value: Incorrect contact information
+  - action: click
+    intent: Submit button
+    selector: button:has-text('Submit')
+  - action: assert_url_contains
+    value: /database/profile/
+  - action: wait
+    value: '2000'
+- id: j-model-0--10
+  name: Search by specific publication or keyword
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Open the main database page
+  - action: wait
+    intent: Ensure all elements are rendered
+    value: '3000'
+  - action: click
+    intent: Focus on the search box to type a query
+    selector: input[placeholder*='Search']
+  - action: fill
+    intent: Search for faculty who have published on 'machine learning in healthcare'
+    selector: input[placeholder*='Search']
+    value: machine learning in healthcare
+  - action: press
+    intent: Submit the search query
+    selector: input[placeholder*='Search']
+    value: Enter
+  - action: wait
+    intent: Allow API response and rendering
+    value: '2000'
+  - action: assert_url_contains
+    url: https://faculty-dashboard-eight.vercel.app/database?search=machine+learning+in+healthcare
+    intent: Confirm search is reflected in URL
+    value: search=machine+learning+in+healthcare
+  - action: click
+    intent: View the detailed profile of a faculty member
+    selector: .profile-card:first-child
+  - action: wait
+    intent: Ensure all profile data is rendered
+    value: '2000'
+  - action: assert_url_contains
+    url: https://faculty-dashboard-eight.vercel.app/database/profile/
+    intent: Confirm we are on a profile detail page
+    value: /profile/
+  - action: click
+    intent: Return to the search results list
+    selector: button:has-text('Back to Database')
+  - action: wait
+    intent: Ensure page is stable
+    value: '2000'
+  - action: assert_url_contains
+    url: https://faculty-dashboard-eight.vercel.app/database?search=machine+learning+in+healthcare
+    intent: Confirm search context is preserved
+    value: search=machine+learning+in+healthcare
+- id: j-model-0--11
+  name: Navigate to admin panel (if admin)
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/admin
+    intent: Access admin panel
+  - action: wait
+    intent: Wait for page content
+    value: '2000'
+  - action: assert_url_contains
+    intent: Confirm admin panel URL
+    value: /admin
+  - action: click
+    intent: Navigate to user management section
+    selector: a:has-text('User Management'), button:has-text('User Management')
+  - action: wait
+    intent: Wait for user list
+    value: '2000'
+  - action: assert_url_contains
+    intent: Confirm user management page
+    value: /users
+  - action: click
+    intent: Open add user form
+    selector: button:has-text('Add User')
+  - action: fill
+    intent: Enter new user email
+    selector: input[type='email']
+    value: ${REHEARSE_EMAIL}
+  - action: fill
+    intent: Enter new user password
+    selector: input[type='password']
+    value: ${REHEARSE_PASSWORD}
+  - action: click
+    intent: Submit the new user form
+    selector: button:has-text('Submit')
+  - action: wait
+    intent: Wait for form submission
+    value: '2000'
+  - action: click
+    intent: Navigate to settings section
+    selector: a:has-text('Settings'), button:has-text('Settings')
+  - action: assert_url_contains
+    intent: Confirm settings page
+    value: /settings
+  - action: click
+    intent: Save settings (no change)
+    selector: button:has-text('Save Changes')
+- id: j-model-0--12
+  name: Recover from failed resume parsing
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/login
+    intent: Open login page
+  - action: fill
+    intent: Email input field
+    selector: input[type='email']
+    value: ${REHEARSE_EMAIL}
+  - action: fill
+    intent: Password input field
+    selector: input[type='password']
+    value: ${REHEARSE_PASSWORD}
+  - action: click
+    intent: Sign In button
+    selector: button:has-text('Sign In')
+  - action: assert_url_contains
+    value: /database
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database/profile/123
+    intent: Open own profile
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    value: /profile/
+  - action: click
+    intent: Retry button
+    selector: button:has-text('Retry')
+  - action: wait
+    value: '5000'
+  - action: assert_url_contains
+    value: /profile/
+  - action: click
+    intent: Edit button
+    selector: button:has-text('Edit')
+  - action: fill
+    intent: Research Interests input field
+    selector: input[name='researchInterests']
+    value: Machine Learning, Natural Language Processing
+  - action: click
+    intent: Save button
+    selector: button:has-text('Save')
+- id: j-4-chamio-1
+  name: Daily AI search for faculty profiles
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Access the main database page to start a search
+  - action: wait
+    intent: Ensure all elements are rendered
+    value: '3000'
+  - action: assert_url_contains
+    intent: Confirm correct page
+    value: /database
+  - action: click
+    intent: Focus the search input to type a query
+    selector: input[placeholder*='Search']
+  - action: fill
+    intent: Enter search terms to find faculty with AI expertise
+    selector: input[placeholder*='Search']
+    value: machine learning
+  - action: press
+    intent: Trigger the AI search
+    selector: input[placeholder*='Search']
+    value: Enter
+  - action: wait
+    intent: Allow time for API response
+    value: '2000'
+  - action: assert_url_contains
+    intent: Ensure no navigation away
+    value: /database
+  - action: click
+    intent: View details of a faculty profile
+    selector: .profile-card:first-child
+  - action: assert_url_contains
+    intent: Confirm profile detail view
+    value: /profile/
+  - action: wait
+    intent: Ensure all data is displayed
+    value: '2000'
+  - action: assert_url_contains
+    intent: Confirm we are viewing a specific profile
+    value: /profile/
+- id: j-4-chamio-2
+  name: Add a new faculty profile with resume upload
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Go to the main database page
+  - action: click
+    intent: Open the modal to add a new faculty member
+    selector: button:has-text('+ Add Faculty')
+  - action: fill
+    intent: Fill in the first name field
+    selector: input[name='firstName']
+    value: John
+  - action: fill
+    intent: Fill in the last name field
+    selector: input[name='lastName']
+    value: Doe
+  - action: fill
+    intent: Fill in the email field
+    selector: input[name='email']
+    value: john.doe@university.edu
+  - action: fill
+    intent: Fill in the department field
+    selector: input[name='department']
+    value: Computer Science
+  - action: click
+    intent: Open file picker for resume upload
+    selector: button:has-text('Upload Resume')
+  - action: fill
+    intent: Select the resume file for upload
+    selector: input[type='file']
+    value: /path/to/resume.pdf
+  - action: wait
+    intent: Allow time for the Gemini API to parse the resume
+    value: '5000'
+  - action: click
+    intent: Submit the form and create the profile
+    selector: button:has-text('Save')
+  - action: assert_url_contains
+    intent: Confirm we are back on the database page
+    value: /database
+  - action: wait
+    intent: Allow list to update
+    value: '2000'
+  - action: click
+    intent: Open the profile detail page to verify parsed data
+    selector: text=John Doe
+  - action: assert_url_contains
+    intent: Confirm navigation to profile detail
+    value: /profile/
+- id: j-4-chamio-3
+  name: View profile details and verify parsed data
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Go to the main database page to see list of faculty profiles
+  - action: wait
+    intent: Wait for the list of faculty profiles to be visible
+    value: '5000'
+  - action: click
+    intent: Click on the first profile link or card
+    selector: .profile-card:first-child a
+  - action: assert_url_contains
+    intent: Check that we are on a profile detail page
+    value: /profile/
+  - action: wait
+    intent: Wait for profile details section to appear
+    value: '3000'
+  - action: scroll
+    intent: Scroll to the parsed resume section
+    selector: .parsed-resume-section
+  - action: assert_url_contains
+    intent: Verify parsed data is complete
+  - action: click
+    intent: Click on the Edit button for the profile
+    selector: button:has-text('Edit')
+  - action: wait
+    intent: Wait for edit form to be visible
+    value: '2000'
+  - action: dismiss
+    intent: Close the edit modal without saving
+    selector: button:has-text('Cancel')
+  - action: assert_url_contains
+    intent: Confirm we returned to profile detail
+    value: /profile/
+- id: j-4-chamio-4
+  name: Admin user management
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/admin
+    intent: Open admin page
+  - action: assert_url_contains
+    intent: Check URL contains /admin
+    value: /admin
+  - action: wait
+    intent: Wait for table or list of users
+    value: '3000'
+  - action: click
+    intent: Open role dropdown for first user
+    selector: table tbody tr:first-child select
+  - action: select
+    intent: Change role to Admin
+    selector: table tbody tr:first-child select
+    value: Admin
+  - action: click
+    intent: Save role change
+    selector: button:has-text('Save Changes')
+  - action: wait
+    intent: Wait for success toast or message
+    value: '2000'
+  - action: assert_url_contains
+    intent: Check URL still /admin
+    value: /admin
+  - action: click
+    intent: Open add user modal
+    selector: button:has-text('Add User')
+  - action: fill
+    intent: Fill email input
+    selector: input[type='email']
+    value: ${REHEARSE_EMAIL}
+  - action: fill
+    intent: Fill password input
+    selector: input[type='password']
+    value: ${REHEARSE_PASSWORD}
+  - action: select
+    intent: Select role for new user
+    selector: div[role='dialog'] select
+    value: Faculty
+  - action: click
+    intent: Submit new user
+    selector: div[role='dialog'] button:has-text('Submit')
+  - action: wait
+    intent: Wait for new user row
+    value: '2000'
+- id: j-4-chamio-5
+  name: Filter and sort faculty database
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Open the main database page to view faculty profiles
+  - action: wait
+    intent: Ensure the list is rendered before interacting
+    value: '3000'
+  - action: click
+    intent: Click on the department filter select element
+    selector: select[aria-label='Department filter']
+  - action: select
+    intent: Choose Computer Science department to filter profiles
+    selector: select[aria-label='Department filter']
+    value: Computer Science
+  - action: wait
+    intent: Allow time for the list to refresh
+    value: '2000'
+  - action: assert_url_contains
+    intent: Check that filter is reflected in URL
+    value: department=Computer+Science
+  - action: click
+    intent: Click on the expertise filter select element
+    selector: select[aria-label='Expertise filter']
+  - action: select
+    intent: Further narrow down by expertise
+    selector: select[aria-label='Expertise filter']
+    value: Machine Learning
+  - action: wait
+    intent: Allow time for the list to refresh
+    value: '2000'
+  - action: click
+    intent: Click on the sort select element to change sorting
+    selector: select[aria-label='Sort by']
+  - action: select
+    intent: Sort profiles alphabetically by name
+    selector: select[aria-label='Sort by']
+    value: name_asc
+  - action: wait
+    intent: Allow time for the list to reorder
+    value: '2000'
+  - action: assert_url_contains
+    intent: Check that sort is reflected in URL
+    value: sort=name_asc
+  - action: click
+    intent: Reset filters to see all profiles again
+    selector: button:has-text('Clear Filters')
+- id: j-4-chamio-6
+  name: Export faculty data
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Open the faculty database page
+  - action: wait
+    intent: Wait for page load
+    value: '3000'
+  - action: click
+    intent: Click the Export button
+    selector: button:has-text('Export')
+  - action: click
+    intent: Select CSV format
+    selector: input[type='radio'][value='csv']
+  - action: click
+    intent: Click Download button
+    selector: button:has-text('Download')
+  - action: wait
+    intent: Wait for download
+    value: '5000'
+  - action: assert_url_contains
+    intent: Assert URL unchanged
+    value: /database
+- id: j-4-chamio-7
+  name: Onboard a new team member to the dashboard
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Go to the main database page
+  - action: assert_url_contains
+    value: /database
+  - action: click
+    intent: Open the tour guide for first-time users
+    selector: button[aria-label='Help']
+  - action: click
+    intent: Advance through the tour guide
+    selector: button:has-text('Next')
+  - action: click
+    intent: Dismiss the tour guide and start using the dashboard
+    selector: button:has-text('Skip Tour')
+  - action: click
+    intent: Focus the search input to type a query
+    selector: input[placeholder*='Search']
+  - action: fill
+    intent: Search for faculty with expertise in machine learning
+    selector: input[placeholder*='Search']
+    value: machine learning
+  - action: press
+    intent: Submit the search query
+    value: Enter
+  - action: wait
+    intent: Allow time for results to appear
+    value: '2000'
+  - action: click
+    intent: View details of the first faculty profile
+    selector: .profile-card:first-child
+  - action: assert_url_contains
+    value: /profile/
+  - action: wait
+    intent: Ensure all parsed resume data is visible
+    value: '2000'
+  - action: assert_url_contains
+    value: /profile/
+- id: j-4-chamio-8
+  name: Test resume parsing with various file formats
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Access the database page to start the journey
+  - action: click
+    intent: Open the modal to add a new faculty member
+    selector: button:has-text('+ Add Faculty')
+  - action: fill
+    intent: Name input field in the add faculty form
+    selector: input[name='name']
+    value: Dr. Jane Smith
+  - action: fill
+    intent: Email input field in the add faculty form
+    selector: input[name='email']
+    value: jane.smith@university.edu
+  - action: click
+    intent: Upload resume button in the add faculty modal
+    selector: button:has-text('Upload Resume')
+  - action: fill
+    intent: File input for resume upload
+    selector: input[type='file']
+    value: test_resume.pdf
+  - action: wait
+    intent: Wait for parsing progress bar to finish
+    value: '10000'
+  - action: click
+    intent: Submit button in the add faculty modal
+    selector: button:has-text('Submit')
+  - action: assert_url_contains
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Check that we are still on the database page after submission
+    value: /database
+  - action: click
+    intent: Click on the profile card for Dr. Jane Smith
+    selector: text=Dr. Jane Smith
+  - action: assert_url_contains
+    intent: Check that we are on a profile detail page
+    value: /profile/
+  - action: wait
+    intent: Wait for parsed resume sections to appear
+    value: '5000'
+  - action: assert_url_contains
+    intent: Check that parsed resume data is displayed
+    selector: text=Education
+- id: j-4-chamio-9
+  name: Check for duplicate profiles
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Open the database page to search for faculty profiles
+  - action: wait
+    intent: Ensure all elements are rendered
+    value: '3000'
+  - action: fill
+    intent: Search for an existing faculty member (e.g., 'John Smith')
+    selector: input[placeholder*='Search']
+    value: John Smith
+  - action: press
+    intent: Trigger the search
+    selector: input[placeholder*='Search']
+    value: Enter
+  - action: wait
+    intent: Allow time for AI search to complete
+    value: '2000'
+  - action: assert_url_contains
+    intent: Confirm search is performed on the same page
+    value: /database
+  - action: click
+    intent: Open the profile of the found faculty member
+    selector: div.profile-card:first-child
+  - action: wait
+    intent: Ensure profile information is visible
+    value: '2000'
+  - action: assert_url_contains
+    intent: Confirm navigation to profile detail page
+    value: /profile/
+  - action: click
+    intent: Go back to search results to continue checking duplicates
+  - action: wait
+    intent: Ensure page is ready
+    value: '2000'
+  - action: click
+    intent: Open the add faculty form
+    selector: button:has-text('+ Add Faculty')
+  - action: wait
+    intent: Ensure modal is fully loaded
+    value: '1500'
+  - action: assert_url_contains
+    intent: Confirm no navigation away
+    value: /database
+- id: j-4-chamio-10
+  name: Edit an existing faculty profile
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database/profile/1
+    intent: Go to profile page for faculty member with ID 1
+  - action: click
+    intent: Edit button on profile page
+    selector: button:has-text('Edit')
+  - action: fill
+    intent: Name input field in edit mode
+    selector: input[name='name']
+    value: Dr. Jane Smith
+  - action: fill
+    intent: Email input field in edit mode
+    selector: input[name='email']
+    value: jane.smith@university.edu
+  - action: click
+    intent: Save button in edit mode
+    selector: button:has-text('Save')
+  - action: assert_url_contains
+    intent: Current URL after save
+    value: /database/profile/1
+  - action: wait
+    intent: Wait for page to update
+    value: '2000'
+- id: j-4-chamio-11
+  name: Delete a faculty profile
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database/profile/1
+    intent: Go to the profile detail page
+  - action: click
+    intent: Click the Delete button on the profile page
+    selector: button:has-text('Delete')
+  - action: assert_url_contains
+    intent: Check that we are still on the profile page
+    value: /database/profile/1
+  - action: click
+    intent: Confirm deletion in the modal
+    selector: button:has-text('Confirm')
+  - action: assert_url_contains
+    intent: Check redirection after deletion
+    value: /database
+  - action: wait
+    intent: Wait for list update
+    value: '2000'
+  - action: assert_url_contains
+    intent: Assert profile is removed from the list
+    selector: text=John Doe
+    value: John Doe
+- id: j-4-chamio-12
+  name: Review dashboard analytics (if available)
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Go to the main database page to review dashboard analytics
+  - action: wait
+    intent: Ensure dynamic content is rendered
+    value: '5000'
+  - action: assert_url_contains
+    intent: Confirm navigation succeeded
+    value: /database
+  - action: explore
+    intent: Identify if analytics are present despite known gaps
+  - action: click
+    intent: Navigate to profile details page to check for analytics there
+    selector: .profile-card:first-child a, .profile-item:first-child a, table tbody
+      tr:first-child a
+  - action: wait
+    intent: Ensure profile data is displayed
+    value: '3000'
+  - action: assert_url_contains
+    intent: Confirm navigation to profile detail page
+    value: /profile/
+  - action: explore
+    intent: Check if individual profile analytics exist
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Return to dashboard to check for any hidden analytics
+  - action: scroll
+    intent: Reveal any hidden summary statistics
+    value: window.scrollTo(0, document.body.scrollHeight)
+  - action: hover
+    intent: Check for hover-triggered analytics
+    selector: button, .stats-icon, .info-icon
+  - action: assert_url_contains
+    intent: Confirm no unexpected navigation occurred
+    value: /database
+- id: j-model-1--1
+  name: Review new user registrations
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/admin
+    intent: Go to admin panel
+  - action: fill
+    intent: Email input field in admin login form
+    selector: input[type='email']
+    value: ${REHEARSE_EMAIL}
+  - action: fill
+    intent: Password input field in admin login form
+    selector: input[type='password']
+    value: ${REHEARSE_PASSWORD}
+  - action: click
+    intent: Login button
+    selector: button[type='submit']
+  - action: assert_url_contains
+    url: /admin
+  - action: click
+    intent: User Registrations link in admin sidebar
+    selector: a[href*='registrations']
+  - action: click
+    intent: Approve button for first pending user
+    selector: button[aria-label='Approve user']
+  - action: click
+    intent: Confirm approval button in modal
+    selector: button:has-text('Yes, Approve')
+  - action: wait
+    intent: Wait for 2000ms
+    value: '2000'
+  - action: assert_url_contains
+    url: /admin/registrations
+  - action: click
+    intent: Reject button for second pending user
+    selector: button[aria-label='Reject user']
+  - action: fill
+    intent: Rejection reason input in modal
+    selector: textarea[name='rejectionReason']
+    value: Incomplete profile information
+  - action: click
+    intent: Submit Rejection button in modal
+    selector: button:has-text('Submit Rejection')
+  - action: assert_url_contains
+    url: /admin/registrations
+- id: j-model-1--2
+  name: Monitor database health
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Access the faculty database as admin
+  - action: wait
+    intent: Ensure all profiles are rendered
+    value: '5000'
+  - action: click
+    intent: Open filter dropdown to filter by parsing status
+    selector: button:has-text('Filter')
+  - action: select
+    intent: Filter profiles that have parsing errors
+    selector: select[aria-label='Filter by parsing status']
+    value: Parsing Error
+  - action: assert_url_contains
+    intent: Confirm filter is applied
+    value: ?status=parsing_error
+  - action: click
+    intent: Inspect a problematic profile
+    selector: table tbody tr:first-child
+  - action: assert_url_contains
+    intent: Confirm we are on a profile page
+    value: /database/profile/
+  - action: scroll
+    intent: Check for missing data or errors
+    selector: div.profile-details
+    value: '0'
+  - action: click
+    intent: Open edit mode to correct data
+    selector: button:has-text('Edit')
+  - action: fill
+    intent: Fix missing data
+    selector: input[name='email']
+    value: fixme@example.com
+  - action: click
+    intent: Save changes to the profile
+    selector: button:has-text('Save')
+  - action: wait
+    intent: Confirm save was successful
+    value: '3000'
+  - action: click
+    intent: Return to the main database view
+    selector: a:has-text('Back to Database')
+  - action: assert_url_contains
+    intent: Confirm navigation
+    value: /database
+- id: j-model-1--3
+  name: Add new faculty profile manually
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Go to the main database page
+  - action: click
+    intent: Open the add faculty modal
+    selector: button:has-text('+ Add Faculty')
+  - action: fill
+    intent: Fill the name input field
+    selector: input[name='name']
+    value: Dr. Jane Smith
+  - action: fill
+    intent: Fill the email input field
+    selector: input[name='email']
+    value: jane.smith@university.edu
+  - action: fill
+    intent: Fill the department input field
+    selector: input[name='department']
+    value: Computer Science
+  - action: fill
+    intent: Fill the title input field
+    selector: input[name='title']
+    value: Professor
+  - action: click
+    intent: Open file upload dialog for resume
+    selector: button:has-text('Upload Resume')
+  - action: fill
+    intent: Upload the resume file
+    selector: input[type='file']
+    value: /path/to/resume.pdf
+  - action: wait
+    intent: Wait for parsing to finish
+    value: '5000'
+  - action: click
+    intent: Submit the form and add the faculty member
+    selector: button:has-text('Save')
+  - action: wait
+    intent: Wait for list refresh
+    value: '2000'
+  - action: assert_url_contains
+    intent: Confirm navigation did not change
+    value: /database
+  - action: click
+    intent: Open profile details
+    selector: text=Dr. Jane Smith
+  - action: assert_url_contains
+    intent: Confirm profile detail page
+    value: /database/profile/
+- id: j-model-1--4
+  name: Edit or delete a faculty profile
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database/profile/1
+    intent: Go to profile page with ID 1
+  - action: click
+    intent: Edit profile button
+    selector: button[aria-label='Edit profile']
+  - action: fill
+    intent: Name input field in edit form
+    selector: input[name='name']
+    value: Dr. Jane Smith
+  - action: fill
+    intent: Department input field in edit form
+    selector: input[name='department']
+    value: Computer Science
+  - action: click
+    intent: Save button in edit form
+    selector: button[type='submit']
+  - action: assert_url_contains
+    intent: Check URL contains /profile/1
+    value: /profile/1
+  - action: wait
+    intent: Wait for UI to update
+    value: '2000'
+  - action: click
+    intent: Delete profile button
+    selector: button[aria-label='Delete profile']
+  - action: click
+    intent: Confirm delete button in dialog
+    selector: button[aria-label='Confirm delete']
+  - action: assert_url_contains
+    intent: Check URL contains /database
+    value: /database
+  - action: wait
+    intent: Wait for list to update
+    value: '2000'
+- id: j-model-1--5
+  name: Search for a specific faculty profile
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Go to the main database page
+  - action: wait
+    intent: Ensure page elements are rendered
+    value: '3000'
+  - action: click
+    intent: Focus on the search input
+    selector: input[placeholder*='Search']
+  - action: fill
+    intent: Enter search query
+    selector: input[placeholder*='Search']
+    value: John Doe
+  - action: press
+    intent: Trigger AI search
+    selector: input[placeholder*='Search']
+    value: Enter
+  - action: wait
+    intent: Allow time for API response
+    value: '2000'
+  - action: assert_url_contains
+    intent: Confirm no navigation away
+    value: /database
+  - action: click
+    intent: Open profile details
+    selector: .profile-card:first-child
+  - action: assert_url_contains
+    intent: Confirm profile detail page
+    value: /profile/
+  - action: wait
+    intent: Ensure all data is rendered
+    value: '2000'
+  - action: assert_url_contains
+    intent: Verify journey end
+    value: /profile/
+- id: j-model-1--6
+  name: View profile details and parsed resume
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database/profile/1
+    intent: Open a faculty profile to review detailed information and parsed resume
+      data.
+  - action: wait
+    intent: Wait for page load.
+    value: '3000'
+  - action: assert_url_contains
+    intent: Check URL contains profile ID.
+    value: /profile/1
+  - action: click
+    intent: Click on the 'Resume Data' tab.
+    selector: button:has-text('Resume Data')
+  - action: wait
+    intent: Wait for resume data.
+    value: '2000'
+  - action: assert_url_contains
+    intent: Check URL unchanged.
+    value: /profile/1
+  - action: scroll
+    intent: Scroll to bottom of resume data.
+    selector: .resume-data-section
+  - action: assert_url_contains
+    intent: Check URL unchanged after scroll.
+    value: /profile/1
+  - action: click
+    intent: Click on the 'Profile Details' tab.
+    selector: button:has-text('Profile Details')
+  - action: wait
+    intent: Wait for profile details.
+    value: '2000'
+  - action: assert_url_contains
+    intent: Check URL unchanged.
+    value: /profile/1
+- id: j-model-1--7
+  name: Filter faculty profiles by criteria
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Go to the database page
+  - action: wait
+    intent: Wait for page load
+    value: '5000'
+  - action: click
+    intent: Open department filter dropdown
+    selector: select#department-filter
+  - action: select
+    intent: Select department filter option
+    selector: select#department-filter
+    value: Computer Science
+  - action: click
+    intent: Open expertise filter dropdown
+    selector: select#expertise-filter
+  - action: select
+    intent: Select expertise filter option
+    selector: select#expertise-filter
+    value: Artificial Intelligence
+  - action: wait
+    intent: Wait for filter update
+    value: '3000'
+  - action: assert_url_contains
+    intent: Check URL for filter parameters
+    value: department=Computer+Science&expertise=Artificial+Intelligence
+  - action: click
+    intent: Clear all filters
+    selector: button.clear-filters
+  - action: wait
+    intent: Wait for reset
+    value: '3000'
+  - action: assert_url_contains
+    intent: Check URL for no filter parameters
+    value: /database
+- id: j-model-1--8
+  name: Handle failed resume parsing
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Go to database page
+  - action: click
+    intent: Open profile details for John Doe
+    selector: a[href*='/profile/']
+  - action: assert_url_contains
+    intent: Check URL contains /profile/
+    value: /profile/
+  - action: wait
+    intent: Wait for page load
+    value: '3000'
+  - action: click
+    intent: Click Re-parse button
+    selector: button:has-text('Re-parse')
+  - action: wait
+    intent: Wait for modal
+    value: '2000'
+  - action: click
+    intent: Open file picker
+    selector: input[type='file']
+  - action: fill
+    intent: Upload file
+    selector: input[type='file']
+    value: resume.pdf
+  - action: wait
+    intent: Wait for parsing
+    value: '5000'
+  - action: click
+    intent: Save profile changes
+    selector: button:has-text('Save')
+- id: j-model-1--9
+  name: Audit user activity logs
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/admin
+    intent: Open admin panel
+  - action: fill
+    intent: Email input field
+    selector: input[type='email']
+    value: ${REHEARSE_EMAIL}
+  - action: fill
+    intent: Password input field
+    selector: input[type='password']
+    value: ${REHEARSE_PASSWORD}
+  - action: click
+    intent: Login button
+    selector: button[type='submit']
+  - action: assert_url_contains
+    value: /admin
+  - action: click
+    intent: Activity Logs navigation link
+    selector: a[href*='activity-logs']
+  - action: assert_url_contains
+    value: /activity-logs
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: Date range picker input
+    selector: input[type='date']
+  - action: fill
+    intent: Start date input
+    selector: input[placeholder='Start date']
+    value: '2025-01-01'
+  - action: fill
+    intent: End date input
+    selector: input[placeholder='End date']
+    value: '2025-12-31'
+  - action: click
+    intent: Apply filter button
+    selector: button:has-text('Apply')
+  - action: wait
+    value: '1000'
+  - action: assert_url_contains
+    value: startDate=2025-01-01
+- id: j-model-1--10
+  name: Reset a user's password
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/admin
+    intent: Go to admin page
+  - action: fill
+    intent: Email input field
+    selector: input[type='email']
+    value: ${REHEARSE_EMAIL}
+  - action: fill
+    intent: Password input field
+    selector: input[type='password']
+    value: ${REHEARSE_PASSWORD}
+  - action: click
+    intent: Login button
+    selector: button[type='submit']
+  - action: assert_url_contains
+    url: /admin
+  - action: wait
+    intent: User management table
+    value: '2000'
+  - action: click
+    intent: User row for faculty member
+    selector: tr:has-text('${REHEARSE_EMAIL}')
+  - action: click
+    intent: Reset Password button
+    selector: button:has-text('Reset Password')
+  - action: wait
+    intent: Reset password modal
+    value: '1000'
+  - action: click
+    intent: Send Reset Email button
+    selector: button:has-text('Send Reset Email')
+  - action: assert_url_contains
+    url: /admin
+  - action: click
+    intent: Close button on success message
+    selector: button:has-text('Close')
+- id: j-model-1--11
+  name: Export database to CSV
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Go to the faculty database page
+  - action: assert_url_contains
+    intent: Confirm navigation to database page
+    value: /database
+  - action: click
+    intent: Initiate CSV export
+    selector: button:has-text('Export CSV')
+  - action: wait
+    intent: Wait for CSV file generation
+    value: '5000'
+  - action: assert_url_contains
+    intent: Confirm no unexpected navigation
+    value: /database
+- id: j-model-1--12
+  name: Onboard a new admin
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/admin
+    intent: Go to admin panel
+  - action: fill
+    intent: Email input field
+    selector: input[type='email']
+    value: ${REHEARSE_EMAIL}
+  - action: fill
+    intent: Password input field
+    selector: input[type='password']
+    value: ${REHEARSE_PASSWORD}
+  - action: click
+    intent: Login button
+    selector: button[type='submit']
+  - action: assert_url_contains
+    url: /admin
+  - action: click
+    intent: User Management tab
+    selector: a[href='/admin/users']
+  - action: assert_url_contains
+    url: /admin/users
+  - action: click
+    intent: Add User button
+    selector: button:has-text('Add User')
+  - action: fill
+    intent: New user email input
+    selector: input[name='email']
+    value: newadmin@example.com
+  - action: select
+    intent: Role dropdown
+    selector: select[name='role']
+    value: admin
+  - action: click
+    intent: Save button in add user modal
+    selector: button:has-text('Save')
+  - action: wait
+    intent: Success toast
+    value: '2000'
+  - action: assert_url_contains
+    url: /admin/users
+  - action: click
+    intent: Database tab
+    selector: a[href='/admin/database']

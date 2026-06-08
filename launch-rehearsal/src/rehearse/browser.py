@@ -137,13 +137,24 @@ def _find_error_phrases(text: str) -> list[str]:
     return found
 
 
+def _origin(url: str) -> str:
+    """Return scheme + host only: https://example.com"""
+    parts = url.split("//", 1)
+    if len(parts) < 2:
+        return url.rstrip("/")
+    return parts[0] + "//" + parts[1].split("/")[0]
+
+
 def _absolute_url(base: str, href: str) -> str:
+    """Resolve href against the ORIGIN of base (not the full path)."""
     if href.startswith("http"):
         return href
-    base = base.rstrip("/")
     if href.startswith("/"):
-        return f"{base}{href}"
-    return f"{base}/{href}"
+        # Always resolve root-relative paths from the origin
+        return _origin(base) + href
+    # Relative path — resolve from base directory (strip last segment)
+    base_dir = base.rstrip("/").rsplit("/", 1)[0] if "/" in base.split("//", 1)[-1] else base.rstrip("/")
+    return f"{base_dir}/{href}"
 
 
 def _perform_open_link(
@@ -485,7 +496,8 @@ class BrowserSession:
             if step.action == "navigate":
                 if not step.url:
                     raise PreflightError("navigate step requires url")
-                response = page.goto(step.url, wait_until="domcontentloaded", timeout=timeout)
+                nav_url = _absolute_url(self.config.target_url, step.url)
+                response = page.goto(nav_url, wait_until="domcontentloaded", timeout=timeout)
                 page.wait_for_load_state("networkidle", timeout=min(timeout, 15000))
             elif step.action == "wait":
                 ms = int(step.value or step.url or "1000")
