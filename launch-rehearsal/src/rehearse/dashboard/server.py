@@ -441,7 +441,9 @@ class _Handler(BaseHTTPRequestHandler):
                 return
 
         if path == "/api/configs":
-            self._send_json(list_configs(root))
+            payload = self._require_jwt()
+            owner_id = payload["sub"] if payload else None
+            self._send_json(list_configs(root, owner_id=owner_id))
             return
 
         if path == "/api/library":
@@ -976,7 +978,12 @@ class _Handler(BaseHTTPRequestHandler):
             return
 
         if path == "/api/configs":
+            payload = self._require_jwt()
+            if not payload:
+                self._send_json({"error": "Authentication required"}, status=401)
+                return
             body = self._read_json_body()
+            body["_owner_id"] = payload["sub"]
             try:
                 result = save_config(root, body)
             except ValueError as exc:

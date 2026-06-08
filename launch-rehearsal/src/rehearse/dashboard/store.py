@@ -663,7 +663,9 @@ def save_config(artifacts_root: Path, body: dict[str, Any]) -> dict[str, Any]:
                 existing_ids.add(entry["id"])
 
     slug = config["run"]["run_id_prefix"]
-    cfg_dir = artifacts_root / "configs"
+    # Scope configs to owner — each user gets their own subdirectory
+    owner_id = str(body.get("_owner_id") or "shared").strip()
+    cfg_dir = artifacts_root / "configs" / owner_id
     # Use local timestamp from frontend (user's timezone) if provided, else UTC
     local_ts = str(body.get("localTimestamp") or "").strip()
     import re as _re
@@ -690,12 +692,40 @@ def save_config(artifacts_root: Path, body: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def list_configs(artifacts_root: Path) -> list[dict[str, Any]]:
+def list_configs(artifacts_root: Path, owner_id: str | None = None) -> list[dict[str, Any]]:
     items: list[dict[str, Any]] = []
     cfg_dir = artifacts_root / "configs"
+
     if cfg_dir.is_dir():
+        # User-scoped directory (new layout)
+        if owner_id:
+            user_dir = cfg_dir / owner_id
+            if user_dir.is_dir():
+                for p in sorted(user_dir.glob("*.yaml"), key=lambda x: x.stat().st_mtime, reverse=True):
+                    items.append({"id": p.stem, "path": str(p), "name": p.stem, "source": "saved"})
+
+        # Legacy flat configs — only include workspace-linked ones for this user
+        # (shared configs like lr-self, argyle that predate per-user scoping)
+        if owner_id:
+            from rehearse.dashboard.workspace_store import get_workspaces_for_user
+            try:
+                workspaces = get_workspaces_for_user(artifacts_root, owner_id)
+                linked_ids = {
+                    Path(cp).stem
+                    for ws in workspaces
+                    for cp in [ws.get("configPath") or ws.get("config_path") or ""]
+                    if cp
+                }
+            except Exception:
+                linked_ids = set()
+        else:
+            linked_ids = set()
+
         for p in sorted(cfg_dir.glob("*.yaml"), key=lambda x: x.stat().st_mtime, reverse=True):
-            items.append({"id": p.stem, "path": str(p), "name": p.stem, "source": "saved"})
+            if p.stem not in {i["id"] for i in items}:
+                if not owner_id or p.stem in linked_ids:
+                    items.append({"id": p.stem, "path": str(p), "name": p.stem, "source": "saved"})
+
     examples = Path(__file__).resolve().parents[2] / "examples"
     if examples.is_dir():
         for p in sorted(examples.glob("*.yaml")):
