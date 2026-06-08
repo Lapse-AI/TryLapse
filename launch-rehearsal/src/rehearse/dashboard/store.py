@@ -664,7 +664,13 @@ def save_config(artifacts_root: Path, body: dict[str, Any]) -> dict[str, Any]:
 
     slug = config["run"]["run_id_prefix"]
     cfg_dir = artifacts_root / "configs"
-    ts = datetime.utcnow().strftime("%Y%m%d-%H%M%S")
+    # Use local timestamp from frontend (user's timezone) if provided, else UTC
+    local_ts = str(body.get("localTimestamp") or "").strip()
+    import re as _re
+    if local_ts and _re.fullmatch(r"\d{8}-\d{6}", local_ts):
+        ts = local_ts
+    else:
+        ts = datetime.utcnow().strftime("%Y%m%d-%H%M%S")
     filename = f"{slug}-{ts}.yaml"
     path = cfg_dir / filename
     write_config(path, config)

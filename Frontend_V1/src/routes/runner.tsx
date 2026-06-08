@@ -24,16 +24,18 @@ function RunnerPage() {
   const { configId, pickConfig } = usePersistedConfigId();
   const [useLlm, setUseLlm] = useState(true);
 
-  // Sort timestamped configs newest-first, show all of them
+  // Sort timestamped configs newest-first
   const timestamped = [...configs.filter((c) => /\d{8}-\d{6}$/.test(c.id))]
     .sort((a, b) => b.id.localeCompare(a.id));
   const canonical = configs.filter((c) => !/\d{8}-\d{6}$/.test(c.id));
+  const latestId = timestamped[0]?.id ?? null;
   // Newest timestamped first, then canonical configs
   const displayConfigs = [...timestamped, ...canonical];
 
+  // Default: persisted pick → latest timestamped → lr-self → first
   const selectedConfig =
     configs.find((c) => c.id === configId) ??
-    timestamped[0] ?? // default to most recent save
+    (latestId ? configs.find((c) => c.id === latestId) : undefined) ??
     configs.find((c) => c.id === "lr-self") ??
     configs[0];
 
@@ -120,11 +122,12 @@ function RunnerPage() {
               onChange={(e) => pickConfig(e.target.value)}
               disabled={!configs.length}
             >
-              {displayConfigs.map((c, i) => {
-                // Format timestamped configs: "argyle · 2026-06-08 14:30"
+              {displayConfigs.map((c) => {
+                // Format: "argyle · 2026-06-08 14:30 (latest)"
                 const tsMatch = c.id.match(/^(.+)-(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})$/);
+                const isLatest = c.id === latestId;
                 const label = tsMatch
-                  ? `${tsMatch[1]} · ${tsMatch[2]}-${tsMatch[3]}-${tsMatch[4]} ${tsMatch[5]}:${tsMatch[6]}${i === 0 ? " (latest)" : ""}`
+                  ? `${tsMatch[1]} · ${tsMatch[2]}-${tsMatch[3]}-${tsMatch[4]} ${tsMatch[5]}:${tsMatch[6]}${isLatest ? " (latest)" : ""}`
                   : c.id;
                 return (
                   <option key={c.id} value={c.id}>

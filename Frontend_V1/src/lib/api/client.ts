@@ -76,7 +76,10 @@ async function apiFetch<T>(path: string, init?: RequestInit & { timeoutMs?: numb
 }
 
 export function artifactUrl(relPath: string): string {
-  const clean = relPath.replace(/^launch-rehearsal\/artifacts\//, "").replace(/^\//, "");
+  const clean = relPath
+    .replace(/^launch-rehearsal\/artifacts\//, "")
+    .replace(/^artifacts\//, "")
+    .replace(/^\//, "");
   return `${API_BASE}/files/${clean}`;
 }
 
@@ -431,6 +434,7 @@ export const api = {
     personaLens?: boolean;
     personaEnabled?: Record<string, boolean>;
     extraPersonas?: Record<string, unknown>[];
+    localTimestamp?: string; // YYYYMMDD-HHmmss in user's local timezone
   }) =>
     apiFetch<{ id: string; path: string; name: string }>("/api/configs", {
       method: "POST",

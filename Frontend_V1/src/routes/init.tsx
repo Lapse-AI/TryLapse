@@ -10,6 +10,7 @@ import { ProductIntelligencePanel } from "@/components/product-intelligence-pane
 import { JourneyDiscoveryPanel } from "@/components/journey-discovery-panel";
 import { setSelectedConfigId } from "@/lib/selected-config";
 import { useTestGroup } from "@/hooks/use-test-group";
+import { usePersistedConfigId } from "@/hooks/use-persisted-config-id";
 import { groupInitPreset } from "@/lib/test-groups";
 import { getWorkspace, type WorkspaceRecord } from "@/lib/workspace";
 import { Play, Loader2 } from "lucide-react";
@@ -148,6 +149,7 @@ function InitPage() {
   const { data: wizard } = useInitWizard();
   const saveConfig = useSaveConfig();
   const { isSignedIn, group, resolvedConfigId } = useTestGroup();
+  const { pickConfig } = usePersistedConfigId();
   const userWorkspace = getWorkspace();
   const workspaceConfigId = userWorkspace?.configPath
     ? (userWorkspace.configPath.split("/").pop()?.replace(/\.ya?ml$/, "") ?? null)
@@ -229,6 +231,11 @@ function InitPage() {
     const selectedViewports = (Object.entries(viewports) as [keyof typeof viewports, boolean][])
       .filter(([, on]) => on)
       .map(([name]) => name);
+    // Build local timestamp: YYYYMMDD-HHmmss in user's local timezone
+    const now = new Date();
+    const pad = (n: number) => String(n).padStart(2, "0");
+    const localTs = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+
     saveConfig.mutate(
       {
         targetUrl,
@@ -240,6 +247,7 @@ function InitPage() {
         excludePathPrefixes: excludePathPrefixes.trim() || undefined,
         viewports: selectedViewports.length ? selectedViewports : undefined,
         executeAllPersonasInBrowser,
+        localTimestamp: localTs,
         personaLens,
         personaEnabled: coreEnabled,
         extraPersonas: stagedExtras,
@@ -247,6 +255,7 @@ function InitPage() {
       {
         onSuccess: (result) => {
           setSelectedConfigId(result.id);
+          pickConfig(result.id); // auto-select in runner dropdown
           const fileName = `${result.id}.yaml`;
           toast.success(`Saved as ${fileName}`, {
             description: `Run with: ./rehearse run -c launch-rehearsal/artifacts/configs/${fileName} -o launch-rehearsal/artifacts/`,
