@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Panel, Chip } from "@/components/ui-bits";
 import { api } from "@/lib/api/client";
@@ -84,10 +84,18 @@ export function PersonaStudioPanel({
     }
   }, [live, targetUrl, productName, existingIds]);
 
-  // Reload suggestions when product model changes (after analysis)
   useEffect(() => {
     void loadSuggestions();
-  }, [loadSuggestions, productModel]);
+  }, [loadSuggestions]);
+
+  // When product model arrives for the first time, reload suggestions once
+  const prevModelRef = useRef<unknown>(null);
+  useEffect(() => {
+    if (productModel && productModel !== prevModelRef.current) {
+      prevModelRef.current = productModel;
+      void loadSuggestions();
+    }
+  }, [productModel, loadSuggestions]);
 
   const draftPersona = async () => {
     if (!live) {

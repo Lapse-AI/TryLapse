@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Panel, Chip } from "@/components/ui-bits";
 import { api } from "@/lib/api/client";
 import { toast } from "sonner";
@@ -55,15 +55,19 @@ export function ProductIntelligencePanel({ live, targetUrl, productName, configI
   const [showPassword, setShowPassword] = useState(false);
   const [showLlmKey, setShowLlmKey] = useState(false);
 
+  // Use ref so onModelReady is never a useEffect dependency (avoids re-render loop)
+  const onModelReadyRef = useRef(onModelReady);
+  useEffect(() => { onModelReadyRef.current = onModelReady; });
+
   useEffect(() => {
     if (!live) return;
     setLoading(true);
     api
       .getProductModel(configId)
-      .then((m) => { setModel(m); onModelReady?.(m); })
+      .then((m) => { setModel(m); onModelReadyRef.current?.(m); })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [live, configId, onModelReady]);
+  }, [live, configId]); // onModelReady intentionally excluded — ref handles it
 
   const analyze = async () => {
     if (!live || !targetUrl) {
@@ -97,7 +101,7 @@ export function ProductIntelligencePanel({ live, targetUrl, productName, configI
         ...(creds.visionApiKey ? { visionApiKey: creds.visionApiKey } : {}),
       });
       setModel(m);
-      onModelReady?.(m);
+      onModelReadyRef.current?.(m);
       toast.success(
         m.source === "llm"
           ? "Product analyzed with AI vision"

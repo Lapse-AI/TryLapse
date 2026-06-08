@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PageHeader, Panel, Chip } from "@/components/ui-bits";
 import { useInitWizard, useApiHealth, useSaveConfig, useTriggerJob } from "@/lib/api/hooks";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { api } from "@/lib/api/client";
 import { toast } from "sonner";
 import { JourneyDraftPanel } from "@/components/journey-draft-panel";
@@ -491,7 +491,7 @@ function InitPage() {
           targetUrl={targetUrl}
           productName={productName}
           configId={workspaceConfigId}
-          onModelReady={(m) => setProductModel(m)}
+          onModelReady={useCallback((m: Record<string, unknown>) => setProductModel(m), [])}
         />
 
         <PersonaStudioPanel
