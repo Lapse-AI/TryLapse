@@ -24,14 +24,18 @@ function RunnerPage() {
   const { configId, pickConfig } = usePersistedConfigId();
   const [useLlm, setUseLlm] = useState(true);
 
-  // Prefer canonical named configs over auto-generated timestamped snapshots
-  const cleanConfigs = configs
-    .filter((c) => !/\d{8}-\d{6}$/.test(c.id))
-    .concat(configs.filter((c) => /\d{8}-\d{6}$/.test(c.id)).slice(0, 3));
-  const displayConfigs = cleanConfigs.length ? cleanConfigs : configs.slice(0, 10);
+  // Sort timestamped configs newest-first, show all of them
+  const timestamped = [...configs.filter((c) => /\d{8}-\d{6}$/.test(c.id))]
+    .sort((a, b) => b.id.localeCompare(a.id));
+  const canonical = configs.filter((c) => !/\d{8}-\d{6}$/.test(c.id));
+  // Newest timestamped first, then canonical configs
+  const displayConfigs = [...timestamped, ...canonical];
 
   const selectedConfig =
-    configs.find((c) => c.id === configId) ?? configs.find((c) => c.id === "lr-self") ?? configs[0];
+    configs.find((c) => c.id === configId) ??
+    timestamped[0] ?? // default to most recent save
+    configs.find((c) => c.id === "lr-self") ??
+    configs[0];
 
   const selfConfig =
     configs.find((c) => c.id === "lr-self") ?? configs.find((c) => c.id === "self-dashboard");
@@ -116,19 +120,35 @@ function RunnerPage() {
               onChange={(e) => pickConfig(e.target.value)}
               disabled={!configs.length}
             >
-              {displayConfigs.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.id}
-                </option>
-              ))}
+              {displayConfigs.map((c, i) => {
+                // Format timestamped configs: "argyle · 2026-06-08 14:30"
+                const tsMatch = c.id.match(/^(.+)-(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})$/);
+                const label = tsMatch
+                  ? `${tsMatch[1]} · ${tsMatch[2]}-${tsMatch[3]}-${tsMatch[4]} ${tsMatch[5]}:${tsMatch[6]}${i === 0 ? " (latest)" : ""}`
+                  : c.id;
+                return (
+                  <option key={c.id} value={c.id}>
+                    {label}
+                  </option>
+                );
+              })}
             </select>
+            {selectedConfig && (
+              <div className="mt-2 rounded-md bg-surface-2 border border-border px-3 py-2 space-y-1">
+                <div className="text-[11px] text-muted-foreground">
+                  File: <code className="font-mono text-foreground">configs/{selectedConfig.id}.yaml</code>
+                </div>
+                <div className="text-[11px] font-mono text-muted-foreground/80 select-all break-all">
+                  ./rehearse run -c launch-rehearsal/artifacts/configs/{selectedConfig.id}.yaml -o launch-rehearsal/artifacts/
+                </div>
+              </div>
+            )}
             <p className="text-[11px] text-muted-foreground mt-2">
               Edit on{" "}
               <Link to="/config" className="text-primary hover:underline">
                 Config (YAML)
               </Link>
               . Selection persists across Sitemap, Workflows, and Runner.
-              {isSignedIn && " Switch test group in the top bar to change the default config."}
             </p>
             {hasInteractiveHint && (
               <p className="text-[11px] text-muted-foreground mt-1">

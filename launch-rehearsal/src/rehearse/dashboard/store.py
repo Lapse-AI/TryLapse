@@ -664,14 +664,18 @@ def save_config(artifacts_root: Path, body: dict[str, Any]) -> dict[str, Any]:
 
     slug = config["run"]["run_id_prefix"]
     cfg_dir = artifacts_root / "configs"
-    path = cfg_dir / f"{slug}.yaml"
+    ts = datetime.utcnow().strftime("%Y%m%d-%H%M%S")
+    filename = f"{slug}-{ts}.yaml"
+    path = cfg_dir / filename
     write_config(path, config)
 
+    # Always update workspace with the latest saved config path
+    ws = get_workspace(artifacts_root)
+    ws["targetUrl"] = target_url
+    ws["config_path"] = str(path.resolve())
     if "piiRedaction" in body:
-        ws = get_workspace(artifacts_root)
         ws["piiRedaction"] = bool(body["piiRedaction"])
-        ws["targetUrl"] = target_url
-        save_workspace(artifacts_root, ws)
+    save_workspace(artifacts_root, ws)
 
     return {
         "id": path.stem,
