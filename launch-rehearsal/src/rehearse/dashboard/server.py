@@ -687,6 +687,20 @@ class _Handler(BaseHTTPRequestHandler):
             interaction_map_data: dict = dict(body.get("interactionMap") or {})
             api_calls = list(body.get("apiCalls") or [])
 
+            # Extract auth credentials and API keys from request
+            auth_config = dict(body.get("auth") or {})
+            llm_api_key = str(body.get("llmApiKey") or "").strip()
+            vision_api_key = str(body.get("visionApiKey") or "").strip()
+
+            # Override env vars for this request if keys provided
+            import os as _os
+            _orig_llm = _os.environ.get("REHEARSE_LLM_API_KEY")
+            _orig_vision = _os.environ.get("REHEARSE_VISION_API_KEY")
+            if llm_api_key:
+                _os.environ["REHEARSE_LLM_API_KEY"] = llm_api_key
+            if vision_api_key:
+                _os.environ["REHEARSE_VISION_API_KEY"] = vision_api_key
+
             # If no crawl data, run a fresh deep crawl right now
             if not interaction_map_data:
                 try:
@@ -697,11 +711,32 @@ class _Handler(BaseHTTPRequestHandler):
                         browser = pw.chromium.launch(headless=True)
                         context = browser.new_context(viewport={"width": 1280, "height": 800})
                         page_obj = context.new_page()
+
+                        # Perform login if credentials provided
+                        if auth_config.get("email") and auth_config.get("password"):
+                            try:
+                                login_url = str(auth_config.get("loginUrl") or target_url)
+                                page_obj.goto(login_url, wait_until="domcontentloaded", timeout=15000)
+                                page_obj.wait_for_timeout(2000)
+                                # Fill email
+                                email_sel = str(auth_config.get("emailSelector") or "input[type='email']")
+                                page_obj.fill(email_sel, str(auth_config["email"]))
+                                # Fill password
+                                pw_sel = str(auth_config.get("passwordSelector") or "input[type='password']")
+                                page_obj.fill(pw_sel, str(auth_config["password"]))
+                                # Submit
+                                submit_sel = str(auth_config.get("submitSelector") or "button[type='submit']")
+                                page_obj.click(submit_sel)
+                                page_obj.wait_for_timeout(3000)
+                                page_obj.wait_for_load_state("networkidle", timeout=8000)
+                            except Exception as login_err:
+                                pass  # Continue even if login fails
+
                         imap = run_deep_crawl(
                             page_obj, target_url,
                             product_name=product_name,
-                            max_pages=12,
-                            max_buttons_per_page=10,
+                            max_pages=15,
+                            max_buttons_per_page=12,
                             use_vision=True,
                             screenshots_dir=screenshots_dir,
                         )
@@ -709,9 +744,18 @@ class _Handler(BaseHTTPRequestHandler):
                         api_calls = imap.api_calls
                         context.close()
                         browser.close()
-                except Exception as crawl_err:
-                    # Non-fatal — continue with empty crawl data
+                except Exception:
                     interaction_map_data = {}
+                finally:
+                    # Restore original env vars
+                    if _orig_llm is not None:
+                        _os.environ["REHEARSE_LLM_API_KEY"] = _orig_llm
+                    elif llm_api_key:
+                        _os.environ.pop("REHEARSE_LLM_API_KEY", None)
+                    if _orig_vision is not None:
+                        _os.environ["REHEARSE_VISION_API_KEY"] = _orig_vision
+                    elif vision_api_key:
+                        _os.environ.pop("REHEARSE_VISION_API_KEY", None)
 
             # Try sitemap from latest run if still empty
             if not sitemap_pages:
