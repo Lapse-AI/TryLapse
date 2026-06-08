@@ -178,14 +178,15 @@ def _take_screenshot(page: Any) -> str:
         return ""
 
 
-def _wait_for_content(page: Any, timeout_ms: int = 3000) -> None:
+def _wait_for_content(page: Any, timeout_ms: int = 5000) -> None:
     """Wait for page to settle after JS rendering."""
     try:
         page.wait_for_load_state("networkidle", timeout=timeout_ms)
     except Exception:
         pass
     try:
-        page.wait_for_timeout(800)
+        # Extra wait for SPAs that render after networkidle
+        page.wait_for_timeout(1500)
     except Exception:
         pass
 
@@ -440,10 +441,10 @@ def run_deep_crawl(
         visited.add(url)
         imap.pages_visited.append(url)
 
-        # 1. Navigate and wait for content
+        # 1. Navigate and wait for content — SPAs need extra time
         try:
             page.goto(url, wait_until="domcontentloaded", timeout=timeout_ms)
-            _wait_for_content(page, 4000)
+            _wait_for_content(page, 6000)
         except Exception:
             continue
 
@@ -516,16 +517,18 @@ def run_deep_crawl(
                     "screenshot_b64": screenshot_b64,
                 })
 
-                # If still loading, wait longer and re-screenshot
-                if vision_result.get("is_loading"):
-                    page.wait_for_timeout(4000)
+                # If still loading, wait longer and re-screenshot (up to 3 retries)
+                retries = 0
+                while vision_result.get("is_loading") and retries < 3:
+                    page.wait_for_timeout(5000)
                     screenshot_b64 = _take_screenshot(page)
                     if use_vision and screenshot_b64:
                         vision_result2 = _describe_screenshot(screenshot_b64, current_url, product_name)
-                        if vision_result2 and not vision_result2.get("is_loading"):
+                        if vision_result2:
                             vision_result = vision_result2
                             for f in (vision_result2.get("features_detected") or []):
                                 all_features.add(f)
+                    retries += 1
 
         # 5. Extract nav structure
         nav_items = _extract_nav(page)

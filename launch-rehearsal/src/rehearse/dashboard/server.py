@@ -716,19 +716,20 @@ class _Handler(BaseHTTPRequestHandler):
                         if auth_config.get("email") and auth_config.get("password"):
                             try:
                                 login_url = str(auth_config.get("loginUrl") or target_url)
-                                page_obj.goto(login_url, wait_until="domcontentloaded", timeout=15000)
-                                page_obj.wait_for_timeout(2000)
+                                page_obj.goto(login_url, wait_until="domcontentloaded", timeout=20000)
+                                page_obj.wait_for_timeout(3000)  # wait for SPA to hydrate
                                 # Fill email
-                                email_sel = str(auth_config.get("emailSelector") or "input[type='email']")
-                                page_obj.fill(email_sel, str(auth_config["email"]))
+                                email_sel = str(auth_config.get("emailSelector") or "input[type='email'], input[name='email']")
+                                page_obj.locator(email_sel).first.fill(str(auth_config["email"]))
                                 # Fill password
                                 pw_sel = str(auth_config.get("passwordSelector") or "input[type='password']")
-                                page_obj.fill(pw_sel, str(auth_config["password"]))
+                                page_obj.locator(pw_sel).first.fill(str(auth_config["password"]))
+                                page_obj.wait_for_timeout(500)
                                 # Submit
                                 submit_sel = str(auth_config.get("submitSelector") or "button[type='submit']")
-                                page_obj.click(submit_sel)
-                                page_obj.wait_for_timeout(3000)
-                                page_obj.wait_for_load_state("networkidle", timeout=8000)
+                                page_obj.locator(submit_sel).first.click()
+                                page_obj.wait_for_timeout(5000)  # wait for redirect + dashboard load
+                                page_obj.wait_for_load_state("networkidle", timeout=12000)
                             except Exception as login_err:
                                 pass  # Continue even if login fails
 
