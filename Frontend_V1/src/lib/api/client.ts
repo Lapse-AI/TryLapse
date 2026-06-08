@@ -214,26 +214,27 @@ export const api = {
       method: "POST",
       body: JSON.stringify(body),
     }),
-  getProductModel: () => apiFetch<Record<string, unknown>>("/api/product"),
-  analyzeProduct: (body: { targetUrl: string; productName?: string; sitemapPages?: unknown[] }) =>
+  getProductModel: (configId?: string | null) =>
+    apiFetch<Record<string, unknown>>(`/api/product${configId ? `?configId=${configId}` : ""}`),
+  analyzeProduct: (body: { targetUrl: string; productName?: string; configId?: string; sitemapPages?: unknown[] }) =>
     apiFetch<Record<string, unknown>>("/api/product/analyze", {
       method: "POST",
       body: JSON.stringify(body),
     }),
-  updateProductModel: (updates: Record<string, unknown>) =>
+  updateProductModel: (updates: Record<string, unknown>, configId?: string | null) =>
     apiFetch<Record<string, unknown>>("/api/product/update", {
       method: "POST",
-      body: JSON.stringify(updates),
+      body: JSON.stringify({ ...updates, configId: configId || "" }),
     }),
   discoverJourneys: (personas: unknown[], configId?: string | null) =>
     apiFetch<{ personaJourneys: unknown[]; count: number }>("/api/journeys/discover", {
       method: "POST",
       body: JSON.stringify({ personas, configId: configId || "" }),
     }),
-  discoverJourneysForPersona: (persona: unknown) =>
+  discoverJourneysForPersona: (persona: unknown, configId?: string | null) =>
     apiFetch<Record<string, unknown>>("/api/journeys/discover/persona", {
       method: "POST",
-      body: JSON.stringify({ persona }),
+      body: JSON.stringify({ persona, configId: configId || "" }),
     }),
   importJourneysToConfig: (configId: string, journeys: unknown[]) =>
     apiFetch<{ configId: string; added: number; skipped: number; total: number }>(

@@ -159,6 +159,43 @@ def _api_summary(api_calls: list[dict[str, Any]]) -> str:
     return "\n".join(lines)
 
 
+def _visual_summary_section(interaction_map: dict[str, Any]) -> str:
+    """Build a rich visual summary from page snapshots for LLM context."""
+    snapshots = interaction_map.get("pageSnapshots") or []
+    if not snapshots:
+        return ""
+    lines = ["\nVisual analysis of each page (from screenshots):"]
+    for snap in snapshots[:10]:
+        url = snap.get("url", "")
+        page_type = snap.get("pageType", "")
+        desc = snap.get("description", "")
+        features = snap.get("featuresDetected") or []
+        buttons = snap.get("buttonsVisible") or []
+        data = snap.get("dataShown", "")
+        lines.append(f"\n  Page: {url} [{page_type}]")
+        if desc:
+            lines.append(f"  Description: {desc}")
+        if features:
+            lines.append(f"  Features visible: {', '.join(features[:8])}")
+        if buttons:
+            lines.append(f"  Buttons/CTAs: {', '.join(buttons[:8])}")
+        if data:
+            lines.append(f"  Data shown: {data[:200]}")
+        if snap.get("isLoading"):
+            lines.append("  ⚠ Page was still loading during crawl")
+        if snap.get("isError"):
+            lines.append("  ⚠ Error state detected on this page")
+    features_seen = interaction_map.get("featuresSeen") or []
+    if features_seen:
+        lines.append(f"\nAll features detected across pages: {', '.join(features_seen[:20])}")
+    nav = interaction_map.get("navStructure") or []
+    if nav:
+        lines.append(f"Navigation items: {', '.join(nav[:15])}")
+    if interaction_map.get("authWallDetected"):
+        lines.append("\n⚠ Auth wall detected — product requires login to access full features")
+    return "\n".join(lines)
+
+
 def analyze_product(
     target_url: str,
     *,
@@ -167,17 +204,23 @@ def analyze_product(
     interaction_map: dict[str, Any] | None = None,
     api_calls: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
-    """Build a ProductModel from crawl data. Falls back to template if no LLM key."""
+    """Build a ProductModel from crawl + vision data. Falls back to template if no LLM key."""
     pages = sitemap_pages or []
     interactions = interaction_map or {}
-    apis = api_calls or []
+    apis = api_calls or interactions.get("apiCalls") or []
+
+    # Build enhanced prompt with visual data
+    visual_section = _visual_summary_section(interactions)
+    interactions_text = _interactions_summary(interactions)
+    if visual_section:
+        interactions_text = interactions_text + "\n" + visual_section
 
     prompt = _ANALYSIS_PROMPT.format(
         url=target_url,
         product_name=product_name or target_url,
-        page_count=len(pages),
+        page_count=max(len(pages), interactions.get("pageCount", 0)),
         pages_summary=_pages_summary(pages),
-        interactions_summary=_interactions_summary(interactions),
+        interactions_summary=interactions_text,
         api_summary=_api_summary(apis),
     )
 
@@ -227,15 +270,34 @@ def analyze_product(
     return result
 
 
-def save_product_model(artifacts_root: Path, model: dict[str, Any]) -> Path:
-    path = artifacts_root / "product_model.json"
+def _model_path(artifacts_root: Path, config_id: str | None = None) -> Path:
+    """Per-config product model path so workspaces don't share state."""
+    if config_id:
+        return artifacts_root / "product_models" / f"{config_id}.json"
+    return artifacts_root / "product_model.json"
+
+
+def save_product_model(
+    artifacts_root: Path, model: dict[str, Any], config_id: str | None = None
+) -> Path:
+    path = _model_path(artifacts_root, config_id)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(model, indent=2))
     return path
 
 
-def load_product_model(artifacts_root: Path) -> dict[str, Any] | None:
-    path = artifacts_root / "product_model.json"
+def load_product_model(
+    artifacts_root: Path, config_id: str | None = None
+) -> dict[str, Any] | None:
+    # Try per-config path first, fall back to legacy global path
+    if config_id:
+        path = _model_path(artifacts_root, config_id)
+        if path.is_file():
+            try:
+                return json.loads(path.read_text())
+            except json.JSONDecodeError:
+                pass
+    path = _model_path(artifacts_root, None)
     if not path.is_file():
         return None
     try:

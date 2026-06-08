@@ -393,8 +393,9 @@ class _Handler(BaseHTTPRequestHandler):
             return
 
         if path == "/api/product":
+            config_id_q = (qs.get("configId") or [""])[0].strip()
             from rehearse.product_intelligence import load_product_model
-            model = load_product_model(root)
+            model = load_product_model(root, config_id_q or None)
             if not model:
                 self._send_json({"error": "No product model — run POST /api/product/analyze first"}, status=404)
                 return
@@ -674,39 +675,70 @@ class _Handler(BaseHTTPRequestHandler):
         if path == "/api/product/analyze":
             body = self._read_json_body()
             target_url = str(body.get("targetUrl") or body.get("url") or "")
+            config_id = str(body.get("configId") or "").strip()
+            product_name = str(body.get("productName") or "")
             if not target_url:
                 self._send_json({"error": "targetUrl required"}, status=400)
                 return
             from rehearse.product_intelligence import analyze_product, save_product_model
-            # Use existing sitemap data if available (from a recent run)
+
+            # Run a fresh deep crawl for vision-aware analysis
             sitemap_pages = list(body.get("sitemapPages") or [])
-            interaction_map = dict(body.get("interactionMap") or {})
+            interaction_map_data: dict = dict(body.get("interactionMap") or {})
             api_calls = list(body.get("apiCalls") or [])
-            # If no crawl data provided, try to load from latest run
+
+            # If no crawl data, run a fresh deep crawl right now
+            if not interaction_map_data:
+                try:
+                    from playwright.sync_api import sync_playwright
+                    from rehearse.deep_crawler import run_deep_crawl, interaction_map_to_dict
+                    screenshots_dir = root / "discovery_screenshots" / (config_id or "default")
+                    with sync_playwright() as pw:
+                        browser = pw.chromium.launch(headless=True)
+                        context = browser.new_context(viewport={"width": 1280, "height": 800})
+                        page_obj = context.new_page()
+                        imap = run_deep_crawl(
+                            page_obj, target_url,
+                            product_name=product_name,
+                            max_pages=12,
+                            max_buttons_per_page=10,
+                            use_vision=True,
+                            screenshots_dir=screenshots_dir,
+                        )
+                        interaction_map_data = interaction_map_to_dict(imap)
+                        api_calls = imap.api_calls
+                        context.close()
+                        browser.close()
+                except Exception as crawl_err:
+                    # Non-fatal — continue with empty crawl data
+                    interaction_map_data = {}
+
+            # Try sitemap from latest run if still empty
             if not sitemap_pages:
                 summaries = list_run_summaries(root)
                 if summaries:
-                    latest = summaries[0]
-                    latest_bundle = load_bundle(root, latest.get("id") or "")
+                    latest_bundle = load_bundle(root, summaries[0].get("id") or "")
                     if latest_bundle:
                         sitemap_pages = latest_bundle.get("sitemapPages") or []
+
             model = analyze_product(
                 target_url,
-                product_name=str(body.get("productName") or ""),
+                product_name=product_name,
                 sitemap_pages=sitemap_pages,
-                interaction_map=interaction_map,
+                interaction_map=interaction_map_data,
                 api_calls=api_calls,
             )
-            save_product_model(root, model)
+            save_product_model(root, model, config_id or None)
             self._send_json(model)
             return
 
         if path == "/api/product/update":
             body = self._read_json_body()
+            config_id = str(body.get("configId") or "").strip()
             from rehearse.product_intelligence import load_product_model, save_product_model
-            existing = load_product_model(root) or {}
+            existing = load_product_model(root, config_id or None) or {}
             existing.update({k: v for k, v in body.items() if k != "source"})
-            save_product_model(root, existing)
+            save_product_model(root, existing, config_id or None)
             self._send_json(existing)
             return
 
@@ -719,15 +751,7 @@ class _Handler(BaseHTTPRequestHandler):
                 return
             from rehearse.product_intelligence import load_product_model
             from rehearse.persona_journey_discovery import discover_journeys_for_all_personas
-            from rehearse.dashboard.config_yaml import load_config
-
-            # Load config to get workspace context
-            cfg = load_config(root, config_id) if config_id else None
-            if not cfg:
-                self._send_json({"error": "Config not found or not provided"}, status=400)
-                return
-
-            product_model = load_product_model(root) or {}
+            product_model = load_product_model(root, config_id or None) or {}
             if not product_model:
                 self._send_json({"error": "No product model — run POST /api/product/analyze first"}, status=400)
                 return
@@ -738,12 +762,13 @@ class _Handler(BaseHTTPRequestHandler):
         if path == "/api/journeys/discover/persona":
             body = self._read_json_body()
             persona = dict(body.get("persona") or {})
+            config_id = str(body.get("configId") or "").strip()
             if not persona:
                 self._send_json({"error": "persona required"}, status=400)
                 return
             from rehearse.product_intelligence import load_product_model
             from rehearse.persona_journey_discovery import discover_journeys_for_persona
-            product_model = load_product_model(root) or {}
+            product_model = load_product_model(root, config_id or None) or {}
             result = discover_journeys_for_persona(persona, product_model)
             self._send_json(result)
             return

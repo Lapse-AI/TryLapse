@@ -62,30 +62,36 @@ class AgentOrchestrator:
                 return
             target_url = self.ctx.config.target_url
 
-            imap = run_deep_crawl(page, target_url, max_pages=15, max_buttons_per_page=8)
+            screenshots_dir = self.artifacts_root / "screenshots" / "discovery"
+            imap = run_deep_crawl(
+                page, target_url,
+                product_name=self.ctx.config.product_name or "",
+                max_pages=15,
+                max_buttons_per_page=12,
+                use_vision=True,
+                screenshots_dir=screenshots_dir,
+            )
             imap_dict = interaction_map_to_dict(imap)
             save_interaction_map(self.artifacts_root, self.ctx.evidence.run_id, imap)
             self.ctx.metadata["interaction_map"] = imap_dict
 
-            # Build or update product model from crawl data
-            existing_model = load_product_model(self.artifacts_root)
-            if not existing_model:
-                sitemap_pages = []
-                if self.ctx.sitemap:
-                    sitemap_pages = [
-                        {"path": p.path, "title": p.title, "type": p.page_type,
-                         "linkCount": p.link_count, "formCount": p.form_count, "wordCount": p.word_count}
-                        for p in self.ctx.sitemap.pages
-                    ]
-                model = analyze_product(
-                    target_url,
-                    product_name=self.ctx.config.product_name or "",
-                    sitemap_pages=sitemap_pages,
-                    interaction_map=imap_dict,
-                    api_calls=imap.api_calls,
-                )
-                save_product_model(self.artifacts_root, model)
-                self.ctx.metadata["product_model"] = model
+            # Always rebuild product model from fresh crawl data
+            sitemap_pages = []
+            if self.ctx.sitemap:
+                sitemap_pages = [
+                    {"path": p.path, "title": p.title, "type": p.page_type,
+                     "linkCount": p.link_count, "formCount": p.form_count, "wordCount": p.word_count}
+                    for p in self.ctx.sitemap.pages
+                ]
+            model = analyze_product(
+                target_url,
+                product_name=self.ctx.config.product_name or "",
+                sitemap_pages=sitemap_pages,
+                interaction_map=imap_dict,
+                api_calls=imap.api_calls,
+            )
+            save_product_model(self.artifacts_root, model)
+            self.ctx.metadata["product_model"] = model
 
             # Run per-persona journey discovery and store for behavioral judge
             product_model = self.ctx.metadata.get("product_model") or existing_model or {}
