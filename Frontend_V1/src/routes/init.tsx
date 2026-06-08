@@ -485,7 +485,7 @@ function InitPage() {
         </Panel>}
 
         {/* Product Intelligence — analyze target URL, build editable product model */}
-        <ProductIntelligencePanel live={!!live} targetUrl={targetUrl} productName={productName} />
+        <ProductIntelligencePanel live={!!live} targetUrl={targetUrl} productName={productName} configId={workspaceConfigId} />
 
         <PersonaStudioPanel
           live={!!live}

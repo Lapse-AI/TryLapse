@@ -10,6 +10,7 @@ type Props = {
   live: boolean;
   targetUrl?: string;
   productName?: string;
+  configId?: string | null;
   onModelReady?: (model: ProductModel) => void;
 };
 
@@ -18,7 +19,7 @@ function SeverityChip({ s }: { s: string }) {
   return <Chip tone={tone}>{s}</Chip>;
 }
 
-export function ProductIntelligencePanel({ live, targetUrl, productName, onModelReady }: Props) {
+export function ProductIntelligencePanel({ live, targetUrl, productName, configId, onModelReady }: Props) {
   const [model, setModel] = useState<ProductModel | null>(null);
   const [loading, setLoading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
@@ -44,13 +45,18 @@ export function ProductIntelligencePanel({ live, targetUrl, productName, onModel
       return;
     }
     setAnalyzing(true);
+    toast.info("Crawling product… this takes 30–60 seconds", { duration: 10000 });
     try {
-      const m = await api.analyzeProduct({ targetUrl, productName });
+      const m = await api.analyzeProduct({
+        targetUrl,
+        productName,
+        configId: configId || undefined,
+      });
       setModel(m);
       onModelReady?.(m);
       toast.success(
         m.source === "llm"
-          ? "Product analyzed with AI"
+          ? "Product analyzed with AI vision"
           : "Product analyzed (template — add LLM key for deep analysis)",
       );
     } catch (e) {

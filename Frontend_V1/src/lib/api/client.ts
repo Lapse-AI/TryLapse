@@ -48,22 +48,31 @@ export function getStoredJwt(): string {
   return localStorage.getItem(JWT_STORAGE_KEY) || "";
 }
 
-async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
+async function apiFetch<T>(path: string, init?: RequestInit & { timeoutMs?: number }): Promise<T> {
   const bearer = API_TOKEN || getStoredJwt();
   const authHeaders: Record<string, string> = bearer ? { Authorization: `Bearer ${bearer}` } : {};
-  const res = await fetch(`${API_BASE}${path}`, {
-    ...init,
-    headers: {
-      "Content-Type": "application/json",
-      ...authHeaders,
-      ...(init?.headers ?? {}),
-    },
-  });
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new ApiError(text || res.statusText, res.status);
+  const timeoutMs = init?.timeoutMs ?? 30000;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const { timeoutMs: _t, ...fetchInit } = init ?? {};
+    const res = await fetch(`${API_BASE}${path}`, {
+      ...fetchInit,
+      signal: controller.signal,
+      headers: {
+        "Content-Type": "application/json",
+        ...authHeaders,
+        ...(fetchInit?.headers ?? {}),
+      },
+    });
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      throw new ApiError(text || res.statusText, res.status);
+    }
+    return res.json() as Promise<T>;
+  } finally {
+    clearTimeout(timer);
   }
-  return res.json() as Promise<T>;
 }
 
 export function artifactUrl(relPath: string): string {
@@ -220,6 +229,7 @@ export const api = {
     apiFetch<Record<string, unknown>>("/api/product/analyze", {
       method: "POST",
       body: JSON.stringify(body),
+      timeoutMs: 180000, // 3 min — crawl + vision + LLM
     }),
   updateProductModel: (updates: Record<string, unknown>, configId?: string | null) =>
     apiFetch<Record<string, unknown>>("/api/product/update", {
