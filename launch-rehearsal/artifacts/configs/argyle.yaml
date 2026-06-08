@@ -10,6 +10,7 @@ budgets:
   max_run_seconds: 7200
   max_steps_per_journey: 30
   step_timeout_ms: 30000
+  parallel_journeys: 4
 crawl:
   enabled: true
   max_depth: 2
@@ -50,18 +51,18 @@ personas:
   - Manage their professional profile and search for colleagues.
   - The product is named 'Faculty Dashboard' and includes features like AI Search
     and Add Faculty.
-- id: model-1-admin
-  name: Admin
-  role: Manage user accounts and oversee the database.
-  goals:
-  - Manage user accounts and oversee the database.
-  - There is an /admin endpoint and an admin panel.
 - id: p4-champion
   name: Internal champion
   role: team lead / champion
   goals:
   - Validate rollout to their team
   - Find blockers before wider launch
+- id: model-1-admin
+  name: Admin
+  role: Manage user accounts and oversee the database.
+  goals:
+  - Manage user accounts and oversee the database.
+  - There is an /admin endpoint and an admin panel.
 journeys:
 - id: j-load-dashboard
   name: Load main dashboard

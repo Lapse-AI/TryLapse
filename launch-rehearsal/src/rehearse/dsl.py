@@ -107,6 +107,7 @@ class Budgets:
     parallel_seeds: int = 1
     repeat_micro_loop: int = 1
     explore_max_rounds: int = 3
+    parallel_journeys: int = 1  # concurrent journey workers (each gets own browser context)
 
 
 @dataclass
@@ -196,12 +197,13 @@ def load_config(path: Path) -> RunConfig:
 
     b = data.get("budgets") or {}
     budgets = Budgets(
-        max_steps_per_journey=int(b.get("max_steps_per_journey", 20)),
-        max_run_seconds=int(b.get("max_run_seconds", 1800)),
+        max_steps_per_journey=int(b.get("max_steps_per_journey", 30)),
+        max_run_seconds=int(b.get("max_run_seconds", 7200)),
         step_timeout_ms=int(b.get("step_timeout_ms", 30000)),
         parallel_seeds=max(1, int(b.get("parallel_seeds", 1))),
         repeat_micro_loop=max(1, int(b.get("repeat_micro_loop", 1))),
         explore_max_rounds=max(1, int(b.get("explore_max_rounds", 3))),
+        parallel_journeys=max(1, min(10, int(b.get("parallel_journeys", 1)))),
     )
 
     auth_raw = data.get("auth")

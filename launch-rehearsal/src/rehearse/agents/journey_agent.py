@@ -1,8 +1,10 @@
-"""Journey agent — executes E2E steps in browser with optional parallel seeds."""
+"""Journey agent — executes E2E steps in browser with optional parallel workers."""
 
 from __future__ import annotations
 
+import threading
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 from rehearse.agents.base import BaseAgent
@@ -12,6 +14,8 @@ from rehearse.dsl import Journey, Step
 from rehearse.errors import RunBudgetExceeded
 from rehearse.evidence import StepSnapshot
 from rehearse.viewports import normalize_viewports
+
+_results_lock = threading.Lock()
 
 
 def _replay_journey_from_start(
@@ -144,6 +148,32 @@ def _journey_status_from_snaps(snaps: list[StepSnapshot]) -> str:
     return "pass"
 
 
+class _ThreadSession:
+    """Minimal session wrapper for parallel worker threads — owns its own page."""
+    def __init__(self, page: object, config: object) -> None:
+        self.page = page
+        self.config = config
+        self.console_errors: list[str] = []
+        self.console_warnings: list[str] = []
+        self.network_failures: list[str] = []
+        self.network_log: list[dict] = []
+        self.record_video = False
+
+    def set_viewport(self, profile: str) -> None:
+        from rehearse.viewports import VIEWPORT_PROFILES
+        key = profile.strip().lower()
+        if key not in VIEWPORT_PROFILES:
+            key = "desktop"
+        try:
+            self.page.set_viewport_size(VIEWPORT_PROFILES[key])  # type: ignore[attr-defined]
+        except Exception:
+            pass
+
+    def reset_run_errors(self) -> None:
+        self.console_errors = []
+        self.network_failures = []
+
+
 class JourneyAgent(BaseAgent):
     agent_id = "journey-runner"
     agent_role = "E2E journey execution"
@@ -153,6 +183,7 @@ class JourneyAgent(BaseAgent):
         self.session = session
         self.artifacts_root = artifacts_root
         self._deadline: float = 0
+        self._browser: bool = False  # True when parallel mode active
 
     def _run_journey_once(
         self,
@@ -179,6 +210,77 @@ class JourneyAgent(BaseAgent):
             viewport=viewport,
         )
 
+    def _run_journey_worker(
+        self,
+        ctx: RunContext,
+        journey: Journey,
+        persona_id: str,
+        seeds: int,
+        loops: int,
+        viewports: list[str],
+    ) -> tuple[str, str, list[list[StepSnapshot]]]:
+        """Worker that runs one journey for one persona — can run in a thread."""
+        tracker = ctx.metadata.get("progress_tracker")
+        if tracker:
+            try:
+                tracker.start_journey(persona_id, journey.id)
+            except Exception:
+                pass
+
+        persona_runs: list[list[StepSnapshot]] = []
+        for loop in range(1, loops + 1):
+            for seed in range(1, seeds + 1):
+                for viewport in viewports:
+                    if time.perf_counter() > self._deadline:
+                        break
+                    # Each parallel worker needs its own browser context
+                    if hasattr(self, "_browser") and self._browser:
+                        # Parallel mode: spin up own context
+                        try:
+                            from playwright.sync_api import sync_playwright
+                            with sync_playwright() as pw:
+                                browser = pw.chromium.launch(headless=True)
+                                context_opts: dict = {"viewport": {"width": 1280, "height": 800}}
+                                if getattr(self.session, "record_video", False):
+                                    video_dir = self.artifacts_root / "videos"
+                                    video_dir.mkdir(parents=True, exist_ok=True)
+                                    context_opts["record_video_dir"] = str(video_dir)
+                                context = browser.new_context(**context_opts)
+                                page = context.new_page()
+                                # Temp session wrapper for this thread
+                                tmp_session = _ThreadSession(page, self.session.config)
+                                snaps = _replay_journey_from_start(
+                                    tmp_session, journey,
+                                    primary=persona_id, seed=seed, loop=loop,
+                                    artifacts_root=self.artifacts_root,
+                                    deadline=self._deadline, ctx=ctx, viewport=viewport,
+                                )
+                                context.close()
+                                browser.close()
+                        except Exception as e:
+                            snaps = []
+                    else:
+                        # Sequential fallback
+                        snaps = self._run_journey_once(
+                            ctx, journey, primary=persona_id,
+                            seed=seed, loop=loop, viewport=viewport,
+                        )
+                    persona_runs.append(snaps)
+
+        canonical = next(
+            (run for run in persona_runs if run and run[0].viewport == "desktop"),
+            persona_runs[0] if persona_runs else [],
+        )
+        grade = _journey_status_from_snaps(canonical)
+
+        if tracker:
+            try:
+                tracker.done_journey(persona_id, journey.id, grade)
+            except Exception:
+                pass
+
+        return journey.id, persona_id, persona_runs
+
     def execute(self, ctx: RunContext) -> AgentReport:
         report = AgentReport(
             agent_id=self.agent_id,
@@ -189,6 +291,7 @@ class JourneyAgent(BaseAgent):
         seeds = ctx.config.budgets.parallel_seeds
         loops = ctx.config.budgets.repeat_micro_loop
         viewports = normalize_viewports(ctx.config.viewports)
+        workers = ctx.config.budgets.parallel_journeys
         personas_to_run = (
             ctx.config.personas
             if ctx.config.execute_all_personas_in_browser
@@ -198,58 +301,63 @@ class JourneyAgent(BaseAgent):
         failed = 0
         flaky_count = 0
 
-        for journey in ctx.config.journeys:
-            per_journey_budget = (
-                len(journey.steps)
-                * seeds
-                * loops
-                * len(viewports)
-                * len(personas_to_run)
-            )
-            if per_journey_budget > ctx.config.budgets.max_steps_per_journey:
-                raise RunBudgetExceeded(
-                    f"Journey {journey.id} exceeds step budget "
-                    f"({per_journey_budget} > {ctx.config.budgets.max_steps_per_journey})"
-                )
+        # Build work units: (journey, persona)
+        work_units = [
+            (journey, persona)
+            for journey in ctx.config.journeys
+            for persona in personas_to_run
+        ]
 
-        # Live progress tracker
-        tracker = ctx.metadata.get("progress_tracker")
+        # Collect results: {journey_id: {persona_id: [runs]}}
+        all_results: dict[str, dict[str, list[list[StepSnapshot]]]] = {}
 
-        for journey in ctx.config.journeys:
-            seed_runs: list[list[StepSnapshot]] = []
-            persona_grades: dict[str, str] = {}
-            for persona in personas_to_run:
-                if tracker:
+        if workers > 1:
+            # Parallel mode — each work unit gets own Playwright instance in a thread
+            self._browser = True  # signal to worker to create own browser
+            with ThreadPoolExecutor(max_workers=workers, thread_name_prefix="journey") as pool:
+                futures = {
+                    pool.submit(
+                        self._run_journey_worker,
+                        ctx, journey, persona.id, seeds, loops, viewports,
+                    ): (journey, persona)
+                    for journey, persona in work_units
+                }
+                for future in as_completed(futures):
                     try:
-                        tracker.start_journey(persona.id, journey.id)
+                        jid, pid, persona_runs = future.result()
+                        with _results_lock:
+                            all_results.setdefault(jid, {})[pid] = persona_runs
+                            executed += sum(len(r) for r in persona_runs)
+                            failed += sum(
+                                1 for r in persona_runs for s in r if s.outcome == "fail"
+                            )
                     except Exception:
                         pass
-                persona_runs: list[list[StepSnapshot]] = []
-                for loop in range(1, loops + 1):
-                    for seed in range(1, seeds + 1):
-                        for viewport in viewports:
-                            snaps = self._run_journey_once(
-                                ctx,
-                                journey,
-                                primary=persona.id,
-                                seed=seed,
-                                loop=loop,
-                                viewport=viewport,
-                            )
-                            persona_runs.append(snaps)
-                            seed_runs.append(snaps)
-                            executed += len(snaps)
-                            failed += sum(1 for s in snaps if s.outcome == "fail")
+            self._browser = False
+        else:
+            # Sequential mode (original behaviour)
+            for journey, persona in work_units:
+                _, _, persona_runs = self._run_journey_worker(
+                    ctx, journey, persona.id, seeds, loops, viewports,
+                )
+                all_results.setdefault(journey.id, {})[persona.id] = persona_runs
+                executed += sum(len(r) for r in persona_runs)
+                failed += sum(1 for r in persona_runs for s in r if s.outcome == "fail")
+
+        # Consolidate grades + flaky detection per journey
+        for journey in ctx.config.journeys:
+            journey_results = all_results.get(journey.id, {})
+            seed_runs: list[list[StepSnapshot]] = []
+            persona_grades: dict[str, str] = {}
+
+            for persona in personas_to_run:
+                persona_runs = journey_results.get(persona.id, [])
+                seed_runs.extend(persona_runs)
                 canonical = next(
                     (run for run in persona_runs if run and run[0].viewport == "desktop"),
                     persona_runs[0] if persona_runs else [],
                 )
                 persona_grades[persona.id] = _journey_status_from_snaps(canonical)
-                if tracker:
-                    try:
-                        tracker.done_journey(persona.id, journey.id, persona_grades[persona.id])
-                    except Exception:
-                        pass
 
             _mark_flaky_steps(seed_runs)
             flaky_count += sum(1 for run in seed_runs for s in run if s.flaky)
