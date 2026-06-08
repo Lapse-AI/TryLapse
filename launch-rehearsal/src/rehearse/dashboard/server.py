@@ -275,7 +275,17 @@ class _Handler(BaseHTTPRequestHandler):
             return
 
         if path == "/api/summaries":
-            self._send_json(list_run_summaries(root))
+            payload = self._require_jwt()
+            config_prefix = None
+            if payload:
+                from rehearse.dashboard.workspace_store import get_workspaces_for_user
+                workspaces = get_workspaces_for_user(root, payload["sub"])
+                if workspaces:
+                    cp = workspaces[0].get("configPath") or workspaces[0].get("config_path") or ""
+                    if cp:
+                        from pathlib import Path as _P
+                        config_prefix = _P(cp).stem.split("-")[0]
+            self._send_json(list_run_summaries(root, config_prefix=config_prefix))
             return
 
         if path.startswith("/api/experiment/") and path.endswith("/chat"):
@@ -378,7 +388,20 @@ class _Handler(BaseHTTPRequestHandler):
 
         if path == "/api/trends":
             refresh = (qs.get("refresh") or [""])[0].lower() in ("1", "true", "yes")
-            self._send_json(get_trends(root, refresh=refresh))
+            # Filter by workspace if user is authenticated
+            payload = self._require_jwt()
+            config_prefix = (qs.get("configPrefix") or [""])[0].strip()
+            if not config_prefix and payload:
+                from rehearse.dashboard.workspace_store import get_workspaces_for_user
+                workspaces = get_workspaces_for_user(root, payload["sub"])
+                if workspaces:
+                    # Use the active workspace's run_id_prefix to filter runs
+                    ws = workspaces[0]
+                    cp = ws.get("configPath") or ws.get("config_path") or ""
+                    if cp:
+                        from pathlib import Path as _P
+                        config_prefix = _P(cp).stem.split("-")[0]
+            self._send_json(get_trends(root, refresh=refresh, config_prefix=config_prefix or None))
             return
 
         if path == "/api/digest":

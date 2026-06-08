@@ -91,13 +91,16 @@ def summary_from_bundle(bundle: dict[str, Any]) -> dict[str, Any]:
     return bundle["summary"]
 
 
-def list_run_summaries(artifacts_root: Path) -> list[dict[str, Any]]:
+def list_run_summaries(artifacts_root: Path, config_prefix: str | None = None) -> list[dict[str, Any]]:
     runs_dir = artifacts_root / "runs"
     if not runs_dir.is_dir():
         return []
     items: list[dict[str, Any]] = []
     for path in sorted(runs_dir.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True):
         run_id = json.loads(path.read_text())["run_id"]
+        # Filter by config prefix (e.g. "argyle" matches "argyle-20260608-143022")
+        if config_prefix and not run_id.startswith(config_prefix):
+            continue
         bundle = load_bundle(artifacts_root, run_id, rebuild=True)
         if bundle:
             items.append(bundle["summary"])
@@ -437,8 +440,8 @@ def _build_issue_recurrence(artifacts_root: Path, summaries: list[dict[str, Any]
     return items[:15]
 
 
-def get_trends(artifacts_root: Path, *, refresh: bool = False) -> dict[str, Any]:
-    summaries = list_run_summaries(artifacts_root)
+def get_trends(artifacts_root: Path, *, refresh: bool = False, config_prefix: str | None = None) -> dict[str, Any]:
+    summaries = list_run_summaries(artifacts_root, config_prefix=config_prefix)
     summaries = list(reversed(summaries))
     readiness = [s["readiness"] for s in summaries]
     pages = [s["pages"] for s in summaries]
@@ -460,7 +463,7 @@ def get_trends(artifacts_root: Path, *, refresh: bool = False) -> dict[str, Any]
             flake_rates.append(0.0)
             blocker_counts.append(int(s.get("blockers") or s.get("issues") or 0))
 
-    recurrence = _build_issue_recurrence(artifacts_root, list_run_summaries(artifacts_root))
+    recurrence = _build_issue_recurrence(artifacts_root, list_run_summaries(artifacts_root, config_prefix=config_prefix))
     issues_opened = sum(1 for r in recurrence if r["status"] == "new")
     issues_resolved = 0
     if len(summaries) >= 2:
