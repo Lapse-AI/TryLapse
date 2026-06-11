@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { PageHeader, Panel, Chip } from "@/components/ui-bits";
+import { PageHeader, Panel, Chip, UnderConstruction } from "@/components/ui-bits";
 import { usePersistedConfigId } from "@/hooks/use-persisted-config-id";
 import { useLatestRun, useRunBundle, useRunSummaries, useConfigs } from "@/lib/api/hooks";
 import { api, artifactUrl } from "@/lib/api/client";
@@ -92,6 +92,7 @@ function SiteMap() {
   };
 
   return (
+    <UnderConstruction>
     <div>
       <PageHeader
         eyebrow="map · pages"
@@ -279,5 +280,6 @@ function SiteMap() {
         </Panel>
       </div>
     </div>
+    </UnderConstruction>
   );
 }

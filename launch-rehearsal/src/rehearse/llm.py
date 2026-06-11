@@ -73,60 +73,75 @@ def llm_provider() -> str:
 
 
 def _api_key() -> str | None:
+    explicit = os.environ.get("REHEARSE_LLM_API_KEY")
+    if explicit:
+        return explicit
+    # Prefer NIM key; fall back to DeepSeek then OpenAI
     return (
-        os.environ.get("REHEARSE_LLM_API_KEY")
-        or os.environ.get("DEEPSEEK_API_KEY")
-        or os.environ.get("NVIDIA_NIM_API_KEY")
-        or os.environ.get("NVIDIA_API_KEY")
+        _nim_api_key()
+        or _deepseek_api_key()
         or os.environ.get("OPENAI_API_KEY")
     )
+
+
+def _nim_base_url() -> str:
+    return (
+        os.environ.get("NVIDIA_NIM_API_BASE")
+        or os.environ.get("NVIDIA_API_BASE")
+        or _NIM_DEFAULT_BASE
+    ).rstrip("/")
+
+
+def _deepseek_base_url() -> str:
+    return os.environ.get("DEEPSEEK_API_BASE", _DEEPSEEK_DEFAULT_BASE).rstrip("/")
+
+
+def _nim_api_key() -> str | None:
+    return os.environ.get("NVIDIA_NIM_API_KEY") or os.environ.get("NVIDIA_API_KEY")
+
+
+def _deepseek_api_key() -> str | None:
+    return os.environ.get("DEEPSEEK_API_KEY")
 
 
 def _base_url() -> str:
     explicit = os.environ.get("REHEARSE_LLM_BASE_URL")
     if explicit:
         return explicit.rstrip("/")
-
-    if _deepseek_configured() and not _nim_configured():
-        return os.environ.get("DEEPSEEK_API_BASE", _DEEPSEEK_DEFAULT_BASE).rstrip("/")
-
+    # DeepSeek direct first — NIM free tier has 60-252s latency, worse than direct API.
+    # Set REHEARSE_LLM_PRIMARY=nim to flip this when on a paid NIM plan.
+    nim_first = os.environ.get("REHEARSE_LLM_PRIMARY", "deepseek").lower() == "nim"
+    if nim_first and _nim_configured():
+        return _nim_base_url()
     if _deepseek_configured():
-        # Both keys present — prefer DeepSeek direct API (faster, no NIM trial limits)
-        return os.environ.get("DEEPSEEK_API_BASE", _DEEPSEEK_DEFAULT_BASE).rstrip("/")
-
+        return _deepseek_base_url()
     if _nim_configured():
-        return (
-            os.environ.get("NVIDIA_NIM_API_BASE")
-            or os.environ.get("NVIDIA_API_BASE")
-            or _NIM_DEFAULT_BASE
-        ).rstrip("/")
-
+        return _nim_base_url()
     return _OPENAI_DEFAULT_BASE
 
 
-def _model() -> str:
-    base = _base_url().lower()
+_NIM_DEEPSEEK_MODEL = "deepseek-ai/deepseek-v4-flash"  # NIM catalog ID
+
+
+def _model(base_url: str | None = None) -> str:
+    base = (base_url or _base_url()).lower()
+    explicit = os.environ.get("REHEARSE_LLM_MODEL")
     if "deepseek.com" in base:
-        raw = (
-            os.environ.get("REHEARSE_LLM_MODEL")
-            or os.environ.get("DEEPSEEK_MODEL")
-            or os.environ.get("DEEPSEEK_API_MODEL")
-            or os.environ.get("NVIDIA_MODEL")
-            or _DEEPSEEK_DEFAULT_MODEL
-        )
+        raw = explicit or os.environ.get("DEEPSEEK_MODEL") or os.environ.get("DEEPSEEK_API_MODEL") or _DEEPSEEK_DEFAULT_MODEL
         return _normalize_deepseek_model(raw)
-    return (
-        os.environ.get("REHEARSE_LLM_MODEL")
-        or os.environ.get("DEEPSEEK_MODEL")
-        or os.environ.get("NVIDIA_MODEL")
-        or os.environ.get("NVIDIA_NIM_MODEL")
-        or "gpt-4o-mini"
-    )
+    if "nvidia" in base or "integrate.api.nvidia" in base:
+        return (
+            explicit
+            or os.environ.get("NVIDIA_NIM_MODEL")
+            or os.environ.get("NVIDIA_MODEL")
+            or _NIM_DEEPSEEK_MODEL
+        )
+    return explicit or os.environ.get("DEEPSEEK_MODEL") or os.environ.get("NVIDIA_MODEL") or "gpt-4o-mini"
 
 
 def _http_timeout() -> httpx.Timeout:
-    """Separate connect vs read — NIM free tier often needs long read; DeepSeek is faster."""
-    read_s = float(os.environ.get("REHEARSE_LLM_TIMEOUT_S", "180"))
+    """Separate connect vs read — NIM free tier queues up to ~280s on 3rd concurrent slot."""
+    read_s = float(os.environ.get("REHEARSE_LLM_TIMEOUT_S", "320"))
     connect_s = float(os.environ.get("REHEARSE_LLM_CONNECT_TIMEOUT_S", "30"))
     return httpx.Timeout(connect=connect_s, read=read_s, write=30.0, pool=30.0)
 
@@ -211,14 +226,37 @@ Respond with JSON only:
 """
 
 
-def _post_chat(client: httpx.Client, payload: dict[str, Any]) -> httpx.Response:
-    key = _api_key()
-    assert key
+def _post_chat(client: httpx.Client, payload: dict[str, Any], *, base: str | None = None, key: str | None = None) -> httpx.Response:
+    _key = key or _api_key()
+    assert _key
+    _base = base or _base_url()
     return client.post(
-        f"{_base_url()}/chat/completions",
-        headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+        f"{_base}/chat/completions",
+        headers={"Authorization": f"Bearer {_key}", "Content-Type": "application/json"},
         json=payload,
     )
+
+
+def _post_chat_with_fallback(client: httpx.Client, payload: dict[str, Any]) -> httpx.Response:
+    """Try NIM first; on 429/5xx fall back to DeepSeek direct API."""
+    if _nim_configured():
+        nim_key = _nim_api_key()
+        nim_url = _nim_base_url()
+        nim_payload = {**payload, "model": _model(nim_url)}
+        try:
+            resp = _post_chat(client, nim_payload, base=nim_url, key=nim_key)
+            if resp.status_code not in (429, 500, 502, 503):
+                return resp
+        except Exception:
+            pass
+        # NIM failed — fall through to DeepSeek
+    if _deepseek_configured():
+        ds_key = _deepseek_api_key()
+        ds_url = _deepseek_base_url() + "/v1"
+        ds_payload = {**payload, "model": _model(ds_url)}
+        return _post_chat(client, ds_payload, base=ds_url, key=ds_key)
+    # Neither NIM nor DeepSeek — use whatever _base_url() returns
+    return _post_chat(client, payload)
 
 
 def analyze_persona_llm(ctx: RunContext, persona: Persona) -> dict[str, Any] | None:
@@ -250,11 +288,11 @@ def analyze_persona_llm(ctx: RunContext, persona: Persona) -> dict[str, Any] | N
     for attempt in range(_max_retries() + 1):
         try:
             with httpx.Client(timeout=timeout) as client:
-                resp = _post_chat(client, payload)
+                resp = _post_chat_with_fallback(client, payload)
                 if resp.status_code == 429:
                     wait = min(2 ** attempt * 5, 60)
                     time.sleep(wait)
-                    resp = _post_chat(client, payload)
+                    resp = _post_chat_with_fallback(client, payload)
                 if resp.status_code >= 400 and use_json_mode and "response_format" in payload:
                     payload_retry = {k: v for k, v in payload.items() if k != "response_format"}
                     resp = _post_chat(client, payload_retry)

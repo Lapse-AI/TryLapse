@@ -74,13 +74,28 @@ def load_bundle(artifacts_root: Path, run_id: str, *, rebuild: bool = True) -> d
     return None
 
 
+def _is_run_evidence(path: Path) -> str | None:
+    """Return run_id if path is a run evidence JSON; None for progress/graph/other files."""
+    # Skip non-evidence files by name pattern
+    name = path.stem
+    if name.endswith("-progress") or name.endswith("-crawl-graph") or name.endswith("-control"):
+        return None
+    try:
+        data = json.loads(path.read_text())
+        return data.get("run_id") or None
+    except Exception:
+        return None
+
+
 def backfill_all(artifacts_root: Path) -> list[str]:
     runs_dir = artifacts_root / "runs"
     if not runs_dir.is_dir():
         return []
     rebuilt: list[str] = []
     for path in sorted(runs_dir.glob("*.json")):
-        run_id = json.loads(path.read_text())["run_id"]
+        run_id = _is_run_evidence(path)
+        if not run_id:
+            continue
         if not _analysis_path(artifacts_root, run_id).is_file():
             if rebuild_bundle_from_artifacts(artifacts_root, run_id):
                 rebuilt.append(run_id)
@@ -97,7 +112,9 @@ def list_run_summaries(artifacts_root: Path, config_prefix: str | None = None) -
         return []
     items: list[dict[str, Any]] = []
     for path in sorted(runs_dir.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True):
-        run_id = json.loads(path.read_text())["run_id"]
+        run_id = _is_run_evidence(path)
+        if not run_id:
+            continue
         # Filter by config prefix (e.g. "argyle" matches "argyle-20260608-143022")
         if config_prefix and not run_id.startswith(config_prefix):
             continue
@@ -212,10 +229,19 @@ def get_run_detail(artifacts_root: Path, run_id: str) -> dict[str, Any] | None:
     }
 
 
-def _step_primary_screenshot(step: dict[str, Any]) -> str | None:
-    for path in step.get("artifactPaths") or []:
+def _step_primary_screenshot(step: dict[str, Any], artifacts_root: Path | None = None) -> str | None:
+    # JSON stores snake_case (artifact_paths); camelCase is a legacy key — check both
+    paths = step.get("artifact_paths") or step.get("artifactPaths") or []
+    for path in paths:
         if path.endswith(".png") and "-error" not in path:
-            return path.replace("\\", "/")
+            p = path.replace("\\", "/")
+            # Relativize absolute paths so the frontend can build a /files/ URL
+            if artifacts_root and Path(p).is_absolute():
+                try:
+                    p = str(Path(p).relative_to(artifacts_root)).replace("\\", "/")
+                except ValueError:
+                    pass
+            return p
     return None
 
 
@@ -665,17 +691,64 @@ def save_config(artifacts_root: Path, body: dict[str, Any]) -> dict[str, Any]:
                 config.setdefault("personas", []).append(entry)
                 existing_ids.add(entry["id"])
 
+    # Copy personas, journeys, and budget settings from the existing config if provided
+    existing_config_id = str(body.get("existingConfigId") or "").strip()
+    if existing_config_id:
+        try:
+            import yaml as _yaml2
+            from rehearse.dashboard.config_yaml import get_config_yaml as _get_cfg
+            _meta = _get_cfg(artifacts_root, existing_config_id)
+            _existing = _yaml2.safe_load(_meta["yaml"]) or {}
+
+            # Preserve budget settings from existing config (don't reset to build_config defaults)
+            existing_budgets = _existing.get("budgets") or {}
+            if existing_budgets:
+                config.setdefault("budgets", {}).update(existing_budgets)
+
+            # Merge personas from existing config (preserves imported ones not in build_config defaults)
+            existing_personas = _existing.get("personas") or []
+            if existing_personas:
+                from rehearse.dashboard.persona_draft import persona_to_yaml_entry
+                current_p_ids = {p.get("id") for p in config.get("personas") or []}
+                for p in existing_personas:
+                    if p.get("id") not in current_p_ids:
+                        config.setdefault("personas", []).append(persona_to_yaml_entry(p))
+                        current_p_ids.add(p.get("id"))
+
+            # Merge journeys
+            existing_journeys = _existing.get("journeys") or []
+            if existing_journeys:
+                current_j_ids = {j.get("id") for j in config.get("journeys") or []}
+                for j in existing_journeys:
+                    if j.get("id") not in current_j_ids:
+                        config.setdefault("journeys", []).append(j)
+                        current_j_ids.add(j.get("id"))
+
+            # If existing config has persona-specific journeys, strip the generic
+            # build_config placeholders (j1-land, j2-core, etc.) — they're redundant
+            _DEFAULT_J_IDS = {"j1-land", "j2-core", "j3-depth", "j4-search", "j5-admin"}
+            all_journeys = config.get("journeys") or []
+            has_persona_specific = any(j.get("persona_ids") for j in all_journeys)
+            if has_persona_specific:
+                config["journeys"] = [
+                    j for j in all_journeys
+                    if j.get("id") not in _DEFAULT_J_IDS or j.get("persona_ids")
+                ]
+        except Exception:
+            pass
+
     slug = config["run"]["run_id_prefix"]
-    # Scope configs to owner — each user gets their own subdirectory
-    owner_id = str(body.get("_owner_id") or "shared").strip()
-    cfg_dir = artifacts_root / "configs" / owner_id
+    # Scope configs to owner when authenticated; flat dir in local dev
+    owner_id = str(body.get("_owner_id") or "").strip()
+    cfg_dir = artifacts_root / "configs" / owner_id if owner_id else artifacts_root / "configs"
     # Use local timestamp from frontend (user's timezone) if provided, else UTC
     local_ts = str(body.get("localTimestamp") or "").strip()
     import re as _re
     if local_ts and _re.fullmatch(r"\d{8}-\d{6}", local_ts):
         ts = local_ts
     else:
-        ts = datetime.utcnow().strftime("%Y%m%d-%H%M%S")
+        # Fall back to local system time (not UTC) so filenames match user's clock
+        ts = datetime.now().strftime("%Y%m%d-%H%M%S")
     filename = f"{slug}-{ts}.yaml"
     path = cfg_dir / filename
     write_config(path, config)
@@ -705,29 +778,47 @@ def list_configs(artifacts_root: Path, owner_id: str | None = None) -> list[dict
             user_dir = cfg_dir / owner_id
             if user_dir.is_dir():
                 for p in sorted(user_dir.glob("*.yaml"), key=lambda x: x.stat().st_mtime, reverse=True):
-                    items.append({"id": p.stem, "path": str(p), "name": p.stem, "source": "saved"})
+                    items.append({"id": p.stem, "path": str(p), "name": p.stem, "source": "saved", "mtime": p.stat().st_mtime})
 
-        # Legacy flat configs — only include workspace-linked ones for this user
-        # (shared configs like lr-self, argyle that predate per-user scoping)
+        # Collect workspace-linked config IDs (works for both owner and anonymous local dev)
+        linked_paths: dict[str, str] = {}  # stem → absolute path
         if owner_id:
             from rehearse.dashboard.workspace_store import get_workspaces_for_user
             try:
                 workspaces = get_workspaces_for_user(artifacts_root, owner_id)
-                linked_ids = {
-                    Path(cp).stem
-                    for ws in workspaces
-                    for cp in [ws.get("configPath") or ws.get("config_path") or ""]
-                    if cp
-                }
+                for ws in workspaces:
+                    cp = ws.get("configPath") or ws.get("config_path") or ""
+                    if cp:
+                        linked_paths[Path(cp).stem] = cp
             except Exception:
-                linked_ids = set()
+                pass
         else:
-            linked_ids = set()
+            # Local dev: pick up config_path from workspace.json
+            try:
+                import json as _json
+                ws_file = artifacts_root / "workspace.json"
+                if ws_file.is_file():
+                    ws_data = _json.loads(ws_file.read_text())
+                    cp = ws_data.get("configPath") or ws_data.get("config_path") or ""
+                    if cp:
+                        linked_paths[Path(cp).stem] = cp
+            except Exception:
+                pass
 
+        # Include workspace-linked configs from subdirectories (e.g. local/)
+        seen = {i["id"] for i in items}
+        for stem, path_str in linked_paths.items():
+            if stem not in seen:
+                p = Path(path_str)
+                if p.is_file():
+                    items.append({"id": p.stem, "path": str(p), "name": p.stem, "source": "saved", "mtime": p.stat().st_mtime})
+                    seen.add(stem)
+
+        # Legacy flat configs
         for p in sorted(cfg_dir.glob("*.yaml"), key=lambda x: x.stat().st_mtime, reverse=True):
             if p.stem not in {i["id"] for i in items}:
-                if not owner_id or p.stem in linked_ids:
-                    items.append({"id": p.stem, "path": str(p), "name": p.stem, "source": "saved"})
+                if not owner_id or p.stem in linked_paths:
+                    items.append({"id": p.stem, "path": str(p), "name": p.stem, "source": "saved", "mtime": p.stat().st_mtime})
 
     examples = Path(__file__).resolve().parents[2] / "examples"
     if examples.is_dir():

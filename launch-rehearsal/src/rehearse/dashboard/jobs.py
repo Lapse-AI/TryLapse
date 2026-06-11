@@ -142,7 +142,7 @@ def enqueue_variant_run(
         if use_llm:
             cmd.append("--llm")
         try:
-            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=3600,
+            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=32400,
                                   env=_load_env(artifacts_root))
             if proc.returncode == 0:
                 return parse_run_id_from_cli_output(proc.stdout, proc.stderr)
@@ -252,7 +252,7 @@ def enqueue_cohort_run(
         if use_llm:
             cmd.append("--llm")
         try:
-            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=3600,
+            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=32400,
                                   env=_load_env(artifacts_root))
             if proc.returncode == 0:
                 return parse_run_id_from_cli_output(proc.stdout, proc.stderr)
@@ -408,7 +408,16 @@ def enqueue_run(
 
     def _worker() -> None:
         with _run_serial_lock:
-            _update_job(artifacts_root, job_id, {"status": "running"})
+            # Pre-assign run_id so the job record has it before the subprocess starts.
+            # This lets the frontend send pause/stop signals while the run is live.
+            pre_run_id: str | None = None
+            if mode == "run" and run_prefix:
+                from rehearse.evidence import new_run_id as _new_run_id
+                pre_run_id = _new_run_id(run_prefix)
+                _update_job(artifacts_root, job_id, {"status": "running", "runId": pre_run_id})
+            else:
+                _update_job(artifacts_root, job_id, {"status": "running"})
+
             cmd = [
                 str(rehearse_bin),
                 "crawl" if mode == "crawl" else "run",
@@ -421,12 +430,14 @@ def enqueue_run(
                 cmd.append("--llm")
             if mode == "run" and no_crawl:
                 cmd.append("--no-crawl")
+            if pre_run_id:
+                cmd.extend(["--run-id", pre_run_id])
             try:
                 proc = subprocess.run(
                     cmd,
                     capture_output=True,
                     text=True,
-                    timeout=3600,
+                    timeout=32400,
                     env=_load_env(artifacts_root),
                 )
                 if proc.returncode == 0:

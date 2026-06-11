@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHeader, Panel, Chip } from "@/components/ui-bits";
 import { workspace, agentConfigDefaults, auditLog } from "@/lib/mock-data";
@@ -7,6 +9,102 @@ import { ConfigYamlEditor } from "@/components/config-yaml-editor";
 import { ExperimentSpecPanel } from "@/components/experiment-spec-panel";
 import { PersonaEditorPanel } from "@/components/persona-editor-panel";
 import { usePersistedConfigId } from "@/hooks/use-persisted-config-id";
+import { api } from "@/lib/api/client";
+import { toast } from "sonner";
+import { Eye, EyeOff } from "lucide-react";
+
+function RunCredentialsPanel({ configId }: { configId: string }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loginPath, setLoginPath] = useState("/login");
+  const [showPw, setShowPw] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const qc = useQueryClient();
+
+  async function save() {
+    if (!email && !password) return;
+    setSaving(true);
+    try {
+      const result = await api.saveCredentials(email, password, {
+        configId: configId || undefined,
+        loginPath: loginPath.trim() || undefined,
+      });
+      setSaved(true);
+      await qc.invalidateQueries({ queryKey: ["credentials"] });
+      if (result.yamlUpdated) {
+        toast.success("Credentials saved + auth block added to config YAML");
+      } else {
+        toast.success("Credentials saved — will be used on next run");
+      }
+      setTimeout(() => setSaved(false), 3000);
+    } catch {
+      toast.error("Failed to save credentials");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div>
+      <div className="text-xs text-muted-foreground mb-3">
+        Run credentials · REHEARSE_EMAIL / REHEARSE_PASSWORD
+      </div>
+      <div className="space-y-2">
+        <div>
+          <label className="text-[11px] text-muted-foreground">Email / Username</label>
+          <input
+            type="email"
+            placeholder="you@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full mt-0.5 text-xs bg-surface border border-border rounded px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary/30"
+          />
+        </div>
+        <div>
+          <label className="text-[11px] text-muted-foreground">Password</label>
+          <div className="relative">
+            <input
+              type={showPw ? "text" : "password"}
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full mt-0.5 text-xs bg-surface border border-border rounded px-2 py-1.5 pr-7 focus:outline-none focus:ring-1 focus:ring-primary/30"
+            />
+            <button type="button" onClick={() => setShowPw(!showPw)}
+              className="absolute right-2 top-1/2 -translate-y-1/4 text-muted-foreground">
+              {showPw ? <EyeOff className="size-3" /> : <Eye className="size-3" />}
+            </button>
+          </div>
+        </div>
+        <div>
+          <label className="text-[11px] text-muted-foreground">
+            Login page path{" "}
+            <span className="text-muted-foreground/60">— adds auth block to current config YAML</span>
+          </label>
+          <input
+            type="text"
+            placeholder="/login"
+            value={loginPath}
+            onChange={(e) => setLoginPath(e.target.value)}
+            className="w-full mt-0.5 text-xs bg-surface border border-border rounded px-2 py-1.5 font-mono focus:outline-none focus:ring-1 focus:ring-primary/30"
+          />
+        </div>
+        <button
+          onClick={save}
+          disabled={saving || (!email && !password)}
+          className="mt-1 px-3 py-1.5 text-xs rounded border border-primary/40 bg-primary/10 hover:bg-primary/20 text-primary disabled:opacity-40"
+        >
+          {saving ? "Saving…" : saved ? "Saved ✓" : "Save credentials"}
+        </button>
+        <p className="text-[11px] text-muted-foreground">
+          Credentials stored in <code className="font-mono">.env</code> (never in YAML).
+          Login path updates the <code className="font-mono">auth:</code> block in the selected config.
+        </p>
+      </div>
+    </div>
+  );
+}
 
 export const Route = createFileRoute("/config")({
   head: () => ({ meta: [{ title: "Workspace — Launch Rehearsal" }] }),
@@ -76,27 +174,7 @@ function Config() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Panel className="p-5 space-y-5">
               <VisionOnly section="config.secretsVault">
-                <div>
-                  <div className="text-xs text-muted-foreground mb-3">
-                    Environment secrets · REHEARSE_*
-                  </div>
-                  <div className="space-y-2 font-mono text-sm">
-                    {[
-                      "REHEARSE_EMAIL",
-                      "REHEARSE_PASSWORD",
-                      "NVIDIA_NIM_API_KEY",
-                      "OPENAI_API_KEY",
-                    ].map((s) => (
-                      <div
-                        key={s}
-                        className="flex items-center justify-between border border-border rounded-md px-3 py-2"
-                      >
-                        <span className="text-xs">{s}</span>
-                        <Chip tone="ready">set</Chip>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                <RunCredentialsPanel configId={configId ?? ""} />
               </VisionOnly>
               <VisionOnly section="config.agentToggles">
                 <div>

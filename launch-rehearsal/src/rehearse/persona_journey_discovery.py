@@ -33,10 +33,14 @@ Your goals: {persona_goals}
 The product you use:
 {product_summary}
 
+{dom_reference}
+
 List every distinct journey you undertake with this product — daily tasks,
 weekly routines, onboarding steps, edge cases, admin actions, recovery flows,
 anything you'd do more than once. Cover breadth: happy paths, frustrated paths,
 exploratory paths, and anything persona-specific.
+
+IMPORTANT: For entry_point, use only the exact URLs from the DOM Reference above.
 
 Return JSON only:
 {{
@@ -53,7 +57,7 @@ Return JSON only:
       "description": "<what you accomplish in one sentence>",
       "frequency": "daily|weekly|occasional|onboarding-only",
       "priority": "critical|high|medium|low",
-      "entry_point": "<URL path or page name>",
+      "entry_point": "<exact URL path from DOM Reference>",
       "behavioral_intent": "<what success looks like from your perspective>",
       "failure_signals": ["<thing that would frustrate you>", "..."],
       "sub_flow_hints": ["<name of a modal/filter/state worth testing>", "..."]
@@ -72,13 +76,16 @@ Include 8–14 journeys. Do not include steps — only metadata."""
 _EXPAND_SYSTEM = """You are a {persona_role} walking through a specific workflow.
 Write every step precisely — not vague descriptions but exact browser actions:
 which element to click, what to type, what URL to navigate to, what to assert.
-Think like a test engineer writing Playwright steps for this persona."""
+Think like a test engineer writing Playwright steps for this persona.
+CRITICAL: Use only the EXACT element labels and URLs from the DOM reference provided."""
 
 _EXPAND_PROMPT = """Persona: {persona_name} ({persona_role})
 Goals: {persona_goals}
 
 Product:
 {product_summary}
+
+{dom_reference}
 
 Journey to expand:
   ID: {journey_id}
@@ -94,6 +101,10 @@ Write the complete step-by-step execution of this journey. Include:
 - At least one assertion step to verify the outcome
 - Realistic fill values (use ${{REHEARSE_EMAIL}} / ${{REHEARSE_PASSWORD}} for auth)
 
+IMPORTANT: For click steps, use the EXACT label text from the DOM Reference above
+(e.g. intent: "Candidate Database" not "analytics section link").
+For navigate steps, use the exact URLs listed in the DOM Reference.
+
 Return JSON only:
 {{
   "journey_id": "{journey_id}",
@@ -102,7 +113,7 @@ Return JSON only:
       "action": "navigate|click|fill|wait|scroll|hover|select|press|assert_url_contains|open_link|explore|dismiss",
       "description": "<what you do and why>",
       "url": "<full URL or path, for navigate steps>",
-      "intent": "<natural language description of the element, for click/fill/scroll>",
+      "intent": "<EXACT element label text from DOM Reference, for click/fill/scroll>",
       "selector": "<CSS selector if you know it precisely, otherwise omit>",
       "value": "<text to type, wait ms, key to press, or text to assert>",
       "expected_outcome": "<what should happen after this step>"
@@ -120,13 +131,19 @@ Return JSON only:
 }}
 
 Include 6–14 steps in the main path. Cover the sub-flows listed above.
-Be precise: 'click the blue Submit button in the booking form' not 'submit the form'."""
+Be precise: use 'click "Candidate Database"' not 'click the data section link'."""
 
 
 # ── LLM helpers ───────────────────────────────────────────────────────────────
 
 def _api_key() -> str | None:
-    return os.environ.get("DEEPSEEK_API_KEY") or os.environ.get("REHEARSE_LLM_API_KEY")
+    # NIM first, then DeepSeek
+    return (
+        os.environ.get("REHEARSE_LLM_API_KEY")
+        or os.environ.get("NVIDIA_NIM_API_KEY")
+        or os.environ.get("NVIDIA_API_KEY")
+        or os.environ.get("DEEPSEEK_API_KEY")
+    )
 
 
 def _repair_json(raw: str) -> dict[str, Any] | None:
@@ -169,42 +186,158 @@ def _repair_json(raw: str) -> dict[str, Any] | None:
     return None
 
 
+_NIM_BASE = "https://integrate.api.nvidia.com/v1"
+_NIM_MODEL = "deepseek-ai/deepseek-v4-flash"
+_DS_BASE = "https://api.deepseek.com/v1"
+_DS_MODEL = "deepseek-v4-flash"
+
+
+def _llm_endpoints() -> list[tuple[str, str, str]]:
+    """Return (base_url, model, api_key) in priority order: DeepSeek direct first, NIM as fallback.
+
+    NIM free tier has 60-252s latency for DeepSeek V4 Flash which is worse than direct.
+    Flip REHEARSE_LLM_PRIMARY=nim to use NIM first when on a paid plan with fast cold-starts.
+    """
+    explicit_base = os.environ.get("REHEARSE_LLM_BASE_URL", "").rstrip("/")
+    explicit_model = os.environ.get("REHEARSE_LLM_MODEL", "")
+    explicit_key = os.environ.get("REHEARSE_LLM_API_KEY", "")
+
+    if explicit_base and explicit_key:
+        return [(explicit_base, explicit_model or _DS_MODEL, explicit_key)]
+
+    nim_first = os.environ.get("REHEARSE_LLM_PRIMARY", "deepseek").lower() == "nim"
+    endpoints = []
+
+    ds_key = os.environ.get("DEEPSEEK_API_KEY")
+    ds_entry = None
+    if ds_key:
+        ds_base = os.environ.get("DEEPSEEK_API_BASE", _DS_BASE).rstrip("/")
+        ds_model = os.environ.get("DEEPSEEK_MODEL") or _DS_MODEL
+        ds_entry = (ds_base, ds_model, ds_key)
+
+    nim_key = os.environ.get("NVIDIA_NIM_API_KEY") or os.environ.get("NVIDIA_API_KEY")
+    nim_entry = None
+    if nim_key:
+        nim_base = (os.environ.get("NVIDIA_NIM_API_BASE") or os.environ.get("NVIDIA_API_BASE") or _NIM_BASE).rstrip("/")
+        nim_model = os.environ.get("NVIDIA_NIM_MODEL") or os.environ.get("NVIDIA_MODEL") or _NIM_MODEL
+        nim_entry = (nim_base, nim_model, nim_key)
+
+    if nim_first:
+        if nim_entry: endpoints.append(nim_entry)
+        if ds_entry: endpoints.append(ds_entry)
+    else:
+        if ds_entry: endpoints.append(ds_entry)
+        if nim_entry: endpoints.append(nim_entry)
+
+    return endpoints
+
+
 def _call_llm(prompt: str, system: str, *, max_tokens: int = 3000) -> dict[str, Any] | None:
-    key = _api_key()
-    if not key:
+    import time as _time
+    import httpx
+
+    endpoints = _llm_endpoints()
+    if not endpoints:
         return None
-    try:
-        import httpx
-        base = os.environ.get("REHEARSE_LLM_BASE_URL", "https://api.deepseek.com/v1")
-        model = os.environ.get("REHEARSE_LLM_MODEL", "deepseek-chat")
-        resp = httpx.post(
-            f"{base}/chat/completions",
-            headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
-            json={
-                "model": model,
-                "messages": [
-                    {"role": "system", "content": system},
-                    {"role": "user", "content": prompt},
-                ],
-                "temperature": 0.4,
-                "max_tokens": max_tokens,
-                "response_format": {"type": "json_object"},
-            },
-            timeout=120.0,
-        )
-        resp.raise_for_status()
-        choice = resp.json()["choices"][0]
-        raw = choice["message"]["content"]
-        finish = choice.get("finish_reason", "")
-        result = _repair_json(raw)
-        if result and finish == "length":
-            result["_truncated"] = True
-        return result
-    except Exception:
-        return None
+
+    payload_base = {
+        "messages": [
+            {"role": "system", "content": system},
+            {"role": "user", "content": prompt},
+        ],
+        "temperature": 0.4,
+        "max_tokens": max_tokens,
+        "response_format": {"type": "json_object"},
+    }
+
+    for (base, model, key) in endpoints:
+        payload = {**payload_base, "model": model}
+        last_exc: Exception | None = None
+        for attempt in range(3):
+            if attempt > 0:
+                _time.sleep(2 ** attempt)
+            try:
+                resp = httpx.post(
+                    f"{base}/chat/completions",
+                    headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+                    json=payload,
+                    timeout=320.0,  # NIM free tier can queue up to ~280s on 3rd concurrent slot
+                )
+                if resp.status_code == 429:
+                    last_exc = Exception("rate limited (429)")
+                    continue
+                if resp.status_code >= 500:
+                    last_exc = Exception(f"server error {resp.status_code}")
+                    break  # try next endpoint, not retry same
+                resp.raise_for_status()
+                choice = resp.json()["choices"][0]
+                raw = choice["message"]["content"]
+                finish = choice.get("finish_reason", "")
+                result = _repair_json(raw)
+                if result and finish == "length":
+                    result["_truncated"] = True
+                return result
+            except Exception as exc:
+                last_exc = exc
+        # This endpoint exhausted — try next (fallback)
+        _ = last_exc
+    return None
 
 
 # ── Product model summariser ─────────────────────────────────────────────────
+
+def _dom_reference(interaction_map: dict[str, Any] | None) -> str:
+    """Build a DOM reference block the LLM can use for exact element labels."""
+    if not interaction_map:
+        return ""
+    lines = ["=== DOM Reference (use EXACT text from here) ==="]
+
+    nav = interaction_map.get("navStructure") or interaction_map.get("nav_structure") or []
+    if nav:
+        lines.append(f"Navigation labels: {' | '.join(nav)}")
+
+    pages = interaction_map.get("pagesVisited") or interaction_map.get("pages_visited") or []
+    base = interaction_map.get("targetUrl") or interaction_map.get("target_url") or ""
+    paths = []
+    for p in pages[:12]:
+        path = p.replace(base, "") or "/"
+        if path not in paths:
+            paths.append(path)
+    if paths:
+        lines.append(f"Discovered pages (use these exact URLs): {' | '.join(paths)}")
+
+    buttons = interaction_map.get("buttons") or []
+    real_labels = [
+        b.get("label", "") for b in buttons
+        if b.get("label") and not b.get("label", "").startswith("[")
+        and b.get("label") not in ("unnamed",)
+    ]
+    if real_labels:
+        lines.append(f"Clickable elements found: {' | '.join(dict.fromkeys(real_labels))[:300]}")
+
+    url_patterns = interaction_map.get("urlPatterns") or interaction_map.get("url_patterns") or {}
+    if url_patterns:
+        lines.append(f"URL patterns: {', '.join(url_patterns.keys())}")
+
+    lines.append("=== End DOM Reference ===")
+    return "\n".join(lines)
+
+
+def _product_summary_from_imap(imap: dict[str, Any]) -> str:
+    """Minimal product summary derived purely from the interaction map when product model is empty."""
+    base = imap.get("targetUrl") or imap.get("target_url") or ""
+    pages = imap.get("pagesVisited") or imap.get("pages_visited") or []
+    nav = imap.get("navStructure") or imap.get("nav_structure") or []
+    paths = list(dict.fromkeys(
+        (p.replace(base, "") or "/") for p in pages[:12]
+    ))
+    lines = [
+        f"URL: {base}",
+        f"Navigation: {', '.join(nav)}" if nav else "",
+        f"Discovered pages: {', '.join(paths)}" if paths else "",
+    ]
+    return "\n".join(l for l in lines if l)
+
 
 def _product_summary(model: dict[str, Any]) -> str:
     lines = [
@@ -245,6 +378,7 @@ def _product_summary(model: dict[str, Any]) -> str:
 def _discover_journey_plan(
     persona: dict[str, Any],
     product_model: dict[str, Any],
+    interaction_map: dict[str, Any] | None = None,
 ) -> dict[str, Any] | None:
     """Ask LLM for journey metadata (no steps) — fast, small, never truncates."""
     pid = persona.get("id", "p-unknown")
@@ -257,6 +391,7 @@ def _discover_journey_plan(
         persona_id=pid,
         pid_short=pid_short,
         product_summary=_product_summary(product_model),
+        dom_reference=_dom_reference(interaction_map),
     )
     return _call_llm(prompt, system, max_tokens=2500)
 
@@ -267,6 +402,7 @@ def _expand_journey_steps(
     journey_meta: dict[str, Any],
     persona: dict[str, Any],
     product_model: dict[str, Any],
+    interaction_map: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Expand a single journey into full deep steps. One focused LLM call."""
     system = _EXPAND_SYSTEM.format(persona_role=persona.get("role", "user"))
@@ -275,6 +411,7 @@ def _expand_journey_steps(
         persona_role=persona.get("role", "user"),
         persona_goals="; ".join(persona.get("goals") or ["use the product effectively"]),
         product_summary=_product_summary(product_model),
+        dom_reference=_dom_reference(interaction_map),
         journey_id=journey_meta.get("id", "j-1"),
         journey_name=journey_meta.get("name", "Journey"),
         journey_description=journey_meta.get("description", ""),
@@ -345,6 +482,7 @@ def _template_fallback(persona: dict[str, Any], product_model: dict[str, Any]) -
 def discover_journeys_for_persona(
     persona: dict[str, Any],
     product_model: dict[str, Any],
+    interaction_map: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Two-phase deep journey discovery for one persona.
 
@@ -354,8 +492,15 @@ def discover_journeys_for_persona(
     """
     pid = persona.get("id", "p-unknown")
 
+    # If product model is empty but we have interaction_map, bootstrap from crawl data
+    if not product_model and interaction_map:
+        product_model = {
+            "purpose": _product_summary_from_imap(interaction_map),
+            "targetUrl": interaction_map.get("targetUrl") or interaction_map.get("target_url", ""),
+        }
+
     # ── Phase 1: get the journey plan ────────────────────────────────────────
-    plan = _discover_journey_plan(persona, product_model)
+    plan = _discover_journey_plan(persona, product_model, interaction_map)
     if not plan or not plan.get("journey_plan"):
         return _template_fallback(persona, product_model)
 
@@ -367,7 +512,7 @@ def discover_journeys_for_persona(
 
     def _expand(jm: dict[str, Any]) -> None:
         jid = jm.get("id", "")
-        expanded[jid] = _expand_journey_steps(jm, persona, product_model)
+        expanded[jid] = _expand_journey_steps(jm, persona, product_model, interaction_map)
 
     threads = [
         threading.Thread(target=_expand, args=(jm,), daemon=True)
@@ -404,9 +549,108 @@ def discover_journeys_for_persona(
     return result
 
 
+def discover_journeys_for_persona_streaming(
+    persona: dict[str, Any],
+    product_model: dict[str, Any],
+    interaction_map: dict[str, Any] | None = None,
+    on_event: Any = None,
+) -> dict[str, Any]:
+    """Same two-phase discovery as discover_journeys_for_persona, but fires
+    on_event(dict) callbacks as each journey is expanded so callers can stream
+    results to the client incrementally.
+
+    Events emitted:
+      {"type": "phase1_start"}
+      {"type": "phase1_done", "count": N, "names": [...], "usage_pattern": {...}}
+      {"type": "journey_ready", "journey": {...}}  — once per expanded journey
+      {"type": "done", "persona_id": "...", "journeys_count": N}
+    """
+    import threading as _threading
+
+    pid = persona.get("id", "p-unknown")
+
+    def emit(event: dict[str, Any]) -> None:
+        if on_event:
+            try:
+                on_event(event)
+            except Exception:
+                pass
+
+    if not product_model and interaction_map:
+        product_model = {
+            "purpose": _product_summary_from_imap(interaction_map),
+            "targetUrl": interaction_map.get("targetUrl") or interaction_map.get("target_url", ""),
+        }
+
+    emit({"type": "phase1_start", "message": "Generating journey plan from product + crawl data…"})
+    plan = _discover_journey_plan(persona, product_model, interaction_map)
+
+    if not plan or not plan.get("journey_plan"):
+        result = _template_fallback(persona, product_model)
+        fallback_journeys: list[dict[str, Any]] = result.get("journeys") or []
+        emit({
+            "type": "phase1_done",
+            "count": len(fallback_journeys),
+            "names": [j.get("name", "") for j in fallback_journeys],
+            "usage_pattern": result.get("usage_pattern", {}),
+            "source": "template",
+        })
+        for fj in fallback_journeys:
+            emit({"type": "journey_ready", "journey": fj})
+        emit({"type": "done", "persona_id": pid, "source": "template", "journeys_count": len(fallback_journeys)})
+        return result
+
+    journey_plan: list[dict[str, Any]] = plan.get("journey_plan") or []
+    emit({
+        "type": "phase1_done",
+        "count": len(journey_plan),
+        "names": [j.get("name", "") for j in journey_plan],
+        "usage_pattern": plan.get("usage_pattern", {}),
+    })
+
+    expanded: dict[str, dict[str, Any]] = {}
+    lock = _threading.Lock()
+
+    def _expand(jm: dict[str, Any]) -> None:
+        exp = _expand_journey_steps(jm, persona, product_model, interaction_map)
+        merged = {**jm, "steps": exp.get("steps") or [], "sub_flows": exp.get("sub_flows") or []}
+        with lock:
+            expanded[jm.get("id", "")] = merged
+        emit({"type": "journey_ready", "journey": merged})
+
+    threads = [
+        _threading.Thread(target=_expand, args=(jm,), daemon=True)
+        for jm in journey_plan
+    ]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join(timeout=90)
+
+    journeys = [
+        expanded.get(jm.get("id", ""), {**jm, "steps": [], "sub_flows": []})
+        for jm in journey_plan
+    ]
+    result: dict[str, Any] = {
+        "persona_id": pid,
+        "usage_pattern": plan.get("usage_pattern", {}),
+        "journeys": journeys,
+        "critical_paths": plan.get("critical_paths", []),
+        "pain_points_anticipated": plan.get("pain_points_anticipated", []),
+        "chatbot_test_questions": plan.get("chatbot_test_questions", []),
+        "information_gaps": plan.get("information_gaps", []),
+        "source": "llm",
+        "personaName": persona.get("name", ""),
+        "personaRole": persona.get("role", ""),
+    }
+    emit({"type": "done", "persona_id": pid, "journeys_count": len(journeys)})
+    return result
+
+
 def discover_journeys_for_all_personas(
     personas: list[dict[str, Any]],
     product_model: dict[str, Any],
+    interaction_map: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     """Run journey discovery for every persona (personas run in parallel,
     but within each persona Phase 2 expansions also run in parallel)."""
@@ -414,7 +658,7 @@ def discover_journeys_for_all_personas(
     results: list[dict[str, Any]] = [{} for _ in range(len(personas))]
 
     def _worker(idx: int, persona: dict[str, Any]) -> None:
-        results[idx] = discover_journeys_for_persona(persona, product_model)
+        results[idx] = discover_journeys_for_persona(persona, product_model, interaction_map)
 
     threads = [
         threading.Thread(target=_worker, args=(i, p), daemon=True)
@@ -463,8 +707,13 @@ def discovered_journey_to_config_entry(journey: dict[str, Any]) -> dict[str, Any
             {"action": "wait", "value": "2000"},
         ]
 
-    return {
+    entry: dict[str, Any] = {
         "id": journey.get("id", "j-unknown"),
         "name": journey.get("name", "Untitled journey"),
         "steps": clean_steps,
     }
+    # Preserve which persona this journey was discovered for
+    pid = journey.get("persona_id") or journey.get("personaId")
+    if pid:
+        entry["persona_ids"] = [str(pid)]
+    return entry

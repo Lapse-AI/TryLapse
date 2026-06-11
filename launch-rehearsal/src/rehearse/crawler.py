@@ -161,6 +161,21 @@ def crawl_site(
     queue: list[tuple[str, int]] = [(seed, 0)]
     seen: set[str] = set()
     pages: list[CrawlPage] = []
+    # Pattern-based sampling: track how many pages per URL template
+    pattern_samples: dict[str, int] = {}
+    max_samples_per_pattern = 2
+
+    def _path_pattern(path: str) -> str:
+        parts = [p for p in path.split("/") if p]
+        normed = []
+        for p in parts:
+            if re.match(r'^\d+$', p) or re.match(r'^[0-9a-f]{8}-[0-9a-f]{4}', p, re.I):
+                normed.append("{id}")
+            elif re.match(r'^[a-z0-9][a-z0-9_-]{7,}$', p, re.I) and (re.search(r'\d', p) or len(p) > 20):
+                normed.append("{id}")
+            else:
+                normed.append(p)
+        return "/" + "/".join(normed) if normed else "/"
 
     while queue and len(pages) < config.max_pages:
         url, depth = queue.pop(0)
@@ -168,6 +183,13 @@ def crawl_site(
         key = (norm.path or "/").rstrip("/") or "/"
         if key in seen or _path_excluded(key, excludes):
             continue
+
+        # Skip structurally redundant pages
+        pat = _path_pattern(key)
+        if pattern_samples.get(pat, 0) >= max_samples_per_pattern and pat not in ("/", "/{id}"):
+            continue
+        pattern_samples[pat] = pattern_samples.get(pat, 0) + 1
+
         seen.add(key)
 
         started = time.perf_counter()

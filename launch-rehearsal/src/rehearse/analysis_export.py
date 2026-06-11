@@ -835,8 +835,41 @@ def build_run_bundle(
     screenshots = []
     for s in steps:
         for p in s.get("artifactPaths") or []:
-            if p.endswith(".png"):
-                screenshots.append({"path": p, "stepId": s["stepId"], "label": s["journeyName"]})
+            if p.endswith(".png") and "-error" not in p:
+                # Build a meaningful label: journey + brief page summary
+                excerpt = (s.get("bodyTextExcerpt") or "").strip()
+                first_words = " ".join(excerpt.split()[:6]) if excerpt else ""
+                label = s["journeyName"] or ""
+                if first_words and first_words.lower() not in label.lower():
+                    label = f"{label} — {first_words}" if label else first_words
+                screenshots.append({
+                    "path": p,
+                    "stepId": s["stepId"],
+                    "label": label or s["stepId"],
+                    # Rich context for the expand card
+                    "action": s.get("action"),
+                    "intent": s.get("intent"),
+                    "url": s.get("finalUrl") or s.get("requestedUrl"),
+                    "outcome": s.get("outcome"),
+                    "note": s.get("note"),
+                    "personaId": s.get("personaId"),
+                    "journeyName": s.get("journeyName"),
+                    "durationMs": s.get("durationMs"),
+                    "consoleErrors": (s.get("consoleErrors") or [])[:3],
+                })
+    # Include discovery screenshots from crawl phase (exist even when step execution is 0)
+    discovery_dir = output_dir / "artifacts" / evidence.run_id / "screenshots" / "discovery"
+    if discovery_dir.is_dir():
+        for img in sorted(discovery_dir.glob("*.png")):
+            # Derive a readable label from the filename (URL-encoded path → path)
+            try:
+                from urllib.parse import unquote
+                label = unquote(img.stem.replace("https_", "").replace("http_", ""))
+                label = label.replace("_", "/").lstrip("/") or "home"
+            except Exception:
+                label = img.stem
+            rel = str(img.relative_to(output_dir))
+            screenshots.append({"path": rel, "stepId": f"discovery-{img.stem}", "label": f"[crawl] {label}"})
 
     personas = [
         {"id": p.id, "name": p.name, "role": p.role, "goal": p.goals[0] if p.goals else "", "patience": "medium"}
@@ -909,6 +942,7 @@ def build_run_bundle(
             "chatbotDetected": (ctx.metadata.get("interaction_map") or {}).get("chatbotDetected", False),
         } if ctx and ctx.metadata.get("interaction_map") else None,
         "behavioralJourneys": (ctx.metadata.get("behavioral_journeys") if ctx else None),
+        "parallelErrors": (ctx.metadata.get("_parallel_errors") if ctx else None) or [],
     }
 
 

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PageHeader, Panel, Chip } from "@/components/ui-bits";
+import { PageHeader, Panel, Chip, UnderConstruction } from "@/components/ui-bits";
 import { Copy } from "lucide-react";
 
 export const Route = createFileRoute("/cli")({
@@ -75,6 +75,7 @@ Launch Rehearsal dashboard → http://127.0.0.1:8765`;
 
 function CliPage() {
   return (
+    <UnderConstruction>
     <div>
       <PageHeader
         eyebrow="ship"
@@ -166,5 +167,6 @@ function CliPage() {
         </Panel>
       </div>
     </div>
+    </UnderConstruction>
   );
 }

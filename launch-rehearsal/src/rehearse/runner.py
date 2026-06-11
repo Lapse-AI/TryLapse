@@ -22,8 +22,9 @@ def run_rehearsal(
     dry_run: bool = False,
     use_llm: bool = False,
     config_path: Path | None = None,
+    run_id: str | None = None,
 ) -> tuple[RunEvidence, Path | None, RunContext | None]:
-    run_id = new_run_id(config.run_id_prefix)
+    run_id = run_id or new_run_id(config.run_id_prefix)
     started = time.perf_counter()
     deadline = started + config.budgets.max_run_seconds
 
@@ -69,7 +70,11 @@ def run_rehearsal(
     )
     personas_data = [{"id": p.id, "name": p.name} for p in config.personas]
     journeys_per_persona = {
-        p.id: [{"id": j.id, "name": j.name, "steps": [{"action": s.action, "intent": s.intent or s.url or ""} for s in j.steps]} for j in config.journeys]
+        p.id: [
+            {"id": j.id, "name": j.name, "steps": [{"action": s.action, "intent": s.intent or s.url or ""} for s in j.steps]}
+            for j in config.journeys
+            if not j.persona_ids or p.id in j.persona_ids
+        ]
         for p in config.personas
     }
     tracker.set_personas(personas_data, journeys_per_persona)
@@ -83,6 +88,12 @@ def run_rehearsal(
         if config.auth:
             evidence.auth_attempted = True
             evidence.auth_outcome = session.perform_auth(config.auth)
+            # Capture auth cookies so parallel journey workers can reuse the session
+            if evidence.auth_outcome and "success" in (evidence.auth_outcome or ""):
+                try:
+                    ctx.metadata["auth_storage_state"] = session.page.context.storage_state()
+                except Exception:
+                    pass
 
         orchestrator = AgentOrchestrator(ctx, session, artifacts_root, use_llm=use_llm)
         orchestrator.run_crawl_phase()

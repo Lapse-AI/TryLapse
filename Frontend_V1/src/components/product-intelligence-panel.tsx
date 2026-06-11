@@ -26,6 +26,9 @@ type Props = {
   productName?: string;
   configId?: string | null;
   onModelReady?: (model: ProductModel) => void;
+  onImportPersonas?: (personas: Array<{ id: string; name: string; role: string; goals: string[] }>) => void;
+  onCredsChange?: (creds: CrawlCredentials) => void;
+  startCollapsed?: boolean;
 };
 
 function SeverityChip({ s }: { s: string }) {
@@ -44,10 +47,11 @@ const EMPTY_CREDS: CrawlCredentials = {
   visionApiKey: "",
 };
 
-export function ProductIntelligencePanel({ live, targetUrl, productName, configId, onModelReady }: Props) {
+export function ProductIntelligencePanel({ live, targetUrl, productName, configId, onModelReady, onImportPersonas, onCredsChange, startCollapsed }: Props) {
   const [model, setModel] = useState<ProductModel | null>(null);
   const [loading, setLoading] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
+  const [expanded, setExpanded] = useState(!startCollapsed);
   const [editingField, setEditingField] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
   const [showCreds, setShowCreds] = useState(false);
@@ -126,8 +130,13 @@ export function ProductIntelligencePanel({ live, targetUrl, productName, configI
     setEditingField(null);
   };
 
-  const updateCred = (key: keyof CrawlCredentials, value: string) =>
-    setCreds((prev) => ({ ...prev, [key]: value }));
+  const updateCred = (key: keyof CrawlCredentials, value: string) => {
+    setCreds((prev) => {
+      const next = { ...prev, [key]: value };
+      onCredsChange?.(next);
+      return next;
+    });
+  };
 
   const EditableText = ({ field, label }: { field: string; label: string }) => {
     const value = String(model?.[field] ?? "");
@@ -188,7 +197,11 @@ export function ProductIntelligencePanel({ live, targetUrl, productName, configI
     <Panel className="overflow-hidden">
       {/* Header */}
       <div className="p-4 border-b border-border flex items-center justify-between flex-wrap gap-3">
-        <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => setExpanded(!expanded)}
+          className="flex items-center gap-2 text-left hover:opacity-80 transition-opacity"
+        >
           <Brain className="size-4 text-violet" />
           <span className="font-display font-semibold text-sm">Product intelligence</span>
           {model && (
@@ -196,17 +209,26 @@ export function ProductIntelligencePanel({ live, targetUrl, productName, configI
               {String(model.source ?? "")}
             </Chip>
           )}
-        </div>
+          {model && !expanded && (
+            <span className="text-[11px] text-muted-foreground font-normal ml-1 hidden sm:inline">
+              {String(model.purpose ?? "").slice(0, 60)}{String(model.purpose ?? "").length > 60 ? "…" : ""}
+            </span>
+          )}
+          {expanded ? <ChevronUp className="size-3.5 text-muted-foreground ml-1" /> : <ChevronDown className="size-3.5 text-muted-foreground ml-1" />}
+        </button>
         <button
           type="button"
           disabled={analyzing || !targetUrl}
           onClick={() => void analyze()}
-          className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-md bg-violet/90 text-white disabled:opacity-40"
+          className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full bg-violet/90 text-white disabled:opacity-40"
         >
           {analyzing ? <Loader2 className="size-3.5 animate-spin" /> : <Sparkles className="size-3.5" />}
           {analyzing ? "Analyzing…" : model ? "Re-analyze" : "Analyze product"}
         </button>
       </div>
+
+      {/* Body — collapsible */}
+      {expanded && <>
 
       {/* Crawl credentials collapsible */}
       <div className="border-b border-border">
@@ -409,10 +431,35 @@ export function ProductIntelligencePanel({ live, targetUrl, productName, configI
 
           {Array.isArray(model.user_types_observed) && model.user_types_observed.length > 0 && (
             <div>
-              <div className="text-[11px] text-muted-foreground mb-2">User types observed</div>
+              <div className="flex items-center justify-between mb-2">
+                <div className="text-[11px] text-muted-foreground font-medium">
+                  User types observed ({(model.user_types_observed as Array<Record<string, string>>).length})
+                </div>
+                {onImportPersonas && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const userTypes = model.user_types_observed as Array<Record<string, string>>;
+                      const personas = userTypes.map((u, i) => ({
+                        id: `model-${i}-${(u.type ?? "user").toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")}`,
+                        name: u.type ?? "User",
+                        role: u.primary_goal ?? u.type ?? "user",
+                        goals: [u.primary_goal ?? "", u.evidence ?? ""].filter(Boolean),
+                      }));
+                      onImportPersonas(personas);
+                    }}
+                    className="flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-full border border-primary/30 text-primary hover:bg-primary/5 font-medium transition-colors"
+                  >
+                    <svg className="size-3" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <path d="M8 2v9M4 7l4 4 4-4M2 13h12" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    Import {(model.user_types_observed as Array<Record<string, string>>).length} as personas
+                  </button>
+                )}
+              </div>
               <div className="space-y-1.5">
                 {(model.user_types_observed as Array<Record<string, string>>).map((u, i) => (
-                  <div key={i} className="border border-border rounded-lg px-3 py-2">
+                  <div key={i} className="border border-border rounded-xl px-3 py-2">
                     <div className="text-sm font-medium">{u.type}</div>
                     <div className="text-[11px] text-muted-foreground">{u.primary_goal}</div>
                     <div className="text-[10px] text-muted-foreground/70 mt-0.5 italic">{u.evidence}</div>
@@ -423,6 +470,8 @@ export function ProductIntelligencePanel({ live, targetUrl, productName, configI
           )}
         </div>
       )}
+
+      </>}
     </Panel>
   );
 }

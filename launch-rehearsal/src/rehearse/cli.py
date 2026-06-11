@@ -36,12 +36,13 @@ def main() -> None:
 @click.option("--output", "-o", default="artifacts", type=click.Path(path_type=Path))
 @click.option("--dry-run", is_flag=True, help="Preflight + DSL validation only; no browser")
 @click.option("--no-crawl", is_flag=True, help="Skip site crawl phase")
+@click.option("--run-id", default=None, help="Pre-assigned run ID (used by server job worker)")
 @click.option(
     "--llm",
     is_flag=True,
     help="LLM persona analysis (NVIDIA NIM or OpenAI-compatible API via env)",
 )
-def run_cmd(config: Path, output: Path, dry_run: bool, no_crawl: bool, llm: bool) -> None:
+def run_cmd(config: Path, output: Path, dry_run: bool, no_crawl: bool, run_id: str | None, llm: bool) -> None:
     """Crawl (optional), execute journeys, multi-agent analysis, scorecard."""
     try:
         from rehearse.env_loader import load_dotenv_files
@@ -70,7 +71,7 @@ def run_cmd(config: Path, output: Path, dry_run: bool, no_crawl: bool, llm: bool
             click.echo(f"Dry run complete. run_id={evidence.run_id}")
             return
 
-        evidence, scorecard_path, ctx = run_rehearsal(cfg, output_dir=output, dry_run=False, use_llm=llm, config_path=config)
+        evidence, scorecard_path, ctx = run_rehearsal(cfg, output_dir=output, dry_run=False, use_llm=llm, config_path=config, run_id=run_id)
         analysis = ctx.synthesis if ctx else analyze_run(cfg, evidence)
         click.echo(
             json.dumps(
@@ -190,9 +191,11 @@ def backfill_cmd(output: Path) -> None:
 def serve_cmd(output: Path, host: str, port: int) -> None:
     """Local monitoring dashboard for runs, scorecards, and diffs."""
     from rehearse.dashboard.server import serve_dashboard
+    from rehearse.env_loader import load_dotenv_files
 
     output = output.resolve()
     output.mkdir(parents=True, exist_ok=True)
+    load_dotenv_files(start=output)  # pick up credentials saved via the UI
     serve_dashboard(output, host=host, port=port)
 
 

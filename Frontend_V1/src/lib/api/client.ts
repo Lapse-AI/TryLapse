@@ -76,9 +76,11 @@ async function apiFetch<T>(path: string, init?: RequestInit & { timeoutMs?: numb
 }
 
 export function artifactUrl(relPath: string): string {
+  // Strip absolute prefix (launch-rehearsal/artifacts/ or /abs/path/.../artifacts/)
+  // but keep relative sub-paths like artifacts/{run_id}/... intact —
+  // /files/{rel} maps directly to artifacts_root/{rel} on the server.
   const clean = relPath
     .replace(/^launch-rehearsal\/artifacts\//, "")
-    .replace(/^artifacts\//, "")
     .replace(/^\//, "");
   return `${API_BASE}/files/${clean}`;
 }
@@ -109,7 +111,7 @@ export const api = {
     ),
   diff: (a: string, b: string) =>
     apiFetch<RunDiff>(`/api/diff?a=${encodeURIComponent(a)}&b=${encodeURIComponent(b)}`),
-  trends: () =>
+  trends: (configPrefix?: string) =>
     apiFetch<{
       readiness: (number | string)[];
       pages: number[];
@@ -127,7 +129,7 @@ export const api = {
       issuesResolved?: number;
       blockerCounts?: number[];
       narrative?: InsightNarrative;
-    }>("/api/trends"),
+    }>(configPrefix ? `/api/trends?configPrefix=${encodeURIComponent(configPrefix)}` : "/api/trends"),
   digest: (n = 7) => apiFetch<CommandDigest>(`/api/digest?n=${n}`),
   compileRecording: (body: {
     journeyId?: string;
@@ -251,6 +253,36 @@ export const api = {
       body: JSON.stringify({ persona, configId: configId || "", productModel: productModel || null }),
       timeoutMs: 120000,
     }),
+  discoverJourneysForPersonaStream: async function* (
+    persona: unknown,
+    configId?: string | null,
+    productModel?: unknown,
+  ): AsyncGenerator<Record<string, unknown>> {
+    const bearer = API_TOKEN || getStoredJwt();
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (bearer) headers["Authorization"] = `Bearer ${bearer}`;
+    const res = await fetch(`${API_BASE}/api/journeys/discover/persona/stream`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ persona, configId: configId || "", productModel: productModel || null }),
+    });
+    if (!res.ok || !res.body) throw new Error(`Stream failed: ${res.status}`);
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buf = "";
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += decoder.decode(value, { stream: true });
+      const lines = buf.split("\n");
+      buf = lines.pop() ?? "";
+      for (const line of lines) {
+        if (line.startsWith("data: ")) {
+          try { yield JSON.parse(line.slice(6)) as Record<string, unknown>; } catch { /* skip */ }
+        }
+      }
+    }
+  },
   importJourneysToConfig: (configId: string, journeys: unknown[]) =>
     apiFetch<{ configId: string; added: number; skipped: number; total: number }>(
       "/api/journeys/import",
@@ -435,10 +467,38 @@ export const api = {
     personaEnabled?: Record<string, boolean>;
     extraPersonas?: Record<string, unknown>[];
     localTimestamp?: string; // YYYYMMDD-HHmmss in user's local timezone
+    existingConfigId?: string; // copy journeys from this config into the new file
   }) =>
     apiFetch<{ id: string; path: string; name: string }>("/api/configs", {
       method: "POST",
       body: JSON.stringify(body),
+    }),
+  crawlGraph: async (runId: string) => {
+    type CrawlGraphData = {
+      targetUrl?: string;
+      nodes: { id: string; status: "queued" | "visiting" | "visited" | "skipped" | "error" }[];
+      edges: { source: string; target: string }[];
+      visitedCount: number;
+      maxPages: number;
+    };
+    // Try the dedicated endpoint; fall back to /files/ for servers without this route
+    try {
+      const result = await apiFetch<CrawlGraphData>(`/api/runs/${encodeURIComponent(runId)}/crawl-graph`);
+      if (result && result.nodes?.length > 0) return result;
+    } catch { /* fall through */ }
+    return apiFetch<CrawlGraphData>(`/files/runs/${encodeURIComponent(runId)}-crawl-graph.json`);
+  },
+  getCredentials: () =>
+    apiFetch<{ hasEmail: boolean; hasPassword: boolean }>("/api/credentials"),
+  saveCredentials: (email: string, password: string, opts?: { configId?: string; loginPath?: string }) =>
+    apiFetch<{ ok: boolean; yamlUpdated: boolean }>("/api/credentials", {
+      method: "POST",
+      body: JSON.stringify({ email, password, ...opts }),
+    }),
+  controlRun: (runId: string, signal: "pause" | "resume" | "stop") =>
+    apiFetch<{ runId: string; signal: string }>(`/api/runs/${encodeURIComponent(runId)}/control`, {
+      method: "POST",
+      body: JSON.stringify({ signal }),
     }),
   graphmlUrl: (runId: string) => `${API_BASE}/api/sitemap/${runId}/graphml`,
 

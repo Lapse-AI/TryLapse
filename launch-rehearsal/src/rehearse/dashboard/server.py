@@ -60,6 +60,31 @@ _CORS_ORIGINS: set[str] = set(
 _PUBLIC_PATHS = {"/api/health", "/", "/auth/login", "/auth/signup", "/auth/me"}
 
 
+def _write_cred_env(artifacts_root: Path, email: str, password: str) -> None:
+    """Persist REHEARSE_EMAIL/PASSWORD to project-root .env so both _load_env and
+    load_dotenv_files pick them up on next restart."""
+    import os as _os
+    if email:
+        _os.environ["REHEARSE_EMAIL"] = email
+    if password:
+        _os.environ["REHEARSE_PASSWORD"] = password
+    # artifacts_root.parent.parent == project root — the path _load_env checks as candidate 1
+    env_path = artifacts_root.parent.parent / ".env"
+    lines: list[str] = []
+    if env_path.is_file():
+        for ln in env_path.read_text().splitlines():
+            if not ln.startswith("REHEARSE_EMAIL=") and not ln.startswith("REHEARSE_PASSWORD="):
+                lines.append(ln)
+    if email:
+        lines.append(f"REHEARSE_EMAIL={email}")
+    if password:
+        lines.append(f"REHEARSE_PASSWORD={password}")
+    try:
+        env_path.write_text("\n".join(lines) + "\n")
+    except Exception:
+        pass
+
+
 def _cors_headers(origin: str | None) -> dict[str, str]:
     """Return CORS headers. Allow the requesting origin if it is in the allowlist."""
     allowed = origin if (origin and origin in _CORS_ORIGINS) else next(iter(_CORS_ORIGINS), "*")
@@ -210,6 +235,14 @@ class _Handler(BaseHTTPRequestHandler):
             self._send_json({"ok": True, "artifacts": str(root)})
             return
 
+        if path == "/api/credentials":
+            import os as _os
+            self._send_json({
+                "hasEmail": bool(_os.environ.get("REHEARSE_EMAIL")),
+                "hasPassword": bool(_os.environ.get("REHEARSE_PASSWORD")),
+            })
+            return
+
         if path == "/auth/me":
             payload = self._require_jwt()
             if payload:
@@ -243,6 +276,15 @@ class _Handler(BaseHTTPRequestHandler):
                 self._send_json(list_run_summaries(root))
             else:
                 self._send_json(list_runs(root))
+            return
+
+        if path.startswith("/api/runs/") and path.endswith("/crawl-graph"):
+            run_id = path.strip("/").split("/")[2]
+            graph_path = root / "runs" / f"{run_id}-crawl-graph.json"
+            if graph_path.is_file():
+                self._send_json(json.loads(graph_path.read_text()))
+            else:
+                self._send_json({"nodes": [], "edges": [], "visitedCount": 0})
             return
 
         if path.startswith("/api/runs/") and path.endswith("/chat"):
@@ -491,7 +533,26 @@ class _Handler(BaseHTTPRequestHandler):
             return
 
         if path == "/api/jobs":
-            self._send_json(list_jobs(root))
+            jobs = list_jobs(root)
+            # For running jobs without a runId, discover it from the progress file
+            runs_dir = root / "runs"
+            for job in jobs:
+                if job.get("status") == "running" and not job.get("runId"):
+                    # Find the most recently modified progress file
+                    try:
+                        candidates = sorted(
+                            runs_dir.glob("*-progress.json"),
+                            key=lambda p: p.stat().st_mtime,
+                            reverse=True,
+                        )
+                        if candidates:
+                            prog_data = json.loads(candidates[0].read_text())
+                            run_id = prog_data.get("run_id")
+                            if run_id:
+                                job["runId"] = run_id
+                    except Exception:
+                        pass
+            self._send_json(jobs)
             return
 
         if path.startswith("/api/annotations/"):
@@ -509,7 +570,7 @@ class _Handler(BaseHTTPRequestHandler):
             self.send_response(200)
             self.send_header("Content-Type", "application/xml")
             self.send_header("Content-Length", str(len(data)))
-            for k, v in _CORS.items():
+            for k, v in _cors_headers(self._origin).items():
                 self.send_header(k, v)
             self.end_headers()
             self.wfile.write(data)
@@ -519,14 +580,18 @@ class _Handler(BaseHTTPRequestHandler):
             rel = path[len("/files/") :]
             file_path = (root / rel).resolve()
             if not str(file_path).startswith(str(root)) or not file_path.is_file():
-                self.send_error(404)
+                self.send_response(404)
+                for k, v in _cors_headers(self._origin).items():
+                    self.send_header(k, v)
+                self.send_header("Content-Length", "0")
+                self.end_headers()
                 return
             ctype = mimetypes.guess_type(str(file_path))[0] or "application/octet-stream"
             data = file_path.read_bytes()
             self.send_response(200)
             self.send_header("Content-Type", ctype)
             self.send_header("Content-Length", str(len(data)))
-            for k, v in _CORS.items():
+            for k, v in _cors_headers(self._origin).items():
                 self.send_header(k, v)
             self.end_headers()
             self.wfile.write(data)
@@ -738,6 +803,9 @@ class _Handler(BaseHTTPRequestHandler):
                 _os.environ["REHEARSE_LLM_API_KEY"] = llm_api_key
             if vision_api_key:
                 _os.environ["REHEARSE_VISION_API_KEY"] = vision_api_key
+            # Persist auth credentials to env + .env file so rehearsal runs can use them
+            if auth_config.get("email") and auth_config.get("password"):
+                _write_cred_env(root, str(auth_config["email"]), str(auth_config["password"]))
 
             # If no crawl data, run a fresh deep crawl right now
             if not interaction_map_data:
@@ -812,6 +880,9 @@ class _Handler(BaseHTTPRequestHandler):
                 api_calls=api_calls,
             )
             save_product_model(root, model, config_id or None)
+            if interaction_map_data:
+                from rehearse.product_intelligence import save_interaction_map
+                save_interaction_map(root, interaction_map_data, config_id or None)
             self._send_json(model)
             return
 
@@ -832,16 +903,16 @@ class _Handler(BaseHTTPRequestHandler):
             if not personas:
                 self._send_json({"error": "personas list required"}, status=400)
                 return
-            from rehearse.product_intelligence import load_product_model
+            from rehearse.product_intelligence import load_product_model, load_interaction_map
             from rehearse.persona_journey_discovery import discover_journeys_for_all_personas
-            # Use product model from request body if provided (live from UI), else load from disk
             product_model = dict(body.get("productModel") or {})
             if not product_model:
                 product_model = load_product_model(root, config_id or None) or {}
             if not product_model:
                 self._send_json({"error": "No product model — run product analysis first"}, status=400)
                 return
-            results = discover_journeys_for_all_personas(personas, product_model)
+            interaction_map = load_interaction_map(root, config_id or None)
+            results = discover_journeys_for_all_personas(personas, product_model, interaction_map)
             self._send_json({"personaJourneys": results, "count": len(results)})
             return
 
@@ -852,13 +923,119 @@ class _Handler(BaseHTTPRequestHandler):
             if not persona:
                 self._send_json({"error": "persona required"}, status=400)
                 return
-            from rehearse.product_intelligence import load_product_model
+            from rehearse.product_intelligence import load_product_model, load_interaction_map
             from rehearse.persona_journey_discovery import discover_journeys_for_persona
             product_model = dict(body.get("productModel") or {})
             if not product_model:
                 product_model = load_product_model(root, config_id or None) or {}
-            result = discover_journeys_for_persona(persona, product_model)
+            interaction_map = load_interaction_map(root, config_id or None)
+            result = discover_journeys_for_persona(persona, product_model, interaction_map)
             self._send_json(result)
+            return
+
+        if path == "/api/journeys/discover/persona/stream":
+            body = self._read_json_body()
+            persona = dict(body.get("persona") or {})
+            config_id = str(body.get("configId") or "").strip()
+            if not persona:
+                self._send_json({"error": "persona required"}, status=400)
+                return
+
+            from rehearse.product_intelligence import (
+                load_product_model, load_interaction_map,
+            )
+            from rehearse.persona_journey_discovery import discover_journeys_for_persona_streaming
+            import queue as _queue
+            import threading as _threading
+            import os as _os
+
+            product_model = dict(body.get("productModel") or {})
+            if not product_model:
+                product_model = load_product_model(root, config_id or None) or {}
+
+            # Load stored interaction map — built during product analysis
+            interaction_map = load_interaction_map(root, config_id or None)
+
+            # If no interaction map stored yet, run a targeted deep crawl now
+            if not interaction_map:
+                target_url = str(product_model.get("targetUrl") or product_model.get("url") or "")
+                if target_url:
+                    try:
+                        from playwright.sync_api import sync_playwright
+                        from rehearse.deep_crawler import run_deep_crawl, interaction_map_to_dict
+                        from rehearse.product_intelligence import save_interaction_map
+                        screenshots_dir = root / "discovery_screenshots" / (config_id or "default")
+                        email = _os.environ.get("REHEARSE_EMAIL", "")
+                        password = _os.environ.get("REHEARSE_PASSWORD", "")
+                        with sync_playwright() as pw:
+                            browser = pw.chromium.launch(headless=True)
+                            ctx = browser.new_context(viewport={"width": 1280, "height": 800})
+                            page_obj = ctx.new_page()
+                            if email and password:
+                                try:
+                                    page_obj.goto(target_url, wait_until="domcontentloaded", timeout=20000)
+                                    page_obj.wait_for_timeout(3000)
+                                    page_obj.locator("input[type='email'], input[name='email']").first.fill(email)
+                                    page_obj.locator("input[type='password']").first.fill(password)
+                                    page_obj.wait_for_timeout(500)
+                                    page_obj.locator("button[type='submit']").first.click()
+                                    page_obj.wait_for_timeout(5000)
+                                    page_obj.wait_for_load_state("networkidle", timeout=12000)
+                                except Exception:
+                                    pass
+                            imap = run_deep_crawl(
+                                page_obj, target_url,
+                                product_name=str(product_model.get("name") or ""),
+                                max_pages=20,
+                                max_buttons_per_page=15,
+                                use_vision=True,
+                                screenshots_dir=screenshots_dir,
+                            )
+                            interaction_map = interaction_map_to_dict(imap)
+                            save_interaction_map(root, interaction_map, config_id or None)
+                            ctx.close()
+                            browser.close()
+                    except Exception:
+                        interaction_map = None
+
+            # — SSE response —
+            try:
+                self.send_response(200)
+                self.send_header("Content-Type", "text/event-stream")
+                self.send_header("Cache-Control", "no-cache")
+                self.send_header("X-Accel-Buffering", "no")
+                for k, v in _cors_headers(self._origin).items():
+                    self.send_header(k, v)
+                self.end_headers()
+            except (BrokenPipeError, ConnectionResetError):
+                return
+
+            ev_queue: _queue.Queue = _queue.Queue()
+            _SENTINEL = object()
+
+            def _on_event(ev: dict) -> None:
+                ev_queue.put(ev)
+
+            def _worker() -> None:
+                try:
+                    discover_journeys_for_persona_streaming(
+                        persona, product_model, interaction_map, on_event=_on_event
+                    )
+                finally:
+                    ev_queue.put(_SENTINEL)
+
+            _threading.Thread(target=_worker, daemon=True).start()
+
+            while True:
+                try:
+                    ev = ev_queue.get(timeout=150)
+                    if ev is _SENTINEL:
+                        break
+                    line = ("data: " + json.dumps(ev) + "\n\n").encode()
+                    self.wfile.write(line)
+                    self.wfile.flush()
+                except (_queue.Empty, BrokenPipeError, ConnectionResetError, OSError):
+                    break
             return
 
         if path == "/api/journeys/import":
@@ -1016,10 +1193,16 @@ class _Handler(BaseHTTPRequestHandler):
         if path == "/api/configs":
             payload = self._require_jwt()
             if not payload:
-                self._send_json({"error": "Authentication required"}, status=401)
-                return
+                if _API_TOKEN:
+                    # Production mode — JWT is required
+                    self._send_json({"error": "Authentication required"}, status=401)
+                    return
+                # Local dev — no owner, saves to flat artifacts/configs/
+                payload = {"sub": ""}
             body = self._read_json_body()
-            body["_owner_id"] = payload["sub"]
+            # Only scope to owner subdirectory when there's a real authenticated user
+            if payload.get("sub"):
+                body["_owner_id"] = payload["sub"]
             try:
                 result = save_config(root, body)
             except ValueError as exc:
@@ -1189,6 +1372,49 @@ class _Handler(BaseHTTPRequestHandler):
             rebuilt = backfill_all(root)
             self._send_json({"rebuilt": rebuilt, "count": len(rebuilt)})
             return
+
+        if path == "/api/credentials":
+            import os as _os
+            body = self._read_json_body()
+            email = str(body.get("email") or "").strip()
+            password = str(body.get("password") or "").strip()
+            config_id = str(body.get("configId") or "").strip()
+            login_path = str(body.get("loginPath") or "").strip()
+            _write_cred_env(root, email, password)
+            # Inject auth block into config YAML if configId + loginPath provided
+            yaml_updated = False
+            if config_id and login_path:
+                try:
+                    import yaml as _yaml
+                    from rehearse.dashboard.config_yaml import get_config_yaml, save_config_yaml
+                    _meta = get_config_yaml(root, config_id)
+                    _data = _yaml.safe_load(_meta["yaml"]) or {}
+                    _data["auth"] = {
+                        "login_path": login_path,
+                        "email_env": "REHEARSE_EMAIL",
+                        "password_env": "REHEARSE_PASSWORD",
+                    }
+                    _new_yaml = _yaml.dump(_data, default_flow_style=False, sort_keys=False, allow_unicode=True)
+                    save_config_yaml(root, _new_yaml, config_id=config_id)
+                    yaml_updated = True
+                except Exception:
+                    pass
+            self._send_json({"ok": True, "yamlUpdated": yaml_updated})
+            return
+
+        if path.startswith("/api/runs/") and path.endswith("/control"):
+            parts = path.split("/")
+            if len(parts) == 5:
+                run_id = parts[3]
+                body = self._read_json_body()
+                signal = str(body.get("signal") or "").strip()
+                if signal not in ("pause", "resume", "stop"):
+                    self._send_json({"error": "signal must be pause, resume, or stop"}, status=400)
+                    return
+                from rehearse.progress import send_signal
+                send_signal(root, run_id, signal)
+                self._send_json({"runId": run_id, "signal": signal})
+                return
 
         self.send_error(404)
 

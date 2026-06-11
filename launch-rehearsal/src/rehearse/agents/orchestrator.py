@@ -63,6 +63,11 @@ class AgentOrchestrator:
             target_url = self.ctx.config.target_url
 
             screenshots_dir = self.artifacts_root / "screenshots" / "discovery"
+            run_id = self.ctx.evidence.run_id
+            # Write crawl graph to server-root/runs/ (same location as progress + evidence files)
+            # artifacts_root = output_dir / "artifacts" / run_id  →  parent.parent = output_dir
+            server_runs_dir = self.artifacts_root.parent.parent / "runs"
+            graph_path = server_runs_dir / f"{run_id}-crawl-graph.json"
             imap = run_deep_crawl(
                 page, target_url,
                 product_name=self.ctx.config.product_name or "",
@@ -70,6 +75,7 @@ class AgentOrchestrator:
                 max_buttons_per_page=12,
                 use_vision=True,
                 screenshots_dir=screenshots_dir,
+                graph_output_path=graph_path,
             )
             imap_dict = interaction_map_to_dict(imap)
             save_interaction_map(self.artifacts_root, self.ctx.evidence.run_id, imap)
@@ -102,7 +108,9 @@ class AgentOrchestrator:
                     {"id": p.id, "name": p.name, "role": p.role, "goals": list(p.goals)}
                     for p in active_personas(self.ctx.config)
                 ]
-                discoveries = discover_journeys_for_all_personas(personas, product_model)
+                discoveries = discover_journeys_for_all_personas(
+                    personas, product_model, interaction_map=imap_dict
+                )
                 discovered: dict = {}
                 for disc in discoveries:
                     pid = disc.get("persona_id", "")

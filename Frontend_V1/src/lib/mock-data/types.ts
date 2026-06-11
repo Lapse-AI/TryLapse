@@ -318,7 +318,20 @@ export type RunBundle = {
   sitemapMd: string;
   sitemapPages: SitemapPage[];
   sitemapEdges: SitemapEdge[];
-  screenshots: { path: string; stepId: string; label: string }[];
+  screenshots: {
+    path: string;
+    stepId: string;
+    label: string;
+    action?: string;
+    intent?: string;
+    url?: string;
+    outcome?: string;
+    note?: string | null;
+    personaId?: string;
+    journeyName?: string;
+    durationMs?: number;
+    consoleErrors?: string[];
+  }[];
   annotations: Annotation[];
   personas?: Persona[];
   journeys?: Journey[];
@@ -352,6 +365,7 @@ export type RunBundle = {
       behavioral_summary: string;
     }
   > | null;
+  parallelErrors?: string[];
 };
 
 export type Workspace = {

@@ -132,6 +132,11 @@ function OnboardingPage() {
     setStudyPhaseIdx(0);
     setStudyDone(false);
 
+    // Fire real product analysis in background — non-blocking, fail silently
+    if (productUrl.trim()) {
+      api.analyzeProduct({ targetUrl: productUrl.trim(), productName: productName.trim() || undefined }).catch(() => {});
+    }
+
     let idx = 0;
     const interval = setInterval(() => {
       idx++;
@@ -183,7 +188,7 @@ function OnboardingPage() {
         teamRole: role ?? "other",
       });
       setWorkspace(ws);
-      navigate({ to: "/$workspaceSlug/dashboard", params: { workspaceSlug: ws.slug } });
+      navigate({ to: "/init" });
     } catch {
       setCreateError("Failed to create workspace. Please try again.");
       setCreating(false);

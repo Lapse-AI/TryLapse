@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { PageHeader, Panel, Chip } from "@/components/ui-bits";
+import { PageHeader, Panel, Chip, UnderConstruction } from "@/components/ui-bits";
 import { useLatestRun, useRunBundle, useConfigs } from "@/lib/api/hooks";
 import { usePersistedConfigId } from "@/hooks/use-persisted-config-id";
 import { buildWorkflowCoverage, normalizeSuggestedJourneys } from "@/lib/workflow-coverage";
@@ -43,6 +43,7 @@ function Workflows() {
   };
 
   return (
+    <UnderConstruction>
     <div>
       <PageHeader
         eyebrow="map · workflows"
@@ -191,5 +192,6 @@ function Workflows() {
         </Panel>
       </div>
     </div>
+    </UnderConstruction>
   );
 }

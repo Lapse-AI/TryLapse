@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { PageHeader, Panel, Chip, SeverityChip } from "@/components/ui-bits";
+import { PageHeader, Panel, Chip, SeverityChip, UnderConstruction } from "@/components/ui-bits";
 import { useLatestRun, useBacklog, useRunBundle } from "@/lib/api/hooks";
 import { exportBacklogToLinear } from "@/lib/linear-export";
 import { Download, Rocket, Target } from "lucide-react";
@@ -19,6 +19,7 @@ function Recommendations() {
   if (!latest) return null;
 
   return (
+    <UnderConstruction>
     <div>
       <PageHeader
         eyebrow="analysis"
@@ -138,5 +139,6 @@ function Recommendations() {
         </Panel>
       </div>
     </div>
+    </UnderConstruction>
   );
 }

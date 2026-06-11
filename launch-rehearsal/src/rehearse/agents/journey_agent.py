@@ -13,6 +13,7 @@ from rehearse.context import AgentReport, RunContext
 from rehearse.dsl import Journey, Step
 from rehearse.errors import RunBudgetExceeded
 from rehearse.evidence import StepSnapshot
+from rehearse.progress import check_and_handle_signals
 from rehearse.viewports import normalize_viewports
 
 _results_lock = threading.Lock()
@@ -47,6 +48,7 @@ def _replay_journey_from_start(
     )
 
     use_behavioral_judge = llm_enabled() or ctx.metadata.get("force_llm")
+    tracker = ctx.metadata.get("progress_tracker")
     snaps: list[StepSnapshot] = []
     step_dicts: list[dict] = []
 
@@ -54,6 +56,14 @@ def _replay_journey_from_start(
         if time.perf_counter() > deadline:
             raise RunBudgetExceeded("max_run_seconds exceeded")
         step_id = f"{journey.id}-{primary}-s{i+1}-{viewport}-seed{seed}-loop{loop}"
+        # Tracker uses simple index-based ID: "{journey.id}-{i}"
+        tracker_step_id = f"{journey.id}-{i}"
+        # Update live progress — step starting
+        if tracker and seed == 1 and loop == 1:
+            try:
+                tracker.start_step(primary, journey.id, tracker_step_id, step.action)
+            except Exception:
+                pass
         snap = session.execute_step(
             step,
             step_id=step_id,
@@ -63,6 +73,12 @@ def _replay_journey_from_start(
             viewport=viewport,
         )
         snap.seed_index = seed
+        # Update live progress — step done
+        if tracker and seed == 1 and loop == 1:
+            try:
+                tracker.done_step(primary, journey.id, tracker_step_id, snap.outcome, snap.note or "")
+            except Exception:
+                pass
 
         # Behavioral judge: LLM evaluates each step from persona's perspective
         if use_behavioral_judge and seed == 1 and loop == 1 and viewport == "desktop":
@@ -149,7 +165,11 @@ def _journey_status_from_snaps(snaps: list[StepSnapshot]) -> str:
 
 
 class _ThreadSession:
-    """Minimal session wrapper for parallel worker threads — owns its own page."""
+    """Session wrapper for parallel worker threads — owns its own page.
+
+    Delegates execute_step to the same BrowserSession implementation so that
+    parallel workers produce real StepSnapshot records.
+    """
     def __init__(self, page: object, config: object) -> None:
         self.page = page
         self.config = config
@@ -158,12 +178,15 @@ class _ThreadSession:
         self.network_failures: list[str] = []
         self.network_log: list[dict] = []
         self.record_video = False
+        self._viewport = "desktop"  # execute_step reads this
+        self.artifacts_dir = Path(".")   # execute_step writes screenshots here; overridden by caller
 
     def set_viewport(self, profile: str) -> None:
         from rehearse.viewports import VIEWPORT_PROFILES
         key = profile.strip().lower()
         if key not in VIEWPORT_PROFILES:
             key = "desktop"
+        self._viewport = key
         try:
             self.page.set_viewport_size(VIEWPORT_PROFILES[key])  # type: ignore[attr-defined]
         except Exception:
@@ -172,6 +195,11 @@ class _ThreadSession:
     def reset_run_errors(self) -> None:
         self.console_errors = []
         self.network_failures = []
+
+    def execute_step(self, step, **kwargs):
+        """Delegate to BrowserSession.execute_step bound to this thread's page."""
+        from rehearse.browser import BrowserSession
+        return BrowserSession.execute_step(self, step, **kwargs)  # type: ignore[arg-type]
 
 
 class JourneyAgent(BaseAgent):
@@ -235,7 +263,7 @@ class JourneyAgent(BaseAgent):
                         break
                     # Each parallel worker needs its own browser context
                     if hasattr(self, "_browser") and self._browser:
-                        # Parallel mode: spin up own context
+                        # Parallel mode: spin up own context with auth cookies from main session
                         try:
                             from playwright.sync_api import sync_playwright
                             with sync_playwright() as pw:
@@ -245,10 +273,14 @@ class JourneyAgent(BaseAgent):
                                     video_dir = self.artifacts_root / "videos"
                                     video_dir.mkdir(parents=True, exist_ok=True)
                                     context_opts["record_video_dir"] = str(video_dir)
+                                # Restore auth cookies so worker starts authenticated
+                                auth_state = ctx.metadata.get("auth_storage_state")
+                                if auth_state:
+                                    context_opts["storage_state"] = auth_state
                                 context = browser.new_context(**context_opts)
                                 page = context.new_page()
-                                # Temp session wrapper for this thread
                                 tmp_session = _ThreadSession(page, self.session.config)
+                                tmp_session.artifacts_dir = self.artifacts_root
                                 snaps = _replay_journey_from_start(
                                     tmp_session, journey,
                                     primary=persona_id, seed=seed, loop=loop,
@@ -258,6 +290,10 @@ class JourneyAgent(BaseAgent):
                                 context.close()
                                 browser.close()
                         except Exception as e:
+                            import traceback
+                            ctx.metadata.setdefault("_parallel_errors", []).append(
+                                f"{journey.id}: {type(e).__name__}: {e}\n{traceback.format_exc()[-300:]}"
+                            )
                             snaps = []
                     else:
                         # Sequential fallback
@@ -292,20 +328,22 @@ class JourneyAgent(BaseAgent):
         loops = ctx.config.budgets.repeat_micro_loop
         viewports = normalize_viewports(ctx.config.viewports)
         workers = ctx.config.budgets.parallel_journeys
-        personas_to_run = (
-            ctx.config.personas
-            if ctx.config.execute_all_personas_in_browser
-            else [ctx.config.personas[0]]
-        )
+        # Default True: run all personas unless explicitly disabled
+        run_all = ctx.config.execute_all_personas_in_browser
+        if run_all is None:
+            run_all = True
+        personas_to_run = ctx.config.personas if run_all else [ctx.config.personas[0]]
         executed = 0
         failed = 0
         flaky_count = 0
 
         # Build work units: (journey, persona)
+        # If a journey has persona_ids, only run it for those specific personas
         work_units = [
             (journey, persona)
             for journey in ctx.config.journeys
             for persona in personas_to_run
+            if not journey.persona_ids or persona.id in journey.persona_ids
         ]
 
         # Collect results: {journey_id: {persona_id: [runs]}}
@@ -314,6 +352,8 @@ class JourneyAgent(BaseAgent):
         if workers > 1:
             # Parallel mode — each work unit gets own Playwright instance in a thread
             self._browser = True  # signal to worker to create own browser
+            _artifacts_root = Path(ctx.metadata.get("output_dir", "."))
+            _tracker = ctx.metadata.get("progress_tracker")
             with ThreadPoolExecutor(max_workers=workers, thread_name_prefix="journey") as pool:
                 futures = {
                     pool.submit(
@@ -323,6 +363,12 @@ class JourneyAgent(BaseAgent):
                     for journey, persona in work_units
                 }
                 for future in as_completed(futures):
+                    # Check control signals between completed futures
+                    sig = check_and_handle_signals(_artifacts_root, ctx.evidence.run_id, _tracker)
+                    if sig == "stop":
+                        for f in futures:
+                            f.cancel()
+                        break
                     try:
                         jid, pid, persona_runs = future.result()
                         with _results_lock:
@@ -336,7 +382,11 @@ class JourneyAgent(BaseAgent):
             self._browser = False
         else:
             # Sequential mode (original behaviour)
+            _artifacts_root = Path(ctx.metadata.get("output_dir", "."))
+            _tracker = ctx.metadata.get("progress_tracker")
             for journey, persona in work_units:
+                if check_and_handle_signals(_artifacts_root, ctx.evidence.run_id, _tracker) == "stop":
+                    break
                 _, _, persona_runs = self._run_journey_worker(
                     ctx, journey, persona.id, seeds, loops, viewports,
                 )

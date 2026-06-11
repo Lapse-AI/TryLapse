@@ -10,7 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorkflowsRouteImport } from './routes/workflows'
-import { Route as TrendsRouteImport } from './routes/trends'
 import { Route as SitemapRouteImport } from './routes/sitemap'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SigninRouteImport } from './routes/signin'
@@ -31,19 +30,18 @@ import { Route as RunsIndexRouteImport } from './routes/runs.index'
 import { Route as RunsRunIdRouteImport } from './routes/runs.$runId'
 import { Route as ExperimentJobIdRouteImport } from './routes/experiment.$jobId'
 import { Route as CohortJobIdRouteImport } from './routes/cohort.$jobId'
+import { Route as WorkspaceSlugTrendsRouteImport } from './routes/$workspaceSlug.trends'
 import { Route as WorkspaceSlugRunsRouteImport } from './routes/$workspaceSlug.runs'
+import { Route as WorkspaceSlugRunnerRouteImport } from './routes/$workspaceSlug.runner'
 import { Route as WorkspaceSlugDashboardRouteImport } from './routes/$workspaceSlug.dashboard'
+import { Route as WorkspaceSlugConfigRouteImport } from './routes/$workspaceSlug.config'
+import { Route as WorkspaceSlugCompareRouteImport } from './routes/$workspaceSlug.compare'
 import { Route as WorkspaceSlugRunsIndexRouteImport } from './routes/$workspaceSlug.runs.index'
 import { Route as WorkspaceSlugRunsRunIdRouteImport } from './routes/$workspaceSlug.runs.$runId'
 
 const WorkflowsRoute = WorkflowsRouteImport.update({
   id: '/workflows',
   path: '/workflows',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TrendsRoute = TrendsRouteImport.update({
-  id: '/trends',
-  path: '/trends',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapRoute = SitemapRouteImport.update({
@@ -146,14 +144,34 @@ const CohortJobIdRoute = CohortJobIdRouteImport.update({
   path: '/cohort/$jobId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WorkspaceSlugTrendsRoute = WorkspaceSlugTrendsRouteImport.update({
+  id: '/trends',
+  path: '/trends',
+  getParentRoute: () => WorkspaceSlugRoute,
+} as any)
 const WorkspaceSlugRunsRoute = WorkspaceSlugRunsRouteImport.update({
   id: '/runs',
   path: '/runs',
   getParentRoute: () => WorkspaceSlugRoute,
 } as any)
+const WorkspaceSlugRunnerRoute = WorkspaceSlugRunnerRouteImport.update({
+  id: '/runner',
+  path: '/runner',
+  getParentRoute: () => WorkspaceSlugRoute,
+} as any)
 const WorkspaceSlugDashboardRoute = WorkspaceSlugDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => WorkspaceSlugRoute,
+} as any)
+const WorkspaceSlugConfigRoute = WorkspaceSlugConfigRouteImport.update({
+  id: '/config',
+  path: '/config',
+  getParentRoute: () => WorkspaceSlugRoute,
+} as any)
+const WorkspaceSlugCompareRoute = WorkspaceSlugCompareRouteImport.update({
+  id: '/compare',
+  path: '/compare',
   getParentRoute: () => WorkspaceSlugRoute,
 } as any)
 const WorkspaceSlugRunsIndexRoute = WorkspaceSlugRunsIndexRouteImport.update({
@@ -184,10 +202,13 @@ export interface FileRoutesByFullPath {
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
   '/sitemap': typeof SitemapRoute
-  '/trends': typeof TrendsRoute
   '/workflows': typeof WorkflowsRoute
+  '/$workspaceSlug/compare': typeof WorkspaceSlugCompareRoute
+  '/$workspaceSlug/config': typeof WorkspaceSlugConfigRoute
   '/$workspaceSlug/dashboard': typeof WorkspaceSlugDashboardRoute
+  '/$workspaceSlug/runner': typeof WorkspaceSlugRunnerRoute
   '/$workspaceSlug/runs': typeof WorkspaceSlugRunsRouteWithChildren
+  '/$workspaceSlug/trends': typeof WorkspaceSlugTrendsRoute
   '/cohort/$jobId': typeof CohortJobIdRoute
   '/experiment/$jobId': typeof ExperimentJobIdRoute
   '/runs/$runId': typeof RunsRunIdRoute
@@ -212,9 +233,12 @@ export interface FileRoutesByTo {
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
   '/sitemap': typeof SitemapRoute
-  '/trends': typeof TrendsRoute
   '/workflows': typeof WorkflowsRoute
+  '/$workspaceSlug/compare': typeof WorkspaceSlugCompareRoute
+  '/$workspaceSlug/config': typeof WorkspaceSlugConfigRoute
   '/$workspaceSlug/dashboard': typeof WorkspaceSlugDashboardRoute
+  '/$workspaceSlug/runner': typeof WorkspaceSlugRunnerRoute
+  '/$workspaceSlug/trends': typeof WorkspaceSlugTrendsRoute
   '/cohort/$jobId': typeof CohortJobIdRoute
   '/experiment/$jobId': typeof ExperimentJobIdRoute
   '/runs/$runId': typeof RunsRunIdRoute
@@ -240,10 +264,13 @@ export interface FileRoutesById {
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
   '/sitemap': typeof SitemapRoute
-  '/trends': typeof TrendsRoute
   '/workflows': typeof WorkflowsRoute
+  '/$workspaceSlug/compare': typeof WorkspaceSlugCompareRoute
+  '/$workspaceSlug/config': typeof WorkspaceSlugConfigRoute
   '/$workspaceSlug/dashboard': typeof WorkspaceSlugDashboardRoute
+  '/$workspaceSlug/runner': typeof WorkspaceSlugRunnerRoute
   '/$workspaceSlug/runs': typeof WorkspaceSlugRunsRouteWithChildren
+  '/$workspaceSlug/trends': typeof WorkspaceSlugTrendsRoute
   '/cohort/$jobId': typeof CohortJobIdRoute
   '/experiment/$jobId': typeof ExperimentJobIdRoute
   '/runs/$runId': typeof RunsRunIdRoute
@@ -270,10 +297,13 @@ export interface FileRouteTypes {
     | '/signin'
     | '/signup'
     | '/sitemap'
-    | '/trends'
     | '/workflows'
+    | '/$workspaceSlug/compare'
+    | '/$workspaceSlug/config'
     | '/$workspaceSlug/dashboard'
+    | '/$workspaceSlug/runner'
     | '/$workspaceSlug/runs'
+    | '/$workspaceSlug/trends'
     | '/cohort/$jobId'
     | '/experiment/$jobId'
     | '/runs/$runId'
@@ -298,9 +328,12 @@ export interface FileRouteTypes {
     | '/signin'
     | '/signup'
     | '/sitemap'
-    | '/trends'
     | '/workflows'
+    | '/$workspaceSlug/compare'
+    | '/$workspaceSlug/config'
     | '/$workspaceSlug/dashboard'
+    | '/$workspaceSlug/runner'
+    | '/$workspaceSlug/trends'
     | '/cohort/$jobId'
     | '/experiment/$jobId'
     | '/runs/$runId'
@@ -325,10 +358,13 @@ export interface FileRouteTypes {
     | '/signin'
     | '/signup'
     | '/sitemap'
-    | '/trends'
     | '/workflows'
+    | '/$workspaceSlug/compare'
+    | '/$workspaceSlug/config'
     | '/$workspaceSlug/dashboard'
+    | '/$workspaceSlug/runner'
     | '/$workspaceSlug/runs'
+    | '/$workspaceSlug/trends'
     | '/cohort/$jobId'
     | '/experiment/$jobId'
     | '/runs/$runId'
@@ -354,7 +390,6 @@ export interface RootRouteChildren {
   SigninRoute: typeof SigninRoute
   SignupRoute: typeof SignupRoute
   SitemapRoute: typeof SitemapRoute
-  TrendsRoute: typeof TrendsRoute
   WorkflowsRoute: typeof WorkflowsRoute
   CohortJobIdRoute: typeof CohortJobIdRoute
   ExperimentJobIdRoute: typeof ExperimentJobIdRoute
@@ -369,13 +404,6 @@ declare module '@tanstack/react-router' {
       path: '/workflows'
       fullPath: '/workflows'
       preLoaderRoute: typeof WorkflowsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/trends': {
-      id: '/trends'
-      path: '/trends'
-      fullPath: '/trends'
-      preLoaderRoute: typeof TrendsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap': {
@@ -518,6 +546,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CohortJobIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$workspaceSlug/trends': {
+      id: '/$workspaceSlug/trends'
+      path: '/trends'
+      fullPath: '/$workspaceSlug/trends'
+      preLoaderRoute: typeof WorkspaceSlugTrendsRouteImport
+      parentRoute: typeof WorkspaceSlugRoute
+    }
     '/$workspaceSlug/runs': {
       id: '/$workspaceSlug/runs'
       path: '/runs'
@@ -525,11 +560,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkspaceSlugRunsRouteImport
       parentRoute: typeof WorkspaceSlugRoute
     }
+    '/$workspaceSlug/runner': {
+      id: '/$workspaceSlug/runner'
+      path: '/runner'
+      fullPath: '/$workspaceSlug/runner'
+      preLoaderRoute: typeof WorkspaceSlugRunnerRouteImport
+      parentRoute: typeof WorkspaceSlugRoute
+    }
     '/$workspaceSlug/dashboard': {
       id: '/$workspaceSlug/dashboard'
       path: '/dashboard'
       fullPath: '/$workspaceSlug/dashboard'
       preLoaderRoute: typeof WorkspaceSlugDashboardRouteImport
+      parentRoute: typeof WorkspaceSlugRoute
+    }
+    '/$workspaceSlug/config': {
+      id: '/$workspaceSlug/config'
+      path: '/config'
+      fullPath: '/$workspaceSlug/config'
+      preLoaderRoute: typeof WorkspaceSlugConfigRouteImport
+      parentRoute: typeof WorkspaceSlugRoute
+    }
+    '/$workspaceSlug/compare': {
+      id: '/$workspaceSlug/compare'
+      path: '/compare'
+      fullPath: '/$workspaceSlug/compare'
+      preLoaderRoute: typeof WorkspaceSlugCompareRouteImport
       parentRoute: typeof WorkspaceSlugRoute
     }
     '/$workspaceSlug/runs/': {
@@ -563,13 +619,21 @@ const WorkspaceSlugRunsRouteWithChildren =
   WorkspaceSlugRunsRoute._addFileChildren(WorkspaceSlugRunsRouteChildren)
 
 interface WorkspaceSlugRouteChildren {
+  WorkspaceSlugCompareRoute: typeof WorkspaceSlugCompareRoute
+  WorkspaceSlugConfigRoute: typeof WorkspaceSlugConfigRoute
   WorkspaceSlugDashboardRoute: typeof WorkspaceSlugDashboardRoute
+  WorkspaceSlugRunnerRoute: typeof WorkspaceSlugRunnerRoute
   WorkspaceSlugRunsRoute: typeof WorkspaceSlugRunsRouteWithChildren
+  WorkspaceSlugTrendsRoute: typeof WorkspaceSlugTrendsRoute
 }
 
 const WorkspaceSlugRouteChildren: WorkspaceSlugRouteChildren = {
+  WorkspaceSlugCompareRoute: WorkspaceSlugCompareRoute,
+  WorkspaceSlugConfigRoute: WorkspaceSlugConfigRoute,
   WorkspaceSlugDashboardRoute: WorkspaceSlugDashboardRoute,
+  WorkspaceSlugRunnerRoute: WorkspaceSlugRunnerRoute,
   WorkspaceSlugRunsRoute: WorkspaceSlugRunsRouteWithChildren,
+  WorkspaceSlugTrendsRoute: WorkspaceSlugTrendsRoute,
 }
 
 const WorkspaceSlugRouteWithChildren = WorkspaceSlugRoute._addFileChildren(
@@ -593,7 +657,6 @@ const rootRouteChildren: RootRouteChildren = {
   SigninRoute: SigninRoute,
   SignupRoute: SignupRoute,
   SitemapRoute: SitemapRoute,
-  TrendsRoute: TrendsRoute,
   WorkflowsRoute: WorkflowsRoute,
   CohortJobIdRoute: CohortJobIdRoute,
   ExperimentJobIdRoute: ExperimentJobIdRoute,

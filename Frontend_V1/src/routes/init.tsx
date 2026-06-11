@@ -179,18 +179,7 @@ function InitPage() {
     mobile: false,
   });
   const [personaLens, setPersonaLens] = useState(true);
-  const [coreEnabled, setCoreEnabled] = useState<Record<string, boolean>>({
-    "p1-evaluator": true,
-    "p2-operator": true,
-    "p3-admin": true,
-  });
-
-  const CORE_PERSONA_META: Record<string, { name: string; role: string }> = {
-    "p1-evaluator": { name: "First-time evaluator", role: "prospect / new user" },
-    "p2-operator": { name: "Daily operator", role: "power user" },
-    "p3-admin": { name: "Admin / buyer", role: "IT admin" },
-  };
-  const [stagedExtras, setStagedExtras] = useState<PersonaDraft[]>([]);
+  const [personas, setPersonas] = useState<PersonaDraft[]>([]);
   const [productModel, setProductModel] = useState<Record<string, unknown> | null>(null);
 
   const localhostTarget = useMemo(() => isLocalhostUrl(targetUrl), [targetUrl]);
@@ -249,8 +238,7 @@ function InitPage() {
         executeAllPersonasInBrowser,
         localTimestamp: localTs,
         personaLens,
-        personaEnabled: coreEnabled,
-        extraPersonas: stagedExtras,
+        extraPersonas: personas,
       },
       {
         onSuccess: (result) => {
@@ -514,23 +502,11 @@ function InitPage() {
           productModel={productModel}
           personaLens={personaLens}
           onPersonaLensChange={setPersonaLens}
-          coreEnabled={coreEnabled}
-          onCoreEnabledChange={(id, enabled) =>
-            setCoreEnabled((prev) => ({ ...prev, [id]: enabled }))
+          personas={personas}
+          onAddPersona={(p) =>
+            setPersonas((prev) => (prev.some((x) => x.id === p.id) ? prev : [...prev, p]))
           }
-          stagedExtras={stagedExtras}
-          onStageExtra={(p) => {
-            setStagedExtras((prev) => {
-              if (prev.some((x) => x.id === p.id)) return prev;
-              // Auto-trigger journey discovery for new persona (non-blocking)
-              if (live) {
-                api.discoverJourneysForPersona(p).catch(() => {});
-                toast.info(`Discovering journeys for ${p.name}…`, { duration: 2500 });
-              }
-              return [...prev, p];
-            });
-          }}
-          onRemoveStaged={(id) => setStagedExtras((prev) => prev.filter((p) => p.id !== id))}
+          onRemovePersona={(id) => setPersonas((prev) => prev.filter((p) => p.id !== id))}
         />
 
         {/* Journey Discovery — each persona autonomously discovers its own journeys */}
@@ -538,17 +514,7 @@ function InitPage() {
           live={!!live}
           configId={workspaceConfigId}
           productModel={productModel}
-          personas={[
-            ...Object.keys(coreEnabled)
-              .filter((id) => coreEnabled[id] !== false)
-              .map((id) => ({
-                id,
-                name: CORE_PERSONA_META[id]?.name ?? id,
-                role: CORE_PERSONA_META[id]?.role ?? id,
-                goals: [],
-              })),
-            ...stagedExtras,
-          ]}
+          personas={personas}
         />
 
         <JourneyDraftPanel live={!!live} targetUrl={targetUrl} />

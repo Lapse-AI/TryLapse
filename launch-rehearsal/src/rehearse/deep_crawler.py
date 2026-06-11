@@ -6,7 +6,7 @@ screenshots every state, clicks buttons, maps modals, tracks API calls.
 Fixes vs previous version:
 - URL joining uses origin (not full path) — /analytics stays /analytics
 - Explicitly visits nav/sidebar links first before BFS
-- Vision LLM: uses Claude claude-haiku-4-5-20251001 via Anthropic API (supports images)
+- Vision LLM: NIM Llama-3.2-90B → DeepSeek V4 Flash/Pro → Claude Haiku → GPT-4o-mini (first available key)
   Falls back gracefully to text-only if no key
 - Login: waits for redirect + networkidle after submit
 - Auth wall: retries after waiting longer (SPAs are slow)
@@ -18,6 +18,7 @@ from __future__ import annotations
 import base64
 import json
 import os
+import re
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -85,6 +86,14 @@ class InteractionMap:
     features_seen: list[str] = field(default_factory=list)
     visual_summary: str = ""
     crawl_duration_ms: int = 0
+    # Pattern-based sampling: pattern → count of pages visited
+    url_patterns: dict[str, int] = field(default_factory=dict)
+    # Patterns seen but skipped (budget preserved)
+    skipped_patterns: dict[str, int] = field(default_factory=dict)
+    # Live graph: parent_url → [child_urls discovered from it]
+    link_graph: dict[str, list[str]] = field(default_factory=dict)
+    # Per-node status: url → "queued" | "visiting" | "visited" | "skipped" | "error"
+    node_status: dict[str, str] = field(default_factory=dict)
 
 
 # ── URL helpers ───────────────────────────────────────────────────────────────
@@ -95,6 +104,44 @@ def _origin(url: str) -> str:
     if len(parts) < 2:
         return url
     return parts[0] + "//" + parts[1].split("/")[0]
+
+
+_UUID_RE = re.compile(
+    r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$', re.I
+)
+_NUMERIC_RE = re.compile(r'^\d+$')
+_HASH_RE = re.compile(r'^[0-9a-f]{16,}$', re.I)
+# A slug that contains digits AND dashes/underscores and is long enough to be an ID
+_ID_SLUG_RE = re.compile(r'^[a-z0-9][a-z0-9_-]{7,}$', re.I)
+
+
+def _url_pattern(url: str) -> str:
+    """Normalize a URL to a structural template, collapsing IDs/slugs.
+
+    /profiles/12345         → /profiles/{id}
+    /users/abc-def-00abc    → /users/{id}
+    /posts/2024-my-title    → kept (short alpha slug — likely a route)
+    /admin/settings         → /admin/settings (no collapse)
+    """
+    try:
+        from urllib.parse import urlparse, urlunparse
+        parsed = urlparse(url)
+        parts = [p for p in parsed.path.split("/") if p]
+        normed: list[str] = []
+        for part in parts:
+            if _UUID_RE.match(part) or _NUMERIC_RE.match(part) or _HASH_RE.match(part):
+                normed.append("{id}")
+            elif _ID_SLUG_RE.match(part) and (
+                bool(re.search(r'\d', part)) or len(part) > 20
+            ):
+                # Has digits embedded OR very long → treat as ID slug
+                normed.append("{id}")
+            else:
+                normed.append(part)
+        pattern_path = "/" + "/".join(normed) if normed else "/"
+        return urlunparse(("", "", pattern_path, "", "", ""))
+    except Exception:
+        return url
 
 
 def _resolve_href(href: str, target_url: str) -> str | None:
@@ -133,44 +180,7 @@ def _should_skip(url: str, target_url: str) -> bool:
 
 # ── Vision LLM (Claude — supports images) ────────────────────────────────────
 
-def _vision_key() -> str | None:
-    return (os.environ.get("ANTHROPIC_API_KEY")
-            or os.environ.get("REHEARSE_VISION_API_KEY")
-            or os.environ.get("REHEARSE_LLM_API_KEY"))
-
-
-def _describe_screenshot(screenshot_b64: str, url: str, product_name: str = "") -> dict[str, Any]:
-    """Use Claude to describe what's visible in the screenshot."""
-    key = _vision_key()
-    if not key or not screenshot_b64:
-        return {}
-    try:
-        import httpx
-        # Use Anthropic Messages API — Claude supports vision natively
-        resp = httpx.post(
-            "https://api.anthropic.com/v1/messages",
-            headers={
-                "x-api-key": key,
-                "anthropic-version": "2023-06-01",
-                "content-type": "application/json",
-            },
-            json={
-                "model": "claude-haiku-4-5-20251001",
-                "max_tokens": 1024,
-                "messages": [{
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "image",
-                            "source": {
-                                "type": "base64",
-                                "media_type": "image/png",
-                                "data": screenshot_b64,
-                            },
-                        },
-                        {
-                            "type": "text",
-                            "text": f"""You are analyzing a screenshot of "{product_name or 'a web product'}" at URL: {url}
+_VISION_PROMPT = """Analyze this screenshot of "{product_name}" at URL: {url}
 
 Return JSON only — no markdown:
 {{
@@ -184,23 +194,161 @@ Return JSON only — no markdown:
   "is_error_state": true/false,
   "key_elements": ["important UI elements a tester should know about"]
 }}"""
-                        }
+
+
+def _deepseek_vision_call(
+    key: str, model: str, screenshot_b64: str, prompt: str
+) -> dict[str, Any] | None:
+    """Call DeepSeek vision via OpenAI-compatible endpoint."""
+    try:
+        import httpx
+        base = os.environ.get("REHEARSE_LLM_BASE_URL", "https://api.deepseek.com/v1").rstrip("/")
+        resp = httpx.post(
+            f"{base}/chat/completions",
+            headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+            json={
+                "model": model,
+                "max_tokens": 1024,
+                "messages": [{
+                    "role": "user",
+                    "content": [
+                        {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{screenshot_b64}"}},
+                        {"type": "text", "text": prompt},
                     ],
                 }],
+                "response_format": {"type": "json_object"},
             },
             timeout=30.0,
         )
         resp.raise_for_status()
-        raw = resp.json()["content"][0]["text"]
-        # Strip markdown fences if present
-        raw = raw.strip()
-        if raw.startswith("```"):
-            raw = raw.split("```")[1]
-            if raw.startswith("json"):
-                raw = raw[4:]
-        return json.loads(raw.strip())
+        raw = resp.json()["choices"][0]["message"]["content"]
+        raw = raw.strip().lstrip("```json").lstrip("```").rstrip("```").strip()
+        return json.loads(raw)
     except Exception:
+        return None
+
+
+def _nim_vision_call(
+    key: str, base_url: str, model: str, screenshot_b64: str, prompt: str
+) -> dict[str, Any] | None:
+    """Call NVIDIA NIM vision model via OpenAI-compatible endpoint."""
+    try:
+        import httpx
+        resp = httpx.post(
+            f"{base_url.rstrip('/')}/chat/completions",
+            headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+            json={
+                "model": model,
+                "max_tokens": 1024,
+                "messages": [{
+                    "role": "user",
+                    "content": [
+                        {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{screenshot_b64}"}},
+                        {"type": "text", "text": prompt},
+                    ],
+                }],
+            },
+            timeout=45.0,
+        )
+        resp.raise_for_status()
+        raw = resp.json()["choices"][0]["message"]["content"]
+        raw = raw.strip().lstrip("```json").lstrip("```").rstrip("```").strip()
+        return json.loads(raw)
+    except Exception:
+        return None
+
+
+def _describe_screenshot(screenshot_b64: str, url: str, product_name: str = "") -> dict[str, Any]:
+    """Describe a screenshot using the best available vision-capable LLM.
+
+    Priority:
+      1. NVIDIA NIM Llama-3.2-90B Vision  (NVIDIA_NIM_API_KEY / NVIDIA_API_KEY)
+      2. DeepSeek V4 Flash                (DEEPSEEK_API_KEY / REHEARSE_LLM_API_KEY)
+      3. DeepSeek V4 Pro                  (fallback if Flash returns vision error)
+      4. Claude Haiku                     (ANTHROPIC_API_KEY / REHEARSE_VISION_API_KEY)
+      5. GPT-4o-mini                      (OPENAI_API_KEY)
+    """
+    if not screenshot_b64:
         return {}
+
+    prompt = _VISION_PROMPT.format(product_name=product_name or "a web product", url=url)
+
+    # ── 1: NVIDIA NIM (llama-3.2-90b-vision-instruct) ────────────────────────
+    nim_key = os.environ.get("NVIDIA_NIM_API_KEY") or os.environ.get("NVIDIA_API_KEY")
+    if nim_key:
+        nim_base = os.environ.get("NVIDIA_NIM_API_BASE") or os.environ.get("NVIDIA_API_BASE") or "https://integrate.api.nvidia.com/v1"
+        nim_model = os.environ.get("NVIDIA_VISION_MODEL") or "meta/llama-3.2-90b-vision-instruct"
+        result = _nim_vision_call(nim_key, nim_base, nim_model, screenshot_b64, prompt)
+        if result:
+            return result
+
+    # ── 2 + 3: DeepSeek ──────────────────────────────────────────────────────
+    deepseek_key = os.environ.get("DEEPSEEK_API_KEY") or os.environ.get("REHEARSE_LLM_API_KEY")
+    if deepseek_key:
+        result = _deepseek_vision_call(deepseek_key, "deepseek-v4-flash", screenshot_b64, prompt)
+        if result:
+            return result
+        result = _deepseek_vision_call(deepseek_key, "deepseek-v4-pro", screenshot_b64, prompt)
+        if result:
+            return result
+
+    # ── 4: Anthropic Claude Haiku ────────────────────────────────────────────
+    anthropic_key = os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("REHEARSE_VISION_API_KEY")
+    if anthropic_key:
+        try:
+            import httpx
+            resp = httpx.post(
+                "https://api.anthropic.com/v1/messages",
+                headers={"x-api-key": anthropic_key, "anthropic-version": "2023-06-01", "content-type": "application/json"},
+                json={
+                    "model": "claude-haiku-4-5-20251001",
+                    "max_tokens": 1024,
+                    "messages": [{
+                        "role": "user",
+                        "content": [
+                            {"type": "image", "source": {"type": "base64", "media_type": "image/png", "data": screenshot_b64}},
+                            {"type": "text", "text": prompt},
+                        ],
+                    }],
+                },
+                timeout=30.0,
+            )
+            resp.raise_for_status()
+            raw = resp.json()["content"][0]["text"].strip()
+            raw = raw.lstrip("```json").lstrip("```").rstrip("```").strip()
+            return json.loads(raw)
+        except Exception:
+            pass
+
+    # ── 4: OpenAI GPT-4o-mini ────────────────────────────────────────────────
+    openai_key = os.environ.get("OPENAI_API_KEY")
+    if openai_key:
+        try:
+            import httpx
+            resp = httpx.post(
+                "https://api.openai.com/v1/chat/completions",
+                headers={"Authorization": f"Bearer {openai_key}", "Content-Type": "application/json"},
+                json={
+                    "model": "gpt-4o-mini",
+                    "max_tokens": 1024,
+                    "messages": [{
+                        "role": "user",
+                        "content": [
+                            {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{screenshot_b64}"}},
+                            {"type": "text", "text": prompt},
+                        ],
+                    }],
+                    "response_format": {"type": "json_object"},
+                },
+                timeout=30.0,
+            )
+            resp.raise_for_status()
+            raw = resp.json()["choices"][0]["message"]["content"].strip()
+            return json.loads(raw)
+        except Exception:
+            pass
+
+    return {}
 
 
 # ── Page interaction helpers ──────────────────────────────────────────────────
@@ -463,18 +611,409 @@ def _try_search(page: Any, current_url: str, api_calls: list) -> dict[str, Any] 
         return None
 
 
-# ── Main crawler ──────────────────────────────────────────────────────────────
+def _probe_page_interactions(
+    page: Any,
+    current_url: str,
+    api_calls: list,
+) -> dict[str, Any]:
+    """Comprehensive per-page interaction audit.
+
+    Tests: dropdowns/selects, accordions, tabs, console errors, performance
+    timing, document links, chatbot presence, filter chips, and any
+    remaining visible interactive elements that didn't get tested elsewhere.
+    Returns a findings dict that gets merged into the page snapshot.
+    """
+    findings: dict[str, Any] = {
+        "console_errors": [],
+        "performance_ms": None,
+        "dropdowns_tested": [],
+        "selects_tested": [],
+        "accordions_found": 0,
+        "tabs_found": 0,
+        "document_links": [],
+        "chatbot_tested": False,
+        "chatbot_response": None,
+        "filter_chips": [],
+        "slow_resources": [],
+        "js_errors": [],
+    }
+
+    # ── Console / JS error capture ────────────────────────────────────────────
+    # Install collector first, then read — errors fired during page interactions
+    # below will be captured.  Also picks up any errors that fired during load
+    # if a previous visit already installed the collector (SPA same-origin reuse).
+    try:
+        page.evaluate("""() => {
+            if (!window.__rehearse_errors__) {
+                window.__rehearse_errors__ = [];
+                window.addEventListener('error', e => {
+                    window.__rehearse_errors__.push(e.message + ' @ ' + (e.filename||'') + ':' + e.lineno);
+                });
+                window.addEventListener('unhandledrejection', e => {
+                    window.__rehearse_errors__.push('UnhandledRejection: ' + String(e.reason));
+                });
+                const origErr = console.error;
+                console.error = function(...args) {
+                    window.__rehearse_errors__.push('console.error: ' + args.join(' '));
+                    origErr.apply(console, args);
+                };
+            }
+        }""")
+    except Exception:
+        pass
+
+    # ── Navigation / paint timing ─────────────────────────────────────────────
+    try:
+        timing = page.evaluate("""() => {
+            const nav = performance.getEntriesByType('navigation')[0];
+            if (!nav) return null;
+            return {
+                dom_content_loaded: Math.round(nav.domContentLoadedEventEnd),
+                load: Math.round(nav.loadEventEnd),
+                first_paint: Math.round(
+                    (performance.getEntriesByName('first-contentful-paint')[0] || {}).startTime || 0
+                ),
+            };
+        }""")
+        findings["performance_ms"] = timing
+    except Exception:
+        pass
+
+    # ── Slow resources (>1s) ──────────────────────────────────────────────────
+    try:
+        slow = page.evaluate("""() => {
+            return performance.getEntriesByType('resource')
+                .filter(r => r.duration > 1000)
+                .slice(0, 5)
+                .map(r => ({url: r.name.split('?')[0].slice(-80), ms: Math.round(r.duration)}));
+        }""") or []
+        findings["slow_resources"] = slow
+    except Exception:
+        pass
+
+    # ── Document / PDF links ──────────────────────────────────────────────────
+    try:
+        doc_links = page.evaluate("""() => {
+            return Array.from(document.querySelectorAll('a[href]'))
+                .filter(a => /[.](pdf|docx?|xlsx?|csv|pptx?|zip)$/i.test(a.href))
+                .slice(0, 8)
+                .map(a => ({label: (a.textContent || '').trim().slice(0, 60), href: a.href.slice(-80)}));
+        }""") or []
+        findings["document_links"] = doc_links
+    except Exception:
+        pass
+
+    # ── Dropdowns (select elements) ───────────────────────────────────────────
+    try:
+        selects = page.query_selector_all("select:visible")[:4]
+        for sel in selects:
+            try:
+                label = (
+                    sel.get_attribute("aria-label")
+                    or sel.get_attribute("name")
+                    or "select"
+                )
+                options = page.evaluate(
+                    "(el) => Array.from(el.options).slice(0,6).map(o => o.text)",
+                    sel,
+                )
+                pre_api = len(api_calls)
+                if options and len(options) > 1:
+                    sel.select_option(index=1)
+                    page.wait_for_timeout(800)
+                new_apis = api_calls[pre_api:]
+                findings["selects_tested"].append({
+                    "label": label,
+                    "option_count": len(options) if options else 0,
+                    "sample_options": (options or [])[:4],
+                    "triggered_api": len(new_apis) > 0,
+                })
+                # Reset
+                try:
+                    sel.select_option(index=0)
+                except Exception:
+                    pass
+            except Exception:
+                continue
+    except Exception:
+        pass
+
+    # ── Custom dropdown / combobox elements ───────────────────────────────────
+    try:
+        combos = page.query_selector_all(
+            "[role='combobox']:visible, [role='listbox']:visible, "
+            "[data-radix-select-trigger]:visible, [class*='dropdown-trigger']:visible"
+        )[:3]
+        for combo in combos:
+            try:
+                label = (
+                    combo.get_attribute("aria-label")
+                    or (combo.inner_text() or "").strip()[:40]
+                    or "dropdown"
+                )
+                pre_url = page.url
+                pre_api = len(api_calls)
+                combo.click(timeout=3000)
+                page.wait_for_timeout(600)
+                # Check if options appeared
+                options_el = page.query_selector_all(
+                    "[role='option']:visible, [role='menuitem']:visible"
+                )[:6]
+                options = [(o.inner_text() or "").strip()[:30] for o in options_el if o.inner_text()]
+                findings["dropdowns_tested"].append({
+                    "label": label,
+                    "options_visible": options,
+                    "triggered_api": len(api_calls) > pre_api,
+                })
+                # Close by pressing Escape
+                try:
+                    page.keyboard.press("Escape")
+                    page.wait_for_timeout(300)
+                except Exception:
+                    pass
+            except Exception:
+                continue
+    except Exception:
+        pass
+
+    # ── Accordions / expandable sections ─────────────────────────────────────
+    try:
+        accordions = page.query_selector_all(
+            "[data-state='closed'][role='button']:visible, "
+            "details:not([open]):visible, "
+            "[class*='accordion']:visible, "
+            "button[aria-expanded='false']:visible"
+        )[:4]
+        opened = 0
+        for acc in accordions:
+            try:
+                acc.click(timeout=2000)
+                page.wait_for_timeout(500)
+                opened += 1
+                # Close it back
+                try:
+                    acc.click(timeout=1500)
+                    page.wait_for_timeout(300)
+                except Exception:
+                    pass
+            except Exception:
+                continue
+        findings["accordions_found"] = opened
+    except Exception:
+        pass
+
+    # ── Tabs ─────────────────────────────────────────────────────────────────
+    try:
+        tabs = page.query_selector_all("[role='tab']:visible")
+        findings["tabs_found"] = len(tabs)
+        # Click second tab if present
+        if len(tabs) > 1:
+            try:
+                pre_api = len(api_calls)
+                tabs[1].click(timeout=2000)
+                page.wait_for_timeout(600)
+                # Click back to first
+                tabs[0].click(timeout=1500)
+            except Exception:
+                pass
+    except Exception:
+        pass
+
+    # ── Filter chips ─────────────────────────────────────────────────────────
+    try:
+        chips = page.query_selector_all(
+            "[class*='chip']:visible, [class*='tag']:visible, "
+            "[class*='filter']:visible:not(input)"
+        )[:8]
+        for chip in chips:
+            try:
+                text = (chip.inner_text() or "").strip()[:30]
+                if text and text not in findings["filter_chips"]:
+                    findings["filter_chips"].append(text)
+            except Exception:
+                continue
+    except Exception:
+        pass
+
+    # ── Chatbot / live chat ───────────────────────────────────────────────────
+    try:
+        chat_sel = (
+            "[id*='intercom']:visible, [id*='crisp']:visible, [id*='hubspot']:visible, "
+            "[class*='chat-button']:visible, [class*='chatbot']:visible, "
+            "iframe[title*='chat' i]:visible, [aria-label*='chat' i]:visible"
+        )
+        chat_el = page.query_selector(chat_sel)
+        if chat_el:
+            findings["chatbot_tested"] = True
+            try:
+                chat_el.click(timeout=3000)
+                page.wait_for_timeout(1500)
+                # Try to find input and type
+                chat_input = page.query_selector(
+                    "input[placeholder*='message' i]:visible, "
+                    "textarea[placeholder*='message' i]:visible"
+                )
+                if chat_input:
+                    chat_input.fill("How do I get started?")
+                    chat_input.press("Enter")
+                    page.wait_for_timeout(2500)
+                    response_el = page.query_selector(
+                        "[class*='bot-message']:visible, [class*='agent-message']:visible"
+                    )
+                    if response_el:
+                        findings["chatbot_response"] = (response_el.inner_text() or "")[:200].strip()
+                # Close
+                page.keyboard.press("Escape")
+                page.wait_for_timeout(300)
+            except Exception:
+                pass
+    except Exception:
+        pass
+
+    # ── Read console errors now (after all interactions above fired) ──────────
+    try:
+        errors = page.evaluate("() => (window.__rehearse_errors__ || []).slice(0, 10)") or []
+        findings["console_errors"] = [str(e)[:200] for e in errors]
+        # Clear so next visit starts fresh
+        page.evaluate("() => { if (window.__rehearse_errors__) window.__rehearse_errors__ = []; }")
+    except Exception:
+        pass
+
+    return findings
+
+
+# ── Agentic crawl decisions ───────────────────────────────────────────────────
+
+def _dom_fingerprint(page: Any) -> str:
+    """Structural fingerprint from rendered DOM — content-agnostic.
+
+    Captures the *shape* of the page, not its data, so two profile pages
+    produce the same fingerprint even though their headings differ.
+
+    Strategy:
+    - Bucket list-item counts (avoids count instability from pagination)
+    - Capture the tag-type sequence of the main content area's direct children
+      (structure, not counts) — this is the most stable layout signal
+    - Include which interactive element types are present (form, table, etc.)
+    - Deliberately excludes heading text (content-specific, breaks dedup)
+    """
+    try:
+        return page.evaluate("""() => {
+            // 1. Bucket key tag counts — coarse but stable
+            function bucket(n) {
+                if (n === 0) return '0';
+                if (n <= 2) return '1-2';
+                if (n <= 5) return '3-5';
+                if (n <= 20) return '6-20';
+                return '20+';
+            }
+            const structural = ['form','table','nav','header','aside','dialog','iframe']
+                .map(t => t + ':' + bucket(document.querySelectorAll(t).length)).join(',');
+
+            // 2. Top-level children of <main> or <body> — tag sequence captures layout
+            const root = document.querySelector('main') ||
+                         document.querySelector('[role="main"]') ||
+                         document.body;
+            const childTags = Array.from(root.children)
+                .slice(0, 12)
+                .map(el => el.tagName.toLowerCase())
+                .join('-');
+
+            // 3. Interactive fingerprint — which input types exist
+            const inputs = Array.from(new Set(
+                Array.from(document.querySelectorAll('input'))
+                    .map(i => i.type || 'text')
+                    .slice(0, 6)
+            )).sort().join(',');
+
+            return structural + '::' + childTags + '::' + inputs;
+        }""") or ""
+    except Exception:
+        return ""
+
+
+def _llm_navigate(
+    visited_summary: list[dict[str, str]],
+    pending_urls: list[str],
+    budget_left: int,
+    target_url: str,
+    nav_structure: list[str] | None = None,
+    visual_summaries: list[str] | None = None,
+    url_patterns: dict[str, int] | None = None,
+) -> dict[str, Any]:
+    """Ask the LLM to act as a crawl navigator: given what we've seen, which
+    pending URLs are worth visiting and which are structural duplicates?
+
+    Returns:
+      prioritize  – URLs to move to the front of the queue
+      skip_patterns – URL path prefixes/patterns to drop from the queue
+      reasoning   – short explanation
+    """
+    try:
+        from rehearse.llm import _llm_json_call, llm_enabled
+    except ImportError:
+        return {}
+    if not llm_enabled():
+        return {}
+
+    seen_lines = "\n".join(
+        f"  {i+1}. {v['url']} ({v.get('type','?')}) — {v.get('desc','')[:80]}"
+        for i, v in enumerate(visited_summary[-12:])
+    )
+    pending_lines = "\n".join(f"  {u}" for u in pending_urls[:30])
+    nav_line = (
+        "Site nav: " + ", ".join((nav_structure or [])[:10])
+        if nav_structure else ""
+    )
+    vision_line = (
+        "Page descriptions: " + " | ".join((visual_summaries or [])[:5])
+        if visual_summaries else ""
+    )
+    pattern_line = ""
+    if url_patterns:
+        top = sorted(url_patterns.items(), key=lambda x: -x[1])[:8]
+        pattern_line = "URL patterns seen: " + ", ".join(f"{p}×{n}" for p, n in top)
+
+    context_extras = "\n".join(x for x in [nav_line, vision_line, pattern_line] if x)
+
+    result = _llm_json_call(
+        system=(
+            "You are an agentic web crawler navigator. "
+            "You decide which pages to visit next given a fixed budget. "
+            "Return a JSON object with keys: "
+            "prioritize (list of full URLs to visit next, most valuable first), "
+            "skip_patterns (list of URL path prefixes like /profiles/ that are clearly redundant), "
+            "reasoning (one sentence)."
+        ),
+        user=(
+            f"Target: {target_url}\n"
+            f"Budget remaining: {budget_left} pages\n\n"
+            f"{context_extras}\n\n"
+            f"Already visited ({len(visited_summary)} pages):\n{seen_lines}\n\n"
+            f"Pending queue (first 30):\n{pending_lines}\n\n"
+            "Which pending URLs are likely to reveal new features or workflows? "
+            "Which path prefixes are clearly redundant (same template, different IDs)? "
+            "Respond with JSON only."
+        ),
+        max_tokens=600,
+    )
+    return result or {}
+
+
+
 
 def run_deep_crawl(
     page: Any,
     target_url: str,
     *,
     product_name: str = "",
-    max_pages: int = 20,
-    max_buttons_per_page: int = 12,
+    max_pages: int = 50,
+    max_buttons_per_page: int = 20,
     timeout_ms: int = 15000,
     use_vision: bool = True,
     screenshots_dir: Path | None = None,
+    max_samples_per_pattern: int = 2,
+    graph_output_path: Path | None = None,
 ) -> InteractionMap:
     """
     Deep exhaustive crawl — same capability as a human manually exploring.
@@ -489,6 +1028,10 @@ def run_deep_crawl(
     7. Try search inputs
     8. Click every visible non-destructive button, capture outcome
     9. Collect all internal links for BFS
+
+    Pattern-based sampling: URLs are normalized to structural templates
+    (e.g. /profiles/{id}). Only max_samples_per_pattern pages are visited
+    per template, so a list of 1809 profiles uses 2 budget slots, not 1809.
     """
     imap = InteractionMap(target_url=target_url)
     api_calls: list[dict[str, Any]] = []
@@ -498,6 +1041,37 @@ def run_deep_crawl(
     bfs_queue: list[str] = [target_url]
     all_features: set[str] = set()
     visual_summaries: list[str] = []
+
+    # Agentic decision state
+    seen_fingerprints: dict[str, str] = {}  # fingerprint → first URL with that structure
+    visited_summary: list[dict[str, str]] = []  # for LLM navigator
+    llm_skip_prefixes: list[str] = []  # patterns LLM decided to skip
+
+    # Seed node is known from the start
+    imap.node_status[target_url] = "queued"
+
+    def _flush_graph() -> None:
+        """Write the live crawl graph to disk so the frontend can poll it."""
+        if not graph_output_path:
+            return
+        try:
+            graph_output_path.parent.mkdir(parents=True, exist_ok=True)
+            graph_output_path.write_text(json.dumps({
+                "targetUrl": target_url,
+                "nodes": [
+                    {"id": u, "status": s}
+                    for u, s in imap.node_status.items()
+                ],
+                "edges": [
+                    {"source": src, "target": tgt}
+                    for src, targets in imap.link_graph.items()
+                    for tgt in targets
+                ],
+                "visitedCount": len(imap.pages_visited),
+                "maxPages": max_pages,
+            }))
+        except Exception:
+            pass
 
     def on_response(resp: Any) -> None:
         try:
@@ -531,8 +1105,20 @@ def run_deep_crawl(
         if len(visited) >= max_pages:
             return False
 
+        # Pattern-based sampling: skip redundant structural duplicates
+        pattern = _url_pattern(url)
+        sampled = imap.url_patterns.get(pattern, 0)
+        if sampled >= max_samples_per_pattern and pattern not in ("/", "/{id}"):
+            imap.skipped_patterns[pattern] = imap.skipped_patterns.get(pattern, 0) + 1
+            imap.node_status[url] = "skipped"
+            _flush_graph()
+            return True
+
         visited.add(url)
         imap.pages_visited.append(url)
+        imap.url_patterns[pattern] = sampled + 1
+        imap.node_status[url] = "visiting"
+        _flush_graph()
 
         # 1. Navigate + wait
         try:
@@ -599,6 +1185,8 @@ def run_deep_crawl(
                     "isError": vision.get("is_error_state", False),
                     "keyElements": vision.get("key_elements", []),
                     "screenshot_b64": screenshot_b64,
+                    # Probe findings attached after interaction phase runs
+                    "_probe_pending": True,
                 })
 
         # 5. Extract nav links → add to priority queue
@@ -656,7 +1244,35 @@ def run_deep_crawl(
         )
         imap.buttons.extend(buttons)
 
-        # 11. Page errors
+        # 10b. Comprehensive interaction probe: dropdowns, selects, accordions,
+        #      tabs, filters, chatbot, console errors, perf timing, doc links
+        probe = _probe_page_interactions(page, current_url, api_calls)
+        # Attach probe findings to this page's snapshot if one was recorded
+        if imap.page_snapshots and imap.page_snapshots[-1].get("url") == current_url:
+            snap = imap.page_snapshots[-1]
+            snap.pop("_probe_pending", None)
+            snap["interactionProbe"] = {
+                k: v for k, v in probe.items()
+                if v not in (None, [], {}, False, "")
+            }
+        # Bubble up console/JS errors into imap.errors_found
+        for err in probe.get("console_errors") or []:
+            imap.errors_found.append({"page": current_url, "text": err, "type": "js-error"})
+        for res in probe.get("slow_resources") or []:
+            imap.errors_found.append({
+                "page": current_url,
+                "text": f"Slow resource ({res.get('ms')}ms): {res.get('url')}",
+                "type": "performance",
+            })
+        if probe.get("chatbot_tested"):
+            imap.chatbot_detected = True
+        if probe.get("chatbot_response"):
+            imap.chatbot_responses.append({
+                "page": current_url,
+                "response": probe["chatbot_response"],
+            })
+
+        # 11. Page errors (UI-level)
         try:
             for sel in ["[role='alert']", "[class*='error']:not(script)",
                         "[class*='toast']", ".error-message"]:
@@ -669,14 +1285,45 @@ def run_deep_crawl(
         except Exception:
             pass
 
-        # 12. BFS links
-        for link_url in _extract_all_links(page, target_url):
-            if link_url not in visited and link_url not in bfs_queue:
-                bfs_queue.append(link_url)
+        # Layer 1: DOM fingerprint — detect structural duplicates
+        fingerprint = _dom_fingerprint(page)
+        is_structural_dup = False
+        if fingerprint:
+            if fingerprint in seen_fingerprints and seen_fingerprints[fingerprint] != current_url:
+                # Same DOM structure as a previously visited page — skip its sub-links
+                imap.skipped_patterns[pattern] = imap.skipped_patterns.get(pattern, 0) + 1
+                is_structural_dup = True
+            else:
+                seen_fingerprints[fingerprint] = current_url
+
+        # Record page summary for LLM navigator
+        visited_summary.append({
+            "url": current_url,
+            "type": "dup" if is_structural_dup else "new",
+            "desc": (title or "")[:60],
+        })
+
+        # 12. BFS links — only follow from structurally distinct pages
+        discovered_links: list[str] = []
+        if not is_structural_dup:
+            for link_url in _extract_all_links(page, target_url):
+                discovered_links.append(link_url)
+                if link_url not in visited and link_url not in bfs_queue:
+                    if not any(link_url.startswith(pfx) for pfx in llm_skip_prefixes):
+                        bfs_queue.append(link_url)
+                        imap.node_status.setdefault(link_url, "queued")
+
+        # Record edges and mark this node done
+        imap.link_graph[current_url] = discovered_links[:40]  # cap per-node edge list
+        imap.node_status[url] = "error" if any(
+            s.outcome == "fail" for s in []) else "visited"
+        imap.node_status[current_url] = "visited"
+        _flush_graph()
 
         return True
 
     # Process priority (nav) pages first, then BFS
+    llm_nav_fired = False
     while True:
         if priority_queue:
             url = priority_queue.pop(0)
@@ -686,6 +1333,53 @@ def run_deep_crawl(
             break
         if not visit_page(url):
             break
+
+        # LLM navigator: fire exactly once at ~50% budget used
+        # Makes one strategic re-plan — not a per-URL call
+        budget_used = len(visited)
+        if (
+            not llm_nav_fired
+            and budget_used >= max(3, max_pages // 2)
+            and (bfs_queue or priority_queue)
+        ):
+            llm_nav_fired = True
+            all_pending = priority_queue + bfs_queue
+            nav = _llm_navigate(
+                visited_summary, all_pending, max_pages - budget_used, target_url,
+                nav_structure=imap.nav_structure,
+                visual_summaries=visual_summaries,
+                url_patterns=imap.url_patterns,
+            )
+            if nav and not nav.get("error"):
+                pending_set = set(all_pending)
+                # Prepend high-value URLs — only if they're actually in the queue
+                for u in reversed(nav.get("prioritize") or []):
+                    if not isinstance(u, str):
+                        continue
+                    u = u.strip()
+                    if u in pending_set and u not in priority_queue:
+                        try:
+                            bfs_queue.remove(u)
+                        except ValueError:
+                            pass
+                        priority_queue.insert(0, u)
+                # Normalize skip_patterns to path prefixes starting with /
+                # LLM may return full URLs, bare strings, or regex — normalize all
+                for raw in nav.get("skip_patterns") or []:
+                    if not isinstance(raw, str):
+                        continue
+                    raw = raw.strip()
+                    # If it's a full URL, extract path only
+                    if raw.startswith("http"):
+                        try:
+                            from urllib.parse import urlparse as _up
+                            raw = _up(raw).path
+                        except Exception:
+                            continue
+                    # Ensure leading slash, drop trailing wildcards/dots
+                    raw = raw.lstrip("/").rstrip(".*")
+                    if raw:
+                        llm_skip_prefixes.append("/" + raw)
 
     imap.api_calls = api_calls[:200]
     imap.features_seen = sorted(all_features)
@@ -724,6 +1418,9 @@ def interaction_map_to_dict(imap: InteractionMap) -> dict[str, Any]:
         "featuresSeen": imap.features_seen,
         "visualSummary": imap.visual_summary,
         "crawlDurationMs": imap.crawl_duration_ms,
+        "urlPatterns": imap.url_patterns,
+        "skippedPatterns": imap.skipped_patterns,
+        "skippedPatternCount": sum(imap.skipped_patterns.values()),
     }
 
 

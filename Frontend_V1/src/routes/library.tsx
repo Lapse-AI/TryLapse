@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { PageHeader, Panel, Chip } from "@/components/ui-bits";
+import { PageHeader, Panel, Chip, UnderConstruction } from "@/components/ui-bits";
 import { useLibrary, useApiHealth } from "@/lib/api/hooks";
 import { api } from "@/lib/api/client";
 import { useLatestRun } from "@/lib/api/hooks";
@@ -15,6 +15,7 @@ function LibraryPage() {
   const latest = useLatestRun();
 
   return (
+    <UnderConstruction>
     <div>
       <PageHeader
         eyebrow="map"
@@ -111,5 +112,6 @@ function LibraryPage() {
         </div>
       </div>
     </div>
+    </UnderConstruction>
   );
 }

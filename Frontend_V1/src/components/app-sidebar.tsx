@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard,
@@ -17,6 +18,7 @@ import {
   BookOpen,
   Wand2,
   LogOut,
+  HardHat,
 } from "lucide-react";
 import { formatRel } from "@/lib/mock-data";
 import { useLatestRun, useWorkspace, useScopedActiveJobs } from "@/lib/api/hooks";
@@ -30,7 +32,7 @@ const nav = [
   {
     group: "Monitor",
     items: [
-      { to: "/", label: "Command center", icon: LayoutDashboard },
+      { to: "/", label: "Dashboard", icon: LayoutDashboard },
       { to: "/runs", label: "Runs", icon: Activity },
       { to: "/compare", label: "Compare runs", icon: GitCompare },
       { to: "/trends", label: "Trends", icon: TrendingUp },
@@ -41,9 +43,9 @@ const nav = [
   {
     group: "Author & rehearse",
     items: [
-      { to: "/init", label: "Init wizard", icon: Wand2 },
-      { to: "/library", label: "Journey library", icon: BookOpen },
-      { to: "/config", label: "Config (YAML)", icon: Settings },
+      { to: "/init", label: "Setup", icon: Wand2 },
+      { to: "/library", label: "Journeys", icon: BookOpen },
+      { to: "/config", label: "Config", icon: Settings },
       { to: "/runner", label: "Runner", icon: PlayCircle },
     ],
   },
@@ -54,12 +56,52 @@ const nav = [
       { to: "/workflows", label: "Workflows", icon: GitBranch },
     ],
   },
-  { group: "Agents", items: [{ to: "/agents", label: "Agent control", icon: Bot }] },
+  { group: "Agents", items: [{ to: "/agents", label: "Agents", icon: Bot }] },
   {
     group: "Platform",
     items: [
       { to: "/integrations", label: "Integrations", icon: Plug },
       { to: "/cli", label: "CLI", icon: Terminal },
+    ],
+  },
+];
+
+const workspaceNav = [
+  {
+    group: "Run",
+    items: [
+      { to: "/", label: "Dashboard", icon: LayoutDashboard },
+      { to: "/runs", label: "Runs", icon: Activity },
+      { to: "/compare", label: "Compare", icon: GitCompare },
+    ],
+  },
+  {
+    group: "Analyze",
+    items: [
+      { to: "/trends", label: "Trends", icon: TrendingUp },
+      { to: "/alerts", label: "Alerts", icon: Bell, wip: true },
+    ],
+  },
+  {
+    group: "Build",
+    items: [
+      { to: "/config", label: "Config", icon: Settings },
+      { to: "/runner", label: "Runner", icon: PlayCircle },
+      { to: "/library", label: "Journeys", icon: BookOpen, wip: true },
+      { to: "/agents", label: "Agents", icon: Bot, wip: true },
+    ],
+  },
+  {
+    group: "Platform",
+    items: [{ to: "/integrations", label: "Integrations", icon: Plug, wip: true }],
+  },
+  {
+    group: "Coming soon",
+    items: [
+      { to: "/recommendations", label: "Recommendations", icon: Lightbulb, wip: true },
+      { to: "/sitemap", label: "Site map", icon: Network, wip: true },
+      { to: "/workflows", label: "Workflows", icon: GitBranch, wip: true },
+      { to: "/cli", label: "CLI", icon: Terminal, wip: true },
     ],
   },
 ];
@@ -72,7 +114,10 @@ export function AppSidebar() {
   const { data: workspace } = useWorkspace();
   const { group, resolvedConfigId } = useTestGroup();
   const targetLabel = displayTargetForGroup(group);
-  const userWorkspace = getWorkspace();
+  // Start null to match server render, then populate from localStorage after mount
+  const [userWorkspace, setUserWorkspace] = useState<ReturnType<typeof getWorkspace>>(null);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setUserWorkspace(getWorkspace()); setMounted(true); }, []);
 
   const handleSignOut = () => {
     signOut();
@@ -84,18 +129,17 @@ export function AppSidebar() {
   const dashboardTo = userWorkspace ? (`/$workspaceSlug/dashboard` as const) : ("/runs" as const);
   const dashboardParams = userWorkspace ? { workspaceSlug: userWorkspace.slug } : undefined;
 
-  // Resolve the actual href for a nav item — workspace-scope what exists, keep flat for the rest
+  // Resolve the actual href for a nav item — workspace-scope all items when workspace is active
   const resolveHref = (to: string): string => {
     if (!userWorkspace) return to;
     if (to === "/") return `/${userWorkspace.slug}/dashboard`;
-    if (to === "/runs") return `/${userWorkspace.slug}/runs`;
-    return to;
+    return `/${userWorkspace.slug}${to}`;
   };
 
   return (
     <aside
-      className="w-60 shrink-0 border-r border-sidebar-border text-sidebar-foreground flex flex-col backdrop-blur-xl"
-      style={{ background: "color-mix(in oklab, white 76%, transparent)" }}
+      className="w-60 shrink-0 border-r border-sidebar-border text-sidebar-foreground flex flex-col"
+      style={{ background: "var(--sidebar)" }}
     >
       <div className="px-4 h-14 flex items-center gap-2.5 border-b border-sidebar-border/70">
         <div className="size-7 rounded-lg bg-primary/15 border border-primary/25 flex items-center justify-center shadow-[0_1px_3px_color-mix(in_oklab,var(--primary)_20%,transparent)]">
@@ -115,10 +159,10 @@ export function AppSidebar() {
       <div className="px-3 py-3 border-b border-sidebar-border">
         <div className="w-full flex items-center justify-between px-2.5 py-2 rounded-md bg-sidebar-accent border border-sidebar-border">
           <div className="min-w-0">
-            <div className="text-sm font-medium truncate">
+            <div className="text-sm font-medium truncate" suppressHydrationWarning>
               {userWorkspace?.name ?? workspace?.name ?? group.label}
             </div>
-            <div className="text-[11px] text-muted-foreground font-mono truncate">
+            <div className="text-[11px] text-muted-foreground font-mono truncate" suppressHydrationWarning>
               {userWorkspace ? `/${userWorkspace.slug}` : targetLabel}
             </div>
             {userWorkspace && (
@@ -140,7 +184,7 @@ export function AppSidebar() {
       </div>
 
       <nav className="flex-1 overflow-y-auto py-3">
-        {nav.map((navGroup) => (
+        {(userWorkspace ? workspaceNav : nav).map((navGroup) => (
           <div key={navGroup.group} className="px-3 mb-4">
             <div className="text-[11px] text-muted-foreground px-2 mb-1 font-medium">
               {navGroup.group}
@@ -204,17 +248,21 @@ export function AppSidebar() {
                   );
                 }
 
-                // All other routes — flat
-                const active = pathname === it.to || (it.to !== "/" && pathname.startsWith(it.to));
+                // All other routes — workspace-scoped when workspace is active
+                const href = resolveHref(it.to);
+                const active = pathname === href || (it.to !== "/" && pathname.startsWith(href));
                 return (
                   <Link
                     key={it.to}
-                    to={it.to}
+                    to={href}
                     aria-current={active ? "page" : undefined}
                     className={linkClassName(active)}
                   >
-                    <Icon className="size-4" />
-                    <span>{it.label}</span>
+                    <Icon className="size-4 shrink-0" />
+                    <span className="flex-1 truncate">{it.label}</span>
+                    {"wip" in it && !!(it as { wip?: boolean }).wip && (
+                      <HardHat className="size-3.5 text-warn/70 shrink-0" />
+                    )}
                   </Link>
                 );
               })}
@@ -223,7 +271,7 @@ export function AppSidebar() {
         ))}
       </nav>
 
-      {(liveJob || latest) && (
+      {mounted && (liveJob || latest) && (
         <div className="border-t border-sidebar-border p-3">
           {liveJob && (
             <div className="rounded-md border border-info/40 p-2.5 bg-info/5 mb-2">

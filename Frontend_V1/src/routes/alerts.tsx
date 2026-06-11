@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PageHeader, Panel, Chip } from "@/components/ui-bits";
+import { PageHeader, Panel, Chip, UnderConstruction } from "@/components/ui-bits";
 import { useAlerts } from "@/lib/api/hooks";
 import { VisionOnly } from "@/components/vision-only";
 import { Slack, Mail, Webhook, Bell as BellIcon } from "lucide-react";
@@ -36,6 +36,7 @@ const recent = [
 function Alerts() {
   const { data: alertChannels = [] } = useAlerts();
   return (
+    <UnderConstruction>
     <div>
       <PageHeader
         eyebrow="monitor"
@@ -108,5 +109,6 @@ function Alerts() {
         </VisionOnly>
       </div>
     </div>
+    </UnderConstruction>
   );
 }

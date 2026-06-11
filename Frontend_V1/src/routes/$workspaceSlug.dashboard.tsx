@@ -46,7 +46,27 @@ export const Route = createFileRoute("/$workspaceSlug/dashboard")({
   component: Index,
 });
 
+function formatRunId(id: string): string {
+  const m = id.match(/(\d{8})-(\d{6})$/);
+  if (!m) return id;
+  const [, date, time] = m;
+  try {
+    const dt = new Date(
+      `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6, 8)}T${time.slice(0, 2)}:${time.slice(2, 4)}:00Z`,
+    );
+    if (isNaN(dt.getTime())) return id;
+    return (
+      dt.toLocaleDateString("en-US", { month: "short", day: "numeric" }) +
+      " · " +
+      dt.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })
+    );
+  } catch {
+    return id;
+  }
+}
+
 function Index() {
+  const { workspaceSlug } = Route.useParams();
   const latest = useLatestRun();
   const { data: bundle, isLoading } = useRunBundle(latest?.id ?? "");
   const { data: runSummaries = [] } = useRunSummaries();
@@ -117,7 +137,7 @@ function Index() {
     <div>
       {jobsRunning && jobs && jobs.length > 0 && (
         <div className="px-8 pt-6 max-w-[1400px]">
-          <ActiveJobsBanner jobs={jobs} />
+          <ActiveJobsBanner jobs={jobs} workspaceSlug={workspaceSlug} />
         </div>
       )}
       <PageHeader
@@ -255,7 +275,7 @@ function Index() {
                         / 100 · {latest.readinessBand}
                       </span>
                     </div>
-                    <div className="mt-2 h-8">
+                    <div className="mt-2 overflow-visible">
                       <Sparkline
                         values={(trends?.readiness ?? [latest.readiness]) as number[]}
                         height={28}
@@ -270,7 +290,7 @@ function Index() {
                     <div className="flex items-center gap-1.5 mb-2">
                       <Heart className="size-3 text-muted-foreground" />
                       <span className="text-[11px] text-muted-foreground font-medium">
-                        Latest delight
+                        Latest highlight
                       </span>
                     </div>
                     {topDelight ? (
@@ -331,8 +351,9 @@ function Index() {
                   to="/runs/$runId"
                   params={{ runId: latest.id }}
                   className="font-mono text-sm mt-1 text-primary hover:underline"
+                  title={latest.id}
                 >
-                  {latest.id}
+                  {formatRunId(latest.id)}
                 </Link>
               </div>
               <Chip tone={band}>{latest.env}</Chip>
@@ -345,7 +366,7 @@ function Index() {
                 </div>
               </div>
               <div>
-                <div className="text-xs text-muted-foreground">Delights</div>
+                <div className="text-xs text-muted-foreground">Highlights</div>
                 <div className="font-display text-2xl font-semibold text-ready tabular-nums">
                   {latest.delights}
                 </div>
@@ -374,7 +395,7 @@ function Index() {
 
           <Panel className="md:col-span-3 p-6 panel-glass flex flex-col">
             <div className="text-xs text-muted-foreground">{runSummaries.length}-run trend</div>
-            <div className="mt-3 grow flex items-center">
+            <div className="mt-3 grow flex items-center overflow-visible">
               <Sparkline
                 values={(trends?.readiness ?? [latest.readiness]).map(Number)}
                 height={64}
@@ -468,7 +489,7 @@ function Index() {
             <Panel className="p-6 panel-quiet">
               <div className="flex items-center gap-2 mb-3">
                 <Sparkles className="size-4 text-muted-foreground" />
-                <div className="text-xs text-muted-foreground">Delight worth shipping with</div>
+                <div className="text-xs text-muted-foreground">Highlight worth shipping with</div>
               </div>
               <h3 className="font-display text-lg font-semibold">{topDelight.title}</h3>
               <blockquote className="mt-3 border-l-2 border-ready pl-3 italic text-sm text-foreground/90">
@@ -480,9 +501,9 @@ function Index() {
             </Panel>
           ) : (
             <Panel className="p-6 panel-quiet">
-              <div className="text-xs text-muted-foreground">Delights</div>
+              <div className="text-xs text-muted-foreground">Highlights</div>
               <p className="mt-2 text-sm text-muted-foreground">
-                No delights detected this run — required section still emitted in scorecard.
+                No highlights detected this run — required section still emitted in scorecard.
               </p>
             </Panel>
           )}
@@ -507,7 +528,7 @@ function Index() {
                   <th className="text-left px-5 py-2 font-medium">Env</th>
                   <th className="text-left px-5 py-2 font-medium">Readiness</th>
                   <th className="text-left px-5 py-2 font-medium">Blockers</th>
-                  <th className="text-left px-5 py-2 font-medium">Delights</th>
+                  <th className="text-left px-5 py-2 font-medium">Highlights</th>
                   <th className="text-left px-5 py-2 font-medium">Duration</th>
                   <th className="text-right px-5 py-2 font-medium">When</th>
                 </tr>
@@ -523,8 +544,9 @@ function Index() {
                         to="/runs/$runId"
                         params={{ runId: r.id }}
                         className="font-mono text-xs hover:text-primary"
+                        title={r.id}
                       >
-                        {r.id}
+                        {formatRunId(r.id)}
                       </Link>
                     </td>
                     <td className="px-5 py-3 text-xs">{r.productName}</td>

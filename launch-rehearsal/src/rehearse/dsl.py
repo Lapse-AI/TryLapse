@@ -58,6 +58,7 @@ class Journey:
     id: str
     name: str
     steps: list[Step]
+    persona_ids: list[str] = field(default_factory=list)  # empty = runs for all personas
 
 
 @dataclass
@@ -191,6 +192,7 @@ def load_config(path: Path) -> RunConfig:
             id=j["id"],
             name=j["name"],
             steps=[_parse_step(s) for s in j.get("steps") or []],
+            persona_ids=list(j.get("persona_ids") or []),
         )
         for j in journeys_raw
     ]

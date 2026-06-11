@@ -105,8 +105,8 @@ def build_config(
             },
     ]
     cfg["budgets"] = {
-        "max_steps_per_journey": 12,
-        "max_run_seconds": 1200,
+        "max_steps_per_journey": 20,
+        "max_run_seconds": 28800,
         "step_timeout_ms": 45000,
     }
 

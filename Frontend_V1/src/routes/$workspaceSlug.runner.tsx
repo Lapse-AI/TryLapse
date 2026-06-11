@@ -15,12 +15,13 @@ import { Loader2, Play, Network, FlaskConical, Settings, AlertTriangle, CheckCir
 import { api } from "@/lib/api/client";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/runner")({
+export const Route = createFileRoute("/$workspaceSlug/runner")({
   head: () => ({ meta: [{ title: "Runner — Launch Rehearsal" }] }),
   component: RunnerPage,
 });
 
 function RunnerPage() {
+  const { workspaceSlug } = Route.useParams();
   const { data: live } = useApiHealth();
   const { data: jobs = [] } = useJobs();
   const { data: configs = [] } = useConfigs();
@@ -38,13 +39,17 @@ function RunnerPage() {
     enabled: !!live,
     refetchInterval: 5000,
   });
-  const { data: configFile } = useConfigYaml(configId ?? "");
 
   // Derive workspace run_id_prefix from the saved configPath
   const wsConfigId = workspace?.configPath
     ? (workspace.configPath.split("/").pop()?.replace(/\.ya?ml$/, "") ?? "")
     : "";
-  const wsPrefix = wsConfigId.replace(/-\d{8}-\d{6}$/, ""); // e.g. "faculty-dashboard-eight-vercel-app"
+  const wsPrefix = wsConfigId.replace(/-\d{8}-\d{6}$/, "");
+
+  // Filter jobs to this workspace only — runId starts with wsPrefix, or job not yet started
+  const wsJobs = wsPrefix
+    ? jobs.filter((j) => !j.runId || j.runId.startsWith(wsPrefix))
+    : jobs;
 
   // Filter to workspace-relevant configs only (skip unrelated and example configs)
   const wsConfigs = wsPrefix
@@ -58,16 +63,21 @@ function RunnerPage() {
   const latestId = timestamped[0]?.id ?? null;
   const displayConfigs = [...timestamped, ...canonical];
 
-  // Prefer: explicit user pick → workspace-linked config → latest timestamped → first
+  // Workspace-linked config ID (what workspace.json points to — the authoritative source)
+  const wsLinkedId = wsConfigId || null;
+
+  // Prefer: explicit user pick (if in wsConfigs) → workspace-linked config → latest timestamped → first
   const selectedConfig =
     wsConfigs.find((c) => c.id === configId) ??
-    (wsPrefix ? wsConfigs.find((c) => c.id === wsConfigId) : undefined) ??
+    (wsLinkedId ? wsConfigs.find((c) => c.id === wsLinkedId) : undefined) ??
     (latestId ? wsConfigs.find((c) => c.id === latestId) : undefined) ??
     wsConfigs[0] ??
     configs[0];
 
+  const { data: configFile } = useConfigYaml(selectedConfig?.id ?? "");
+
   const selfConfig =
-    configs.find((c) => c.id === "lr-self") ?? configs.find((c) => c.id === "self-dashboard");
+    wsConfigs.find((c) => c.id === "lr-self") ?? configs.find((c) => c.id === "self-dashboard");
 
   const runSelected = () => {
     if (!selectedConfig) {
@@ -112,11 +122,11 @@ function RunnerPage() {
         }
       />
       <div className="p-8 max-w-[1400px] space-y-6">
-        <ActiveJobsBanner jobs={jobs} workspaceSlug={workspace?.slug} />
+        <ActiveJobsBanner jobs={wsJobs} workspaceSlug={workspaceSlug} />
 
         {/* Live run + crawl visualization — shown when a run is in progress */}
-        {jobs.some(j => j.status === "running") && (() => {
-          const liveJob = jobs.find(j => j.status === "running");
+        {wsJobs.some(j => j.status === "running") && (() => {
+          const liveJob = wsJobs.find(j => j.status === "running");
           // Use runId from job record OR from live progress (whichever is available first)
           const effectiveRunId = liveJob?.runId ?? discoveredRunId;
           return (
@@ -162,7 +172,7 @@ function RunnerPage() {
                 Test group · {group.label} ({resolvedConfigId})
               </Chip>
             )}
-            {jobs.some((j) => j.status === "running" || j.status === "queued") && (
+            {wsJobs.some((j) => j.status === "running" || j.status === "queued") && (
               <Chip tone="info">Job in progress</Chip>
             )}
             {live && creds && (
@@ -204,7 +214,6 @@ function RunnerPage() {
                 const isLatest = c.id === latestId;
                 let label = c.id;
                 if (tsMatch) {
-                  // Parse as UTC (filenames use UTC), display in browser local time
                   const dt = new Date(`${tsMatch[2]}-${tsMatch[3]}-${tsMatch[4]}T${tsMatch[5]}:${tsMatch[6]}:${tsMatch[7]}Z`);
                   const localStr = isNaN(dt.getTime()) ? `${tsMatch[2]}-${tsMatch[3]}-${tsMatch[4]} ${tsMatch[5]}:${tsMatch[6]}`
                     : new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit", hour12: true }).format(dt);
@@ -315,7 +324,7 @@ function RunnerPage() {
 
         <Panel className="overflow-hidden">
           <div className="p-5 border-b border-border font-display font-semibold">Job queue</div>
-          <JobQueueTable jobs={jobs} workspaceSlug={workspace?.slug} />
+          <JobQueueTable jobs={wsJobs} workspaceSlug={workspaceSlug} />
         </Panel>
       </div>
     </div>

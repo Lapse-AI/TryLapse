@@ -9,6 +9,7 @@ import {
   SeverityChip,
   Stat,
   ClientTime,
+  SEVERITY_LABEL,
 } from "@/components/ui-bits";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DimensionRollupGrid, DimensionBreakdownBanner } from "@/components/dimension-rollup";
@@ -26,8 +27,9 @@ import {
   RunNarrativePanel,
 } from "@/components/run-detail";
 import { ManualAnnotationPanel } from "@/components/manual-annotation-panel";
+import { CrawlLiveGraph } from "@/components/crawl-live-graph";
+import { JourneyStepTree } from "@/components/journey-step-tree";
 import { ExperimentRunBanner } from "@/components/experiment-spec-panel";
-import { JourneyRecordingPlayer } from "@/components/journey-recording-player";
 import {
   formatDuration,
   bandFromIssues,
@@ -65,6 +67,7 @@ import {
   Camera,
   MessageSquare,
   GitBranch,
+  Network,
 } from "lucide-react";
 
 const searchSchema = z.object({
@@ -83,6 +86,25 @@ export const Route = createFileRoute("/runs/$runId")({
 });
 
 const ALL_SEVERITIES: Severity[] = ["P0", "P1", "P2", "P3"];
+
+function formatRunId(id: string): string {
+  const m = id.match(/(\d{8})-(\d{6})$/);
+  if (!m) return id;
+  const [, date, time] = m;
+  try {
+    const dt = new Date(
+      `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6, 8)}T${time.slice(0, 2)}:${time.slice(2, 4)}:00`,
+    );
+    if (isNaN(dt.getTime())) return id;
+    return (
+      dt.toLocaleDateString("en-US", { month: "short", day: "numeric" }) +
+      " · " +
+      dt.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })
+    );
+  } catch {
+    return id;
+  }
+}
 
 function MatrixCellDialog({
   pi,
@@ -226,7 +248,7 @@ function RunDetail() {
     <div>
       <PageHeader
         eyebrow={`Run · ${run.env}`}
-        title={run.id}
+        title={formatRunId(run.id)}
         description={
           <>
             {run.productName} ·{" "}
@@ -275,8 +297,8 @@ function RunDetail() {
             hint={`Band: ${run.readinessBand}`}
             title={READINESS_BAND_HELP}
           />
-          <Stat label="Blockers" value={blockerCount} hint="P0 + P1" tone="danger" />
-          <Stat label="Delights" value={run.delights} tone="ready" />
+          <Stat label="Blockers" value={blockerCount} hint="Critical + High" tone="danger" />
+          <Stat label="Highlights" value={run.delights} tone="ready" />
           <Stat
             label="Steps"
             value={run.stepCount}
@@ -320,6 +342,14 @@ function RunDetail() {
               <ListTree className="size-3 mr-1 inline" />
               Steps ({bundle.steps.length})
             </TabsTrigger>
+            <TabsTrigger value="journeys" className="text-xs">
+              <ListTree className="size-3 mr-1 inline" />
+              Journeys
+            </TabsTrigger>
+            <TabsTrigger value="crawl-graph" className="text-xs">
+              <Network className="size-3 mr-1 inline" />
+              Crawl Graph
+            </TabsTrigger>
             <TabsTrigger value="sitemap" className="text-xs">
               <GitBranch className="size-3 mr-1 inline" />
               Sitemap
@@ -344,6 +374,29 @@ function RunDetail() {
 
           <TabsContent value="overview" className="space-y-8 mt-0">
             <ExperimentRunBanner experiment={run.experiment} />
+            {bundle.steps.length === 0 && (bundle.parallelErrors?.length ?? 0) > 0 && (
+              <Panel className="p-4 border border-danger/30 bg-danger/5 space-y-2">
+                <div className="text-sm font-semibold text-danger">Journey execution failed — 0 steps recorded</div>
+                <p className="text-xs text-muted-foreground">
+                  Parallel browser workers threw errors. Auth cookies may not have reached workers, or Playwright threading failed.
+                  Check errors below, then restart the server and re-run.
+                </p>
+                <div className="space-y-1 max-h-48 overflow-y-auto">
+                  {bundle.parallelErrors!.map((e, i) => (
+                    <pre key={i} className="text-[10px] font-mono text-danger/80 bg-surface/60 rounded px-2 py-1 whitespace-pre-wrap">{e}</pre>
+                  ))}
+                </div>
+              </Panel>
+            )}
+            {bundle.steps.length === 0 && (bundle.parallelErrors?.length ?? 0) === 0 && run.stepCount === 0 && (
+              <Panel className="p-4 border border-warn/30 bg-warn/5">
+                <div className="text-sm font-semibold text-warn">0 browser steps recorded</div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Journey execution produced no step data. Common causes: auth wasn't set up (check Config → Run credentials),
+                  all journeys failed immediately, or the server wasn't restarted after a code change.
+                </p>
+              </Panel>
+            )}
             <RunNarrativePanel runId={run.id} bundle={bundle} />
             <RunObservabilityPanel bundle={bundle} />
             <Panel className="p-4 md:p-6 overflow-x-auto">
@@ -354,7 +407,7 @@ function RunDetail() {
                     {runPersonas.length} personas × {runJourneys.length} journeys
                   </h2>
                   <p className="text-[11px] text-muted-foreground mt-2 max-w-xl">
-                    Browser steps run as the first persona (evaluator) only. P2 and P3 columns
+                    Browser steps run as the first persona (evaluator) only. Medium and Low severity columns
                     reflect the same technical journey outcome through persona-specific findings,
                     not separate browser sessions.
                   </p>
@@ -474,7 +527,7 @@ function RunDetail() {
                             : undefined
                         }
                       >
-                        {s} · {count}
+                        {SEVERITY_LABEL[s]} · {count}
                       </button>
                     );
                   })}
@@ -540,7 +593,7 @@ function RunDetail() {
             {bundle.delights.length > 0 && (
               <Panel className="p-6">
                 <div className="text-xs text-muted-foreground mb-4">
-                  Delights — required section
+                  Highlights
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {bundle.delights.map((d) => (
@@ -620,12 +673,31 @@ function RunDetail() {
 
           <TabsContent value="scorecard">
             <Panel className="overflow-hidden">
-              <ScorecardPanel markdown={bundle.scorecardMd} />
+              <ScorecardPanel markdown={bundle.scorecardMd} bundle={bundle} />
             </Panel>
           </TabsContent>
           <TabsContent value="steps">
             <Panel className="overflow-hidden">
               <StepsTable steps={bundle.steps} highlightStepId={highlightStepId} />
+            </Panel>
+          </TabsContent>
+          <TabsContent value="journeys">
+            <Panel className="p-6">
+              <div className="text-sm font-medium mb-1">Journey execution tree</div>
+              <p className="text-xs text-muted-foreground mb-4">
+                Each persona's journeys and their step-by-step outcomes. Click any row to expand.
+              </p>
+              <JourneyStepTree
+                steps={bundle.steps as any[]}
+                personas={runPersonas.map(p => ({ id: p.id, name: p.name }))}
+                journeys={runJourneys.map(j => ({ id: j.id, name: j.name }))}
+              />
+            </Panel>
+          </TabsContent>
+          <TabsContent value="crawl-graph">
+            <Panel className="p-6">
+              <div className="text-sm font-medium mb-4">Crawl graph — pages discovered during crawl phase</div>
+              <CrawlLiveGraph runId={run.id} phase="done" pollingMs={0} />
             </Panel>
           </TabsContent>
           <TabsContent value="sitemap">
@@ -667,23 +739,21 @@ function RunDetail() {
           </TabsContent>
           <TabsContent value="recordings">
             <Panel className="overflow-hidden">
-              <div className="p-4 space-y-4">
-                <h3 className="text-sm font-semibold">Journey Recording</h3>
-                <p className="text-xs text-muted-foreground">
-                  View event replay and video recordings of journeys
-                </p>
-                {runJourneys.length > 0 ? (
-                  <div className="space-y-6">
-                    {runJourneys.map((j) => (
-                      <div key={j.id} className="border-t border-border pt-4">
-                        <h4 className="text-sm font-medium mb-3">{j.name}</h4>
-                        <JourneyRecordingPlayer runId={run.id} journeyId={j.id} />
-                      </div>
-                    ))}
+              <div className="relative">
+                <div className="p-4 space-y-4 blur-sm pointer-events-none select-none opacity-50">
+                  <h3 className="text-sm font-semibold">Journey Recording</h3>
+                  <p className="text-xs text-muted-foreground">View event replay and video recordings of journeys</p>
+                  <div className="h-32 bg-surface-2 rounded-lg" />
+                </div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="bg-surface border border-border rounded-2xl px-8 py-6 text-center shadow-xl">
+                    <div className="size-12 rounded-xl bg-warn/10 border border-warn/20 flex items-center justify-center mx-auto mb-3">
+                      <Camera className="size-6 text-warn" />
+                    </div>
+                    <h3 className="font-display text-base font-semibold">Recordings Coming Soon</h3>
+                    <p className="text-xs text-muted-foreground mt-1.5 max-w-xs">rrweb session replay will be available in a future release.</p>
                   </div>
-                ) : (
-                  <div className="text-xs text-muted-foreground">No journeys available</div>
-                )}
+                </div>
               </div>
             </Panel>
           </TabsContent>

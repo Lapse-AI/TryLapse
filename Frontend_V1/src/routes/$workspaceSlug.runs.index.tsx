@@ -12,6 +12,25 @@ export const Route = createFileRoute("/$workspaceSlug/runs/")({
   component: RunsList,
 });
 
+function formatRunId(id: string): string {
+  const m = id.match(/(\d{8})-(\d{6})$/);
+  if (!m) return id;
+  const [, date, time] = m;
+  try {
+    const dt = new Date(
+      `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6, 8)}T${time.slice(0, 2)}:${time.slice(2, 4)}:00Z`,
+    );
+    if (isNaN(dt.getTime())) return id;
+    return (
+      dt.toLocaleDateString("en-US", { month: "short", day: "numeric" }) +
+      " · " +
+      dt.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })
+    );
+  } catch {
+    return id;
+  }
+}
+
 function RunsList() {
   const { workspaceSlug } = useParams({ from: "/$workspaceSlug/runs/" });
   const { data: runSummaries = [], allRuns } = useScopedRunSummaries();
@@ -107,8 +126,9 @@ function RunsList() {
                       to="/$workspaceSlug/runs/$runId"
                       params={{ workspaceSlug, runId: r.id }}
                       className="font-mono text-xs text-primary hover:underline"
+                      title={r.id}
                     >
-                      {r.id}
+                      {formatRunId(r.id)}
                     </Link>
                   </td>
                   <td className="px-5 py-3 text-xs">{r.productName}</td>

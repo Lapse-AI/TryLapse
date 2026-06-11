@@ -1,0 +1,1526 @@
+run:
+  target_url: https://faculty-dashboard-eight.vercel.app/database
+  run_id_prefix: faculty-dashboard-eight-vercel-app
+  product_name: Argyle Faculty Dashboard
+  viewports:
+  - desktop
+  execute_all_personas_in_browser: true
+  persona_lens: true
+crawl:
+  enabled: true
+  max_depth: 2
+  max_pages: 30
+  supplement_journeys: true
+personas:
+- id: p1-evaluator
+  name: First-time evaluator
+  role: prospect / new user
+  goals:
+  - Understand value from landing and primary workflow
+- id: p2-operator
+  name: Daily operator
+  role: power user
+  goals:
+  - Complete core tasks quickly and reliably
+- id: p3-admin
+  name: Admin / buyer
+  role: IT admin
+  goals:
+  - Verify access boundaries and trust signals
+- id: model-1-adminstaff
+  name: Admin/Staff
+  role: Manage system settings and oversee faculty data
+  goals:
+  - Manage system settings and oversee faculty data
+  - Presence of /admin page suggests administrative users.
+- id: model-0-faculty-member
+  name: Faculty member
+  role: View and update their own professional metrics and data.
+  goals:
+  - View and update their own professional metrics and data.
+  - Profile pages with unique IDs suggest each faculty has their own dashboard page.
+- id: model-1-administrator
+  name: Administrator
+  role: Manage faculty profiles, oversee analytics, and generate reports.
+  goals:
+  - Manage faculty profiles, oversee analytics, and generate reports.
+  - Presence of /admin page suggests administrative functions.
+- id: model-2-department-head-or-dean
+  name: Department head or dean
+  role: Monitor departmental performance and identify trends.
+  goals:
+  - Monitor departmental performance and identify trends.
+  - Analytics dashboard implies comparative performance monitoring.
+journeys:
+- id: j-1-evalua-1
+  name: View Analytics
+  steps:
+  - action: navigate
+    url: /analytics
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - p1-evaluator
+- id: j-1-evalua-2
+  name: Search and Browse Profiles
+  steps:
+  - action: navigate
+    url: /database
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - p1-evaluator
+- id: j-1-evalua-3
+  name: Parse Resume
+  steps:
+  - action: navigate
+    url: /resume-parser-gemini
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - p1-evaluator
+- id: j-2-oerato-1
+  name: View Analytics
+  steps:
+  - action: navigate
+    url: /analytics
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - p2-operator
+- id: j-2-oerato-2
+  name: Search and Browse Profiles
+  steps:
+  - action: navigate
+    url: /database
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - p2-operator
+- id: j-2-oerato-3
+  name: Parse Resume
+  steps:
+  - action: navigate
+    url: /resume-parser-gemini
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - p2-operator
+- id: j-3-admin-1
+  name: View Analytics
+  steps:
+  - action: navigate
+    url: /analytics
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - p3-admin
+- id: j-3-admin-2
+  name: Search and Browse Profiles
+  steps:
+  - action: navigate
+    url: /database
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - p3-admin
+- id: j-3-admin-3
+  name: Parse Resume
+  steps:
+  - action: navigate
+    url: /resume-parser-gemini
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - p3-admin
+- id: j-model-1--1
+  name: View Analytics
+  steps:
+  - action: navigate
+    url: /analytics
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - model-1-adminstaff
+- id: j-model-1--2
+  name: Search and Browse Profiles
+  steps:
+  - action: navigate
+    url: /database
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - model-1-adminstaff
+- id: j-model-1--3
+  name: Parse Resume
+  steps:
+  - action: navigate
+    url: /resume-parser-gemini
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - model-1-adminstaff
+- id: j-model-0--1
+  name: View Analytics
+  steps:
+  - action: navigate
+    url: /analytics
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - model-0-faculty-member
+- id: j-model-0--2
+  name: Search and Browse Profiles
+  steps:
+  - action: navigate
+    url: /database
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - model-0-faculty-member
+- id: j-model-0--3
+  name: Parse Resume
+  steps:
+  - action: navigate
+    url: /resume-parser-gemini
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - model-0-faculty-member
+- id: j-model-1-4
+  name: Recover from Broken Link
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database/database
+  - action: assert_url_contains
+    value: database/database
+  - action: wait
+    value: '2000'
+  - action: explore
+    intent: '404'
+    selector: body
+  - action: click
+    intent: Database
+    selector: a[href='/database']
+  - action: assert_url_contains
+    value: /database
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - model-1-administrator
+- id: j-model-1-10
+  name: Export Database Report
+  steps:
+  - action: navigate
+    url: /database
+    intent: /database
+  - action: wait
+    intent: Database page
+    value: '5000'
+  - action: click
+    intent: Export
+  - action: click
+    intent: CSV
+  - action: click
+    intent: Download
+  - action: wait
+    value: '10000'
+  - action: assert_url_contains
+    value: /database
+  persona_ids:
+  - model-1-administrator
+- id: j-model-1-5
+  name: Parse Resume for New Faculty
+  steps:
+  - action: navigate
+    url: /resume-parser-gemini
+  - action: click
+    intent: Upload
+  - action: fill
+    selector: input[type='file']
+    value: /path/to/resume.pdf
+  - action: click
+    intent: Parse
+  - action: wait
+    value: '5000'
+  - action: assert_url_contains
+    value: resume-parser
+  - action: click
+    intent: Name
+  - action: fill
+    intent: Name
+    value: Dr. Jane Doe
+  persona_ids:
+  - model-1-administrator
+- id: j-model-1-6
+  name: Search for Specific Faculty
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+  - action: fill
+    intent: Search faculty by name, expertise, or affiliation
+    selector: input[placeholder*='Search']
+    value: machine learning
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: 'Autocomplete suggestion: machine learning researcher'
+  - action: wait
+    value: '3000'
+  - action: assert_url_contains
+    value: /database
+  - action: click
+    intent: 'Profile card: Dr. Jane Smith'
+  - action: wait
+    value: '3000'
+  - action: assert_url_contains
+    value: /profile/
+  persona_ids:
+  - model-1-administrator
+- id: j-model-1-2
+  name: Manage System Settings
+  steps:
+  - action: navigate
+    url: /admin
+  - action: fill
+    intent: Email
+    selector: input[type='email']
+    value: ${REHEARSE_EMAIL}
+  - action: fill
+    intent: Password
+    selector: input[type='password']
+    value: ${REHEARSE_PASSWORD}
+  - action: click
+    intent: Login
+    selector: button[type='submit']
+  - action: navigate
+    url: /admin
+  - action: click
+    intent: Enable Analytics
+    selector: label:has-text('Enable Analytics') input[type='checkbox']
+  - action: fill
+    intent: API Key
+    selector: input[placeholder='Enter API Key']
+    value: sk-test-12345
+  - action: click
+    intent: Save
+    selector: button:has-text('Save')
+  - action: assert_url_contains
+    value: /admin
+  - action: wait
+    selector: div[role='alert']
+    value: '3000'
+  persona_ids:
+  - model-1-administrator
+- id: j-model-1-3
+  name: Oversee Faculty Profiles
+  steps:
+  - action: navigate
+    url: /database
+  - action: wait
+    url: /database
+    value: '5000'
+  - action: click
+    intent: AI Search Input
+  - action: fill
+    intent: AI Search Input
+    value: machine learning
+  - action: press
+    value: Enter
+  - action: wait
+    value: '3000'
+  - action: click
+    intent: Profile Card
+  - action: click
+    intent: Edit
+  - action: fill
+    intent: Department
+    value: Computer Science
+  - action: click
+    intent: Save
+  - action: assert_url_contains
+    url: /database
+    value: database
+  persona_ids:
+  - model-1-administrator
+- id: j-model-1-7
+  name: Onboard New Admin Staff
+  steps:
+  - action: navigate
+    url: /admin
+  - action: wait
+    selector: form
+    value: '5000'
+  - action: fill
+    intent: Email
+    selector: input[type='email']
+    value: ${REHEARSE_EMAIL}
+  - action: fill
+    intent: Password
+    selector: input[type='password']
+    value: ${REHEARSE_PASSWORD}
+  - action: click
+    intent: Sign In
+    selector: button[type='submit']
+  - action: assert_url_contains
+    value: /admin
+  - action: click
+    intent: Database
+    selector: a[href='/database']
+  - action: navigate
+    url: /database
+  - action: assert_url_contains
+    value: /database
+  persona_ids:
+  - model-1-administrator
+- id: j-model-1-9
+  name: Fix Profile Data Issue
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+  - action: assert_url_contains
+    value: /database
+  - action: wait
+    value: '3000'
+  - action: fill
+    intent: Search faculty
+    value: John Doe
+  - action: press
+    value: Enter
+  - action: click
+    intent: Profile Card
+  - action: assert_url_contains
+    value: /database/
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: Edit
+  - action: fill
+    intent: Full Name
+    value: John A. Doe
+  - action: fill
+    intent: Department
+    value: Computer Science
+  - action: click
+    intent: Save
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    value: /database/
+  persona_ids:
+  - model-1-administrator
+- id: j-model-1-1
+  name: View Analytics Dashboard
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/
+  - action: assert_url_contains
+    value: /
+  - action: wait
+    value: '3000'
+  - action: scroll
+    value: 0, 500
+  - action: click
+    intent: Date Range
+  - action: click
+    intent: Last 30 days
+  - action: click
+    intent: Export Data
+  - action: assert_url_contains
+    value: /
+  persona_ids:
+  - model-1-administrator
+- id: j-model-1-8
+  name: Monitor AI Search Accuracy
+  steps:
+  - action: navigate
+    url: /database
+    intent: Database
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: AI Search
+  - action: fill
+    intent: AI Search
+    value: Prof. from unknown university
+  - action: press
+    value: Enter
+  - action: wait
+    value: '3000'
+  - action: click
+    intent: Profile
+  - action: wait
+    value: '2000'
+  - action: navigate
+    url: /database
+  - action: click
+    intent: Advanced Filters
+  - action: fill
+    intent: Department
+    value: Computer Science
+  - action: fill
+    intent: Research Area
+    value: NLP
+  - action: click
+    intent: Apply
+  - action: wait
+    value: '3000'
+  - action: assert_url_contains
+    value: search
+  persona_ids:
+  - model-1-administrator
+- id: j-1-evalua-10
+  name: Navigate from root to database
+  steps:
+  - action: navigate
+    url: /
+  - action: wait
+    value: '3000'
+  - action: click
+    intent: Database
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    value: /database
+  - action: wait
+    value: '1000'
+  persona_ids:
+  - p1-evaluator
+- id: j-1-evalua-4
+  name: Use AI-powered search
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+  - action: wait
+    value: '3000'
+  - action: click
+    intent: AI Search
+  - action: fill
+    intent: AI Search
+    value: Artificial Intelligence
+  - action: press
+    value: Enter
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    value: /ai-search
+  - action: click
+    intent: Result Card
+  persona_ids:
+  - p1-evaluator
+- id: j-1-evalua-9
+  name: Deal with empty content states
+  steps:
+  - action: navigate
+    url: /database
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    value: /database
+  - action: wait
+    value: '5000'
+  - action: wait
+    value: '3000'
+  - action: click
+    intent: Retry
+  - action: wait
+    value: '3000'
+  persona_ids:
+  - p1-evaluator
+- id: j-1-evalua-5
+  name: Parse a resume using Gemini AI
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+  - action: click
+    intent: Login
+  - action: fill
+    intent: Email
+    value: ${REHEARSE_EMAIL}
+  - action: fill
+    intent: Password
+    value: ${REHEARSE_PASSWORD}
+  - action: click
+    intent: Sign In
+  - action: assert_url_contains
+    value: /database
+  - action: click
+    intent: Parse Resume
+  - action: wait
+    value: '3000'
+  - action: click
+    intent: Upload Resume
+  - action: fill
+    selector: input[type='file']
+    value: /path/to/resume.pdf
+  - action: wait
+    value: '2000'
+  - action: wait
+    value: '5000'
+  - action: assert_url_contains
+    value: /resume-parser-gemini
+  - action: click
+    intent: Name
+  persona_ids:
+  - p1-evaluator
+- id: j-1-evalua-11
+  name: Search with no results
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+  - action: wait
+    value: '3000'
+  - action: click
+    intent: Search faculty
+  - action: fill
+    intent: Search faculty
+    value: zzz
+  - action: press
+    intent: Search
+    value: Enter
+  - action: wait
+    value: '3000'
+  - action: assert_url_contains
+    value: /database
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: Search Tips
+  - action: dismiss
+    intent: Close
+  - action: click
+    intent: Reset filters
+  persona_ids:
+  - p1-evaluator
+- id: j-1-evalua-7
+  name: Explore admin panel
+  steps:
+  - action: navigate
+    url: /database
+  - action: click
+    intent: Admin
+    selector: a:has-text('Admin')
+  - action: assert_url_contains
+    value: /admin
+  - action: click
+    intent: Users
+    selector: a:has-text('Users')
+  - action: assert_url_contains
+    value: /users
+  - action: click
+    intent: Roles
+    selector: a:has-text('Roles')
+  - action: assert_url_contains
+    value: /roles
+  - action: click
+    intent: Import Data
+    selector: a:has-text('Import Data')
+  - action: assert_url_contains
+    value: /import
+  - action: click
+    intent: Add User
+    selector: button:has-text('Add User')
+  - action: fill
+    intent: Email
+    selector: input[type='email']
+    value: ${REHEARSE_EMAIL}
+  - action: fill
+    intent: Password
+    selector: input[type='password']
+    value: ${REHEARSE_PASSWORD}
+  - action: click
+    intent: Save
+    selector: button:has-text('Save')
+  - action: assert_url_contains
+    value: /users
+  persona_ids:
+  - p1-evaluator
+- id: j-1-evalua-8
+  name: Encounter broken page links
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Database
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: Database
+    selector: a[href='/database/database']
+  - action: assert_url_contains
+    value: /database/database
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    value: '404'
+  - action: click
+    intent: Database
+    selector: nav a[href='/database']
+  - action: assert_url_contains
+    value: /database
+  persona_ids:
+  - p1-evaluator
+- id: j-1-evalua-6
+  name: View analytics dashboard
+  steps:
+  - action: navigate
+    url: /database
+  - action: click
+    intent: Analytics
+  - action: wait
+    value: '5000'
+  - action: assert_url_contains
+    value: /analytics
+  - action: click
+    intent: Date Range
+  - action: click
+    intent: Last 30 Days
+  - action: click
+    intent: Export
+  - action: assert_url_contains
+    value: /analytics
+  persona_ids:
+  - p1-evaluator
+- id: j-2-oerato-4
+  name: View Analytics
+  steps:
+  - action: navigate
+    url: /analytics
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - p2-operator
+- id: j-2-oerato-5
+  name: Admin Management
+  steps:
+  - action: navigate
+    url: /admin
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - p2-operator
+- id: j-3-admin-4
+  name: View Analytics
+  steps:
+  - action: navigate
+    url: /analytics
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - p3-admin
+- id: j-3-admin-5
+  name: Admin Management
+  steps:
+  - action: navigate
+    url: /admin
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - p3-admin
+- id: j-model-1--4
+  name: View Analytics
+  steps:
+  - action: navigate
+    url: /analytics
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - model-1-adminstaff
+- id: j-model-1--5
+  name: Admin Management
+  steps:
+  - action: navigate
+    url: /admin
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - model-1-adminstaff
+- id: j-model-0--8
+  name: View analytics dashboard
+  steps:
+  - action: navigate
+    url: /analytics
+  - action: wait
+    value: '5000'
+  - action: assert_url_contains
+    value: /analytics
+  - action: click
+    intent: Department
+  - action: click
+    intent: Computer Science
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: Export as PDF
+  - action: assert_url_contains
+    value: /analytics
+  persona_ids:
+  - model-0-faculty-member
+- id: j-model-0--9
+  name: Recover from a broken link
+  steps:
+  - action: navigate
+    url: /database
+    intent: Database
+  - action: click
+    intent: Database
+  - action: assert_url_contains
+    intent: Error page content
+    value: /database/database
+  - action: click
+    intent: Home
+  - action: assert_url_contains
+    intent: Home
+    value: /
+  persona_ids:
+  - model-0-faculty-member
+- id: j-model-0--10
+  name: Access help or support
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/
+  - action: wait
+    value: '5000'
+  - action: click
+    intent: '?'
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: Chat
+  - action: wait
+    value: '3000'
+  - action: fill
+    intent: chat input
+    value: How do I edit my profile?
+  - action: press
+    value: Enter
+  - action: wait
+    value: '5000'
+  - action: assert_url_contains
+    value: faculty-dashboard-eight.vercel.app
+  persona_ids:
+  - model-0-faculty-member
+- id: j-model-0--5
+  name: Browse the faculty database
+  steps:
+  - action: navigate
+    url: /database
+  - action: assert_url_contains
+    value: /database
+  - action: wait
+    value: '2000'
+  - action: scroll
+    intent: Faculty profiles list
+    value: '500'
+  - action: click
+    intent: Sort by
+  - action: click
+    intent: Name
+  - action: click
+    intent: Grid view
+  - action: scroll
+    intent: Faculty grid
+    value: '1000'
+  persona_ids:
+  - model-0-faculty-member
+- id: j-model-0--7
+  name: Upload and parse a resume
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/resume-parser-gemini
+  - action: click
+    intent: Upload Resume
+  - action: fill
+    intent: Choose File
+    selector: input[type=file]
+    value: /path/to/resume.pdf
+  - action: click
+    intent: Parse Resume
+  - action: wait
+    value: '5000'
+  - action: assert_url_contains
+    value: /resume-parser-gemini
+  - action: click
+    intent: Confirm Update
+  persona_ids:
+  - model-0-faculty-member
+- id: j-model-0--6
+  name: View a colleague's detailed profile
+  steps:
+  - action: navigate
+    url: /database
+  - action: wait
+    value: '3000'
+  - action: click
+    intent: Faculty Profile Card
+  - action: assert_url_contains
+    value: /database
+  - action: click
+    intent: Download Resume
+  - action: assert_url_contains
+    value: publications
+  persona_ids:
+  - model-0-faculty-member
+- id: j-model-0--4
+  name: Search for faculty by research area
+  steps:
+  - action: navigate
+    url: /ai-search
+    intent: /ai-search
+  - action: click
+    intent: Search input
+    selector: input[placeholder*='Search']
+  - action: fill
+    intent: Search input
+    selector: input[placeholder*='Search']
+    value: machine learning
+  - action: click
+    intent: Search
+    selector: button:has-text('Search')
+  - action: wait
+    intent: Search results
+    value: '2000'
+  - action: assert_url_contains
+    value: /ai-search
+  - action: click
+    intent: Department filter
+    selector: select#department-filter
+  - action: select
+    intent: Computer Science
+    selector: select#department-filter
+    value: Computer Science
+  - action: click
+    intent: Search
+    selector: button:has-text('Search')
+  - action: wait
+    intent: Filtered results
+    value: '2000'
+  - action: fill
+    intent: Search input
+    selector: input[placeholder*='Search']
+    value: machine learning AND NLP
+  - action: click
+    intent: Search
+    selector: button:has-text('Search')
+  - action: assert_url_contains
+    value: /ai-search
+  - action: click
+    intent: First faculty result
+    selector: .result-item:first-of-type a
+  persona_ids:
+  - model-0-faculty-member
+- id: j-1-evalua-12
+  name: Evaluate overall value
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/
+    intent: landing page
+  - action: click
+    intent: Candidate Database
+  - action: assert_url_contains
+    value: /database
+  - action: click
+    intent: AI Search
+  - action: assert_url_contains
+    value: /ai-search
+  - action: click
+    intent: Resume Parser
+  - action: assert_url_contains
+    value: /resume-parser-gemini
+  - action: click
+    intent: Candidate Database
+  persona_ids:
+  - p1-evaluator
+- id: j-2-oerato-13
+  name: Review Profile Skills Tab
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database/profile/b56f24d9-8eae-4093-8d41-c31ad5c3edff
+    intent: Profile page
+  - action: click
+    url: https://faculty-dashboard-eight.vercel.app/database/profile/b56f24d9-8eae-4093-8d41-c31ad5c3edff
+    intent: Skills19
+  - action: assert_url_contains
+    value: b56f24d9-8eae-4093-8d41-c31ad5c3edff
+  - action: click
+    url: https://faculty-dashboard-eight.vercel.app/database/profile/b56f24d9-8eae-4093-8d41-c31ad5c3edff
+    intent: + Add Faculty
+  - action: fill
+    url: https://faculty-dashboard-eight.vercel.app/database/profile/b56f24d9-8eae-4093-8d41-c31ad5c3edff
+    intent: Add skill input
+    selector: input[placeholder='Add skill']
+    value: Python
+  - action: press
+    url: https://faculty-dashboard-eight.vercel.app/database/profile/b56f24d9-8eae-4093-8d41-c31ad5c3edff
+    value: Enter
+  - action: click
+    url: https://faculty-dashboard-eight.vercel.app/database/profile/b56f24d9-8eae-4093-8d41-c31ad5c3edff
+    intent: Remove skill button
+    selector: button.remove-skill
+  persona_ids:
+  - p2-operator
+- id: j-2-oerato-9
+  name: Refresh Data
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+  - action: wait
+    value: '3000'
+  - action: assert_url_contains
+    value: /database
+  - action: click
+    intent: Refresh
+  - action: wait
+    value: '5000'
+  - action: hover
+    intent: Last updated
+  - action: assert_url_contains
+    value: /database
+  persona_ids:
+  - p2-operator
+- id: j-2-oerato-6
+  name: View Candidate Profile
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database/profile/b56f24d9-8eae-4093-8d41-c31ad5c3edff
+  - action: click
+    intent: Overview
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: Experience2
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: Education & Certs6
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: Skills19
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    value: /profile/b56f24d9-8eae-4093-8d41-c31ad5c3edff
+  persona_ids:
+  - p2-operator
+- id: j-2-oerato-12
+  name: Review Profile Education & Certs Tab
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/profile/b56f24d9-8eae-4093-8d41-c31ad5c3edff
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: Education & Certs6
+  - action: wait
+    value: '1500'
+  - action: assert_url_contains
+    value: /profile/
+  - action: scroll
+    intent: Education & Certs6
+    value: '500'
+  - action: wait
+    value: '1000'
+  persona_ids:
+  - p2-operator
+- id: j-2-oerato-7
+  name: Add Faculty Member
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Database
+  - action: click
+    intent: + Add Faculty
+  - action: fill
+    intent: First Name
+    value: John
+  - action: fill
+    intent: Last Name
+    value: Doe
+  - action: fill
+    intent: Email
+    value: john.doe@example.com
+  - action: fill
+    intent: Department
+    value: Computer Science
+  - action: click
+    intent: Submit
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    value: /database
+  persona_ids:
+  - p2-operator
+- id: j-2-oerato-10
+  name: Review Profile Overview Tab
+  steps:
+  - action: navigate
+    url: /database/profile/{id}
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - p2-operator
+- id: j-2-oerato-8
+  name: Process Updates
+  steps:
+  - action: navigate
+    url: /database
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - p2-operator
+- id: j-2-oerato-11
+  name: Review Profile Experience Tab
+  steps:
+  - action: navigate
+    url: /database/profile/{id}
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - p2-operator
+- id: j-model-1--11
+  name: Handle Empty Data State
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    intent: login
+  - action: fill
+    intent: email
+    value: ${REHEARSE_EMAIL}
+  - action: fill
+    intent: password
+    value: ${REHEARSE_PASSWORD}
+  - action: click
+    intent: Log In
+  - action: wait
+    value: '3000'
+  - action: assert_url_contains
+    intent: database
+  - action: wait
+    value: '3000'
+  - action: click
+    intent: Refresh
+  - action: assert_url_contains
+    intent: database
+  persona_ids:
+  - model-1-adminstaff
+- id: j-model-1--10
+  name: Switch Between Tabs on Profile
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/profile/9ae8a5ad-6371-46c8-a89c-fedc5906b3a0
+  - action: click
+    intent: Overview
+  - action: wait
+    value: '500'
+  - action: click
+    intent: Experience2
+  - action: wait
+    value: '500'
+  - action: assert_url_contains
+    value: /profile/9ae8a5ad-6371-46c8-a89c-fedc5906b3a0
+  - action: click
+    intent: Education & Certs6
+  - action: wait
+    value: '500'
+  - action: assert_url_contains
+    value: /profile/9ae8a5ad-6371-46c8-a89c-fedc5906b3a0
+  - action: click
+    intent: Skills19
+  - action: wait
+    value: '500'
+  - action: assert_url_contains
+    value: /profile/9ae8a5ad-6371-46c8-a89c-fedc5906b3a0
+  - action: click
+    intent: Overview
+  - action: wait
+    value: '500'
+  persona_ids:
+  - model-1-adminstaff
+- id: j-model-1--9
+  name: Refresh Dashboard Data
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+  - action: wait
+    selector: button:has-text('Refresh')
+    value: '5000'
+  - action: click
+    intent: Refresh
+  - action: wait
+    selector: .spinner, .loading-indicator
+    value: '3000'
+  - action: wait
+    selector: .spinner, .loading-indicator
+    value: '10000'
+  - action: assert_url_contains
+    value: /database
+  - action: click
+    intent: Refresh
+  persona_ids:
+  - model-1-adminstaff
+- id: j-model-1--6
+  name: Use AI Search
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/ai-search
+    intent: AI Search
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: search input
+  - action: fill
+    intent: search input
+    value: computer science professor with AI research
+  - action: press
+    value: Enter
+  - action: wait
+    value: '3000'
+  - action: click
+    intent: Experience2
+  - action: assert_url_contains
+    url: /profile/
+  persona_ids:
+  - model-1-adminstaff
+- id: j-model-1--8
+  name: Access Admin Settings
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/
+  - action: click
+    intent: Admin
+  - action: assert_url_contains
+    value: /admin
+  - action: wait
+    value: '2000'
+  - action: explore
+    url: https://faculty-dashboard-eight.vercel.app/admin
+  - action: click
+    intent: User Roles
+  - action: click
+    intent: System Config
+  - action: assert_url_contains
+    value: /admin
+  - action: explore
+  - action: dismiss
+  persona_ids:
+  - model-1-adminstaff
+- id: j-model-1--7
+  name: Use Resume Parser
+  steps:
+  - action: navigate
+    url: /resume-parser-gemini
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - model-1-adminstaff
+- id: j-model-2--14
+  name: Review Admin Activity Logs
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/admin
+    intent: Admin
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    value: /admin
+  - action: click
+    intent: Refresh
+  - action: wait
+    value: '1500'
+  - action: click
+    intent: Overview
+  - action: scroll
+    intent: Activity log
+  - action: assert_url_contains
+    value: /admin
+  persona_ids:
+  - model-2-department-head-or-dean
+- id: j-model-2--12
+  name: Process Updates for Faculty Records
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Candidate Database
+  - action: wait
+    value: '3000'
+  - action: click
+    intent: Process Updates
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: Experience2
+  - action: fill
+    intent: Process Updates
+    value: 3 years
+  - action: click
+    intent: Process Updates
+  - action: assert_url_contains
+    value: /database
+  persona_ids:
+  - model-2-department-head-or-dean
+- id: j-model-2--8
+  name: Profile Deep Dive
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database/profile/9ae8a5ad-6371-46c8-a89c-fedc5906b3a0
+  - action: assert_url_contains
+    value: profile/9ae8a5ad-6371-46c8-a89c-fedc5906b3a0
+  - action: click
+    intent: Overview
+  - action: click
+    intent: Experience2
+  - action: assert_url_contains
+    value: profile/9ae8a5ad-6371-46c8-a89c-fedc5906b3a0
+  - action: click
+    intent: Education & Certs6
+  - action: assert_url_contains
+    value: profile/9ae8a5ad-6371-46c8-a89c-fedc5906b3a0
+  - action: click
+    intent: Skills19
+  - action: assert_url_contains
+    value: profile/9ae8a5ad-6371-46c8-a89c-fedc5906b3a0
+  persona_ids:
+  - model-2-department-head-or-dean
+- id: j-model-2--11
+  name: Troubleshooting No-Data Display
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Candidate Database
+  - action: assert_url_contains
+    url: /database
+  - action: wait
+    value: '5000'
+  - action: click
+    intent: Refresh
+  - action: wait
+    value: '3000'
+  - action: click
+    intent: Admin
+  - action: assert_url_contains
+    url: /admin
+  - action: wait
+    value: '3000'
+  - action: fill
+    selector: input[type='email']
+    value: ${REHEARSE_EMAIL}
+  - action: fill
+    selector: input[type='password']
+    value: ${REHEARSE_PASSWORD}
+  - action: click
+    intent: Login
+    selector: button[type='submit']
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Candidate Database
+  - action: wait
+    value: '5000'
+  - action: assert_url_contains
+    url: /database
+  persona_ids:
+  - model-2-department-head-or-dean
+- id: j-model-2--5
+  name: AI Search for Candidate Discovery
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/ai-search
+    intent: AI Search
+  - action: assert_url_contains
+    value: /ai-search
+  - action: fill
+    intent: Search input field
+    selector: input[type='search'], input[placeholder*='Search']
+    value: data science
+  - action: press
+    intent: Search input field
+    value: Enter
+  - action: wait
+    value: '3000'
+  - action: click
+    intent: Candidate name link or profile card
+    selector: a[href^='/profile/']
+  - action: assert_url_contains
+    value: /profile/
+  - action: click
+    intent: Overview
+  - action: scroll
+    intent: Experience2
+  - action: click
+    intent: Experience2
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    value: /profile/
+  persona_ids:
+  - model-2-department-head-or-dean
+- id: j-model-2--6
+  name: Resume Parsing and Import
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/resume-parser-gemini
+  - action: assert_url_contains
+    value: /resume-parser-gemini
+  - action: fill
+    selector: input[type=file]
+    value: /path/to/resume.pdf
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: Process Updates
+  - action: wait
+    value: '3000'
+  - action: click
+    intent: Refresh
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - model-2-department-head-or-dean
+- id: j-model-2--13
+  name: Refresh Data for Latest Metrics
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Argyle Candidate Database
+  - action: wait
+    intent: Refresh
+    value: '3000'
+  - action: click
+    intent: Refresh
+  - action: wait
+    intent: Overview
+    value: '2000'
+  - action: assert_url_contains
+    value: /database
+  persona_ids:
+  - model-2-department-head-or-dean
+- id: j-model-2--2
+  name: Candidate Database Review
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+  - action: assert_url_contains
+    value: /database
+  - action: click
+    intent: Refresh
+  - action: wait
+    value: '2000'
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database/profile/b56f24d9-8eae-4093-8d41-c31ad5c3edff
+  - action: click
+    intent: Experience2
+  - action: click
+    intent: Education & Certs6
+  - action: click
+    intent: Skills19
+  - action: click
+    intent: Candidate Database
+  - action: assert_url_contains
+    value: /database
+  persona_ids:
+  - model-2-department-head-or-dean
+- id: j-model-2--1
+  name: Daily Analytics Overview
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+  - action: wait
+    value: '5000'
+  - action: click
+    intent: Overview
+  - action: wait
+    value: '3000'
+  - action: scroll
+    intent: Overview
+    value: '0'
+  - action: click
+    intent: Refresh
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    value: /database
+  persona_ids:
+  - model-2-department-head-or-dean
+- id: j-model-2--7
+  name: 'Admin: User and Access Management'
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/admin
+  - action: assert_url_contains
+    value: /admin
+  - action: click
+    intent: + Add Faculty
+  - action: fill
+    intent: Email input (assumed field in modal)
+    value: ${REHEARSE_EMAIL}
+  - action: fill
+    intent: Password input
+    value: ${REHEARSE_PASSWORD}
+  - action: click
+    intent: Submit button (assumed)
+  - action: click
+    intent: Refresh
+  - action: assert_url_contains
+    value: /admin
+  persona_ids:
+  - model-2-department-head-or-dean
+- id: j-model-2--4
+  name: Trend Analysis on Key Metrics
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: database
+  - action: click
+    intent: Overview
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: Refresh
+  - action: wait
+    value: '1500'
+  - action: click
+    intent: Process Updates
+  - action: click
+    intent: Experience2
+  - action: assert_url_contains
+    value: /database
+  persona_ids:
+  - model-2-department-head-or-dean
+- id: j-model-2--10
+  name: 'Onboarding: Initial Dashboard Setup'
+  steps:
+  - action: navigate
+    url: /database
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - model-2-department-head-or-dean
+- id: j-model-2--3
+  name: Faculty Performance Comparison
+  steps:
+  - action: navigate
+    url: /database
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - model-2-department-head-or-dean
+- id: j-model-2--9
+  name: Data Export for Reporting
+  steps:
+  - action: navigate
+    url: /database
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - model-2-department-head-or-dean
+budgets:
+  max_steps_per_journey: 20
+  max_run_seconds: 28800
+  step_timeout_ms: 45000
+  parallel_journeys: 2
+auth:
+  login_path: /login
+  email_env: REHEARSE_EMAIL
+  password_env: REHEARSE_PASSWORD

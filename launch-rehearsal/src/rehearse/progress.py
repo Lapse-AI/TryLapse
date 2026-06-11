@@ -181,6 +181,77 @@ class ProgressTracker:
             pass
 
 
+# ── Run control signals ───────────────────────────────────────────────────────
+
+def _control_path(artifacts_root: Path, run_id: str) -> Path:
+    return artifacts_root / "runs" / f"{run_id}-control"
+
+
+def send_signal(artifacts_root: Path, run_id: str, signal: str) -> None:
+    """Write a control signal: 'pause', 'resume', or 'stop'."""
+    _control_path(artifacts_root, run_id).write_text(signal)
+
+
+def read_signal(artifacts_root: Path, run_id: str) -> str | None:
+    """Read and clear the current control signal."""
+    p = _control_path(artifacts_root, run_id)
+    if not p.is_file():
+        return None
+    try:
+        sig = p.read_text().strip()
+        return sig or None
+    except Exception:
+        return None
+
+
+def clear_signal(artifacts_root: Path, run_id: str) -> None:
+    p = _control_path(artifacts_root, run_id)
+    try:
+        p.unlink(missing_ok=True)
+    except Exception:
+        pass
+
+
+def check_and_handle_signals(
+    artifacts_root: Path,
+    run_id: str,
+    tracker: "ProgressTracker | None" = None,
+) -> str:
+    """
+    Called between journeys. Returns:
+      'stop'  — caller should break journey loop and proceed to analysis
+      'pause' — caller should wait until resumed
+      'ok'    — continue normally
+    """
+    sig = read_signal(artifacts_root, run_id)
+    if sig == "stop":
+        if tracker:
+            tracker.set_phase("stopping")
+        return "stop"
+    if sig == "pause":
+        if tracker:
+            tracker.set_phase("paused")
+        # Block until resume or stop
+        while True:
+            time.sleep(1)
+            sig2 = read_signal(artifacts_root, run_id)
+            if sig2 == "stop":
+                if tracker:
+                    tracker.set_phase("stopping")
+                return "stop"
+            if sig2 == "resume":
+                clear_signal(artifacts_root, run_id)
+                if tracker:
+                    tracker.set_phase("executing")
+                return "ok"
+            if sig2 is None:
+                # Signal was cleared externally (resume)
+                if tracker:
+                    tracker.set_phase("executing")
+                return "ok"
+    return "ok"
+
+
 def load_progress(artifacts_root: Path, run_id: str) -> dict[str, Any] | None:
     path = artifacts_root / "runs" / f"{run_id}-progress.json"
     if not path.is_file():

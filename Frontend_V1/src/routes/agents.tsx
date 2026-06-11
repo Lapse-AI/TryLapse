@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PageHeader, Panel, Chip } from "@/components/ui-bits";
+import { PageHeader, Panel, Chip, UnderConstruction } from "@/components/ui-bits";
 import { agentConfigDefaults, formatDuration } from "@/lib/mock-data";
 import { useLatestRun, useRunBundle } from "@/lib/api/hooks";
 import { VisionOnly } from "@/components/vision-only";
@@ -24,6 +24,7 @@ function Agents() {
   if (!latest || !bundle) return null;
 
   return (
+    <UnderConstruction>
     <div>
       <PageHeader
         eyebrow="multi-agent"
@@ -205,5 +206,6 @@ function Agents() {
         </Panel>
       </div>
     </div>
+    </UnderConstruction>
   );
 }

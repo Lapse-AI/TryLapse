@@ -40,7 +40,7 @@ export const queryKeys = {
   summaries: ["rehearse", "summaries"] as const,
   bundle: (id: string) => ["rehearse", "bundle", id] as const,
   diff: (a: string, b: string) => ["rehearse", "diff", a, b] as const,
-  trends: ["rehearse", "trends"] as const,
+  trends: (prefix?: string) => ["rehearse", "trends", prefix ?? ""] as const,
   digest: (n: number) => ["rehearse", "digest", n] as const,
   search: (q: string) => ["rehearse", "search", q] as const,
   workspace: ["rehearse", "workspace"] as const,
@@ -211,10 +211,14 @@ export function useCommandDigest(n = 7) {
 export function useTrends() {
   const health = useApiHealth();
   const live = health.data === true;
+  const ws = getWorkspace();
+  const configPrefix = ws?.configPath
+    ? (ws.configPath.split("/").pop() ?? "").replace(/\.ya?ml$/i, "").split("-")[0] || undefined
+    : undefined;
   return useQuery({
-    queryKey: queryKeys.trends,
+    queryKey: queryKeys.trends(configPrefix),
     queryFn: async () => {
-      if (live) return api.trends();
+      if (live) return api.trends(configPrefix);
       if (mockAllowed(live)) {
         return {
           readiness: mockReadinessTrend,
@@ -232,8 +236,9 @@ export function useTrends() {
       return { readiness: [], pages: [], flakeRate: [], runIds: [], labels: [] };
     },
     enabled: health.isSuccess && (live || allowsMockFallback()),
-    staleTime: NARRATIVE_STALE_MS,
-    refetchOnWindowFocus: false,
+    staleTime: 2 * 60 * 1000,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 }
 
@@ -372,7 +377,7 @@ export function useJobs() {
 
     if (refreshedRuns) {
       void qc.invalidateQueries({ queryKey: queryKeys.summaries });
-      void qc.invalidateQueries({ queryKey: queryKeys.trends });
+      void qc.invalidateQueries({ queryKey: ["rehearse", "trends"] });
       void qc.invalidateQueries({ queryKey: ["rehearse", "digest"] });
     }
   }, [query.data, qc]);

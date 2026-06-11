@@ -76,38 +76,36 @@ Return a JSON object with this exact structure:
 }}"""
 
 
-def _api_key() -> str | None:
-    return os.environ.get("DEEPSEEK_API_KEY") or os.environ.get("REHEARSE_LLM_API_KEY")
-
-
 def _call_llm(prompt: str, system: str = _ANALYSIS_SYSTEM) -> dict[str, Any] | None:
-    key = _api_key()
-    if not key:
-        return None
-    try:
-        import httpx
-        base = os.environ.get("REHEARSE_LLM_BASE_URL", "https://api.deepseek.com/v1")
-        model = os.environ.get("REHEARSE_LLM_MODEL", "deepseek-chat")
-        resp = httpx.post(
-            f"{base}/chat/completions",
-            headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
-            json={
-                "model": model,
-                "messages": [
-                    {"role": "system", "content": system},
-                    {"role": "user", "content": prompt},
-                ],
-                "temperature": 0.3,
-                "max_tokens": 3000,
-                "response_format": {"type": "json_object"},
-            },
-            timeout=60.0,
-        )
-        resp.raise_for_status()
-        raw = resp.json()["choices"][0]["message"]["content"]
-        return json.loads(raw)
-    except Exception:
-        return None
+    from rehearse.persona_journey_discovery import _llm_endpoints, _repair_json
+    import httpx
+    for (base, model, key) in _llm_endpoints():
+        try:
+            resp = httpx.post(
+                f"{base}/chat/completions",
+                headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+                json={
+                    "model": model,
+                    "messages": [
+                        {"role": "system", "content": system},
+                        {"role": "user", "content": prompt},
+                    ],
+                    "temperature": 0.3,
+                    "max_tokens": 3000,
+                    "response_format": {"type": "json_object"},
+                },
+                timeout=60.0,
+            )
+            if resp.status_code in (429, 500, 502, 503):
+                continue
+            resp.raise_for_status()
+            raw = resp.json()["choices"][0]["message"]["content"]
+            result = _repair_json(raw)
+            if result:
+                return result
+        except Exception:
+            continue
+    return None
 
 
 def _pages_summary(sitemap_pages: list[dict[str, Any]], max_pages: int = 40) -> str:
@@ -275,6 +273,34 @@ def _model_path(artifacts_root: Path, config_id: str | None = None) -> Path:
     if config_id:
         return artifacts_root / "product_models" / f"{config_id}.json"
     return artifacts_root / "product_model.json"
+
+
+def save_interaction_map(
+    artifacts_root: Path, imap: dict[str, Any], config_id: str | None = None
+) -> None:
+    path = (
+        artifacts_root / "interaction_maps" / f"{config_id}_imap.json"
+        if config_id
+        else artifacts_root / "interaction_maps" / "default_imap.json"
+    )
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(imap, indent=2))
+
+
+def load_interaction_map(
+    artifacts_root: Path, config_id: str | None = None
+) -> dict[str, Any] | None:
+    candidates = []
+    if config_id:
+        candidates.append(artifacts_root / "interaction_maps" / f"{config_id}_imap.json")
+    candidates.append(artifacts_root / "interaction_maps" / "default_imap.json")
+    for p in candidates:
+        if p.is_file():
+            try:
+                return json.loads(p.read_text())
+            except json.JSONDecodeError:
+                pass
+    return None
 
 
 def save_product_model(

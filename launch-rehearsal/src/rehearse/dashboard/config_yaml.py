@@ -21,6 +21,13 @@ def _resolve_config_path(artifacts_root: Path, config_id: str) -> Path | None:
     candidate = cfg_dir / f"{config_id}.yaml"
     if candidate.is_file():
         return candidate
+    # also check one level of subdirectories (e.g. local/, user-scoped dirs)
+    if cfg_dir.is_dir():
+        for subdir in cfg_dir.iterdir():
+            if subdir.is_dir():
+                sub = subdir / f"{config_id}.yaml"
+                if sub.is_file():
+                    return sub
     for item in list_configs(artifacts_root):
         if item["id"] == config_id:
             p = Path(item["path"])

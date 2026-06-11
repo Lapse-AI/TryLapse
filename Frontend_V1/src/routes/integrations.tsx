@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PageHeader, Panel, Chip } from "@/components/ui-bits";
+import { PageHeader, Panel, Chip, UnderConstruction } from "@/components/ui-bits";
 import { useIntegrations } from "@/lib/api/hooks";
 import { VisionOnly } from "@/components/vision-only";
 import { Github, Slack, MessageSquare, Activity, Lock, Users, Webhook } from "lucide-react";
@@ -23,6 +23,7 @@ const icons: Record<string, typeof Github> = {
 function IntegrationsPage() {
   const { data: integrations = [] } = useIntegrations();
   return (
+    <UnderConstruction>
     <div>
       <PageHeader
         eyebrow="configure"
@@ -65,5 +66,6 @@ function IntegrationsPage() {
         })}
       </div>
     </div>
+    </UnderConstruction>
   );
 }

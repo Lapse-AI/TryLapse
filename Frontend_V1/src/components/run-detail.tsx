@@ -1,6 +1,6 @@
 import { Fragment, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Panel, Chip, SeverityChip } from "@/components/ui-bits";
+import { Panel, Chip, SeverityChip, SEVERITY_LABEL } from "@/components/ui-bits";
 import type { Annotation, Issue, RunBundle, StepSnapshot } from "@/lib/mock-data";
 import { formatDurationMs } from "@/lib/mock-data";
 import { artifactUrl } from "@/lib/api/client";
@@ -9,6 +9,8 @@ import {
   copyReproToClipboard,
   downloadArtifact,
   downloadRunBundleArtifacts,
+  downloadReportMarkdown,
+  printReportAsPdf,
   EXPORT_ITEMS,
   runArtifactRelPath,
 } from "@/lib/run-export";
@@ -379,11 +381,171 @@ export function StepsTable({
 
 export { RunNarrativePanel } from "./run-detail/RunNarrativePanel";
 
-export function ScorecardPanel({ markdown }: { markdown: string }) {
+export function ScorecardPanel({ markdown, bundle }: { markdown: string; bundle?: RunBundle }) {
+  const run = bundle?.summary;
+  const sevs = ["P0", "P1", "P2", "P3"] as const;
+  const sevColors: Record<string, string> = {
+    P0: "danger", P1: "warn", P2: "info", P3: "neutral",
+  };
+
   return (
-    <pre className="p-5 text-[12.5px] font-mono leading-relaxed overflow-x-auto bg-surface-2/30 text-foreground/95 whitespace-pre-wrap">
-      {markdown}
-    </pre>
+    <div className="divide-y divide-border">
+      {/* Stats bar */}
+      {run && bundle && (
+        <div className="p-5 grid grid-cols-2 md:grid-cols-5 gap-4">
+          <div>
+            <div className="text-[11px] text-muted-foreground">Readiness</div>
+            <div className="text-2xl font-bold font-mono tabular-nums mt-0.5">{run.readiness}</div>
+            <div className="text-[11px] text-muted-foreground mt-0.5">{run.readinessBand}</div>
+          </div>
+          {sevs.map((s) => {
+            const count = bundle.issues.filter((i) => i.severity === s).length;
+            return (
+              <div key={s}>
+                <div className="text-[11px] text-muted-foreground">{SEVERITY_LABEL[s]}</div>
+                <div
+                  className="text-2xl font-bold font-mono tabular-nums mt-0.5"
+                  style={{ color: count > 0 && (s === "P0" || s === "P1") ? `var(--${sevColors[s]})` : undefined }}
+                >
+                  {count}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Executive summary */}
+      {bundle?.narrative && (
+        <div className="p-5 bg-primary/3 border-l-4 border-primary/30">
+          <div className="text-[11px] text-muted-foreground mb-2 font-medium uppercase tracking-wide">Executive summary</div>
+          <p className="text-sm font-medium leading-relaxed mb-4">{bundle.narrative.executiveSummary}</p>
+          <div className="grid md:grid-cols-2 gap-4 text-sm">
+            <div>
+              <div className="text-[11px] text-muted-foreground mb-1">For founders</div>
+              <p className="text-foreground/85 leading-relaxed">{bundle.narrative.forFounders}</p>
+            </div>
+            <div>
+              <div className="text-[11px] text-muted-foreground mb-1">For engineering</div>
+              <p className="text-foreground/85 leading-relaxed">{bundle.narrative.forEngineering}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Issues by severity */}
+      {bundle && sevs.map((sev) => {
+        const sevIssues = bundle.issues.filter((i) => i.severity === sev);
+        if (!sevIssues.length) return null;
+        const tone = sevColors[sev] as "danger" | "warn" | "info" | "neutral";
+        return (
+          <div key={sev} className="p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <SeverityChip s={sev} />
+              <span className="text-sm font-semibold">{SEVERITY_LABEL[sev]}</span>
+              <span className="text-[11px] text-muted-foreground">{sevIssues.length} {sevIssues.length === 1 ? "issue" : "issues"}</span>
+            </div>
+            <div className="space-y-2">
+              {sevIssues.map((issue) => (
+                <div
+                  key={issue.id}
+                  className="rounded-lg border p-4 space-y-1.5"
+                  style={{
+                    borderColor: `color-mix(in oklab, var(--${tone}) 25%, var(--border))`,
+                    background: `color-mix(in oklab, var(--${tone}) 4%, transparent)`,
+                  }}
+                >
+                  <div className="flex items-start gap-3 justify-between">
+                    <h4 className="text-sm font-semibold leading-snug">{issue.title}</h4>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <Chip tone={issue.confidence === "high" ? "info" : "warn"}>{issue.confidence}</Chip>
+                      <Chip>{issue.owner}</Chip>
+                    </div>
+                  </div>
+                  <p className="text-xs font-mono text-muted-foreground leading-relaxed">{issue.evidence}</p>
+                  <div className="flex items-center gap-3 text-[11px] text-muted-foreground flex-wrap">
+                    <span>{issue.persona}</span>
+                    <span>·</span>
+                    <span>{issue.journey}</span>
+                    <span>·</span>
+                    <span className="font-mono">{issue.stepId}</span>
+                    {issue.recurring > 1 && (
+                      <>
+                        <span>·</span>
+                        <span className="text-danger">recurring ×{issue.recurring}</span>
+                      </>
+                    )}
+                  </div>
+                  {issue.suggestion && (
+                    <p className="text-xs text-foreground/75 mt-1 italic">Suggestion: {issue.suggestion}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+
+      {/* Highlights */}
+      {bundle && bundle.delights.length > 0 && (
+        <div className="p-5">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="size-5 rounded-full bg-ready/20 flex items-center justify-center">
+              <span className="text-[10px] text-ready">★</span>
+            </div>
+            <span className="text-sm font-semibold">Highlights</span>
+            <span className="text-[11px] text-muted-foreground">{bundle.delights.length}</span>
+          </div>
+          <div className="grid md:grid-cols-2 gap-3">
+            {bundle.delights.map((d) => (
+              <div key={d.id} className="rounded-lg border border-ready/20 bg-ready/4 p-4">
+                <div className="flex items-center gap-2 flex-wrap mb-2">
+                  <h4 className="text-sm font-semibold">{d.title}</h4>
+                  {d.marketingReady && <Chip tone="ready">marketing-ready</Chip>}
+                </div>
+                <blockquote className="border-l-2 border-ready pl-3 text-sm italic text-foreground/85">
+                  &ldquo;{d.quote}&rdquo;
+                </blockquote>
+                <div className="text-[11px] text-muted-foreground mt-1.5">— {d.persona}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Dimension scores */}
+      {bundle && bundle.dimensions.length > 0 && (
+        <div className="p-5">
+          <div className="text-[11px] text-muted-foreground mb-3 font-medium">Dimension scores</div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            {bundle.dimensions.map((d) => (
+              <div key={d.name} className="flex items-center justify-between rounded-md border border-border bg-surface-2/30 px-3 py-2">
+                <span className="text-xs text-muted-foreground truncate">{d.name}</span>
+                <span
+                  className="font-mono font-bold text-sm tabular-nums ml-2 shrink-0"
+                  style={{
+                    color: d.score >= 80 ? "var(--ready)" : d.score >= 60 ? "var(--warn)" : "var(--danger)",
+                  }}
+                >
+                  {d.score}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Raw markdown fallback */}
+      <details className="group">
+        <summary className="px-5 py-3 text-xs text-muted-foreground cursor-pointer hover:text-foreground list-none flex items-center gap-1.5">
+          <span className="group-open:rotate-90 transition-transform inline-block">▶</span>
+          Raw scorecard markdown
+        </summary>
+        <pre className="px-5 pb-5 text-[11.5px] font-mono leading-relaxed overflow-x-auto text-foreground/70 whitespace-pre-wrap">
+          {markdown}
+        </pre>
+      </details>
+    </div>
   );
 }
 
@@ -395,10 +557,86 @@ export function SitemapPanel({ markdown }: { markdown: string }) {
   );
 }
 
+type ShotMeta = RunBundle["screenshots"][number];
+
+function ScreenshotCard({ s }: { s: ShotMeta }) {
+  const [open, setOpen] = useState(false);
+  const outcomeColor = s.outcome === "pass" ? "text-ready" : s.outcome === "fail" ? "text-danger" : "text-muted-foreground";
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <figure
+          className="border border-border rounded-lg overflow-hidden bg-surface-2/30 cursor-pointer hover:border-primary/40 hover:shadow-sm transition-all group"
+          onClick={() => setOpen(true)}
+        >
+          <div className="aspect-video relative overflow-hidden">
+            <AnnotatedScreenshot src={artifactUrl(s.path)} alt={s.stepId} className="h-full group-hover:scale-[1.02] transition-transform duration-200" />
+            {s.outcome && (
+              <span className={`absolute top-1.5 right-1.5 text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-background/80 backdrop-blur-sm ${outcomeColor}`}>
+                {s.outcome}
+              </span>
+            )}
+          </div>
+          <figcaption className="p-2 text-[11px] text-muted-foreground border-t border-border">
+            <div className="font-medium text-foreground truncate">{s.label}</div>
+            <div className="font-mono truncate opacity-60">{s.stepId}</div>
+          </figcaption>
+        </figure>
+      </DialogTrigger>
+      <DialogContent className="max-w-4xl w-full">
+        <DialogHeader>
+          <DialogTitle className="text-sm font-medium">{s.journeyName || s.label}</DialogTitle>
+          {s.url && (
+            <DialogDescription className="font-mono text-xs truncate">{s.url}</DialogDescription>
+          )}
+        </DialogHeader>
+        <div className="rounded-lg overflow-hidden border border-border bg-black">
+          <img src={artifactUrl(s.path)} alt={s.stepId} className="w-full object-contain max-h-[60vh]" />
+        </div>
+        <div className="grid grid-cols-2 gap-3 text-xs">
+          {s.action && (
+            <div className="space-y-0.5">
+              <div className="text-muted-foreground font-medium uppercase tracking-wide text-[10px]">Action</div>
+              <div className="font-mono">{s.action}{s.intent ? ` — ${s.intent}` : ""}</div>
+            </div>
+          )}
+          {s.outcome && (
+            <div className="space-y-0.5">
+              <div className="text-muted-foreground font-medium uppercase tracking-wide text-[10px]">Outcome</div>
+              <div className={`font-medium ${outcomeColor}`}>{s.outcome}{s.durationMs ? ` · ${(s.durationMs / 1000).toFixed(1)}s` : ""}</div>
+            </div>
+          )}
+          {s.personaId && (
+            <div className="space-y-0.5">
+              <div className="text-muted-foreground font-medium uppercase tracking-wide text-[10px]">Persona</div>
+              <div className="font-mono">{s.personaId}</div>
+            </div>
+          )}
+          {s.note && (
+            <div className="space-y-0.5 col-span-2">
+              <div className="text-muted-foreground font-medium uppercase tracking-wide text-[10px]">Observation</div>
+              <div className="text-foreground/80">{s.note}</div>
+            </div>
+          )}
+          {(s.consoleErrors?.length ?? 0) > 0 && (
+            <div className="space-y-0.5 col-span-2">
+              <div className="text-danger font-medium uppercase tracking-wide text-[10px]">Console errors</div>
+              {s.consoleErrors!.map((e, i) => (
+                <div key={i} className="font-mono text-danger/80 truncate">{e}</div>
+              ))}
+            </div>
+          )}
+        </div>
+        <div className="text-[10px] font-mono text-muted-foreground/50">{s.stepId}</div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 export function ScreenshotGallery({
   shots,
 }: {
-  shots: { path: string; stepId: string; label: string }[];
+  shots: ShotMeta[];
 }) {
   if (!shots.length) {
     return (
@@ -408,18 +646,7 @@ export function ScreenshotGallery({
   return (
     <div className="p-5 grid grid-cols-2 md:grid-cols-3 gap-4">
       {shots.map((s) => (
-        <figure
-          key={s.stepId}
-          className="border border-border rounded-lg overflow-hidden bg-surface-2/30"
-        >
-          <div className="aspect-video">
-            <AnnotatedScreenshot src={artifactUrl(s.path)} alt={s.stepId} className="h-full" />
-          </div>
-          <figcaption className="p-2 text-[11px] text-muted-foreground border-t border-border">
-            <div className="font-medium text-foreground truncate">{s.label}</div>
-            <div className="font-mono truncate">{s.stepId}</div>
-          </figcaption>
-        </figure>
+        <ScreenshotCard key={s.stepId} s={s} />
       ))}
     </div>
   );
@@ -752,6 +979,25 @@ export function ExportMenu({ runId, bundle }: { runId: string; bundle: RunBundle
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-2">
+          <div className="pb-2 border-b border-border mb-1">
+            <div className="text-[11px] text-muted-foreground mb-1.5 px-1">Reports</div>
+            <button
+              type="button"
+              disabled={busy !== null}
+              onClick={() => { downloadReportMarkdown(bundle); toast.success("Report downloaded"); }}
+              className="w-full text-left px-3 py-2 rounded-md border border-border hover:bg-surface-2 font-mono text-sm disabled:opacity-50"
+            >
+              report.md — full structured report
+            </button>
+            <button
+              type="button"
+              disabled={busy !== null}
+              onClick={() => printReportAsPdf(bundle)}
+              className="w-full text-left px-3 py-2 rounded-md border border-primary/40 bg-primary/5 hover:bg-primary/10 text-primary font-mono text-sm disabled:opacity-50 mt-1.5"
+            >
+              Print / Save as PDF ↗
+            </button>
+          </div>
           {EXPORT_ITEMS.map(({ kind, label }) => (
             <button
               key={label}

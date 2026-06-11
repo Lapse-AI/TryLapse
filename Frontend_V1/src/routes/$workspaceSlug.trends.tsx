@@ -5,7 +5,7 @@ import { scheduledRuns } from "@/lib/mock-data";
 import { useLatestRun, useRunBundle, useTrends } from "@/lib/api/hooks";
 import { VisionOnly } from "@/components/vision-only";
 
-export const Route = createFileRoute("/trends")({
+export const Route = createFileRoute("/$workspaceSlug/trends")({
   head: () => ({ meta: [{ title: "Trends — Launch Rehearsal" }] }),
   component: Trends,
 });
