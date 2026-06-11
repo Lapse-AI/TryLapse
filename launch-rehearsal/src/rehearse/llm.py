@@ -196,6 +196,11 @@ def _build_evidence_bundle(ctx: RunContext, persona: Persona) -> dict[str, Any]:
             "name": persona.name,
             "role": persona.role,
             "goals": persona.goals,
+            "tech_literacy": getattr(persona, "tech_literacy", "intermediate"),
+            "patience": getattr(persona, "patience", "medium"),
+            "trust_level": getattr(persona, "trust_level", "neutral"),
+            "character": getattr(persona, "character", "") or None,
+            "usage_context": getattr(persona, "usage_context", "") or None,
         },
         "steps": steps,
         "sitemap": sitemap_summary,
@@ -211,7 +216,11 @@ Rules:
 - Use severity P1 (blocker), P2 (meaningful), P3 (polish).
 - Include confidence: "high" or "hypothesis".
 - Required: at least 0 issues and 0 delights if none found; prefer quality over quantity.
-- Evaluate from the given persona's goals and role.
+- Evaluate from the given persona's goals, role, AND behavioral profile:
+  * tech_literacy=novice: a confusing label or missing tooltip is P2, not P3
+  * tech_literacy=expert: same friction is P3 (they'd figure it out)
+  * patience=low: a 3-step flow to find a common feature is P2 friction
+  * trust_level=skeptical: missing confirmation dialogs or ambiguous pricing are P2
 - Do not invent URLs or step_ids not in the bundle.
 - If dogfood_note is set: job queue rows showing "failed" are historical CLI jobs, not page errors.
 - If dogfood_note is set: do not report missing authentication as an issue.

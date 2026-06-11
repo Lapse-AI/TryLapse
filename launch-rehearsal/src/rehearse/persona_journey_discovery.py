@@ -22,13 +22,20 @@ from typing import Any
 # ── System prompts ────────────────────────────────────────────────────────────
 
 _PLAN_SYSTEM = """You are a {persona_role} who uses software products.
+Tech literacy: {tech_literacy}. Patience: {patience}. Trust disposition: {trust_level}.
+{character_line}
 You deeply understand your own usage patterns — when you open the product,
 what you actually care about, what frustrates you, what you return to daily.
+Navigate as this specific person would:
+- A novice hesitates, reads labels, uses search; an expert scans and acts directly.
+- Low-patience users abandon multi-step flows and look for shortcuts.
+- Skeptical users read fine print and verify before committing.
 Be realistic, specific, and grounded in the product description provided."""
 
 _PLAN_PROMPT = """You are: {persona_name}
 Your role: {persona_role}
 Your goals: {persona_goals}
+{usage_context_line}
 
 The product you use:
 {product_summary}
@@ -74,13 +81,18 @@ Return JSON only:
 Include 8–14 journeys. Do not include steps — only metadata."""
 
 _EXPAND_SYSTEM = """You are a {persona_role} walking through a specific workflow.
+Tech literacy: {tech_literacy}. Patience: {patience}. Trust disposition: {trust_level}.
+{character_line}
 Write every step precisely — not vague descriptions but exact browser actions:
 which element to click, what to type, what URL to navigate to, what to assert.
-Think like a test engineer writing Playwright steps for this persona.
+Let the persona's disposition shape the path: a novice may use search instead of nav;
+a low-patience user skips optional steps; a skeptic checks a confirmation dialog.
+Think like a test engineer writing Playwright steps for this exact persona type.
 CRITICAL: Use only the EXACT element labels and URLs from the DOM reference provided."""
 
 _EXPAND_PROMPT = """Persona: {persona_name} ({persona_role})
 Goals: {persona_goals}
+{usage_context_line}
 
 Product:
 {product_summary}
@@ -383,11 +395,19 @@ def _discover_journey_plan(
     """Ask LLM for journey metadata (no steps) — fast, small, never truncates."""
     pid = persona.get("id", "p-unknown")
     pid_short = pid.replace("p-", "").replace("p", "")[:8]
-    system = _PLAN_SYSTEM.format(persona_role=persona.get("role", "user"))
+    system = _PLAN_SYSTEM.format(
+        persona_role=persona.get("role", "user"),
+        tech_literacy=persona.get("tech_literacy") or "intermediate",
+        patience=persona.get("patience") or "medium",
+        trust_level=persona.get("trust_level") or "neutral",
+        character_line=persona.get("character") or "",
+    )
+    usage_ctx = persona.get("usage_context") or ""
     prompt = _PLAN_PROMPT.format(
         persona_name=persona.get("name", "User"),
         persona_role=persona.get("role", "user"),
         persona_goals="; ".join(persona.get("goals") or ["use the product effectively"]),
+        usage_context_line=f"Context: {usage_ctx}" if usage_ctx else "",
         persona_id=pid,
         pid_short=pid_short,
         product_summary=_product_summary(product_model),
@@ -405,11 +425,19 @@ def _expand_journey_steps(
     interaction_map: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Expand a single journey into full deep steps. One focused LLM call."""
-    system = _EXPAND_SYSTEM.format(persona_role=persona.get("role", "user"))
+    usage_ctx = persona.get("usage_context") or ""
+    system = _EXPAND_SYSTEM.format(
+        persona_role=persona.get("role", "user"),
+        tech_literacy=persona.get("tech_literacy") or "intermediate",
+        patience=persona.get("patience") or "medium",
+        trust_level=persona.get("trust_level") or "neutral",
+        character_line=persona.get("character") or "",
+    )
     prompt = _EXPAND_PROMPT.format(
         persona_name=persona.get("name", "User"),
         persona_role=persona.get("role", "user"),
         persona_goals="; ".join(persona.get("goals") or ["use the product effectively"]),
+        usage_context_line=f"Context: {usage_ctx}" if usage_ctx else "",
         product_summary=_product_summary(product_model),
         dom_reference=_dom_reference(interaction_map),
         journey_id=journey_meta.get("id", "j-1"),

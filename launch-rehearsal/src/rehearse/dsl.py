@@ -68,6 +68,12 @@ class Persona:
     role: str
     goals: list[str]
     enabled: bool = True
+    # Behavioral depth — all optional, safe defaults preserve existing behavior
+    tech_literacy: str = "intermediate"  # "novice" | "intermediate" | "expert"
+    patience: str = "medium"             # "low" | "medium" | "high"
+    trust_level: str = "neutral"         # "skeptical" | "neutral" | "trusting"
+    character: str = ""                  # free-text psychological texture
+    usage_context: str = ""              # "first-time user", "switching from X", etc.
 
 
 @dataclass
@@ -184,6 +190,11 @@ def load_config(path: Path) -> RunConfig:
             role=p["role"],
             goals=list(p.get("goals") or []),
             enabled=bool(p.get("enabled", True)),
+            tech_literacy=str(p.get("tech_literacy") or "intermediate"),
+            patience=str(p.get("patience") or "medium"),
+            trust_level=str(p.get("trust_level") or "neutral"),
+            character=str(p.get("character") or ""),
+            usage_context=str(p.get("usage_context") or ""),
         )
         for p in personas_raw
     ]

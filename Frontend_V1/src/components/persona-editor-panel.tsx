@@ -24,7 +24,11 @@ function initials(name: string): string {
   return name.split(/\s+/).slice(0, 2).map((w) => (w[0] ?? "").toUpperCase()).join("");
 }
 
-type Persona = { id: string; name: string; role: string; goals: string[]; enabled: boolean };
+type Persona = {
+  id: string; name: string; role: string; goals: string[]; enabled: boolean;
+  tech_literacy?: string; patience?: string; trust_level?: string;
+  character?: string; usage_context?: string;
+};
 type Props = { configId: string; live: boolean; onPersonasChanged?: (personas: Persona[]) => void; refreshKey?: number };
 
 // ---------------------------------------------------------------------------
@@ -46,6 +50,11 @@ function PersonaEditDrawer({
   const [role, setRole] = useState(persona.role);
   const [goals, setGoals] = useState(persona.goals.join("\n"));
   const [enabled, setEnabled] = useState(persona.enabled);
+  const [techLiteracy, setTechLiteracy] = useState(persona.tech_literacy ?? "intermediate");
+  const [patience, setPatience] = useState(persona.patience ?? "medium");
+  const [trustLevel, setTrustLevel] = useState(persona.trust_level ?? "neutral");
+  const [character, setCharacter] = useState(persona.character ?? "");
+  const [usageContext, setUsageContext] = useState(persona.usage_context ?? "");
 
   return (
     <div className="mt-3 ml-0 rounded-2xl border border-border bg-surface-2/50 p-4 space-y-3">
@@ -81,6 +90,49 @@ function PersonaEditDrawer({
         />
       </div>
 
+      <div className="border-t border-border/50 pt-3">
+        <div className="text-[11px] font-medium text-muted-foreground mb-2">Behavioral profile <span className="font-normal opacity-60">(shapes journey generation)</span></div>
+        <div className="grid grid-cols-3 gap-2">
+          <div>
+            <label className="text-[10px] text-muted-foreground">Tech literacy</label>
+            <select className="mt-0.5 w-full text-xs bg-surface border border-border rounded-lg px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary/30"
+              value={techLiteracy} onChange={(e) => setTechLiteracy(e.target.value)}>
+              <option value="novice">Novice</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="expert">Expert</option>
+            </select>
+          </div>
+          <div>
+            <label className="text-[10px] text-muted-foreground">Patience</label>
+            <select className="mt-0.5 w-full text-xs bg-surface border border-border rounded-lg px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary/30"
+              value={patience} onChange={(e) => setPatience(e.target.value)}>
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+          <div>
+            <label className="text-[10px] text-muted-foreground">Trust level</label>
+            <select className="mt-0.5 w-full text-xs bg-surface border border-border rounded-lg px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary/30"
+              value={trustLevel} onChange={(e) => setTrustLevel(e.target.value)}>
+              <option value="skeptical">Skeptical</option>
+              <option value="neutral">Neutral</option>
+              <option value="trusting">Trusting</option>
+            </select>
+          </div>
+        </div>
+        <div className="mt-2">
+          <label className="text-[10px] text-muted-foreground">Character <span className="opacity-60">e.g. "anxious about billing, reads every tooltip"</span></label>
+          <input className="mt-0.5 w-full text-xs bg-surface border border-border rounded-lg px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary/30"
+            value={character} onChange={(e) => setCharacter(e.target.value)} placeholder="free-text psychological texture" />
+        </div>
+        <div className="mt-2">
+          <label className="text-[10px] text-muted-foreground">Usage context <span className="opacity-60">e.g. "first-time user", "switching from Competitor X"</span></label>
+          <input className="mt-0.5 w-full text-xs bg-surface border border-border rounded-lg px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary/30"
+            value={usageContext} onChange={(e) => setUsageContext(e.target.value)} placeholder="context this persona brings" />
+        </div>
+      </div>
+
       <div className="flex items-center justify-between flex-wrap gap-2">
         <label className="flex items-center gap-2 text-xs cursor-pointer">
           <input type="checkbox" checked={enabled} onChange={(e) => setEnabled(e.target.checked)} className="accent-primary" />
@@ -96,7 +148,7 @@ function PersonaEditDrawer({
           </button>
           <button
             type="button"
-            onClick={() => onSave({ ...persona, name, role, goals: goals.split("\n").map(g => g.trim()).filter(Boolean), enabled })}
+            onClick={() => onSave({ ...persona, name, role, goals: goals.split("\n").map(g => g.trim()).filter(Boolean), enabled, tech_literacy: techLiteracy, patience, trust_level: trustLevel, character: character || undefined, usage_context: usageContext || undefined })}
             className="text-xs px-4 py-1.5 rounded-full bg-primary text-primary-foreground flex items-center gap-1 font-medium"
           >
             <Check className="size-3" /> Save

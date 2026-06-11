@@ -17,40 +17,72 @@ personas:
   role: prospect / new user
   goals:
   - Understand value from landing and primary workflow
+  tech_literacy: intermediate
+  patience: low
+  trust_level: skeptical
+  character: first impression matters — scans for value signals quickly
+  usage_context: evaluating for potential adoption
 - id: p2-operator
   name: Daily operator
   role: power user
   goals:
   - Complete core tasks quickly and reliably
+  tech_literacy: expert
+  patience: low
+  trust_level: neutral
+  character: efficiency-first, skips anything optional
+  usage_context: daily power user, has muscle memory
 - id: p3-admin
   name: Admin / buyer
   role: IT admin
   goals:
   - Verify access boundaries and trust signals
+  tech_literacy: intermediate
+  patience: medium
+  trust_level: skeptical
+  character: verifies access controls and trust signals carefully
+  usage_context: responsible for team access and compliance
 - id: model-1-adminstaff
   name: Admin/Staff
   role: Manage system settings and oversee faculty data
   goals:
   - Manage system settings and oversee faculty data
   - Presence of /admin page suggests administrative users.
+  tech_literacy: intermediate
+  patience: medium
+  trust_level: trusting
+  character: handles day-to-day ops, follows established workflows
 - id: model-0-faculty-member
   name: Faculty member
   role: View and update their own professional metrics and data.
   goals:
   - View and update their own professional metrics and data.
   - Profile pages with unique IDs suggest each faculty has their own dashboard page.
+  tech_literacy: novice
+  patience: medium
+  trust_level: neutral
+  character: focused on own profile and class data, avoids admin areas
 - id: model-1-administrator
   name: Administrator
   role: Manage faculty profiles, oversee analytics, and generate reports.
   goals:
   - Manage faculty profiles, oversee analytics, and generate reports.
   - Presence of /admin page suggests administrative functions.
+  tech_literacy: expert
+  patience: low
+  trust_level: neutral
+  character: manages everything, expects batch operations
 - id: model-2-department-head-or-dean
   name: Department head or dean
   role: Monitor departmental performance and identify trends.
   goals:
   - Monitor departmental performance and identify trends.
   - Analytics dashboard implies comparative performance monitoring.
+  tech_literacy: intermediate
+  patience: low
+  trust_level: skeptical
+  character: only reviews summaries, wants insight not raw data
+  usage_context: strategic oversight, not hands-on
 journeys:
 - id: j-1-evalua-1
   name: View Analytics
