@@ -133,6 +133,8 @@ def run_rehearsal(
         llm_enabled=use_llm,
         crawl_enabled=bool(crawl_on),
     )
+    if config_path and config_path.is_file():
+        bundle["summary"]["configId"] = config_path.stem
     config_yaml = config_path.read_text() if config_path and config_path.is_file() else None
     write_analysis_bundle(bundle, output_dir, config_yaml=config_yaml)
     return evidence, scorecard_path, ctx

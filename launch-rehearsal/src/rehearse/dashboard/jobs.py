@@ -21,6 +21,38 @@ from rehearse.dashboard.job_store import (
 _run_serial_lock = threading.Lock()
 
 
+def _try_salvage_partial_run(artifacts_root: Path, run_id_or_prefix: str | None, output_dir: Path) -> None:
+    """After a failed/timed-out run, rebuild the analysis bundle from whatever completed.
+
+    This makes partial runs show their completed steps instead of 0/0/0.
+    """
+    if not run_id_or_prefix:
+        return
+    try:
+        from rehearse.analysis_export import rebuild_bundle_from_artifacts
+        from rehearse.dashboard.store import _latest_run_id_for_prefix
+
+        # If we have an exact run_id, use it; otherwise find the latest for the prefix
+        run_id = run_id_or_prefix
+        run_file = output_dir / "runs" / f"{run_id}.json"
+        if not run_file.is_file():
+            run_id = _latest_run_id_for_prefix(output_dir, run_id_or_prefix)
+        if not run_id:
+            return
+
+        # Only rebuild if we actually have some steps recorded
+        progress_file = output_dir / "runs" / f"{run_id}-progress.json"
+        if progress_file.is_file():
+            import json as _json
+            prog = _json.loads(progress_file.read_text())
+            if prog.get("completed_journeys", 0) == 0:
+                return  # nothing to salvage
+
+        rebuild_bundle_from_artifacts(output_dir, run_id)
+    except Exception:
+        pass  # best-effort; never block the failure update
+
+
 def list_jobs(artifacts_root: Path) -> list[dict[str, Any]]:
     return _db_list_jobs(artifacts_root)
 
@@ -455,6 +487,8 @@ def enqueue_run(
                         },
                     )
                 else:
+                    # Non-zero exit — try to salvage a partial bundle before marking failed
+                    _try_salvage_partial_run(artifacts_root, pre_run_id or run_prefix, output_dir)
                     _update_job(
                         artifacts_root,
                         job_id,
@@ -465,6 +499,8 @@ def enqueue_run(
                         },
                     )
             except Exception as exc:
+                # Timeout or crash — salvage whatever completed before marking failed
+                _try_salvage_partial_run(artifacts_root, pre_run_id or run_prefix, output_dir)
                 _update_job(
                     artifacts_root,
                     job_id,

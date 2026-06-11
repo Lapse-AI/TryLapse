@@ -1020,7 +1020,7 @@ def load_evidence_from_run_json(path: Path) -> RunEvidence:
         duration_ms=data.get("duration_ms", 0),
         auth_attempted=data.get("auth_attempted", False),
         auth_outcome=data.get("auth_outcome"),
-        outcome=data.get("outcome", "complete"),
+        outcome=data.get("outcome") or ("partial" if data.get("steps") else "complete"),
     )
     fields = {f.name for f in dataclasses.fields(StepSnapshot)}
     steps: list[StepSnapshot] = []

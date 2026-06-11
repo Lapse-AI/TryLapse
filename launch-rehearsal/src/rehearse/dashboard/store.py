@@ -700,10 +700,19 @@ def save_config(artifacts_root: Path, body: dict[str, Any]) -> dict[str, Any]:
             _meta = _get_cfg(artifacts_root, existing_config_id)
             _existing = _yaml2.safe_load(_meta["yaml"]) or {}
 
-            # Preserve budget settings from existing config (don't reset to build_config defaults)
+            # Merge budget settings — take the LARGER value for time/step limits so we
+            # never accidentally propagate a too-small value from an old config.
+            # Other fields (parallel_journeys, step_timeout_ms) are copied as-is.
+            _FLOORS = {"max_run_seconds": 28800, "max_steps_per_journey": 20}
             existing_budgets = _existing.get("budgets") or {}
             if existing_budgets:
-                config.setdefault("budgets", {}).update(existing_budgets)
+                current_budgets = config.setdefault("budgets", {})
+                for k, v in existing_budgets.items():
+                    floor = _FLOORS.get(k)
+                    if floor is not None:
+                        current_budgets[k] = max(int(v), floor)
+                    else:
+                        current_budgets[k] = v
 
             # Merge personas from existing config (preserves imported ones not in build_config defaults)
             existing_personas = _existing.get("personas") or []

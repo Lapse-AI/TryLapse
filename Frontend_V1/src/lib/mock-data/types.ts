@@ -96,14 +96,15 @@ export type RunSummary = {
   pages: number;
   stepCount: number;
   agentCost: number;
+  outcome?: "complete" | "dry_run_complete" | "failed" | "partial" | string | null;
   costEstimate?: {
     usd: number;
     source?: string;
     inputTokens?: number;
     outputTokens?: number;
   };
-  outcome: "complete" | "dry_run_complete" | "failed";
   configHash: string;
+  configId?: string | null;
   authAttempted?: boolean;
   authOutcome?: string;
   llmEnabled?: boolean;

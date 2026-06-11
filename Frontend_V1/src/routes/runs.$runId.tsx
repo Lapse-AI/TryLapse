@@ -48,7 +48,7 @@ import {
   displayAgentSummary,
 } from "@/lib/run-metrics";
 import { countIssuesForDimension, issueMatchesDimension } from "@/lib/dimension-match";
-import { useRunBundle, useRunSummaries } from "@/lib/api/hooks";
+import { useRunBundle, useRunSummaries, useTriggerJob } from "@/lib/api/hooks";
 import {
   Dialog,
   DialogContent,
@@ -68,7 +68,9 @@ import {
   MessageSquare,
   GitBranch,
   Network,
+  RotateCcw,
 } from "lucide-react";
+import { toast } from "sonner";
 
 const searchSchema = z.object({
   tab: z.string().optional(),
@@ -188,6 +190,7 @@ function RunDetail() {
   const { data: runSummaries = [] } = useRunSummaries();
   const [active, setActive] = useState<Set<Severity>>(new Set(ALL_SEVERITIES));
   const [compareRunId, setCompareRunId] = useState(runSummaries[1]?.id ?? "");
+  const trigger = useTriggerJob();
   const [activeTab, setActiveTab] = useState(tabSearch ?? "overview");
 
   useEffect(() => {
@@ -276,6 +279,22 @@ function RunDetail() {
         }
         actions={
           <>
+            <button
+              type="button"
+              disabled={trigger.isPending}
+              onClick={() => {
+                const configId = run.configId ?? run.id.replace(/-\d{8}-\d{6}$/, "");
+                trigger.mutate(
+                  { mode: "run", configPath: configId, llm: true },
+                  { onSuccess: () => toast.success("Re-run triggered — check the Runner page") }
+                );
+              }}
+              className="text-xs px-3 py-1.5 rounded-md border border-border hover:bg-surface-2 inline-flex items-center gap-1.5 disabled:opacity-40"
+              title="Re-run with the same config"
+            >
+              <RotateCcw className="size-3.5" />
+              {trigger.isPending ? "Triggering…" : "Re-run"}
+            </button>
             <Link
               to="/compare"
               search={{ a: runSummaries[1]?.id, b: run.id }}
@@ -374,6 +393,18 @@ function RunDetail() {
 
           <TabsContent value="overview" className="space-y-8 mt-0">
             <ExperimentRunBanner experiment={run.experiment} />
+            {run.outcome === "partial" && bundle.steps.length > 0 && (
+              <Panel className="p-4 border border-warn/30 bg-warn/5 flex items-start gap-3">
+                <span className="text-warn text-lg mt-0.5">⚠</span>
+                <div>
+                  <div className="text-sm font-semibold text-warn">Partial run — timed out or stopped early</div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {bundle.steps.length} step{bundle.steps.length !== 1 ? "s" : ""} captured before the run was interrupted.
+                    Results below reflect only the completed journeys. Re-run to get the full picture.
+                  </p>
+                </div>
+              </Panel>
+            )}
             {bundle.steps.length === 0 && (bundle.parallelErrors?.length ?? 0) > 0 && (
               <Panel className="p-4 border border-danger/30 bg-danger/5 space-y-2">
                 <div className="text-sm font-semibold text-danger">Journey execution failed — 0 steps recorded</div>
