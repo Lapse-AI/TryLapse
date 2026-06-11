@@ -988,18 +988,69 @@ def write_analysis_bundle(
 
 def _guess_config_path(output_dir: Path, run_id: str, target_url: str) -> Path | None:
     cfg_dir = output_dir / "configs"
+
+    # Exact match: {run_id}.yaml
     saved = cfg_dir / f"{run_id}.yaml"
     if saved.is_file():
         return saved
+
+    # Best source: jobs DB records the exact config used for each run
+    try:
+        import sqlite3 as _sqlite3, json as _json
+        db_path = output_dir / "jobs.db"
+        if db_path.is_file():
+            conn = _sqlite3.connect(str(db_path))
+            row = conn.execute(
+                "SELECT data FROM jobs WHERE json_extract(data,'$.runId')=? ORDER BY rowid DESC LIMIT 1",
+                (run_id,)
+            ).fetchone()
+            conn.close()
+            if row:
+                config_in_job = _json.loads(row[0]).get("config")
+                if config_in_job and Path(config_in_job).is_file():
+                    return Path(config_in_job)
+    except Exception:
+        pass
+
+    # Prefix match: find all configs whose name starts with the run_id prefix
+    # (strip trailing -YYYYMMDD-HHMMSS timestamp to get the product slug)
+    import re as _re
+    prefix_match = _re.match(r"^(.*)-\d{8}-\d{6}$", run_id)
+    slug = prefix_match.group(1) if prefix_match else run_id
+    if cfg_dir.is_dir():
+        candidates = [p for p in cfg_dir.glob("*.yaml") if p.stem.startswith(slug)]
+        if candidates:
+            # Prefer config with most personas (most complete)
+            def _persona_count(p: Path) -> int:
+                try:
+                    import yaml as _yaml
+                    return len(_yaml.safe_load(p.read_text()).get("personas") or [])
+                except Exception:
+                    return 0
+            return max(candidates, key=_persona_count)
+
+    # Check workspace.json for the linked config
+    ws_file = output_dir / "workspace.json"
+    if ws_file.is_file():
+        try:
+            import json as _json
+            ws = _json.loads(ws_file.read_text())
+            cp = ws.get("config_path")
+            if cp and Path(cp).is_file():
+                return Path(cp)
+        except Exception:
+            pass
+
+    # Fallback: hardcoded example configs
     examples = Path(__file__).resolve().parents[2] / "examples"
     prefix = run_id.split("-")[0].lower()
-    candidates = {
+    legacy = {
         "enterprise": examples / "enterprise-authenticated.yaml",
         "cal": examples / "cal-com-phase0.yaml",
         "argyle": examples / "enterprise-authenticated.yaml",
         "phase0": examples / "enterprise-saas.yaml",
     }
-    path = candidates.get(prefix)
+    path = legacy.get(prefix)
     if path and path.is_file():
         return path
     for p in examples.glob("*.yaml"):
