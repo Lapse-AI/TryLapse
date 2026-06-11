@@ -335,7 +335,10 @@ def analyze_persona_llm(ctx: RunContext, persona: Persona) -> dict[str, Any] | N
     except json.JSONDecodeError:
         match = re.search(r"\{[\s\S]*\}", content)
         if match:
-            parsed = json.loads(match.group())
+            try:
+                parsed = json.loads(match.group())
+            except json.JSONDecodeError:
+                return {"error": "invalid_json", "summary": "LLM returned non-JSON"}
         else:
             return {"error": "invalid_json", "summary": "LLM returned non-JSON"}
     if usage:
@@ -431,9 +434,12 @@ def _llm_json_call(system: str, user: str, *, max_tokens: int = 2048) -> dict[st
         except json.JSONDecodeError:
             match = re.search(r"\{[\s\S]*\}", content or "")
             if match:
-                parsed = json.loads(match.group())
+                try:
+                    parsed = json.loads(match.group())
+                except json.JSONDecodeError:
+                    return {"error": "invalid_json"}
             else:
-                raise
+                return {"error": "invalid_json"}
         if isinstance(parsed, dict):
             return parsed
     except Exception as exc:
