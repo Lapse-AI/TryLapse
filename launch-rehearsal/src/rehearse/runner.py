@@ -99,6 +99,14 @@ def run_rehearsal(
         orchestrator.run_crawl_phase()
         tracker.set_phase("executing")
         orchestrator.run_journey_phase()
+
+        # Save steps immediately after execution — before analysis can crash.
+        # This ensures rebuild_bundle_from_artifacts always has real step data.
+        evidence.finished_at = datetime.now(timezone.utc).isoformat()
+        evidence.duration_ms = int((time.perf_counter() - started) * 1000)
+        evidence.outcome = "partial"
+        evidence.save(output_dir / "runs")
+
         tracker.set_phase("analysing")
         net_path = session.flush_network_log()
         if net_path:
@@ -112,6 +120,7 @@ def run_rehearsal(
             config, evidence, analysis, ctx=ctx, use_llm=use_llm
         )
 
+    # Update with final timing and mark complete
     evidence.finished_at = datetime.now(timezone.utc).isoformat()
     evidence.duration_ms = int((time.perf_counter() - started) * 1000)
     evidence.outcome = "complete"
