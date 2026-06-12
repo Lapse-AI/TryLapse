@@ -246,19 +246,54 @@ def _post_chat(client: httpx.Client, payload: dict[str, Any], *, base: str | Non
     )
 
 
+_MAX_RETRY_WAIT_S = 65  # max seconds we'll wait on a 429 before falling back
+
+
+def _retry_after_seconds(resp: httpx.Response) -> float | None:
+    """Parse Retry-After (seconds int or HTTP-date) from a 429 response."""
+    raw = resp.headers.get("Retry-After") or resp.headers.get("x-ratelimit-reset-requests")
+    if not raw:
+        return None
+    try:
+        return float(raw)
+    except ValueError:
+        pass
+    try:
+        from email.utils import parsedate_to_datetime
+        reset = parsedate_to_datetime(raw)
+        delta = (reset - __import__("datetime").datetime.now(__import__("datetime").timezone.utc)).total_seconds()
+        return max(delta, 0)
+    except Exception:
+        return None
+
+
 def _post_chat_with_fallback(client: httpx.Client, payload: dict[str, Any]) -> httpx.Response:
-    """Try NIM first; on 429/5xx fall back to DeepSeek direct API."""
+    """Try NIM first with Retry-After-aware backoff; fall back to DeepSeek on persistent 429/5xx."""
+    _NIM_429_RETRIES = 4
+
     if _nim_configured():
         nim_key = _nim_api_key()
         nim_url = _nim_base_url()
         nim_payload = {**payload, "model": _model(nim_url)}
-        try:
-            resp = _post_chat(client, nim_payload, base=nim_url, key=nim_key)
-            if resp.status_code not in (429, 500, 502, 503):
+        for attempt in range(_NIM_429_RETRIES):
+            try:
+                resp = _post_chat(client, nim_payload, base=nim_url, key=nim_key)
+                if resp.status_code == 429:
+                    wait = _retry_after_seconds(resp) or min(10 * (2 ** attempt), _MAX_RETRY_WAIT_S)
+                    if wait <= _MAX_RETRY_WAIT_S and attempt < _NIM_429_RETRIES - 1:
+                        print(f"[llm] nim 429 — waiting {wait:.0f}s (attempt {attempt+1}/{_NIM_429_RETRIES})", flush=True)
+                        time.sleep(wait)
+                        continue
+                    print(f"[llm] nim 429 Retry-After={wait:.0f}s — falling back to DeepSeek", flush=True)
+                    break
+                if resp.status_code in (500, 502, 503):
+                    print(f"[llm] nim {resp.status_code} — falling back to DeepSeek", flush=True)
+                    break
                 return resp
-        except Exception:
-            pass
+            except Exception:
+                break
         # NIM failed — fall through to DeepSeek
+
     if _deepseek_configured():
         ds_key = _deepseek_api_key()
         ds_url = _deepseek_base_url() + "/v1"
