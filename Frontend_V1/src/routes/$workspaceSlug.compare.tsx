@@ -19,6 +19,7 @@ export const Route = createFileRoute("/$workspaceSlug/compare")({
 
 function ComparePage() {
   const navigate = useNavigate({ from: Route.fullPath });
+  const { workspaceSlug } = Route.useParams();
   const { a, b } = Route.useSearch();
   const { group } = useTestGroup();
   const { data: runSummaries = [] } = useScopedRunSummaries();
@@ -139,16 +140,16 @@ function ComparePage() {
         <div className="text-sm text-muted-foreground">
           Open individual runs:{" "}
           <Link
-            to="/runs/$runId"
-            params={{ runId: runA }}
+            to="/$workspaceSlug/runs/$runId"
+            params={{ workspaceSlug, runId: runA }}
             className="text-primary hover:underline font-mono"
           >
             {runA}
           </Link>
           {" · "}
           <Link
-            to="/runs/$runId"
-            params={{ runId: runB }}
+            to="/$workspaceSlug/runs/$runId"
+            params={{ workspaceSlug, runId: runB }}
             className="text-primary hover:underline font-mono"
           >
             {runB}

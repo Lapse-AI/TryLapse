@@ -154,7 +154,8 @@ function Index() {
             </Chip>
             {runSummaries.length >= 2 ? (
               <Link
-                to="/compare"
+                to="/$workspaceSlug/compare"
+                params={{ workspaceSlug }}
                 search={{ a: runSummaries[1]?.id, b: latest.id }}
                 hash="visual-diff"
                 className="text-xs px-3 py-1.5 rounded-md border border-border/70 hover:bg-surface-2 inline-flex items-center gap-1.5 text-muted-foreground"
@@ -163,7 +164,8 @@ function Index() {
               </Link>
             ) : (
               <Link
-                to="/compare"
+                to="/$workspaceSlug/compare"
+                params={{ workspaceSlug }}
                 className="text-xs px-3 py-1.5 rounded-md border border-border hover:bg-surface-2 inline-flex items-center gap-1.5 text-muted-foreground"
                 title="Need two runs to compare"
               >
@@ -171,7 +173,8 @@ function Index() {
               </Link>
             )}
             <Link
-              to="/runs"
+              to="/$workspaceSlug/runs"
+              params={{ workspaceSlug }}
               className="text-xs px-3 py-1.5 rounded-md border border-border hover:bg-surface-2"
             >
               All runs →
@@ -515,7 +518,7 @@ function Index() {
               <Activity className="size-4 text-primary" />
               <span className="font-display text-base font-semibold">Recent runs</span>
             </div>
-            <Link to="/runs" className="text-xs text-muted-foreground hover:text-foreground">
+            <Link to="/$workspaceSlug/runs" params={{ workspaceSlug }} className="text-xs text-muted-foreground hover:text-foreground">
               View all →
             </Link>
           </div>

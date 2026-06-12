@@ -276,12 +276,22 @@ export function AppSidebar() {
           {liveJob && (
             <div className="rounded-md border border-info/40 p-2.5 bg-info/5 mb-2">
               <div className="text-[11px] text-info font-medium">Live rehearsal</div>
-              <Link
-                to="/runner"
-                className="mt-0.5 font-mono text-xs text-foreground hover:text-primary block truncate"
-              >
-                {liveJob.id} · {liveJob.status}
-              </Link>
+              {userWorkspace ? (
+                <Link
+                  to="/$workspaceSlug/runner"
+                  params={{ workspaceSlug: userWorkspace.slug }}
+                  className="mt-0.5 font-mono text-xs text-foreground hover:text-primary block truncate"
+                >
+                  {liveJob.id} · {liveJob.status}
+                </Link>
+              ) : (
+                <Link
+                  to="/runner"
+                  className="mt-0.5 font-mono text-xs text-foreground hover:text-primary block truncate"
+                >
+                  {liveJob.id} · {liveJob.status}
+                </Link>
+              )}
               <div className="text-[11px] text-muted-foreground mt-1">
                 {liveJob.runId ? `run ${liveJob.runId}` : "run id when CLI finishes"}
               </div>

@@ -49,6 +49,7 @@ import {
 } from "@/lib/run-metrics";
 import { countIssuesForDimension, issueMatchesDimension } from "@/lib/dimension-match";
 import { useRunBundle, useRunSummaries, useTriggerJob } from "@/lib/api/hooks";
+import { getWorkspace } from "@/lib/workspace";
 import {
   Dialog,
   DialogContent,
@@ -191,6 +192,7 @@ function RunDetail() {
   const [active, setActive] = useState<Set<Severity>>(new Set(ALL_SEVERITIES));
   const [compareRunId, setCompareRunId] = useState(runSummaries[1]?.id ?? "");
   const trigger = useTriggerJob();
+  const wsSlug = getWorkspace()?.slug;
   const [activeTab, setActiveTab] = useState(tabSearch ?? "overview");
 
   useEffect(() => {
@@ -295,13 +297,24 @@ function RunDetail() {
               <RotateCcw className="size-3.5" />
               {trigger.isPending ? "Triggering…" : "Re-run"}
             </button>
-            <Link
-              to="/compare"
-              search={{ a: runSummaries[1]?.id, b: run.id }}
-              className="text-xs px-3 py-1.5 rounded-md border border-border hover:bg-surface-2 inline-flex items-center gap-1.5"
-            >
-              <GitCompare className="size-3.5" /> Diff
-            </Link>
+            {wsSlug ? (
+              <Link
+                to="/$workspaceSlug/compare"
+                params={{ workspaceSlug: wsSlug }}
+                search={{ a: runSummaries[1]?.id, b: run.id }}
+                className="text-xs px-3 py-1.5 rounded-md border border-border hover:bg-surface-2 inline-flex items-center gap-1.5"
+              >
+                <GitCompare className="size-3.5" /> Diff
+              </Link>
+            ) : (
+              <Link
+                to="/compare"
+                search={{ a: runSummaries[1]?.id, b: run.id }}
+                className="text-xs px-3 py-1.5 rounded-md border border-border hover:bg-surface-2 inline-flex items-center gap-1.5"
+              >
+                <GitCompare className="size-3.5" /> Diff
+              </Link>
+            )}
             <ExportMenu runId={run.id} bundle={bundle} />
           </>
         }

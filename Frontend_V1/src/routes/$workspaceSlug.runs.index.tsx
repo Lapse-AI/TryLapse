@@ -87,7 +87,8 @@ function RunsList() {
           previous &&
           latest && (
             <Link
-              to="/compare"
+              to="/$workspaceSlug/compare"
+              params={{ workspaceSlug }}
               search={{ a: previous.id, b: latest.id }}
               className="text-xs font-mono px-3 py-1.5 rounded-md border border-border hover:bg-surface-2 inline-flex items-center gap-1.5"
             >
@@ -115,7 +116,7 @@ function RunsList() {
               </tr>
             </thead>
             <tbody>
-              <RunHistoryLiveRows jobs={activeJobs} group={{ label: productLabel, targetUrl: targetLabel }} />
+              <RunHistoryLiveRows jobs={activeJobs} group={{ label: productLabel, targetUrl: targetLabel }} workspaceSlug={workspaceSlug} />
               {runSummaries.map((r) => (
                 <tr
                   key={r.id}

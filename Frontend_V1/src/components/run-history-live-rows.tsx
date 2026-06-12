@@ -15,7 +15,7 @@ function statusLabel(status: string, paused: boolean): string {
 
 type GroupMeta = { label: string; targetUrl?: string };
 
-export function RunHistoryLiveRows({ jobs, group }: { jobs: JobRecord[]; group: GroupMeta }) {
+export function RunHistoryLiveRows({ jobs, group, workspaceSlug }: { jobs: JobRecord[]; group: GroupMeta; workspaceSlug?: string }) {
   const [paused, setPaused] = useState<Set<string>>(new Set());
   if (!jobs.length) return null;
 
@@ -48,19 +48,39 @@ export function RunHistoryLiveRows({ jobs, group }: { jobs: JobRecord[]; group: 
             <td className="px-5 py-3">
               <div className="flex flex-col gap-1">
                 {j.runId ? (
-                  <Link
-                    to="/runs/$runId"
-                    params={{ runId: j.runId }}
-                    className="font-mono text-xs text-primary hover:underline"
-                  >
-                    {j.runId}
-                  </Link>
+                  workspaceSlug ? (
+                    <Link
+                      to="/$workspaceSlug/runs/$runId"
+                      params={{ workspaceSlug, runId: j.runId }}
+                      className="font-mono text-xs text-primary hover:underline"
+                    >
+                      {j.runId}
+                    </Link>
+                  ) : (
+                    <Link
+                      to="/runs/$runId"
+                      params={{ runId: j.runId }}
+                      className="font-mono text-xs text-primary hover:underline"
+                    >
+                      {j.runId}
+                    </Link>
+                  )
                 ) : (
                   <span className="font-mono text-xs text-muted-foreground">pending…</span>
                 )}
-                <Link to="/runner" className="font-mono text-[11px] text-info hover:underline">
-                  job {j.id}
-                </Link>
+                {workspaceSlug ? (
+                  <Link
+                    to="/$workspaceSlug/runner"
+                    params={{ workspaceSlug }}
+                    className="font-mono text-[11px] text-info hover:underline"
+                  >
+                    job {j.id}
+                  </Link>
+                ) : (
+                  <Link to="/runner" className="font-mono text-[11px] text-info hover:underline">
+                    job {j.id}
+                  </Link>
+                )}
               </div>
             </td>
             <td className="px-5 py-3 text-xs">{group.label}</td>
