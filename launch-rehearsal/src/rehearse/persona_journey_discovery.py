@@ -263,24 +263,31 @@ def _call_llm(prompt: str, system: str, *, max_tokens: int = 3000) -> dict[str, 
     }
 
     for (base, model, key) in endpoints:
+        import re as _re
+        provider = "nim" if "nvidia" in base else "deepseek" if "deepseek" in base else "openai"
         payload = {**payload_base, "model": model}
         last_exc: Exception | None = None
         for attempt in range(3):
             if attempt > 0:
                 _time.sleep(2 ** attempt)
             try:
+                t0 = _time.time()
                 resp = httpx.post(
                     f"{base}/chat/completions",
                     headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
                     json=payload,
                     timeout=320.0,  # NIM free tier can queue up to ~280s on 3rd concurrent slot
                 )
+                elapsed = _time.time() - t0
                 if resp.status_code == 429:
+                    print(f"[llm] {provider} 429 rate-limited (attempt {attempt+1})", flush=True)
                     last_exc = Exception("rate limited (429)")
                     continue
                 if resp.status_code >= 500:
+                    print(f"[llm] {provider} {resp.status_code} server error — trying fallback", flush=True)
                     last_exc = Exception(f"server error {resp.status_code}")
                     break  # try next endpoint, not retry same
+                print(f"[llm] {provider}/{model.split('/')[-1]} {elapsed:.1f}s status={resp.status_code}", flush=True)
                 resp.raise_for_status()
                 choice = resp.json()["choices"][0]
                 raw = choice["message"]["content"]
