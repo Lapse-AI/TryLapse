@@ -53,8 +53,12 @@ def _try_salvage_partial_run(artifacts_root: Path, run_id_or_prefix: str | None,
         pass  # best-effort; never block the failure update
 
 
-def list_jobs(artifacts_root: Path) -> list[dict[str, Any]]:
-    return _db_list_jobs(artifacts_root)
+def list_jobs(
+    artifacts_root: Path,
+    config_prefix: str | None = None,
+) -> list[dict[str, Any]]:
+    """List jobs, optionally scoped to a workspace by config filename prefix."""
+    return _db_list_jobs(artifacts_root, config_prefix=config_prefix)
 
 
 def _save_job(artifacts_root: Path, job: dict[str, Any]) -> None:

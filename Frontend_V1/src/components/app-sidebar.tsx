@@ -19,6 +19,7 @@ import {
   Wand2,
   LogOut,
   HardHat,
+  User,
 } from "lucide-react";
 import { formatRel } from "@/lib/mock-data";
 import { useLatestRun, useWorkspace, useScopedActiveJobs } from "@/lib/api/hooks";
@@ -87,6 +88,7 @@ const workspaceNav = [
     items: [
       { to: "/config", label: "Config", icon: Settings },
       { to: "/runner", label: "Runner", icon: PlayCircle },
+      { to: "/personas", label: "Personas", icon: User },
       { to: "/library", label: "Journeys", icon: BookOpen, wip: true },
       { to: "/agents", label: "Agents", icon: Bot, wip: true },
     ],

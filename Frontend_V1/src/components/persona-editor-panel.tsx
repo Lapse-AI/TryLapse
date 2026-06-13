@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { Chip } from "@/components/ui-bits";
 import { api } from "@/lib/api/client";
 import { toast } from "sonner";
-import { Users, Trash2, Plus, ChevronDown, ChevronUp, Sparkles, X, Check, Loader2 } from "lucide-react";
+import { usePersonaLibrary } from "@/lib/api/hooks";
+import { BookMarked, Users, Trash2, Plus, ChevronDown, ChevronUp, Sparkles, X, Check, Loader2 } from "lucide-react";
 
 // ---------------------------------------------------------------------------
 // Avatar helpers (shared palette with persona-studio-panel)
@@ -281,6 +282,8 @@ export function PersonaEditorPanel({ configId, live, onPersonasChanged, refreshK
   const [saving, setSaving] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [showLibraryPicker, setShowLibraryPicker] = useState(false);
+  const { data: libraryPersonas = [] } = usePersonaLibrary();
 
   const load = async () => {
     if (!live || !configId) return;
@@ -377,6 +380,17 @@ export function PersonaEditorPanel({ configId, live, onPersonasChanged, refreshK
             />
             Persona lens
           </label>
+          {libraryPersonas.length > 0 && (
+            <button
+              type="button"
+              onClick={() => { setShowLibraryPicker(!showLibraryPicker); setShowAddForm(false); }}
+              className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-border hover:bg-surface-2 text-muted-foreground"
+              title="Add persona from library"
+            >
+              <BookMarked className="size-3" /> Library
+              {showLibraryPicker ? <ChevronUp className="size-3" /> : <ChevronDown className="size-3" />}
+            </button>
+          )}
           {dirty && (
             <button
               type="button"
@@ -390,6 +404,60 @@ export function PersonaEditorPanel({ configId, live, onPersonasChanged, refreshK
           )}
         </div>
       </div>
+
+      {/* Library persona picker */}
+      {showLibraryPicker && libraryPersonas.length > 0 && (
+        <div className="border border-primary/20 rounded-2xl bg-primary/5 p-3 space-y-2">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-xs font-medium">
+              <BookMarked className="size-3.5 text-primary" />
+              <span>Add from library</span>
+              <span className="text-muted-foreground font-normal">— click to add to this config</span>
+            </div>
+            <button type="button" onClick={() => setShowLibraryPicker(false)} className="text-muted-foreground hover:text-foreground">
+              <X className="size-3.5" />
+            </button>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+            {libraryPersonas
+              .filter((lp) => !personas.some((p) => p.id === lp.id))
+              .map((lp) => (
+                <button
+                  key={lp.id}
+                  type="button"
+                  onClick={() => {
+                    const newPersona: Persona = {
+                      id: lp.id,
+                      name: lp.name,
+                      role: lp.role,
+                      goals: lp.goals,
+                      enabled: true,
+                      tech_literacy: lp.tech_literacy,
+                      patience: lp.patience,
+                      trust_level: lp.trust_level,
+                      character: lp.character,
+                      usage_context: lp.usage_context,
+                    };
+                    setPersonas((prev) => [...prev, newPersona]);
+                    setDirty(true);
+                    setShowLibraryPicker(false);
+                    toast.success(`"${lp.name}" added — save config to persist`);
+                  }}
+                  className="text-left p-2.5 rounded-xl border border-border bg-surface hover:border-primary/40 hover:bg-primary/5 transition-colors"
+                >
+                  <div className="font-medium text-xs truncate">{lp.name}</div>
+                  <div className="text-[10px] text-muted-foreground truncate">{lp.role}</div>
+                  <div className="text-[10px] text-muted-foreground/60 mt-0.5">{lp.tech_literacy} · {lp.patience}</div>
+                </button>
+              ))}
+          </div>
+          {libraryPersonas.filter((lp) => !personas.some((p) => p.id === lp.id)).length === 0 && (
+            <div className="text-xs text-muted-foreground text-center py-2">
+              All library personas are already in this config.
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Persona card grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-3">

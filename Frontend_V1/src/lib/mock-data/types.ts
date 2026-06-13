@@ -409,3 +409,34 @@ export type BacklogItem = {
   fixBeforeLaunch: boolean;
   exportTargets: ("linear" | "jira" | "github")[];
 };
+
+/**
+ * A persona record stored in the global persona library (artifacts/personas.json).
+ *
+ * Mirrors the Python persona_store.py schema exactly so the two stay in sync.
+ * Fields beyond id/name/role/goals are the Phase-1 behavioral depth fields
+ * introduced in feat/deep-analysis-wiring.
+ */
+export type LibraryPersona = {
+  id: string;
+  name: string;
+  role: string;
+  goals: string[];
+  enabled: boolean;
+  /** "novice" | "intermediate" | "expert" */
+  tech_literacy: string;
+  /** "low" | "medium" | "high" */
+  patience: string;
+  /** "skeptical" | "neutral" | "trusting" */
+  trust_level: string;
+  /** Free-text psychological texture, e.g. "anxious about billing, reads every tooltip" */
+  character: string;
+  /** One sentence on how they arrive at the product */
+  usage_context: string;
+  /** User-defined filter labels */
+  tags: string[];
+  /** "manual" | "ai-generated" | "imported-from-config" */
+  source: string;
+  created_at: string;
+  updated_at: string;
+};

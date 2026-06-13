@@ -33,6 +33,7 @@ import { Route as CohortJobIdRouteImport } from './routes/cohort.$jobId'
 import { Route as WorkspaceSlugTrendsRouteImport } from './routes/$workspaceSlug.trends'
 import { Route as WorkspaceSlugRunsRouteImport } from './routes/$workspaceSlug.runs'
 import { Route as WorkspaceSlugRunnerRouteImport } from './routes/$workspaceSlug.runner'
+import { Route as WorkspaceSlugPersonasRouteImport } from './routes/$workspaceSlug.personas'
 import { Route as WorkspaceSlugDashboardRouteImport } from './routes/$workspaceSlug.dashboard'
 import { Route as WorkspaceSlugConfigRouteImport } from './routes/$workspaceSlug.config'
 import { Route as WorkspaceSlugCompareRouteImport } from './routes/$workspaceSlug.compare'
@@ -159,6 +160,11 @@ const WorkspaceSlugRunnerRoute = WorkspaceSlugRunnerRouteImport.update({
   path: '/runner',
   getParentRoute: () => WorkspaceSlugRoute,
 } as any)
+const WorkspaceSlugPersonasRoute = WorkspaceSlugPersonasRouteImport.update({
+  id: '/personas',
+  path: '/personas',
+  getParentRoute: () => WorkspaceSlugRoute,
+} as any)
 const WorkspaceSlugDashboardRoute = WorkspaceSlugDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -206,6 +212,7 @@ export interface FileRoutesByFullPath {
   '/$workspaceSlug/compare': typeof WorkspaceSlugCompareRoute
   '/$workspaceSlug/config': typeof WorkspaceSlugConfigRoute
   '/$workspaceSlug/dashboard': typeof WorkspaceSlugDashboardRoute
+  '/$workspaceSlug/personas': typeof WorkspaceSlugPersonasRoute
   '/$workspaceSlug/runner': typeof WorkspaceSlugRunnerRoute
   '/$workspaceSlug/runs': typeof WorkspaceSlugRunsRouteWithChildren
   '/$workspaceSlug/trends': typeof WorkspaceSlugTrendsRoute
@@ -237,6 +244,7 @@ export interface FileRoutesByTo {
   '/$workspaceSlug/compare': typeof WorkspaceSlugCompareRoute
   '/$workspaceSlug/config': typeof WorkspaceSlugConfigRoute
   '/$workspaceSlug/dashboard': typeof WorkspaceSlugDashboardRoute
+  '/$workspaceSlug/personas': typeof WorkspaceSlugPersonasRoute
   '/$workspaceSlug/runner': typeof WorkspaceSlugRunnerRoute
   '/$workspaceSlug/trends': typeof WorkspaceSlugTrendsRoute
   '/cohort/$jobId': typeof CohortJobIdRoute
@@ -268,6 +276,7 @@ export interface FileRoutesById {
   '/$workspaceSlug/compare': typeof WorkspaceSlugCompareRoute
   '/$workspaceSlug/config': typeof WorkspaceSlugConfigRoute
   '/$workspaceSlug/dashboard': typeof WorkspaceSlugDashboardRoute
+  '/$workspaceSlug/personas': typeof WorkspaceSlugPersonasRoute
   '/$workspaceSlug/runner': typeof WorkspaceSlugRunnerRoute
   '/$workspaceSlug/runs': typeof WorkspaceSlugRunsRouteWithChildren
   '/$workspaceSlug/trends': typeof WorkspaceSlugTrendsRoute
@@ -301,6 +310,7 @@ export interface FileRouteTypes {
     | '/$workspaceSlug/compare'
     | '/$workspaceSlug/config'
     | '/$workspaceSlug/dashboard'
+    | '/$workspaceSlug/personas'
     | '/$workspaceSlug/runner'
     | '/$workspaceSlug/runs'
     | '/$workspaceSlug/trends'
@@ -332,6 +342,7 @@ export interface FileRouteTypes {
     | '/$workspaceSlug/compare'
     | '/$workspaceSlug/config'
     | '/$workspaceSlug/dashboard'
+    | '/$workspaceSlug/personas'
     | '/$workspaceSlug/runner'
     | '/$workspaceSlug/trends'
     | '/cohort/$jobId'
@@ -362,6 +373,7 @@ export interface FileRouteTypes {
     | '/$workspaceSlug/compare'
     | '/$workspaceSlug/config'
     | '/$workspaceSlug/dashboard'
+    | '/$workspaceSlug/personas'
     | '/$workspaceSlug/runner'
     | '/$workspaceSlug/runs'
     | '/$workspaceSlug/trends'
@@ -567,6 +579,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkspaceSlugRunnerRouteImport
       parentRoute: typeof WorkspaceSlugRoute
     }
+    '/$workspaceSlug/personas': {
+      id: '/$workspaceSlug/personas'
+      path: '/personas'
+      fullPath: '/$workspaceSlug/personas'
+      preLoaderRoute: typeof WorkspaceSlugPersonasRouteImport
+      parentRoute: typeof WorkspaceSlugRoute
+    }
     '/$workspaceSlug/dashboard': {
       id: '/$workspaceSlug/dashboard'
       path: '/dashboard'
@@ -622,6 +641,7 @@ interface WorkspaceSlugRouteChildren {
   WorkspaceSlugCompareRoute: typeof WorkspaceSlugCompareRoute
   WorkspaceSlugConfigRoute: typeof WorkspaceSlugConfigRoute
   WorkspaceSlugDashboardRoute: typeof WorkspaceSlugDashboardRoute
+  WorkspaceSlugPersonasRoute: typeof WorkspaceSlugPersonasRoute
   WorkspaceSlugRunnerRoute: typeof WorkspaceSlugRunnerRoute
   WorkspaceSlugRunsRoute: typeof WorkspaceSlugRunsRouteWithChildren
   WorkspaceSlugTrendsRoute: typeof WorkspaceSlugTrendsRoute
@@ -631,6 +651,7 @@ const WorkspaceSlugRouteChildren: WorkspaceSlugRouteChildren = {
   WorkspaceSlugCompareRoute: WorkspaceSlugCompareRoute,
   WorkspaceSlugConfigRoute: WorkspaceSlugConfigRoute,
   WorkspaceSlugDashboardRoute: WorkspaceSlugDashboardRoute,
+  WorkspaceSlugPersonasRoute: WorkspaceSlugPersonasRoute,
   WorkspaceSlugRunnerRoute: WorkspaceSlugRunnerRoute,
   WorkspaceSlugRunsRoute: WorkspaceSlugRunsRouteWithChildren,
   WorkspaceSlugTrendsRoute: WorkspaceSlugTrendsRoute,

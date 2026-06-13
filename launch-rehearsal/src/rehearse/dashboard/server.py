@@ -90,7 +90,7 @@ def _cors_headers(origin: str | None) -> dict[str, str]:
     allowed = origin if (origin and origin in _CORS_ORIGINS) else next(iter(_CORS_ORIGINS), "*")
     return {
         "Access-Control-Allow-Origin": allowed,
-        "Access-Control-Allow-Methods": "GET, POST, PUT, OPTIONS",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, Authorization",
         "Vary": "Origin",
     }
@@ -528,17 +528,69 @@ class _Handler(BaseHTTPRequestHandler):
             self._send_json(get_journey_library(root))
             return
 
+        # ── Persona Library ───────────────────────────────────────────────────
+        # GET  /api/persona-library          → list all saved personas
+        # GET  /api/persona-library/{id}     → single persona
+        #
+        # POST /api/persona-library          → create / upsert persona
+        # POST /api/persona-library/generate → AI-generate + optionally save
+        # POST /api/persona-library/import   → bulk import from a config
+        # DELETE /api/persona-library/{id}   → remove from library
+        #
+        # These are workspace-global: the library belongs to the user, not to
+        # a single product.  Products reference library personas by id when
+        # importing them into a config.
+        if path == "/api/persona-library":
+            from rehearse.dashboard.persona_store import list_personas
+            self._send_json(list_personas(root))
+            return
+
+        if path.startswith("/api/persona-library/") and len(path.split("/")) == 4:
+            pid = path.split("/")[-1]
+            from rehearse.dashboard.persona_store import get_persona
+            p = get_persona(root, pid)
+            if p is None:
+                self._send_json({"error": "not found"}, status=404)
+                return
+            self._send_json(p)
+            return
+
         if path == "/api/init":
             self._send_json(get_init_wizard(root))
             return
 
         if path == "/api/jobs":
-            jobs = list_jobs(root)
+            # Derive workspace config_prefix from:
+            # 1. Explicit ?configPrefix= query param (used by workspace-aware clients)
+            # 2. The authenticated user's active workspace config path
+            # 3. Nothing — return all jobs (unauthenticated / no workspace)
+            #
+            # The prefix is the product slug portion of the config filename,
+            # e.g. "faculty-dashboard-eight-vercel-app" from
+            # "faculty-dashboard-eight-vercel-app-20260611-052339.yaml".
+            # Using the full slug (not just the first word) gives precise
+            # per-product isolation even when two products share a first word.
+            config_prefix_q = (qs.get("configPrefix") or [""])[0].strip()
+            if not config_prefix_q:
+                payload = self._require_jwt()
+                if payload:
+                    from rehearse.dashboard.workspace_store import get_workspaces_for_user
+                    workspaces = get_workspaces_for_user(root, payload["sub"])
+                    if workspaces:
+                        cp = workspaces[0].get("configPath") or workspaces[0].get("config_path") or ""
+                        if cp:
+                            import re as _re
+                            stem = _P(cp).stem  # e.g. faculty-dashboard-eight-vercel-app-20260611-052339
+                            # Strip the -YYYYMMDD-HHMMSS trailing timestamp to get the product slug
+                            m = _re.match(r"^(.*)-\d{8}-\d{6}$", stem)
+                            config_prefix_q = m.group(1) if m else stem
+
+            jobs = list_jobs(root, config_prefix=config_prefix_q or None)
+
             # For running jobs without a runId, discover it from the progress file
             runs_dir = root / "runs"
             for job in jobs:
                 if job.get("status") == "running" and not job.get("runId"):
-                    # Find the most recently modified progress file
                     try:
                         candidates = sorted(
                             runs_dir.glob("*-progress.json"),
@@ -1069,6 +1121,83 @@ class _Handler(BaseHTTPRequestHandler):
             self._send_json(result)
             return
 
+        # ── Persona Library mutations (POST) ─────────────────────────────────
+        if path == "/api/persona-library":
+            # Upsert a persona record into the library.
+            # Caller may supply a full persona dict (from the editor) or a
+            # partial dict — missing behavioral fields are filled with defaults.
+            body = self._read_json_body()
+            from rehearse.dashboard.persona_store import save_persona
+            saved = save_persona(root, body)
+            self._send_json(saved)
+            return
+
+        if path == "/api/persona-library/generate":
+            # AI-generate a rich behavioral persona, then optionally save it.
+            # Body: { prompt, productName?, targetUrl?, save?: bool }
+            body = self._read_json_body()
+            prompt = str(body.get("prompt") or "").strip()
+            if not prompt:
+                self._send_json({"error": "prompt is required"}, status=400)
+                return
+            from rehearse.dashboard.persona_draft import draft_library_persona
+            try:
+                persona = draft_library_persona(
+                    prompt,
+                    product_name=body.get("productName"),
+                    target_url=body.get("targetUrl"),
+                )
+            except ValueError as exc:
+                self._send_json({"error": str(exc)}, status=400)
+                return
+
+            # ``save=true`` → persist to library immediately; frontend can also
+            # let the user review before saving (``save=false`` is the default).
+            if body.get("save"):
+                from rehearse.dashboard.persona_store import save_persona
+                persona = save_persona(root, persona)
+
+            import yaml as _yaml
+            from rehearse.dashboard.persona_draft import persona_to_yaml_entry
+            fragment = _yaml.dump(
+                [persona_to_yaml_entry(persona)],
+                default_flow_style=False,
+                sort_keys=False,
+                allow_unicode=True,
+            )
+            self._send_json({"persona": persona, "yamlFragment": fragment})
+            return
+
+        if path == "/api/persona-library/import":
+            # Bulk-import personas from an existing config file into the library.
+            # Body: { configId: string }   (the config filename stem)
+            body = self._read_json_body()
+            config_id = str(body.get("configId") or "").strip()
+            if not config_id:
+                self._send_json({"error": "configId is required"}, status=400)
+                return
+            cfg_path = root / "configs" / f"{config_id}.yaml"
+            if not cfg_path.is_file():
+                self._send_json({"error": f"config {config_id!r} not found"}, status=404)
+                return
+            try:
+                import yaml as _yaml
+                cfg = _yaml.safe_load(cfg_path.read_text())
+                personas_in_cfg = cfg.get("personas") or []
+            except Exception as exc:
+                self._send_json({"error": f"Failed to read config: {exc}"}, status=500)
+                return
+
+            import re as _re
+            # Derive product slug by stripping the -YYYYMMDD-HHMMSS suffix
+            m = _re.match(r"^(.*)-\d{8}-\d{6}$", config_id)
+            slug = m.group(1) if m else config_id
+
+            from rehearse.dashboard.persona_store import import_from_config
+            saved = import_from_config(root, personas_in_cfg, product_slug=slug)
+            self._send_json({"imported": len(saved), "personas": saved})
+            return
+
         if path == "/api/recordings/save":
             body = self._read_json_body()
             run_id = str(body.get("runId") or "").strip()
@@ -1415,6 +1544,30 @@ class _Handler(BaseHTTPRequestHandler):
                 send_signal(root, run_id, signal)
                 self._send_json({"runId": run_id, "signal": signal})
                 return
+
+        self.send_error(404)
+
+    def do_DELETE(self) -> None:  # noqa: N802
+        parsed = urllib.parse.urlparse(self.path)
+        path = parsed.path.rstrip("/") or "/"
+        root = self.server.artifacts_root
+
+        if not self._check_auth(path):
+            return
+
+        # DELETE /api/persona-library/{id}
+        if path.startswith("/api/persona-library/"):
+            pid = path.split("/")[-1]
+            if not pid:
+                self._send_json({"error": "id required"}, status=400)
+                return
+            from rehearse.dashboard.persona_store import delete_persona
+            found = delete_persona(root, pid)
+            if not found:
+                self._send_json({"error": "not found"}, status=404)
+                return
+            self._send_json({"deleted": pid})
+            return
 
         self.send_error(404)
 

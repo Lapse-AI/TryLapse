@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type { Annotation, RunBundle, RunDiff, RunSummary, Workspace } from "@/lib/mock-data/types";
+import type { Annotation, LibraryPersona, RunBundle, RunDiff, RunSummary, Workspace } from "@/lib/mock-data/types";
 import {
   getLatestRun as mockLatest,
   getRunBundle as mockBundle,
@@ -51,6 +51,8 @@ export const queryKeys = {
   init: ["rehearse", "init"] as const,
   jobs: ["rehearse", "jobs"] as const,
   configs: ["rehearse", "configs"] as const,
+  personaLibrary: ["rehearse", "persona-library"] as const,
+  personaLibraryItem: (id: string) => ["rehearse", "persona-library", id] as const,
 };
 
 export function useApiHealth() {
@@ -440,5 +442,77 @@ export function useAddAnnotation(runId: string) {
   return useMutation({
     mutationFn: (ann: Annotation) => api.addAnnotation(runId, ann),
     onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.bundle(runId) }),
+  });
+}
+
+// ── Persona Library hooks ───────────────────────────────────────────────────
+// These hit /api/persona-library, a workspace-global persona store that
+// lives in artifacts/personas.json.  Personas saved here can be imported
+// into any config without re-describing them from scratch.
+
+/** Fetch all library personas.  Polls every 60s to stay fresh. */
+export function usePersonaLibrary() {
+  const health = useApiHealth();
+  return useQuery({
+    queryKey: queryKeys.personaLibrary,
+    queryFn: () => api.listPersonaLibrary(),
+    enabled: health.data === true,
+    staleTime: 60_000,
+  });
+}
+
+/** Save (create or update) a persona in the library. */
+export function useSavePersonaLibrary() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (p: Partial<LibraryPersona> & { name: string; role: string }) =>
+      api.savePersonaLibrary(p),
+    onSuccess: (saved) => {
+      void qc.invalidateQueries({ queryKey: queryKeys.personaLibrary });
+      void qc.invalidateQueries({ queryKey: queryKeys.personaLibraryItem(saved.id) });
+      toast.success(`Persona "${saved.name}" saved to library`);
+    },
+  });
+}
+
+/** AI-generate a rich behavioral persona and optionally save it. */
+export function useGeneratePersona() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: { prompt: string; productName?: string; targetUrl?: string; save?: boolean }) =>
+      api.generatePersonaLibrary(body),
+    onSuccess: (result, variables) => {
+      if (variables.save) {
+        void qc.invalidateQueries({ queryKey: queryKeys.personaLibrary });
+        toast.success(`Persona "${result.persona.name}" generated and saved`);
+      }
+    },
+    onError: (err) => {
+      toast.error(err instanceof Error ? err.message : "Generation failed");
+    },
+  });
+}
+
+/** Bulk-import all personas from a config into the library. */
+export function useImportPersonasFromConfig() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (configId: string) => api.importPersonasFromConfig(configId),
+    onSuccess: (result) => {
+      void qc.invalidateQueries({ queryKey: queryKeys.personaLibrary });
+      toast.success(`Imported ${result.imported} persona${result.imported !== 1 ? "s" : ""} into library`);
+    },
+  });
+}
+
+/** Delete a persona from the library. */
+export function useDeletePersonaLibrary() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.deletePersonaLibrary(id),
+    onSuccess: (_, id) => {
+      void qc.invalidateQueries({ queryKey: queryKeys.personaLibrary });
+      void qc.invalidateQueries({ queryKey: queryKeys.personaLibraryItem(id) });
+    },
   });
 }

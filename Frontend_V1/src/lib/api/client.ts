@@ -8,6 +8,7 @@ import type {
   ExperimentSpec,
   InsightNarrative,
   Integration,
+  LibraryPersona,
   RunBundle,
   RunDiff,
   RunSummary,
@@ -547,4 +548,48 @@ export const api = {
       configPath: string;
       createdAt: string;
     }>("/api/workspaces", { method: "POST", body: JSON.stringify(body) }),
+
+  // ── Persona Library ─────────────────────────────────────────────────────
+  // The library is workspace-global: personas can be reused across products.
+
+  /** Fetch all library personas (newest first). */
+  listPersonaLibrary: () =>
+    apiFetch<LibraryPersona[]>("/api/persona-library"),
+
+  /** Fetch a single library persona by id. */
+  getPersonaLibrary: (id: string) =>
+    apiFetch<LibraryPersona>(`/api/persona-library/${encodeURIComponent(id)}`),
+
+  /** Create or update a persona in the library. */
+  savePersonaLibrary: (persona: Partial<LibraryPersona> & { name: string; role: string }) =>
+    apiFetch<LibraryPersona>("/api/persona-library", {
+      method: "POST",
+      body: JSON.stringify(persona),
+    }),
+
+  /** AI-generate a rich behavioral persona.
+   *  Pass save=true to persist immediately, or false to preview first. */
+  generatePersonaLibrary: (body: {
+    prompt: string;
+    productName?: string;
+    targetUrl?: string;
+    save?: boolean;
+  }) =>
+    apiFetch<{ persona: LibraryPersona; yamlFragment: string }>(
+      "/api/persona-library/generate",
+      { method: "POST", body: JSON.stringify(body) }
+    ),
+
+  /** Bulk-import all personas from an existing config into the library. */
+  importPersonasFromConfig: (configId: string) =>
+    apiFetch<{ imported: number; personas: LibraryPersona[] }>(
+      "/api/persona-library/import",
+      { method: "POST", body: JSON.stringify({ configId }) }
+    ),
+
+  /** Delete a library persona by id. */
+  deletePersonaLibrary: (id: string) =>
+    apiFetch<{ deleted: string }>(`/api/persona-library/${encodeURIComponent(id)}`, {
+      method: "DELETE",
+    }),
 };
