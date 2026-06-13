@@ -43,6 +43,14 @@ ENV DEEPSEEK_API_KEY=""
 ENV REHEARSE_LLM_API_KEY=""
 ENV REHEARSE_EMAIL=""
 ENV REHEARSE_PASSWORD=""
+# Auth — MUST be set in Railway dashboard before first deploy.
+# REHEARSE_JWT_SECRET: 64-char hex string; regenerated each restart if unset
+#   (sessions survive restarts only when this is set)
+# REHEARSE_API_TOKEN: static bearer token for API access (optional)
+# REHEARSE_CORS_ORIGIN: comma-separated list of allowed origins (e.g. https://app.trylapse.com)
+ENV REHEARSE_JWT_SECRET=""
+ENV REHEARSE_API_TOKEN=""
+ENV REHEARSE_CORS_ORIGIN=""
 
 EXPOSE 8080
 

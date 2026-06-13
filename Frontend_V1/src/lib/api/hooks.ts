@@ -340,6 +340,27 @@ function jobsHaveActive(jobs: JobRecord[] | undefined): boolean {
   return (jobs ?? []).some((j) => j.status === "queued" || j.status === "running");
 }
 
+function requestNotificationPermission() {
+  if ("Notification" in window && Notification.permission === "default") {
+    void Notification.requestPermission();
+  }
+}
+
+function fireRunNotification(title: string, body: string, runId?: string) {
+  if (!("Notification" in window) || Notification.permission !== "granted") return;
+  const n = new Notification(title, {
+    body,
+    icon: "/favicon.ico",
+    tag: runId ?? "rehearsal-run",
+  });
+  if (runId) {
+    n.onclick = () => {
+      window.focus();
+      window.location.href = `/runs/${runId}`;
+    };
+  }
+}
+
 export function useJobs() {
   const health = useApiHealth();
   const qc = useQueryClient();
@@ -369,8 +390,17 @@ export function useJobs() {
           toast.success(`Run finished: ${j.runId}`, {
             action: { label: "Open", onClick: () => (window.location.href = `/runs/${j.runId}`) },
           });
+          fireRunNotification(
+            "Rehearsal complete",
+            `Run ${j.runId} finished. Open to view the scorecard.`,
+            j.runId,
+          );
         } else if (now === "failed") {
           toast.error(j.error?.slice(0, 120) || `Job ${j.id} failed`);
+          fireRunNotification(
+            "Rehearsal failed",
+            j.error?.slice(0, 100) || `Job ${j.id} failed`,
+          );
         }
         refreshedRuns = true;
       }
@@ -401,6 +431,8 @@ export function useTriggerJob() {
     onSuccess: (job) => {
       toast.info(`Job ${job.status}: ${job.id}`, { description: "Watch status on Runner" });
       void qc.invalidateQueries({ queryKey: queryKeys.jobs });
+      // Ask permission to send an OS notification when this run completes
+      requestNotificationPermission();
     },
     onError: (err) => {
       toast.error(err instanceof Error ? err.message : "Could not start job");

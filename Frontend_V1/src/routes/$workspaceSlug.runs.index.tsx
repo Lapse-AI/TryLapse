@@ -1,4 +1,5 @@
-import { createFileRoute, Link, useParams } from "@tanstack/react-router";
+import { createFileRoute, Link, useParams, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
 import { PageHeader, Panel, Chip, StatusDot, ClientTime } from "@/components/ui-bits";
 import { formatDuration } from "@/lib/mock-data";
 import { useScopedRunSummaries, useScopedActiveJobs } from "@/lib/api/hooks";
@@ -38,8 +39,18 @@ function RunsList() {
   const trigger = useTriggerJob();
   const { data: live } = useApiHealth();
   const userWorkspace = getWorkspace();
+  const navigate = useNavigate();
   const latest = runSummaries[0];
   const previous = runSummaries[1];
+  const [selected, setSelected] = useState<string[]>([]);
+
+  function toggleSelect(id: string) {
+    setSelected((prev) => {
+      if (prev.includes(id)) return prev.filter((x) => x !== id);
+      if (prev.length >= 2) return [prev[1], id]; // keep latest two
+      return [...prev, id];
+    });
+  }
 
   const productLabel = userWorkspace?.productName ?? userWorkspace?.name ?? "your product";
   const targetLabel = userWorkspace?.targetUrl ?? "";
@@ -102,6 +113,7 @@ function RunsList() {
           <table className="w-full text-sm">
             <thead className="text-xs text-muted-foreground">
               <tr className="border-b border-border bg-surface-2/40">
+                <th className="px-3 py-2.5 w-8" title="Select to compare" />
                 <th className="text-left px-5 py-2.5 font-medium">Run ID</th>
                 <th className="text-left px-5 py-2.5 font-medium">Product</th>
                 <th className="text-left px-5 py-2.5 font-medium">Target</th>
@@ -117,63 +129,103 @@ function RunsList() {
             </thead>
             <tbody>
               <RunHistoryLiveRows jobs={activeJobs} group={{ label: productLabel, targetUrl: targetLabel }} workspaceSlug={workspaceSlug} />
-              {runSummaries.map((r) => (
-                <tr
-                  key={r.id}
-                  className="border-b border-border last:border-0 hover:bg-surface-2/40"
-                >
-                  <td className="px-5 py-3">
-                    <Link
-                      to="/$workspaceSlug/runs/$runId"
-                      params={{ workspaceSlug, runId: r.id }}
-                      className="font-mono text-xs text-primary hover:underline"
-                      title={r.id}
-                    >
-                      {formatRunId(r.id)}
-                    </Link>
-                  </td>
-                  <td className="px-5 py-3 text-xs">{r.productName}</td>
-                  <td className="px-5 py-3 font-mono text-xs">{r.target}</td>
-                  <td className="px-5 py-3">
-                    <Chip
-                      tone={
-                        r.env === "prod-canary"
-                          ? "violet"
-                          : r.env === "staging"
-                            ? "info"
-                            : "neutral"
-                      }
-                    >
-                      {r.env}
-                    </Chip>
-                  </td>
-                  <td className="px-5 py-3">
-                    <div className="flex items-center gap-2">
-                      <StatusDot status={r.status} />
-                      <span className="font-mono tabular-nums">{r.readiness}</span>
-                      <span className="text-[11px] text-muted-foreground">{r.readinessBand}</span>
-                    </div>
-                  </td>
-                  <td className="px-5 py-3 font-mono tabular-nums text-danger">{r.blockers}</td>
-                  <td className="px-5 py-3 font-mono tabular-nums text-ready">{r.delights}</td>
-                  <td className="px-5 py-3 font-mono tabular-nums text-muted-foreground">
-                    {r.pages || "—"}
-                  </td>
-                  <td className="px-5 py-3 font-mono text-muted-foreground">
-                    {formatDuration(r.durationSec)}
-                  </td>
-                  <td className="px-5 py-3 font-mono text-muted-foreground tabular-nums">
-                    ${r.agentCost.toFixed(2)}
-                  </td>
-                  <td className="px-5 py-3 text-right text-muted-foreground text-xs">
-                    <ClientTime iso={r.startedAt} />
-                  </td>
-                </tr>
-              ))}
+              {runSummaries.map((r) => {
+                const isChecked = selected.includes(r.id);
+                return (
+                  <tr
+                    key={r.id}
+                    className={`border-b border-border last:border-0 hover:bg-surface-2/40 ${isChecked ? "bg-primary/5" : ""}`}
+                  >
+                    <td className="px-3 py-3 text-center">
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={() => toggleSelect(r.id)}
+                        className="accent-primary size-3.5 cursor-pointer"
+                        title={isChecked ? "Deselect" : "Select to compare"}
+                      />
+                    </td>
+                    <td className="px-5 py-3">
+                      <Link
+                        to="/$workspaceSlug/runs/$runId"
+                        params={{ workspaceSlug, runId: r.id }}
+                        className="font-mono text-xs text-primary hover:underline"
+                        title={r.id}
+                      >
+                        {formatRunId(r.id)}
+                      </Link>
+                    </td>
+                    <td className="px-5 py-3 text-xs">{r.productName}</td>
+                    <td className="px-5 py-3 font-mono text-xs">{r.target}</td>
+                    <td className="px-5 py-3">
+                      <Chip
+                        tone={
+                          r.env === "prod-canary"
+                            ? "violet"
+                            : r.env === "staging"
+                              ? "info"
+                              : "neutral"
+                        }
+                      >
+                        {r.env}
+                      </Chip>
+                    </td>
+                    <td className="px-5 py-3">
+                      <div className="flex items-center gap-2">
+                        <StatusDot status={r.status} />
+                        <span className="font-mono tabular-nums">{r.readiness}</span>
+                        <span className="text-[11px] text-muted-foreground">{r.readinessBand}</span>
+                      </div>
+                    </td>
+                    <td className="px-5 py-3 font-mono tabular-nums text-danger">{r.blockers}</td>
+                    <td className="px-5 py-3 font-mono tabular-nums text-ready">{r.delights}</td>
+                    <td className="px-5 py-3 font-mono tabular-nums text-muted-foreground">
+                      {r.pages || "—"}
+                    </td>
+                    <td className="px-5 py-3 font-mono text-muted-foreground">
+                      {formatDuration(r.durationSec)}
+                    </td>
+                    <td className="px-5 py-3 font-mono text-muted-foreground tabular-nums">
+                      ${r.agentCost.toFixed(2)}
+                    </td>
+                    <td className="px-5 py-3 text-right text-muted-foreground text-xs">
+                      <ClientTime iso={r.startedAt} />
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </Panel>
       </div>
+
+      {/* Floating compare bar — appears when 2 runs are selected */}
+      {selected.length === 2 && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-3 rounded-xl bg-foreground text-background shadow-xl border border-border/20">
+          <GitCompare className="size-4 shrink-0" />
+          <span className="text-sm font-medium">2 runs selected</span>
+          <button
+            type="button"
+            onClick={() =>
+              void navigate({
+                to: "/$workspaceSlug/compare",
+                params: { workspaceSlug },
+                search: { a: selected[0], b: selected[1] },
+              })
+            }
+            className="ml-2 px-4 py-1.5 rounded-lg bg-background text-foreground text-sm font-semibold hover:opacity-80 transition-opacity"
+          >
+            Compare
+          </button>
+          <button
+            type="button"
+            onClick={() => setSelected([])}
+            className="text-xs opacity-60 hover:opacity-100 ml-1"
+          >
+            ✕
+          </button>
+        </div>
+      )}
     </div>
   );
 }

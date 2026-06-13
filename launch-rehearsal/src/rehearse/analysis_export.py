@@ -317,13 +317,16 @@ def _append_dimension_rollup_issues(
             )
         )
 
-    if (missing_labels > 0 or unlabeled > 5) and not has_dimension("Accessibility"):
+    missing_alt_total = sum(getattr(s, "missing_alt_count", 0) for s in evidence.steps)
+    if (missing_labels > 0 or unlabeled > 5 or missing_alt_total > 0) and not has_dimension("Accessibility"):
         if "DIM-A11Y-ROLLUP" not in existing_ids:
             parts = []
             if unlabeled > 5:
                 parts.append(f"{unlabeled} unlabeled button(s)")
             if missing_labels > 0:
                 parts.append(f"{missing_labels} input(s) missing labels")
+            if missing_alt_total > 0:
+                parts.append(f"{missing_alt_total} image(s) missing alt text")
             issues.append(
                 _rollup_issue(
                     issue_id="DIM-A11Y-ROLLUP",
@@ -457,7 +460,7 @@ def _expand_dimensions(raw: dict[str, tuple[int, str]], evidence: RunEvidence) -
     base = sum(i["score"] for i in items) / len(items)
     for extra in EXTRA_DIMENSIONS:
         bump = 0
-        signal = "Estimated — no unique signal yet (see issue #23)"
+        signal = "Estimated — no specific signal (score derived from run average)"
         automated = False
 
         if extra == "Performance":
@@ -465,21 +468,28 @@ def _expand_dimensions(raw: dict[str, tuple[int, str]], evidence: RunEvidence) -
             automated = bool(evidence.steps)
 
         elif extra == "Accessibility":
-            # Use both unlabeled buttons AND input label ratio (issue #25)
+            # Signals: unlabeled buttons, unlabeled inputs, images without alt, low-contrast text
             unlabeled_btns = sum(s.unlabeled_button_count for s in evidence.steps)
             total_inputs = sum(getattr(s, "input_count", 0) for s in evidence.steps)
             labeled_inputs = sum(getattr(s, "labeled_input_count", 0) for s in evidence.steps)
             unlabeled_inputs = max(0, total_inputs - labeled_inputs)
-            # Tighter threshold: >2 unlabeled buttons already matters for enterprise
+            missing_alt = sum(getattr(s, "missing_alt_count", 0) for s in evidence.steps)
+            low_contrast = sum(getattr(s, "low_contrast_estimate", 0) for s in evidence.steps)
             btn_bump = -20 if unlabeled_btns > 5 else -10 if unlabeled_btns > 2 else 0
             input_bump = -15 if unlabeled_inputs > 3 else -5 if unlabeled_inputs > 0 else 5
-            bump = btn_bump + input_bump
+            alt_bump = -10 if missing_alt > 3 else -5 if missing_alt > 0 else 0
+            contrast_bump = -10 if low_contrast > 10 else -5 if low_contrast > 3 else 0
+            bump = btn_bump + input_bump + alt_bump + contrast_bump
             parts = []
             if unlabeled_btns:
                 parts.append(f"{unlabeled_btns} unlabeled buttons")
             if total_inputs:
                 parts.append(f"{labeled_inputs}/{total_inputs} inputs labeled")
-            signal = "; ".join(parts) if parts else "No interactive elements found"
+            if missing_alt:
+                parts.append(f"{missing_alt} images missing alt")
+            if low_contrast:
+                parts.append(f"~{low_contrast} low-contrast text elements (estimated)")
+            signal = "; ".join(parts) if parts else "No a11y issues detected"
             automated = True
 
         elif extra == "Trust":
@@ -499,7 +509,14 @@ def _expand_dimensions(raw: dict[str, tuple[int, str]], evidence: RunEvidence) -
             automated = True
 
         elif extra == "Onboarding":
-            # Real signals: auth success on first journey, onboarding paths in sitemap, first-journey pass rate
+            # Signals:
+            #  1. Auth outcome (success/fail)
+            #  2. First journey pass rate (first thing a new user tries)
+            #  3. Onboarding path coverage — any navigate step hits /signup, /register,
+            #     /onboarding, /welcome, /setup, /getting-started, /tour
+            #  4. First-journey error-free — no error_type on first journey steps
+            _ONBOARD_PATHS = ("/signup", "/register", "/onboarding", "/welcome",
+                              "/setup", "/getting-started", "/tour", "/start")
             first_journey_steps = []
             all_journey_ids = list(dict.fromkeys(s.journey_id for s in evidence.steps if s.journey_id))
             if all_journey_ids:
@@ -509,34 +526,71 @@ def _expand_dimensions(raw: dict[str, tuple[int, str]], evidence: RunEvidence) -
                 sum(1 for s in first_journey_steps if s.outcome == "pass") / len(first_journey_steps)
                 if first_journey_steps else 0.5
             )
+            onboard_paths_visited = sum(
+                1 for s in evidence.steps
+                if s.action == "navigate"
+                and any(p in (s.final_url or s.requested_url or "") for p in _ONBOARD_PATHS)
+            )
             auth_ok = evidence.auth_outcome and "success" in evidence.auth_outcome
+            first_error_free = not any(s.error_type for s in first_journey_steps)
+
             onboard_bump = 5 if auth_ok else -5
             onboard_bump += 5 if first_pass_rate >= 0.8 else (-10 if first_pass_rate < 0.5 else 0)
+            onboard_bump += 5 if onboard_paths_visited > 0 else 0
+            onboard_bump += 5 if first_error_free and first_journey_steps else 0
             bump = onboard_bump
+
             parts = []
             if evidence.auth_outcome:
                 parts.append(f"auth: {evidence.auth_outcome}")
             if first_journey_steps:
                 parts.append(f"first journey {first_pass_rate:.0%} pass")
-            signal = "; ".join(parts) if parts else "first journey pass rate"
+            if onboard_paths_visited:
+                parts.append(f"{onboard_paths_visited} onboarding path(s) visited")
+            signal = "; ".join(parts) if parts else "no onboarding signals detected"
             automated = True
 
         elif extra == "Recovery":
-            # Real signals: error pages from crawl steps, network failures, error-type steps
+            # Signals:
+            #  1. Steps with error_type (hard failures)
+            #  2. Network failures (4xx/5xx from browser network log)
+            #  3. HTTP 4xx/5xx status on navigate steps
+            #  4. Error phrases in body text
+            #  5. Retry success — journey_id appears in both fail and pass outcomes
+            #     (persona retried and succeeded)
             error_steps = sum(1 for s in evidence.steps if s.error_type)
             net_failures = sum(len(getattr(s, "network_failures", None) or []) for s in evidence.steps)
             error_phrases = sum(len(getattr(s, "error_phrases_found", None) or []) for s in evidence.steps)
+            http_errors = sum(
+                1 for s in evidence.steps
+                if s.action == "navigate" and s.http_status and s.http_status >= 400
+            )
+            # Retry success: any journey that had at least one fail AND one pass across seeds
+            journey_outcomes: dict[str, set[str]] = {}
+            for s in evidence.steps:
+                if s.journey_id:
+                    journey_outcomes.setdefault(s.journey_id, set()).add(s.outcome)
+            retry_success = sum(
+                1 for outcomes in journey_outcomes.values()
+                if "fail" in outcomes and "pass" in outcomes
+            )
+
             recovery_bump = -10 if error_steps > 2 else -5 if error_steps > 0 else 5
             recovery_bump -= min(15, 5 * (net_failures // 2))
             recovery_bump -= 5 if error_phrases > 2 else 0
+            recovery_bump -= 10 if http_errors > 2 else -5 if http_errors > 0 else 0
+            recovery_bump += 5 * retry_success  # reward evidence of self-recovery
             bump = recovery_bump
+
             parts = []
             if error_steps:
                 parts.append(f"{error_steps} steps errored")
             if net_failures:
                 parts.append(f"{net_failures} network failures")
-            if error_phrases:
-                parts.append(f"{error_phrases} error phrases found")
+            if http_errors:
+                parts.append(f"{http_errors} HTTP 4xx/5xx pages")
+            if retry_success:
+                parts.append(f"{retry_success} journey(s) recovered across seeds")
             signal = "; ".join(parts) if parts else "no error signals detected"
             automated = True
 

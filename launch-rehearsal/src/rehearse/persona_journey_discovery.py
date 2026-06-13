@@ -772,3 +772,165 @@ def discovered_journey_to_config_entry(journey: dict[str, Any]) -> dict[str, Any
     if pid:
         entry["persona_ids"] = [str(pid)]
     return entry
+
+
+# ── Adaptive Step Generation ──────────────────────────────────────────────────
+# Used by the adaptive execution loop in journey_agent.py when a journey has
+# no pre-planned steps.  Each call generates ONE next step given what the
+# persona has observed on the page so far (the scratchpad).
+
+_NEXT_STEP_SYSTEM = """You are generating the next browser automation step for a synthetic persona
+performing a product journey. You will receive:
+- The persona's profile and goals
+- The journey goal they are trying to accomplish
+- The current page state (URL, title, headings, buttons, inputs)
+- A scratchpad of steps already taken and what was observed
+
+Respond with a single JSON object (no markdown, no commentary):
+{
+  "action": "navigate|click|fill|wait|done",
+  "url": "...",          // required for navigate
+  "selector": "...",     // CSS selector or text for click/fill
+  "value": "...",        // text to type for fill, ms for wait
+  "intent": "...",       // one-sentence description of what this step does
+  "done": false          // set true when the journey goal is complete or clearly impossible
+}
+
+Rules:
+- Prefer clicking visible text labels over arbitrary selectors
+- Use selector: "text=Label Text" for Playwright text-based click
+- Use "action":"done" when the goal is complete, blocked, or has been explored enough
+- Do NOT repeat a step already in the scratchpad unless trying a different approach
+- Do NOT navigate to external sites or login pages unless auth is the journey goal
+- If the page has not changed after the last navigate/click, consider "done"
+"""
+
+_NEXT_STEP_PROMPT = """Persona: {persona_name} ({persona_role})
+Goals: {persona_goals}
+Tech literacy: {tech_literacy} | Patience: {patience} | Trust: {trust_level}
+
+Journey goal: {journey_goal}
+
+Current page:
+URL: {current_url}
+Title: {current_title}
+Headings: {headings}
+Nav: {nav_labels}
+Buttons: {buttons}
+Inputs: {inputs}
+
+Steps taken so far ({step_count}):
+{scratchpad_summary}
+
+What is the next single step?"""
+
+
+def generate_next_step(
+    journey_meta: dict[str, Any],
+    persona: dict[str, Any],
+    product_model: dict[str, Any],
+    scratchpad: list[dict[str, Any]],
+    page_state: dict[str, Any] | None = None,
+) -> dict[str, Any] | None:
+    """Generate the next adaptive step for a journey given current page state and history.
+
+    Returns a step dict {action, url?, selector?, value?, intent?} or
+    {"action": "done"} when the journey is complete.  Returns None on LLM failure
+    (caller should fall back to static steps or stop the journey).
+
+    Called once per step — consider batching 3 steps if latency matters.
+    """
+    from rehearse.llm import llm_enabled, _api_key, _model, _post_chat_with_fallback, _http_timeout, _max_retries
+    import httpx, re as _re, time as _time
+
+    if not llm_enabled():
+        return None
+
+    key = _api_key()
+    if not key:
+        return None
+
+    ps = page_state or {}
+    scratchpad_lines = []
+    for i, entry in enumerate(scratchpad[-10:], 1):  # last 10 steps
+        action = entry.get("action", "?")
+        outcome = entry.get("outcome", "")
+        intent = entry.get("intent", "")
+        url = entry.get("url", entry.get("final_url", ""))
+        scratchpad_lines.append(f"  {i}. [{action}] {intent or url} → {outcome}")
+    scratchpad_summary = "\n".join(scratchpad_lines) if scratchpad_lines else "  (none yet)"
+
+    user_msg = _NEXT_STEP_PROMPT.format(
+        persona_name=persona.get("name", "User"),
+        persona_role=persona.get("role", "user"),
+        persona_goals=", ".join(persona.get("goals") or ["complete the journey"]),
+        tech_literacy=persona.get("tech_literacy", "intermediate"),
+        patience=persona.get("patience", "medium"),
+        trust_level=persona.get("trust_level", "neutral"),
+        journey_goal=journey_meta.get("behavioral_intent") or journey_meta.get("name", "complete the task"),
+        current_url=ps.get("url", "unknown"),
+        current_title=ps.get("title", ""),
+        headings=", ".join(ps.get("headings", [])) or "(none)",
+        nav_labels=", ".join(ps.get("nav_labels", [])) or "(none)",
+        buttons=", ".join(ps.get("buttons", [])) or "(none)",
+        inputs=", ".join(ps.get("inputs", [])) or "(none)",
+        step_count=len(scratchpad),
+        scratchpad_summary=scratchpad_summary,
+    )
+
+    payload: dict[str, Any] = {
+        "model": _model(),
+        "messages": [
+            {"role": "system", "content": _NEXT_STEP_SYSTEM},
+            {"role": "user", "content": user_msg},
+        ],
+        "temperature": 0.3,
+        "max_tokens": 300,
+        "response_format": {"type": "json_object"},
+    }
+
+    raw_content: str | None = None
+    for attempt in range(_max_retries() + 1):
+        try:
+            with httpx.Client(timeout=_http_timeout()) as client:
+                resp = _post_chat_with_fallback(client, payload)
+                if resp.status_code >= 400 and "response_format" in payload:
+                    payload = {k: v for k, v in payload.items() if k != "response_format"}
+                    resp = _post_chat_with_fallback(client, payload)
+                resp.raise_for_status()
+                raw_content = resp.json()["choices"][0]["message"]["content"]
+                break
+        except (httpx.ReadTimeout, httpx.ConnectTimeout):
+            if attempt < _max_retries():
+                _time.sleep(2 ** attempt)
+                continue
+            break
+        except Exception:
+            break
+
+    if not raw_content:
+        return None
+
+    try:
+        step = json.loads(raw_content)
+    except json.JSONDecodeError:
+        m = _re.search(r"\{[\s\S]*?\}", raw_content)
+        if not m:
+            return None
+        try:
+            step = json.loads(m.group())
+        except json.JSONDecodeError:
+            return None
+
+    if not isinstance(step, dict):
+        return None
+
+    action = str(step.get("action") or "").strip()
+    if step.get("done") or action == "done":
+        return {"action": "done"}
+
+    _ALLOWED_ADAPTIVE = {"navigate", "click", "fill", "wait", "explore"}
+    if action not in _ALLOWED_ADAPTIVE:
+        return {"action": "done"}
+
+    return {k: v for k, v in step.items() if k in ("action", "url", "selector", "value", "intent")}

@@ -52,6 +52,86 @@ def _replay_journey_from_start(
     snaps: list[StepSnapshot] = []
     step_dicts: list[dict] = []
 
+    # ── Adaptive execution (Phase 2) ─────────────────────────────────────────
+    # Triggered when the journey has no pre-planned steps and LLM is available.
+    # The loop generates one step at a time, executes it, observes the result,
+    # and appends to a scratchpad until "done" is returned or max steps reached.
+    # Gate: only on seed=1, loop=1, desktop — adaptive runs are not parallelised.
+    adaptive = (
+        not journey.steps
+        and use_behavioral_judge
+        and seed == 1
+        and loop == 1
+        and viewport == "desktop"
+    )
+    if adaptive:
+        from rehearse.persona_journey_discovery import generate_next_step
+        scratchpad: list[dict] = []
+        max_adaptive_steps = journey_meta.get("expected_steps", 14)
+        consecutive_failures = 0
+
+        for i in range(max_adaptive_steps):
+            if time.perf_counter() > deadline:
+                break
+            page_state = session.observe_page_state()
+            next_step_dict = generate_next_step(
+                journey_meta, persona_obj, {}, scratchpad, page_state
+            )
+            if next_step_dict is None or next_step_dict.get("action") == "done":
+                break
+
+            # Convert the generated dict into a DSL Step
+            from rehearse.dsl import Step as _Step
+            gen_step = _Step(
+                action=next_step_dict["action"],
+                url=next_step_dict.get("url"),
+                selector=next_step_dict.get("selector"),
+                value=next_step_dict.get("value"),
+                intent=next_step_dict.get("intent", ""),
+            )
+            step_id = f"{journey.id}-{primary}-s{i+1}-adaptive"
+            snap = session.execute_step(
+                gen_step,
+                step_id=step_id,
+                journey_id=journey.id,
+                journey_name=journey.name,
+                persona_id=primary,
+                viewport=viewport,
+            )
+            snap.seed_index = seed
+
+            # Append to scratchpad for next iteration
+            obs = {**page_state, "step": i + 1, "action": gen_step.action,
+                   "intent": gen_step.intent or "", "outcome": snap.outcome,
+                   "final_url": snap.final_url or ""}
+            scratchpad.append(obs)
+            step_dicts.append({"action": gen_step.action, "outcome": snap.outcome})
+            snaps.append(snap)
+            ctx.evidence.add_step(snap)
+
+            if snap.outcome == "fail":
+                consecutive_failures += 1
+                if consecutive_failures >= 3:
+                    break
+            else:
+                consecutive_failures = 0
+
+        # Store scratchpad in evidence metadata for debugging
+        ctx.metadata.setdefault("adaptive_scratchpads", {})[f"{journey.id}:{primary}"] = scratchpad
+
+        # Journey-level synthesis on adaptive run
+        if use_behavioral_judge and step_dicts:
+            try:
+                from rehearse.behavioral_judge import judge_journey
+                step_verdicts = [{"behavioral_verdict": "pass", "note": ""} for _ in step_dicts]
+                jverdict = judge_journey(step_dicts, step_verdicts, persona=persona_obj, journey=journey_meta)
+                ctx.metadata.setdefault("behavioral_journeys", {})[f"{journey.id}:{primary}"] = jverdict
+            except Exception:
+                pass
+
+        return snaps
+    # ── End adaptive execution ────────────────────────────────────────────────
+
     for i, step in enumerate(journey.steps):
         if time.perf_counter() > deadline:
             raise RunBudgetExceeded("max_run_seconds exceeded")
@@ -201,6 +281,11 @@ class _ThreadSession:
         from rehearse.browser import BrowserSession
         return BrowserSession.execute_step(self, step, **kwargs)  # type: ignore[arg-type]
 
+    def observe_page_state(self) -> dict:
+        """Delegate to BrowserSession.observe_page_state bound to this thread's page."""
+        from rehearse.browser import BrowserSession
+        return BrowserSession.observe_page_state(self)  # type: ignore[arg-type]
+
 
 class JourneyAgent(BaseAgent):
     agent_id = "journey-runner"
@@ -269,8 +354,13 @@ class JourneyAgent(BaseAgent):
                             with sync_playwright() as pw:
                                 browser = pw.chromium.launch(headless=True)
                                 context_opts: dict = {"viewport": {"width": 1280, "height": 800}}
-                                if getattr(self.session, "record_video", False):
-                                    video_dir = self.artifacts_root / "videos"
+                                run_id = getattr(ctx.evidence, "run_id", None)
+                                record = getattr(self.session, "record_video", False)
+                                video_dir: "Path | None" = None
+                                if record and run_id:
+                                    # Place under artifacts/{run_id}/videos/ so
+                                    # recording.get_video_path() can find by journey_id
+                                    video_dir = self.artifacts_root / "artifacts" / run_id / "videos"
                                     video_dir.mkdir(parents=True, exist_ok=True)
                                     context_opts["record_video_dir"] = str(video_dir)
                                 # Restore auth cookies so worker starts authenticated
@@ -287,8 +377,22 @@ class JourneyAgent(BaseAgent):
                                     artifacts_root=self.artifacts_root,
                                     deadline=self._deadline, ctx=ctx, viewport=viewport,
                                 )
+                                # Close context first — Playwright finalises the webm on close
                                 context.close()
                                 browser.close()
+                                # Rename page@UUID.webm → {journey_id}.webm so the recordings
+                                # API can locate it by journey_id without a UUID lookup
+                                if video_dir and video_dir.is_dir():
+                                    newest = sorted(
+                                        video_dir.glob("page@*.webm"),
+                                        key=lambda p: p.stat().st_mtime,
+                                        reverse=True,
+                                    )
+                                    if newest:
+                                        try:
+                                            newest[0].rename(video_dir / f"{journey.id}.webm")
+                                        except OSError:
+                                            pass
                         except Exception as e:
                             import traceback
                             ctx.metadata.setdefault("_parallel_errors", []).append(

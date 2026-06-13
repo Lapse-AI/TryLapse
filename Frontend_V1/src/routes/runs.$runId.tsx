@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useParams, useSearch, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import {
   PageHeader,
@@ -183,10 +183,14 @@ function MatrixCellDialog({
   );
 }
 
-function RunDetail() {
-  const { runId } = Route.useParams();
-  const { tab: tabSearch, step: highlightStepId, dimension: dimensionFilter } = Route.useSearch();
-  const navigate = Route.useNavigate();
+export function RunDetail() {
+  // Use strict:false so this component works from both /runs/$runId
+  // and /$workspaceSlug/runs/$runId without route-specific binding.
+  const { runId } = useParams({ strict: false }) as { runId: string };
+  const { tab: tabSearch, step: highlightStepId, dimension: dimensionFilter } = useSearch({ strict: false }) as {
+    tab?: string; step?: string; dimension?: string;
+  };
+  const navigate = useNavigate();
   const { data: bundle, isLoading } = useRunBundle(runId);
   const { data: runSummaries = [] } = useRunSummaries();
   const [active, setActive] = useState<Set<Severity>>(new Set(ALL_SEVERITIES));
@@ -207,10 +211,11 @@ function RunDetail() {
 
   const selectDimension = (name: string) => {
     const next = dimensionFilter === name ? undefined : name;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     void navigate({
-      search: (prev) => ({ ...prev, dimension: next }),
+      search: (prev: any) => ({ ...prev, dimension: next }),
       hash: next ? "dimension-breakdown" : undefined,
-    });
+    } as any);
   };
 
   const activeDimensionMeta = dimensionFilter
@@ -352,13 +357,8 @@ function RunDetail() {
           value={activeTab}
           onValueChange={(v) => {
             setActiveTab(v);
-            void navigate({
-              search: (prev) => ({
-                ...prev,
-                tab: v === "overview" ? undefined : v,
-                step: v === "steps" ? prev.step : undefined,
-              }),
-            });
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            void navigate({ search: (prev: any) => ({ ...prev, tab: v === "overview" ? undefined : v, step: v === "steps" ? prev.step : undefined }) } as any);
           }}
           className="space-y-4"
         >
@@ -510,7 +510,7 @@ function RunDetail() {
             <Panel className="p-6">
               <div className="text-xs text-muted-foreground mb-2">
                 Dimension rollup · {bundle.dimensions.filter((d) => d.automated).length} automated ·{" "}
-                {bundle.dimensions.filter((d) => !d.automated).length} Phase 2
+                {bundle.dimensions.filter((d) => !d.automated).length} estimated
               </div>
               <p className="text-[11px] text-muted-foreground mb-4 max-w-2xl">
                 {READINESS_BAND_HELP}
@@ -529,12 +529,8 @@ function RunDetail() {
               <DimensionBreakdownBanner
                 dimension={activeDimensionMeta}
                 relatedCount={countIssuesForDimension(bundle.issues, activeDimensionMeta.name)}
-                onClear={() =>
-                  void navigate({
-                    search: (prev) => ({ ...prev, dimension: undefined }),
-                    hash: undefined,
-                  })
-                }
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                onClear={() => void navigate({ search: (prev: any) => ({ ...prev, dimension: undefined }), hash: undefined } as any)}
               />
             )}
 

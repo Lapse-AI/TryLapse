@@ -17,33 +17,6 @@ crawl:
   max_pages: 20
   supplement_journeys: true
 personas:
-- id: p1-faculty-member
-  name: Faculty Member
-  role: professor / academic staff
-  goals:
-  - View academic analytics and performance data
-  - Monitor student engagement metrics
-  - Access course management features
-- id: p2-department-admin
-  name: Department Admin
-  role: academic administrator
-  goals:
-  - Oversee department-wide analytics
-  - Manage faculty access and permissions
-  - Generate reports for leadership
-- id: p3-new-faculty
-  name: New Faculty Member
-  role: first-time user / new hire
-  goals:
-  - Complete onboarding and understand the dashboard
-  - Find key data quickly without prior context
-  - Identify what data is available for their courses
-- id: model-0-university-administrator
-  name: University Administrator
-  role: Manage faculty records and find specific faculty quickly
-  goals:
-  - Manage faculty records
-  - Find specific faculty quickly
 - id: model-0-faculty-member
   name: Faculty Member
   role: Manage their professional profile and search for colleagues.
@@ -51,18 +24,68 @@ personas:
   - Manage their professional profile and search for colleagues.
   - The product is named 'Faculty Dashboard' and includes features like AI Search
     and Add Faculty.
-- id: p4-champion
-  name: Internal champion
-  role: team lead / champion
-  goals:
-  - Validate rollout to their team
-  - Find blockers before wider launch
+  tech_literacy: intermediate
+  patience: medium
+  trust_level: neutral
+  character: Reads section headers before clicking; prefers familiar workflows;
+    gets frustrated when a feature moves between releases without warning.
+  usage_context: Returning user checking their own profile and looking up colleagues
+    by name.
 - id: model-1-admin
   name: Admin
   role: Manage user accounts and oversee the database.
   goals:
   - Manage user accounts and oversee the database.
   - There is an /admin endpoint and an admin panel.
+  tech_literacy: expert
+  patience: high
+  trust_level: neutral
+  character: Task-oriented and systematic; uses keyboard shortcuts where available;
+    checks the audit log before making changes.
+  usage_context: Power user with full access; audits the system periodically rather
+    than on a daily basis.
+- id: p4-profile-searcher
+  name: Profile Searcher
+  role: Searches profiles in detail to identify use cases
+  goals:
+  - Find specific use cases from profile data
+  - Efficiently search and filter profiles
+  - Validate use case hypotheses
+  tech_literacy: intermediate
+  patience: medium
+  trust_level: skeptical
+  character: Methodical researcher who cross-references results; questions whether
+    the data is complete or stale before drawing conclusions.
+  usage_context: Evaluating the product for a research project; first time using
+    this specific faculty directory.
+- id: p4-candidate-finder
+  name: Alex Chen
+  role: Recruiter using AI Search to find candidates
+  goals:
+  - Quickly identify top candidates from a large applicant pool
+  - Evaluate candidate fit based on job requirements
+  - Streamline the initial screening process
+  tech_literacy: intermediate
+  patience: low
+  trust_level: trusting
+  character: Fast-moving and goal-driven; scans results rather than reading carefully;
+    trusts AI suggestions but abandons if results look off after two tries.
+  usage_context: Switched from manual spreadsheet screening; expects AI search to
+    cut time-to-shortlist by 50%.
+- id: p4-candidate-analyst
+  name: Candidate Analyst
+  role: Analyzes candidate profiles and qualifications
+  goals:
+  - Review candidate applications and shortlist qualified candidates
+  - Compare candidate skills against job requirements
+  - Provide hiring recommendations
+  tech_literacy: intermediate
+  patience: high
+  trust_level: skeptical
+  character: Detail-oriented; opens multiple profiles in tabs; hesitates before
+    acting on AI recommendations without seeing the underlying data.
+  usage_context: Works alongside a recruiter; receives a shortlist to verify before
+    recommending to the hiring manager.
 journeys:
 - id: j-load-dashboard
   name: Load main dashboard
@@ -3012,3 +3035,7 @@ journeys:
     value: '2000'
   - action: assert_url_contains
     url: /database
+auth:
+  login_path: /login
+  email_env: REHEARSE_EMAIL
+  password_env: REHEARSE_PASSWORD

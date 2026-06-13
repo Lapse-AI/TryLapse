@@ -86,12 +86,45 @@ def _collect_a11y_metrics(page: Page) -> dict[str, Any]:
             if (el.getAttribute('placeholder')) return true;
             return false;
           }).length;
+
+          // Images missing meaningful alt text (empty alt="" is intentional; absence is a gap)
+          const imgs = [...document.querySelectorAll('img')];
+          const missingAlt = imgs.filter(img => {
+            const alt = img.getAttribute('alt');
+            return alt === null;  // no alt attribute at all (not even empty)
+          }).length;
+
+          // Low-opacity text estimate — catches text faded below readable threshold.
+          // We sample visible text nodes and flag those whose nearest element has
+          // computed opacity < 0.45 or color with lightness > 0.85 on white bg.
+          let lowContrastEstimate = 0;
+          try {
+            const textEls = [...document.querySelectorAll('p,span,label,li,td,th,a')]
+              .filter(el => el.offsetParent !== null && (el.innerText || '').trim().length > 0)
+              .slice(0, 60);
+            for (const el of textEls) {
+              const style = window.getComputedStyle(el);
+              const opacity = parseFloat(style.opacity || '1');
+              if (opacity < 0.45) { lowContrastEstimate++; continue; }
+              // Parse color lightness via RGB
+              const color = style.color || '';
+              const m = color.match(/rgb\\((\\d+),\\s*(\\d+),\\s*(\\d+)/);
+              if (m) {
+                const [r, g, b] = [+m[1]/255, +m[2]/255, +m[3]/255];
+                const lightness = (Math.max(r,g,b) + Math.min(r,g,b)) / 2;
+                if (lightness > 0.82) lowContrastEstimate++;
+              }
+            }
+          } catch(e) {}
+
           return {
             unlabeledButtons,
             linkCount: links,
             headingCount: headings,
             inputCount: inputs.length,
             labeledInputCount: labeledInputs,
+            missingAltCount: missingAlt,
+            lowContrastEstimate,
           };
         }"""
     )
@@ -463,6 +496,42 @@ class BrowserSession:
 
         return last_outcome
 
+    def observe_page_state(self) -> dict:
+        """Return a lightweight snapshot of the current page for adaptive step generation.
+
+        Reads URL, title, visible headings, nav labels, button labels, and input
+        placeholders. All JS evals are wrapped so a page crash / timeout returns
+        empty lists rather than raising.
+        """
+        page = self.page
+        if page is None:
+            return {}
+
+        def _safe_eval(selector: str, expr: str) -> list[str]:
+            try:
+                result = page.eval_on_selector_all(selector, expr)
+                return [str(v).strip() for v in (result or []) if str(v).strip()][:12]
+            except Exception:
+                return []
+
+        try:
+            url = page.url
+        except Exception:
+            url = ""
+        try:
+            title = page.title()
+        except Exception:
+            title = ""
+
+        return {
+            "url": url,
+            "title": title,
+            "headings": _safe_eval("h1,h2,h3", "els=>els.map(e=>e.innerText.trim()).filter(Boolean)"),
+            "nav_labels": _safe_eval("nav a,nav button", "els=>els.map(e=>e.innerText.trim()).filter(Boolean)"),
+            "buttons": _safe_eval("button,[role='button']", "els=>els.map(e=>e.innerText.trim()).filter(Boolean)"),
+            "inputs": _safe_eval("input,textarea,select", "els=>els.map(e=>e.placeholder||e.getAttribute('aria-label')||e.name||'').filter(Boolean)"),
+        }
+
     def execute_step(
         self,
         step: Step,
@@ -608,6 +677,8 @@ class BrowserSession:
             snap.heading_count = int(metrics.get("headingCount", 0))
             snap.input_count = int(metrics.get("inputCount", 0))
             snap.labeled_input_count = int(metrics.get("labeledInputCount", 0))
+            snap.missing_alt_count = int(metrics.get("missingAltCount", 0))
+            snap.low_contrast_estimate = int(metrics.get("lowContrastEstimate", 0))
             snap.error_phrases_found = _find_error_phrases(snap.body_text_excerpt)
             snap.console_errors = list(self.console_errors)
             snap.console_warnings = list(self.console_warnings)

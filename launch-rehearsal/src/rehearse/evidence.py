@@ -28,6 +28,8 @@ class StepSnapshot:
     heading_count: int = 0
     input_count: int = 0
     labeled_input_count: int = 0
+    missing_alt_count: int = 0
+    low_contrast_estimate: int = 0
     error_phrases_found: list[str] = field(default_factory=list)
     console_errors: list[str] = field(default_factory=list)
     console_warnings: list[str] = field(default_factory=list)

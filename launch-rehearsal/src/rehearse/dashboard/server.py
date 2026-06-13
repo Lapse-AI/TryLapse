@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import mimetypes
 import os
+import re
 import threading
 import urllib.parse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -43,6 +44,10 @@ _STATIC_DIR = Path(__file__).resolve().parent / "static"
 # every API request. Leave unset for local dev (no auth enforced).
 _API_TOKEN: str | None = os.environ.get("REHEARSE_API_TOKEN") or None
 
+# Guards os.environ mutation in /api/product/analyze so per-request API keys
+# don't leak into concurrent background job threads.
+_api_key_env_lock = threading.Lock()
+
 # --- CORS -------------------------------------------------------------------
 # Defaults to localhost dev ports. Set REHEARSE_CORS_ORIGIN to a comma-
 # separated list of allowed origins for deployed environments, e.g.:
@@ -58,6 +63,36 @@ _CORS_ORIGINS: set[str] = set(
 
 # Paths that bypass auth (always public)
 _PUBLIC_PATHS = {"/api/health", "/", "/auth/login", "/auth/signup", "/auth/me"}
+
+# Only allow alphanumerics, hyphens, and underscores in user-supplied ids.
+# This prevents directory traversal via run_id / journey_id / config_id.
+_SAFE_ID_RE = re.compile(r"^[a-zA-Z0-9_\-]{1,200}$")
+
+
+def _safe_id(value: str, field: str = "id") -> str:
+    """Validate a user-supplied id is safe for file-path construction.
+
+    Raises ValueError if the value contains slashes, dots, or other characters
+    that could enable directory traversal.
+    """
+    if not value or not _SAFE_ID_RE.match(value):
+        raise ValueError(f"Invalid {field}: must be alphanumeric/hyphens/underscores (1–200 chars)")
+    return value
+
+
+def _config_prefix_from_path(config_path: str) -> str:
+    """Extract the stable product-slug prefix from a config file path.
+
+    Strips the -YYYYMMDD-HHMMSS timestamp suffix so that
+    ``faculty-dashboard-eight-vercel-app-20260611-052339.yaml``
+    yields ``faculty-dashboard-eight-vercel-app``.
+
+    Used consistently across /api/jobs, /api/summaries, and /api/trends to
+    prevent cross-workspace data bleed when two products share a first word.
+    """
+    stem = Path(config_path).stem
+    m = re.match(r"^(.*)-\d{8}-\d{6}$", stem)
+    return m.group(1) if m else stem
 
 
 def _write_cred_env(artifacts_root: Path, email: str, password: str) -> None:
@@ -235,14 +270,6 @@ class _Handler(BaseHTTPRequestHandler):
             self._send_json({"ok": True, "artifacts": str(root)})
             return
 
-        if path == "/api/credentials":
-            import os as _os
-            self._send_json({
-                "hasEmail": bool(_os.environ.get("REHEARSE_EMAIL")),
-                "hasPassword": bool(_os.environ.get("REHEARSE_PASSWORD")),
-            })
-            return
-
         if path == "/auth/me":
             payload = self._require_jwt()
             if payload:
@@ -270,6 +297,14 @@ class _Handler(BaseHTTPRequestHandler):
         if not self._check_auth(path):
             return
 
+        if path == "/api/credentials":
+            import os as _os
+            self._send_json({
+                "hasEmail": bool(_os.environ.get("REHEARSE_EMAIL")),
+                "hasPassword": bool(_os.environ.get("REHEARSE_PASSWORD")),
+            })
+            return
+
         if path == "/api/runs":
             fmt = (qs.get("format") or [""])[0]
             if fmt == "summary":
@@ -280,6 +315,11 @@ class _Handler(BaseHTTPRequestHandler):
 
         if path.startswith("/api/runs/") and path.endswith("/crawl-graph"):
             run_id = path.strip("/").split("/")[2]
+            try:
+                run_id = _safe_id(run_id, "runId")
+            except ValueError as exc:
+                self._send_json({"error": str(exc)}, status=400)
+                return
             graph_path = root / "runs" / f"{run_id}-crawl-graph.json"
             if graph_path.is_file():
                 self._send_json(json.loads(graph_path.read_text()))
@@ -325,8 +365,7 @@ class _Handler(BaseHTTPRequestHandler):
                 if workspaces:
                     cp = workspaces[0].get("configPath") or workspaces[0].get("config_path") or ""
                     if cp:
-                        from pathlib import Path as _P
-                        config_prefix = _P(cp).stem.split("-")[0]
+                        config_prefix = _config_prefix_from_path(cp)
             self._send_json(list_run_summaries(root, config_prefix=config_prefix))
             return
 
@@ -432,6 +471,11 @@ class _Handler(BaseHTTPRequestHandler):
             run_id = (qs.get("runId") or [""])[0].strip()
             from rehearse.progress import load_progress, latest_running_progress
             if run_id:
+                try:
+                    run_id = _safe_id(run_id, "runId")
+                except ValueError as exc:
+                    self._send_json({"error": str(exc)}, status=400)
+                    return
                 data = load_progress(root, run_id)
             else:
                 data = latest_running_progress(root)
@@ -443,20 +487,20 @@ class _Handler(BaseHTTPRequestHandler):
 
         if path == "/api/trends":
             refresh = (qs.get("refresh") or [""])[0].lower() in ("1", "true", "yes")
-            # Filter by workspace if user is authenticated
+            # JWT-authenticated users always get their workspace's prefix.
+            # Unauthenticated callers may pass ?configPrefix= (internal/demo use only).
             payload = self._require_jwt()
-            config_prefix = (qs.get("configPrefix") or [""])[0].strip()
-            if not config_prefix and payload:
+            config_prefix: str | None = None
+            if payload:
                 from rehearse.dashboard.workspace_store import get_workspaces_for_user
                 workspaces = get_workspaces_for_user(root, payload["sub"])
                 if workspaces:
-                    # Use the active workspace's run_id_prefix to filter runs
-                    ws = workspaces[0]
-                    cp = ws.get("configPath") or ws.get("config_path") or ""
+                    cp = workspaces[0].get("configPath") or workspaces[0].get("config_path") or ""
                     if cp:
-                        from pathlib import Path as _P
-                        config_prefix = _P(cp).stem.split("-")[0]
-            self._send_json(get_trends(root, refresh=refresh, config_prefix=config_prefix or None))
+                        config_prefix = _config_prefix_from_path(cp)
+            else:
+                config_prefix = (qs.get("configPrefix") or [""])[0].strip() or None
+            self._send_json(get_trends(root, refresh=refresh, config_prefix=config_prefix))
             return
 
         if path == "/api/digest":
@@ -560,32 +604,22 @@ class _Handler(BaseHTTPRequestHandler):
             return
 
         if path == "/api/jobs":
-            # Derive workspace config_prefix from:
-            # 1. Explicit ?configPrefix= query param (used by workspace-aware clients)
-            # 2. The authenticated user's active workspace config path
-            # 3. Nothing — return all jobs (unauthenticated / no workspace)
-            #
-            # The prefix is the product slug portion of the config filename,
-            # e.g. "faculty-dashboard-eight-vercel-app" from
-            # "faculty-dashboard-eight-vercel-app-20260611-052339.yaml".
-            # Using the full slug (not just the first word) gives precise
-            # per-product isolation even when two products share a first word.
-            config_prefix_q = (qs.get("configPrefix") or [""])[0].strip()
-            if not config_prefix_q:
-                payload = self._require_jwt()
-                if payload:
-                    from rehearse.dashboard.workspace_store import get_workspaces_for_user
-                    workspaces = get_workspaces_for_user(root, payload["sub"])
-                    if workspaces:
-                        cp = workspaces[0].get("configPath") or workspaces[0].get("config_path") or ""
-                        if cp:
-                            import re as _re
-                            stem = _P(cp).stem  # e.g. faculty-dashboard-eight-vercel-app-20260611-052339
-                            # Strip the -YYYYMMDD-HHMMSS trailing timestamp to get the product slug
-                            m = _re.match(r"^(.*)-\d{8}-\d{6}$", stem)
-                            config_prefix_q = m.group(1) if m else stem
+            # JWT-authenticated users always get their workspace's prefix so they
+            # cannot cross into another workspace by passing ?configPrefix=.
+            # Unauthenticated callers (demo / internal) may pass ?configPrefix= directly.
+            payload = self._require_jwt()
+            config_prefix_q: str | None = None
+            if payload:
+                from rehearse.dashboard.workspace_store import get_workspaces_for_user
+                workspaces = get_workspaces_for_user(root, payload["sub"])
+                if workspaces:
+                    cp = workspaces[0].get("configPath") or workspaces[0].get("config_path") or ""
+                    if cp:
+                        config_prefix_q = _config_prefix_from_path(cp)
+            else:
+                config_prefix_q = (qs.get("configPrefix") or [""])[0].strip() or None
 
-            jobs = list_jobs(root, config_prefix=config_prefix_q or None)
+            jobs = list_jobs(root, config_prefix=config_prefix_q)
 
             # For running jobs without a runId, discover it from the progress file
             runs_dir = root / "runs"
@@ -835,6 +869,13 @@ class _Handler(BaseHTTPRequestHandler):
             if not target_url:
                 self._send_json({"error": "targetUrl required"}, status=400)
                 return
+            from rehearse.preflight import assert_url_allowed
+            from rehearse.errors import SSRFBlockedError, PreflightError
+            try:
+                assert_url_allowed(target_url, allow_localhost=True)
+            except (SSRFBlockedError, PreflightError) as exc:
+                self._send_json({"error": f"URL not allowed: {exc}"}, status=400)
+                return
             from rehearse.product_intelligence import analyze_product, save_product_model
 
             # Run a fresh deep crawl for vision-aware analysis
@@ -847,66 +888,73 @@ class _Handler(BaseHTTPRequestHandler):
             llm_api_key = str(body.get("llmApiKey") or "").strip()
             vision_api_key = str(body.get("visionApiKey") or "").strip()
 
-            # Override env vars for this request if keys provided
-            import os as _os
-            _orig_llm = _os.environ.get("REHEARSE_LLM_API_KEY")
-            _orig_vision = _os.environ.get("REHEARSE_VISION_API_KEY")
-            if llm_api_key:
-                _os.environ["REHEARSE_LLM_API_KEY"] = llm_api_key
-            if vision_api_key:
-                _os.environ["REHEARSE_VISION_API_KEY"] = vision_api_key
             # Persist auth credentials to env + .env file so rehearsal runs can use them
             if auth_config.get("email") and auth_config.get("password"):
                 _write_cred_env(root, str(auth_config["email"]), str(auth_config["password"]))
 
-            # If no crawl data, run a fresh deep crawl right now
-            if not interaction_map_data:
+            # Guard os.environ mutation with a lock so per-request keys don't race
+            # with concurrent background job threads that also read REHEARSE_LLM_API_KEY.
+            # The lock is held for the entire crawl + analysis window — only one
+            # product analysis runs at a time (acceptable: local-first tool).
+            import os as _os
+            with _api_key_env_lock:
+                _orig_llm = _os.environ.get("REHEARSE_LLM_API_KEY")
+                _orig_vision = _os.environ.get("REHEARSE_VISION_API_KEY")
                 try:
-                    from playwright.sync_api import sync_playwright
-                    from rehearse.deep_crawler import run_deep_crawl, interaction_map_to_dict
-                    screenshots_dir = root / "discovery_screenshots" / (config_id or "default")
-                    with sync_playwright() as pw:
-                        browser = pw.chromium.launch(headless=True)
-                        context = browser.new_context(viewport={"width": 1280, "height": 800})
-                        page_obj = context.new_page()
+                    if llm_api_key:
+                        _os.environ["REHEARSE_LLM_API_KEY"] = llm_api_key
+                    if vision_api_key:
+                        _os.environ["REHEARSE_VISION_API_KEY"] = vision_api_key
 
-                        # Perform login if credentials provided
-                        if auth_config.get("email") and auth_config.get("password"):
-                            try:
-                                login_url = str(auth_config.get("loginUrl") or target_url)
-                                page_obj.goto(login_url, wait_until="domcontentloaded", timeout=20000)
-                                page_obj.wait_for_timeout(3000)  # wait for SPA to hydrate
-                                # Fill email
-                                email_sel = str(auth_config.get("emailSelector") or "input[type='email'], input[name='email']")
-                                page_obj.locator(email_sel).first.fill(str(auth_config["email"]))
-                                # Fill password
-                                pw_sel = str(auth_config.get("passwordSelector") or "input[type='password']")
-                                page_obj.locator(pw_sel).first.fill(str(auth_config["password"]))
-                                page_obj.wait_for_timeout(500)
-                                # Submit
-                                submit_sel = str(auth_config.get("submitSelector") or "button[type='submit']")
-                                page_obj.locator(submit_sel).first.click()
-                                page_obj.wait_for_timeout(5000)  # wait for redirect + dashboard load
-                                page_obj.wait_for_load_state("networkidle", timeout=12000)
-                            except Exception as login_err:
-                                pass  # Continue even if login fails
+                    # If no crawl data, run a fresh deep crawl right now
+                    if not interaction_map_data:
+                        try:
+                            from playwright.sync_api import sync_playwright
+                            from rehearse.deep_crawler import run_deep_crawl, interaction_map_to_dict
+                            screenshots_dir = root / "discovery_screenshots" / (config_id or "default")
+                            with sync_playwright() as pw:
+                                browser = pw.chromium.launch(headless=True)
+                                context = browser.new_context(viewport={"width": 1280, "height": 800})
+                                page_obj = context.new_page()
 
-                        imap = run_deep_crawl(
-                            page_obj, target_url,
-                            product_name=product_name,
-                            max_pages=15,
-                            max_buttons_per_page=12,
-                            use_vision=True,
-                            screenshots_dir=screenshots_dir,
-                        )
-                        interaction_map_data = interaction_map_to_dict(imap)
-                        api_calls = imap.api_calls
-                        context.close()
-                        browser.close()
-                except Exception:
-                    interaction_map_data = {}
+                                # Perform login if credentials provided
+                                if auth_config.get("email") and auth_config.get("password"):
+                                    try:
+                                        login_url = str(auth_config.get("loginUrl") or target_url)
+                                        page_obj.goto(login_url, wait_until="domcontentloaded", timeout=20000)
+                                        page_obj.wait_for_timeout(3000)  # wait for SPA to hydrate
+                                        # Fill email
+                                        email_sel = str(auth_config.get("emailSelector") or "input[type='email'], input[name='email']")
+                                        page_obj.locator(email_sel).first.fill(str(auth_config["email"]))
+                                        # Fill password
+                                        pw_sel = str(auth_config.get("passwordSelector") or "input[type='password']")
+                                        page_obj.locator(pw_sel).first.fill(str(auth_config["password"]))
+                                        page_obj.wait_for_timeout(500)
+                                        # Submit
+                                        submit_sel = str(auth_config.get("submitSelector") or "button[type='submit']")
+                                        page_obj.locator(submit_sel).first.click()
+                                        page_obj.wait_for_timeout(5000)  # wait for redirect + dashboard load
+                                        page_obj.wait_for_load_state("networkidle", timeout=12000)
+                                    except Exception:
+                                        pass  # Continue even if login fails
+
+                                imap = run_deep_crawl(
+                                    page_obj, target_url,
+                                    product_name=product_name,
+                                    max_pages=15,
+                                    max_buttons_per_page=12,
+                                    use_vision=True,
+                                    screenshots_dir=screenshots_dir,
+                                )
+                                interaction_map_data = interaction_map_to_dict(imap)
+                                api_calls = imap.api_calls
+                                context.close()
+                                browser.close()
+                        except Exception:
+                            interaction_map_data = {}
+
                 finally:
-                    # Restore original env vars
+                    # Always restore — covers both the crawl path and the pre-crawled path
                     if _orig_llm is not None:
                         _os.environ["REHEARSE_LLM_API_KEY"] = _orig_llm
                     elif llm_api_key:
@@ -1011,6 +1059,13 @@ class _Handler(BaseHTTPRequestHandler):
             # If no interaction map stored yet, run a targeted deep crawl now
             if not interaction_map:
                 target_url = str(product_model.get("targetUrl") or product_model.get("url") or "")
+                if target_url:
+                    from rehearse.preflight import assert_url_allowed as _aurl
+                    from rehearse.errors import SSRFBlockedError as _SSRFErr, PreflightError as _PFErr
+                    try:
+                        _aurl(target_url, allow_localhost=True)
+                    except (_SSRFErr, _PFErr):
+                        target_url = ""  # silently skip crawl — bad URL from stored model
                 if target_url:
                     try:
                         from playwright.sync_api import sync_playwright
@@ -1124,9 +1179,15 @@ class _Handler(BaseHTTPRequestHandler):
         # ── Persona Library mutations (POST) ─────────────────────────────────
         if path == "/api/persona-library":
             # Upsert a persona record into the library.
-            # Caller may supply a full persona dict (from the editor) or a
-            # partial dict — missing behavioral fields are filled with defaults.
+            # Only known fields are forwarded to prevent arbitrary key injection
+            # into personas.json.
+            _PERSONA_FIELDS = {
+                "id", "name", "role", "goals", "enabled", "tech_literacy",
+                "patience", "trust_level", "character", "usage_context",
+                "tags", "source", "created_at", "updated_at",
+            }
             body = self._read_json_body()
+            body = {k: v for k, v in body.items() if k in _PERSONA_FIELDS}
             from rehearse.dashboard.persona_store import save_persona
             saved = save_persona(root, body)
             self._send_json(saved)
@@ -1176,6 +1237,11 @@ class _Handler(BaseHTTPRequestHandler):
             if not config_id:
                 self._send_json({"error": "configId is required"}, status=400)
                 return
+            try:
+                config_id = _safe_id(config_id, "configId")
+            except ValueError as exc:
+                self._send_json({"error": str(exc)}, status=400)
+                return
             cfg_path = root / "configs" / f"{config_id}.yaml"
             if not cfg_path.is_file():
                 self._send_json({"error": f"config {config_id!r} not found"}, status=404)
@@ -1206,6 +1272,12 @@ class _Handler(BaseHTTPRequestHandler):
             if not run_id or not journey_id or not events:
                 self._send_json({"error": "runId, journeyId, and events required"}, status=400)
                 return
+            try:
+                run_id = _safe_id(run_id, "runId")
+                journey_id = _safe_id(journey_id, "journeyId")
+            except ValueError as exc:
+                self._send_json({"error": str(exc)}, status=400)
+                return
             from rehearse.recording import save_rrweb_recording
             try:
                 path = save_rrweb_recording(root, run_id, journey_id, events)
@@ -1219,6 +1291,11 @@ class _Handler(BaseHTTPRequestHandler):
             if not run_id:
                 self._send_json({"error": "runId required"}, status=400)
                 return
+            try:
+                run_id = _safe_id(run_id, "runId")
+            except ValueError as exc:
+                self._send_json({"error": str(exc)}, status=400)
+                return
             from rehearse.recording import list_recordings_for_run
             recordings = list_recordings_for_run(root, run_id)
             self._send_json({"runId": run_id, "recordings": recordings})
@@ -1227,7 +1304,12 @@ class _Handler(BaseHTTPRequestHandler):
         # GET /api/recordings/{runId}/{journeyId}
         if path.startswith("/api/recordings/") and path.count("/") == 4:
             parts = path.split("/")
-            run_id, journey_id = parts[3], parts[4]
+            try:
+                run_id = _safe_id(parts[3], "runId")
+                journey_id = _safe_id(parts[4], "journeyId")
+            except ValueError as exc:
+                self._send_json({"error": str(exc)}, status=400)
+                return
             from rehearse.recording import load_rrweb_recording, get_video_path
             recording = load_rrweb_recording(root, run_id, journey_id)
             if not recording:
@@ -1244,7 +1326,12 @@ class _Handler(BaseHTTPRequestHandler):
         # GET /api/recordings/{runId}/{journeyId}/video
         if path.endswith("/video") and path.startswith("/api/recordings/"):
             parts = path.split("/")
-            run_id, journey_id = parts[3], parts[4]
+            try:
+                run_id = _safe_id(parts[3], "runId")
+                journey_id = _safe_id(parts[4], "journeyId")
+            except ValueError as exc:
+                self._send_json({"error": str(exc)}, status=400)
+                return
             from rehearse.recording import get_video_path
             video_path = get_video_path(root, run_id, journey_id)
             if not video_path or not video_path.is_file():
@@ -1256,7 +1343,12 @@ class _Handler(BaseHTTPRequestHandler):
         # GET /api/recordings/{runId}/{journeyId}/export
         if path.endswith("/export") and path.startswith("/api/recordings/"):
             parts = path.split("/")
-            run_id, journey_id = parts[3], parts[4]
+            try:
+                run_id = _safe_id(parts[3], "runId")
+                journey_id = _safe_id(parts[4], "journeyId")
+            except ValueError as exc:
+                self._send_json({"error": str(exc)}, status=400)
+                return
             from rehearse.recording import load_rrweb_recording
             recording = load_rrweb_recording(root, run_id, journey_id)
             if not recording:
@@ -1534,7 +1626,11 @@ class _Handler(BaseHTTPRequestHandler):
         if path.startswith("/api/runs/") and path.endswith("/control"):
             parts = path.split("/")
             if len(parts) == 5:
-                run_id = parts[3]
+                try:
+                    run_id = _safe_id(parts[3], "runId")
+                except ValueError as exc:
+                    self._send_json({"error": str(exc)}, status=400)
+                    return
                 body = self._read_json_body()
                 signal = str(body.get("signal") or "").strip()
                 if signal not in ("pause", "resume", "stop"):
