@@ -199,7 +199,9 @@ function JourneyRow({
         <button
           type="button"
           className="flex-1 flex items-center gap-2 flex-wrap text-left min-w-0"
-          onClick={() => { if (!editing) setOpen(!open); }}
+          onClick={() => {
+            if (!editing) setOpen(!open);
+          }}
         >
           <span className="text-sm font-medium">{String(j.name ?? "")}</span>
           <Chip tone={priorityTone}>{String(j.priority ?? "medium")}</Chip>
@@ -213,7 +215,11 @@ function JourneyRow({
         </button>
         <button
           type="button"
-          onClick={(e) => { e.stopPropagation(); setEditing(!editing); setOpen(true); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            setEditing(!editing);
+            setOpen(true);
+          }}
           className="shrink-0 text-[11px] px-2 py-1 rounded border border-border hover:bg-surface-2/50 text-muted-foreground hover:text-foreground"
         >
           {editing ? "cancel" : "Edit"}
@@ -235,9 +241,13 @@ function JourneyRow({
               <div className="text-[11px] text-muted-foreground font-medium">Steps</div>
               {(j.steps as Array<Record<string, string>>).map((s, i) => (
                 <div key={i} className="text-xs flex items-start gap-2">
-                  <span className="text-[10px] font-mono text-muted-foreground/60 w-4 mt-0.5 shrink-0">{i + 1}</span>
+                  <span className="text-[10px] font-mono text-muted-foreground/60 w-4 mt-0.5 shrink-0">
+                    {i + 1}
+                  </span>
                   <Chip tone="neutral">{s.action}</Chip>
-                  <span className="text-muted-foreground flex-1">{s.description || s.intent || s.url || ""}</span>
+                  <span className="text-muted-foreground flex-1">
+                    {s.description || s.intent || s.url || ""}
+                  </span>
                 </div>
               ))}
             </div>
@@ -252,7 +262,9 @@ function JourneyRow({
             <div>
               <div className="text-[11px] text-muted-foreground font-medium">Watch for</div>
               <ul className="text-xs text-muted-foreground list-disc pl-4 space-y-0.5 mt-0.5">
-                {(j.failure_signals as string[]).map((s, i) => <li key={i}>{s}</li>)}
+                {(j.failure_signals as string[]).map((s, i) => (
+                  <li key={i}>{s}</li>
+                ))}
               </ul>
             </div>
           )}
@@ -264,33 +276,52 @@ function JourneyRow({
           <div className="grid grid-cols-2 gap-2">
             <div>
               <label className="text-[11px] text-muted-foreground">Name</label>
-              <input className="mt-0.5 w-full text-sm bg-surface border border-border rounded px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary/30"
-                value={name} onChange={(e) => setName(e.target.value)} />
+              <input
+                className="mt-0.5 w-full text-sm bg-surface border border-border rounded px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary/30"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
             </div>
             <div>
               <label className="text-[11px] text-muted-foreground">Entry point</label>
-              <input className="mt-0.5 w-full text-sm font-mono bg-surface border border-border rounded px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary/30"
-                value={entryPoint} onChange={(e) => setEntryPoint(e.target.value)} />
+              <input
+                className="mt-0.5 w-full text-sm font-mono bg-surface border border-border rounded px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary/30"
+                value={entryPoint}
+                onChange={(e) => setEntryPoint(e.target.value)}
+              />
             </div>
           </div>
           <div>
             <label className="text-[11px] text-muted-foreground">Description</label>
-            <textarea className="mt-0.5 w-full text-sm bg-surface border border-border rounded px-2 py-1.5 min-h-[56px] focus:outline-none focus:ring-1 focus:ring-primary/30"
-              value={description} onChange={(e) => setDescription(e.target.value)} />
+            <textarea
+              className="mt-0.5 w-full text-sm bg-surface border border-border rounded px-2 py-1.5 min-h-[56px] focus:outline-none focus:ring-1 focus:ring-primary/30"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
           </div>
           <div className="flex gap-3">
             <div>
               <label className="text-[11px] text-muted-foreground">Priority</label>
-              <select className="mt-0.5 block text-xs bg-surface border border-border rounded px-2 py-1.5"
-                value={priority} onChange={(e) => setPriority(e.target.value)}>
-                {["critical","high","medium","low"].map((v) => <option key={v}>{v}</option>)}
+              <select
+                className="mt-0.5 block text-xs bg-surface border border-border rounded px-2 py-1.5"
+                value={priority}
+                onChange={(e) => setPriority(e.target.value)}
+              >
+                {["critical", "high", "medium", "low"].map((v) => (
+                  <option key={v}>{v}</option>
+                ))}
               </select>
             </div>
             <div>
               <label className="text-[11px] text-muted-foreground">Frequency</label>
-              <select className="mt-0.5 block text-xs bg-surface border border-border rounded px-2 py-1.5"
-                value={frequency} onChange={(e) => setFrequency(e.target.value)}>
-                {["daily","weekly","occasional","onboarding-only"].map((v) => <option key={v}>{v}</option>)}
+              <select
+                className="mt-0.5 block text-xs bg-surface border border-border rounded px-2 py-1.5"
+                value={frequency}
+                onChange={(e) => setFrequency(e.target.value)}
+              >
+                {["daily", "weekly", "occasional", "onboarding-only"].map((v) => (
+                  <option key={v}>{v}</option>
+                ))}
               </select>
             </div>
           </div>
@@ -300,14 +331,31 @@ function JourneyRow({
             <div className="text-[11px] text-muted-foreground font-medium mb-1.5">Steps</div>
             <div className="space-y-2">
               {steps.map((s, i) => (
-                <div key={i} className="flex items-start gap-2 bg-surface rounded-lg border border-border p-2">
-                  <span className="text-[10px] font-mono text-muted-foreground/60 w-4 mt-2 shrink-0">{i + 1}</span>
+                <div
+                  key={i}
+                  className="flex items-start gap-2 bg-surface rounded-lg border border-border p-2"
+                >
+                  <span className="text-[10px] font-mono text-muted-foreground/60 w-4 mt-2 shrink-0">
+                    {i + 1}
+                  </span>
                   <select
                     className="text-xs bg-surface-2 border border-border rounded px-1.5 py-1 shrink-0"
                     value={s.action}
                     onChange={(e) => updateStep(i, "action", e.target.value)}
                   >
-                    {["navigate","click","fill","wait","scroll","hover","select","press","assert_url_contains","explore","dismiss"].map((a) => (
+                    {[
+                      "navigate",
+                      "click",
+                      "fill",
+                      "wait",
+                      "scroll",
+                      "hover",
+                      "select",
+                      "press",
+                      "assert_url_contains",
+                      "explore",
+                      "dismiss",
+                    ].map((a) => (
                       <option key={a}>{a}</option>
                     ))}
                   </select>
@@ -315,28 +363,42 @@ function JourneyRow({
                     className="flex-1 text-xs bg-surface border border-border rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-primary/30"
                     placeholder={s.action === "navigate" ? "url e.g. /dashboard" : "intent / label"}
                     value={s.action === "navigate" ? s.url : s.intent}
-                    onChange={(e) => updateStep(i, s.action === "navigate" ? "url" : "intent", e.target.value)}
+                    onChange={(e) =>
+                      updateStep(i, s.action === "navigate" ? "url" : "intent", e.target.value)
+                    }
                   />
-                  <button type="button" onClick={() => removeStep(i)}
-                    className="text-muted-foreground/50 hover:text-danger shrink-0 mt-0.5">
+                  <button
+                    type="button"
+                    onClick={() => removeStep(i)}
+                    className="text-muted-foreground/50 hover:text-danger shrink-0 mt-0.5"
+                  >
                     ×
                   </button>
                 </div>
               ))}
             </div>
-            <button type="button" onClick={addStep}
-              className="mt-2 text-[11px] px-2.5 py-1 rounded border border-dashed border-border hover:bg-surface-2/50 text-muted-foreground">
+            <button
+              type="button"
+              onClick={addStep}
+              className="mt-2 text-[11px] px-2.5 py-1 rounded border border-dashed border-border hover:bg-surface-2/50 text-muted-foreground"
+            >
               + Add step
             </button>
           </div>
 
           <div className="flex gap-2 pt-1">
-            <button type="button" onClick={saveEdit}
-              className="text-xs px-4 py-1.5 rounded-md bg-primary text-primary-foreground font-medium">
+            <button
+              type="button"
+              onClick={saveEdit}
+              className="text-xs px-4 py-1.5 rounded-md bg-primary text-primary-foreground font-medium"
+            >
               Save changes
             </button>
-            <button type="button" onClick={cancelEdit}
-              className="text-xs px-3 py-1.5 rounded-md border border-border text-muted-foreground">
+            <button
+              type="button"
+              onClick={cancelEdit}
+              className="text-xs px-3 py-1.5 rounded-md border border-border text-muted-foreground"
+            >
               Cancel
             </button>
           </div>
@@ -383,13 +445,9 @@ function PersonaCard({
           <div className="flex items-center gap-2 flex-wrap">
             <span className="font-display font-semibold text-sm">{persona.name}</span>
             <Chip tone="neutral">{persona.role}</Chip>
-            {hasDone && journeyCount > 0 && (
-              <Chip tone="ready">{journeyCount} journeys</Chip>
-            )}
+            {hasDone && journeyCount > 0 && <Chip tone="ready">{journeyCount} journeys</Chip>}
             {result.usagePattern?.session_frequency != null && (
-              <Chip tone="neutral">
-                {String(result.usagePattern.session_frequency)}
-              </Chip>
+              <Chip tone="neutral">{String(result.usagePattern.session_frequency)}</Chip>
             )}
           </div>
           {persona.goals.length > 0 && (
@@ -459,7 +517,11 @@ function PersonaCard({
             <span className="text-[11px] font-medium text-muted-foreground">
               {journeyCount} {journeyCount === 1 ? "journey" : "journeys"}
             </span>
-            {collapsed ? <ChevronDown className="size-3.5 text-muted-foreground" /> : <ChevronUp className="size-3.5 text-muted-foreground" />}
+            {collapsed ? (
+              <ChevronDown className="size-3.5 text-muted-foreground" />
+            ) : (
+              <ChevronUp className="size-3.5 text-muted-foreground" />
+            )}
           </button>
           {!collapsed && (
             <div className="p-4 space-y-2">
@@ -478,8 +540,12 @@ function PersonaCard({
                   </div>
                   {(result.painPoints as Array<Record<string, string>>).map((pp, i) => (
                     <div key={i} className="text-xs flex items-center gap-2 mt-1">
-                      <Chip tone={pp.severity === "critical" ? "danger" : "warn"}>{pp.severity}</Chip>
-                      <span>{pp.area}: {pp.concern}</span>
+                      <Chip tone={pp.severity === "critical" ? "danger" : "warn"}>
+                        {pp.severity}
+                      </Chip>
+                      <span>
+                        {pp.area}: {pp.concern}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -541,7 +607,10 @@ export function JourneyDiscoveryPanel({ live, personas, configId, productModel }
 
   const discoverOne = useCallback(
     async (persona: PersonaDraft) => {
-      if (!live) { toast.error("Start rehearse serve first"); return; }
+      if (!live) {
+        toast.error("Start rehearse serve first");
+        return;
+      }
 
       patchResult(persona.id, {
         phase: { kind: "crawling", message: "Crawling product with auth…" },
@@ -567,7 +636,12 @@ export function JourneyDiscoveryPanel({ live, personas, configId, productModel }
               break;
             case "journey_ready":
               setResults((prev) => {
-                const cur = prev[persona.id] ?? { personaId: persona.id, phase: { kind: "expanding", done: 0, total: 0 }, journeyNames: [], journeys: [] };
+                const cur = prev[persona.id] ?? {
+                  personaId: persona.id,
+                  phase: { kind: "expanding", done: 0, total: 0 },
+                  journeyNames: [],
+                  journeys: [],
+                };
                 const newJourneys = [...cur.journeys, ev.journey as DiscoveredJourney];
                 const total = cur.phase.kind === "expanding" ? cur.phase.total : newJourneys.length;
                 return {
@@ -598,16 +672,28 @@ export function JourneyDiscoveryPanel({ live, personas, configId, productModel }
   );
 
   const discoverAll = useCallback(() => {
-    if (!live) { toast.error("Start rehearse serve first"); return; }
-    if (personas.length === 0) { toast.error("Add personas first"); return; }
+    if (!live) {
+      toast.error("Start rehearse serve first");
+      return;
+    }
+    if (personas.length === 0) {
+      toast.error("Add personas first");
+      return;
+    }
     for (const p of personas) void discoverOne(p);
   }, [live, personas, discoverOne]);
 
   const importOne = useCallback(
     async (persona: PersonaDraft) => {
-      if (!configId) { toast.error("No config ID — workspace config not found"); return; }
+      if (!configId) {
+        toast.error("No config ID — workspace config not found");
+        return;
+      }
       const r = results[persona.id];
-      if (!r?.journeys.length) { toast.error("No journeys to import"); return; }
+      if (!r?.journeys.length) {
+        toast.error("No journeys to import");
+        return;
+      }
       setImportingId(persona.id);
       try {
         // Tag each journey with the persona it was discovered for
@@ -624,12 +710,18 @@ export function JourneyDiscoveryPanel({ live, personas, configId, productModel }
   );
 
   const importAll = useCallback(async () => {
-    if (!configId) { toast.error("No config ID"); return; }
+    if (!configId) {
+      toast.error("No config ID");
+      return;
+    }
     // Tag each journey with the persona it was discovered for
     const allJourneys = Object.entries(results).flatMap(([personaId, r]) =>
-      r.journeys.map((j) => ({ ...j, persona_id: personaId }))
+      r.journeys.map((j) => ({ ...j, persona_id: personaId })),
     );
-    if (!allJourneys.length) { toast.error("No journeys to import"); return; }
+    if (!allJourneys.length) {
+      toast.error("No journeys to import");
+      return;
+    }
     setImportingId("__all__");
     try {
       const res = await api.importJourneysToConfig(configId, allJourneys);

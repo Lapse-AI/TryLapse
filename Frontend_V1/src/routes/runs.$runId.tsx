@@ -28,7 +28,7 @@ import {
 } from "@/components/run-detail";
 import { ManualAnnotationPanel } from "@/components/manual-annotation-panel";
 import { CrawlLiveGraph } from "@/components/crawl-live-graph";
-import { JourneyStepTree } from "@/components/journey-step-tree";
+import { JourneyStepTree, type JourneyStepTreeStep } from "@/components/journey-step-tree";
 import { ExperimentRunBanner } from "@/components/experiment-spec-panel";
 import {
   formatDuration,
@@ -78,6 +78,8 @@ const searchSchema = z.object({
   step: z.string().optional(),
   dimension: z.string().optional(),
 });
+
+type RunSearch = z.infer<typeof searchSchema>;
 
 export const Route = createFileRoute("/runs/$runId")({
   validateSearch: searchSchema,
@@ -187,8 +189,14 @@ export function RunDetail() {
   // Use strict:false so this component works from both /runs/$runId
   // and /$workspaceSlug/runs/$runId without route-specific binding.
   const { runId } = useParams({ strict: false }) as { runId: string };
-  const { tab: tabSearch, step: highlightStepId, dimension: dimensionFilter } = useSearch({ strict: false }) as {
-    tab?: string; step?: string; dimension?: string;
+  const {
+    tab: tabSearch,
+    step: highlightStepId,
+    dimension: dimensionFilter,
+  } = useSearch({ strict: false }) as {
+    tab?: string;
+    step?: string;
+    dimension?: string;
   };
   const navigate = useNavigate();
   const { data: bundle, isLoading } = useRunBundle(runId);
@@ -211,11 +219,11 @@ export function RunDetail() {
 
   const selectDimension = (name: string) => {
     const next = dimensionFilter === name ? undefined : name;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     void navigate({
-      search: (prev: any) => ({ ...prev, dimension: next }),
+      search: (prev: RunSearch): RunSearch => ({ ...prev, dimension: next }),
       hash: next ? "dimension-breakdown" : undefined,
-    } as any);
+    } as Parameters<typeof navigate>[0]);
   };
 
   const activeDimensionMeta = dimensionFilter
@@ -293,7 +301,7 @@ export function RunDetail() {
                 const configId = run.configId ?? run.id.replace(/-\d{8}-\d{6}$/, "");
                 trigger.mutate(
                   { mode: "run", configPath: configId, llm: true },
-                  { onSuccess: () => toast.success("Re-run triggered — check the Runner page") }
+                  { onSuccess: () => toast.success("Re-run triggered — check the Runner page") },
                 );
               }}
               className="text-xs px-3 py-1.5 rounded-md border border-border hover:bg-surface-2 inline-flex items-center gap-1.5 disabled:opacity-40"
@@ -357,8 +365,14 @@ export function RunDetail() {
           value={activeTab}
           onValueChange={(v) => {
             setActiveTab(v);
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            void navigate({ search: (prev: any) => ({ ...prev, tab: v === "overview" ? undefined : v, step: v === "steps" ? prev.step : undefined }) } as any);
+
+            void navigate({
+              search: (prev: RunSearch): RunSearch => ({
+                ...prev,
+                tab: v === "overview" ? undefined : v,
+                step: v === "steps" ? prev.step : undefined,
+              }),
+            } as Parameters<typeof navigate>[0]);
           }}
           className="space-y-4"
         >
@@ -410,37 +424,51 @@ export function RunDetail() {
               <Panel className="p-4 border border-warn/30 bg-warn/5 flex items-start gap-3">
                 <span className="text-warn text-lg mt-0.5">⚠</span>
                 <div>
-                  <div className="text-sm font-semibold text-warn">Partial run — timed out or stopped early</div>
+                  <div className="text-sm font-semibold text-warn">
+                    Partial run — timed out or stopped early
+                  </div>
                   <p className="text-xs text-muted-foreground mt-1">
-                    {bundle.steps.length} step{bundle.steps.length !== 1 ? "s" : ""} captured before the run was interrupted.
-                    Results below reflect only the completed journeys. Re-run to get the full picture.
+                    {bundle.steps.length} step{bundle.steps.length !== 1 ? "s" : ""} captured before
+                    the run was interrupted. Results below reflect only the completed journeys.
+                    Re-run to get the full picture.
                   </p>
                 </div>
               </Panel>
             )}
             {bundle.steps.length === 0 && (bundle.parallelErrors?.length ?? 0) > 0 && (
               <Panel className="p-4 border border-danger/30 bg-danger/5 space-y-2">
-                <div className="text-sm font-semibold text-danger">Journey execution failed — 0 steps recorded</div>
+                <div className="text-sm font-semibold text-danger">
+                  Journey execution failed — 0 steps recorded
+                </div>
                 <p className="text-xs text-muted-foreground">
-                  Parallel browser workers threw errors. Auth cookies may not have reached workers, or Playwright threading failed.
-                  Check errors below, then restart the server and re-run.
+                  Parallel browser workers threw errors. Auth cookies may not have reached workers,
+                  or Playwright threading failed. Check errors below, then restart the server and
+                  re-run.
                 </p>
                 <div className="space-y-1 max-h-48 overflow-y-auto">
                   {bundle.parallelErrors!.map((e, i) => (
-                    <pre key={i} className="text-[10px] font-mono text-danger/80 bg-surface/60 rounded px-2 py-1 whitespace-pre-wrap">{e}</pre>
+                    <pre
+                      key={i}
+                      className="text-[10px] font-mono text-danger/80 bg-surface/60 rounded px-2 py-1 whitespace-pre-wrap"
+                    >
+                      {e}
+                    </pre>
                   ))}
                 </div>
               </Panel>
             )}
-            {bundle.steps.length === 0 && (bundle.parallelErrors?.length ?? 0) === 0 && run.stepCount === 0 && (
-              <Panel className="p-4 border border-warn/30 bg-warn/5">
-                <div className="text-sm font-semibold text-warn">0 browser steps recorded</div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Journey execution produced no step data. Common causes: auth wasn't set up (check Config → Run credentials),
-                  all journeys failed immediately, or the server wasn't restarted after a code change.
-                </p>
-              </Panel>
-            )}
+            {bundle.steps.length === 0 &&
+              (bundle.parallelErrors?.length ?? 0) === 0 &&
+              run.stepCount === 0 && (
+                <Panel className="p-4 border border-warn/30 bg-warn/5">
+                  <div className="text-sm font-semibold text-warn">0 browser steps recorded</div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Journey execution produced no step data. Common causes: auth wasn't set up
+                    (check Config → Run credentials), all journeys failed immediately, or the server
+                    wasn't restarted after a code change.
+                  </p>
+                </Panel>
+              )}
             <RunNarrativePanel runId={run.id} bundle={bundle} />
             <RunObservabilityPanel bundle={bundle} />
             <Panel className="p-4 md:p-6 overflow-x-auto">
@@ -451,9 +479,9 @@ export function RunDetail() {
                     {runPersonas.length} personas × {runJourneys.length} journeys
                   </h2>
                   <p className="text-[11px] text-muted-foreground mt-2 max-w-xl">
-                    Browser steps run as the first persona (evaluator) only. Medium and Low severity columns
-                    reflect the same technical journey outcome through persona-specific findings,
-                    not separate browser sessions.
+                    Browser steps run as the first persona (evaluator) only. Medium and Low severity
+                    columns reflect the same technical journey outcome through persona-specific
+                    findings, not separate browser sessions.
                   </p>
                 </div>
                 <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
@@ -529,8 +557,12 @@ export function RunDetail() {
               <DimensionBreakdownBanner
                 dimension={activeDimensionMeta}
                 relatedCount={countIssuesForDimension(bundle.issues, activeDimensionMeta.name)}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                onClear={() => void navigate({ search: (prev: any) => ({ ...prev, dimension: undefined }), hash: undefined } as any)}
+                onClear={() =>
+                  void navigate({
+                    search: (prev: RunSearch): RunSearch => ({ ...prev, dimension: undefined }),
+                    hash: undefined,
+                  } as Parameters<typeof navigate>[0])
+                }
               />
             )}
 
@@ -632,9 +664,7 @@ export function RunDetail() {
 
             {bundle.delights.length > 0 && (
               <Panel className="p-6">
-                <div className="text-xs text-muted-foreground mb-4">
-                  Highlights
-                </div>
+                <div className="text-xs text-muted-foreground mb-4">Highlights</div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {bundle.delights.map((d) => (
                     <div key={d.id} className="border border-border rounded-lg p-4 bg-surface-2/30">
@@ -728,15 +758,17 @@ export function RunDetail() {
                 Each persona's journeys and their step-by-step outcomes. Click any row to expand.
               </p>
               <JourneyStepTree
-                steps={bundle.steps as any[]}
-                personas={runPersonas.map(p => ({ id: p.id, name: p.name }))}
-                journeys={runJourneys.map(j => ({ id: j.id, name: j.name }))}
+                steps={bundle.steps as unknown as JourneyStepTreeStep[]}
+                personas={runPersonas.map((p) => ({ id: p.id, name: p.name }))}
+                journeys={runJourneys.map((j) => ({ id: j.id, name: j.name }))}
               />
             </Panel>
           </TabsContent>
           <TabsContent value="crawl-graph">
             <Panel className="p-6">
-              <div className="text-sm font-medium mb-4">Crawl graph — pages discovered during crawl phase</div>
+              <div className="text-sm font-medium mb-4">
+                Crawl graph — pages discovered during crawl phase
+              </div>
               <CrawlLiveGraph runId={run.id} phase="done" pollingMs={0} />
             </Panel>
           </TabsContent>
@@ -782,7 +814,9 @@ export function RunDetail() {
               <div className="relative">
                 <div className="p-4 space-y-4 blur-sm pointer-events-none select-none opacity-50">
                   <h3 className="text-sm font-semibold">Journey Recording</h3>
-                  <p className="text-xs text-muted-foreground">View event replay and video recordings of journeys</p>
+                  <p className="text-xs text-muted-foreground">
+                    View event replay and video recordings of journeys
+                  </p>
                   <div className="h-32 bg-surface-2 rounded-lg" />
                 </div>
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -791,7 +825,9 @@ export function RunDetail() {
                       <Camera className="size-6 text-warn" />
                     </div>
                     <h3 className="font-display text-base font-semibold">Recordings Coming Soon</h3>
-                    <p className="text-xs text-muted-foreground mt-1.5 max-w-xs">rrweb session replay will be available in a future release.</p>
+                    <p className="text-xs text-muted-foreground mt-1.5 max-w-xs">
+                      rrweb session replay will be available in a future release.
+                    </p>
                   </div>
                 </div>
               </div>

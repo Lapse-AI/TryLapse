@@ -7,8 +7,10 @@ import { formatRel } from "@/lib/mock-data";
 function localTime(iso: string): string {
   try {
     return new Intl.DateTimeFormat(undefined, {
-      month: "short", day: "numeric",
-      hour: "numeric", minute: "2-digit",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
       hour12: true,
     }).format(new Date(iso));
   } catch {
@@ -23,7 +25,10 @@ export function ClientTime({ iso, fallback = "" }: { iso: string; fallback?: str
   useEffect(() => {
     setLocal(localTime(iso));
     setRel(formatRel(iso));
-    const id = setInterval(() => { setLocal(localTime(iso)); setRel(formatRel(iso)); }, 30_000);
+    const id = setInterval(() => {
+      setLocal(localTime(iso));
+      setRel(formatRel(iso));
+    }, 30_000);
     return () => clearInterval(id);
   }, [iso]);
   return (
@@ -84,7 +89,11 @@ export function SeverityChip({ s }: { s: Severity }) {
     P2: "info",
     P3: "neutral",
   };
-  return <Chip tone={tone[s]} title={s}>{SEVERITY_LABEL[s]}</Chip>;
+  return (
+    <Chip tone={tone[s]} title={s}>
+      {SEVERITY_LABEL[s]}
+    </Chip>
+  );
 }
 
 export function Panel({
@@ -98,7 +107,11 @@ export function Panel({
   as?: ElementType;
   id?: string;
 }) {
-  return <As className={`panel ${className}`} id={id}>{children}</As>;
+  return (
+    <As className={`panel ${className}`} id={id}>
+      {children}
+    </As>
+  );
 }
 
 export function SectionTitle({

@@ -169,10 +169,14 @@ export function PersonaStudioPanel({
         existingIds,
       });
       setSuggested(out.suggested);
-    } catch { /* optional */ }
+    } catch {
+      /* optional */
+    }
   }, [live, targetUrl, productName, existingIds]);
 
-  useEffect(() => { void loadSuggestions(); }, [loadSuggestions]);
+  useEffect(() => {
+    void loadSuggestions();
+  }, [loadSuggestions]);
 
   const prevModelRef = useRef<unknown>(null);
   useEffect(() => {
@@ -183,7 +187,10 @@ export function PersonaStudioPanel({
   }, [productModel, loadSuggestions]);
 
   const draftPersona = async () => {
-    if (!live) { toast.error("Start rehearse serve first"); return; }
+    if (!live) {
+      toast.error("Start rehearse serve first");
+      return;
+    }
     if (!prompt.trim()) return;
     setPending(true);
     try {
@@ -194,7 +201,9 @@ export function PersonaStudioPanel({
       });
       setDraftFragment(out.yamlFragment);
       setLastDraft(out.persona as PersonaDraft);
-      toast.success(out.source === "llm" ? "Persona drafted with AI" : "Persona drafted (template)");
+      toast.success(
+        out.source === "llm" ? "Persona drafted with AI" : "Persona drafted (template)",
+      );
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Draft failed");
     } finally {
@@ -258,7 +267,11 @@ export function PersonaStudioPanel({
               <UserPlus className="size-4 text-primary" />
               <span className="text-sm font-medium">Add a persona</span>
             </div>
-            <button type="button" onClick={() => setAddOpen(false)} className="text-muted-foreground hover:text-foreground">
+            <button
+              type="button"
+              onClick={() => setAddOpen(false)}
+              className="text-muted-foreground hover:text-foreground"
+            >
               <X className="size-4" />
             </button>
           </div>
@@ -297,9 +310,7 @@ export function PersonaStudioPanel({
 
           {/* AI draft */}
           <div className="space-y-2">
-            <label className="text-[11px] text-muted-foreground">
-              Or describe a user type
-            </label>
+            <label className="text-[11px] text-muted-foreground">Or describe a user type</label>
             <textarea
               className="w-full min-h-[64px] text-sm bg-surface-2 border border-border rounded-xl p-3 focus:outline-none focus:ring-1 focus:ring-primary/30 resize-none"
               placeholder='e.g. "SOC2 reviewer who only cares about audit logs and SSO settings"'
@@ -313,9 +324,15 @@ export function PersonaStudioPanel({
               className="flex items-center gap-1.5 text-xs px-4 py-2 rounded-full bg-primary text-primary-foreground disabled:opacity-50 font-medium"
             >
               {pending ? (
-                <><span className="size-3 border-2 border-white/40 border-t-white rounded-full animate-spin" />Drafting…</>
+                <>
+                  <span className="size-3 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                  Drafting…
+                </>
               ) : (
-                <><Sparkles className="size-3" />Draft with AI</>
+                <>
+                  <Sparkles className="size-3" />
+                  Draft with AI
+                </>
               )}
             </button>
           </div>
@@ -335,15 +352,21 @@ export function PersonaStudioPanel({
                 {lastDraft.goals.length > 0 && (
                   <ul className="mt-1.5 space-y-0.5">
                     {lastDraft.goals.map((g) => (
-                      <li key={g} className="text-[11px] text-muted-foreground flex items-start gap-1">
-                        <span className="text-primary mt-0.5">·</span>{g}
+                      <li
+                        key={g}
+                        className="text-[11px] text-muted-foreground flex items-start gap-1"
+                      >
+                        <span className="text-primary mt-0.5">·</span>
+                        {g}
                       </li>
                     ))}
                   </ul>
                 )}
                 {draftFragment && (
                   <details className="mt-2">
-                    <summary className="text-[10px] text-muted-foreground cursor-pointer">YAML preview</summary>
+                    <summary className="text-[10px] text-muted-foreground cursor-pointer">
+                      YAML preview
+                    </summary>
                     <pre className="mt-1 text-[10px] font-mono bg-surface-3 rounded-lg p-2 overflow-x-auto whitespace-pre-wrap">
                       {draftFragment}
                     </pre>
@@ -367,7 +390,9 @@ export function PersonaStudioPanel({
         <div className="text-center py-8 text-sm text-muted-foreground">
           <Users className="size-8 mx-auto opacity-20 mb-2" />
           <p>No personas yet.</p>
-          <p className="text-xs mt-0.5">Click <strong>Add persona</strong> to create your first one.</p>
+          <p className="text-xs mt-0.5">
+            Click <strong>Add persona</strong> to create your first one.
+          </p>
         </div>
       )}
     </div>

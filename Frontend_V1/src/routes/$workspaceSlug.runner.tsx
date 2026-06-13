@@ -11,7 +11,15 @@ import { VariantRehearsalPanel } from "@/components/variant-rehearsal-panel";
 import { CohortRehearsalPanel } from "@/components/cohort-rehearsal-panel";
 import { RunLiveGraph } from "@/components/run-live-graph";
 import { CrawlLiveGraph } from "@/components/crawl-live-graph";
-import { Loader2, Play, Network, FlaskConical, Settings, AlertTriangle, CheckCircle2 } from "lucide-react";
+import {
+  Loader2,
+  Play,
+  Network,
+  FlaskConical,
+  Settings,
+  AlertTriangle,
+  CheckCircle2,
+} from "lucide-react";
 import { api } from "@/lib/api/client";
 import { toast } from "sonner";
 
@@ -42,14 +50,15 @@ function RunnerPage() {
 
   // Derive workspace run_id_prefix from the saved configPath
   const wsConfigId = workspace?.configPath
-    ? (workspace.configPath.split("/").pop()?.replace(/\.ya?ml$/, "") ?? "")
+    ? (workspace.configPath
+        .split("/")
+        .pop()
+        ?.replace(/\.ya?ml$/, "") ?? "")
     : "";
   const wsPrefix = wsConfigId.replace(/-\d{8}-\d{6}$/, "");
 
   // Filter jobs to this workspace only — runId starts with wsPrefix, or job not yet started
-  const wsJobs = wsPrefix
-    ? jobs.filter((j) => !j.runId || j.runId.startsWith(wsPrefix))
-    : jobs;
+  const wsJobs = wsPrefix ? jobs.filter((j) => !j.runId || j.runId.startsWith(wsPrefix)) : jobs;
 
   // Filter to workspace-relevant configs only (skip unrelated and example configs)
   const wsConfigs = wsPrefix
@@ -57,8 +66,11 @@ function RunnerPage() {
     : configs.filter((c) => c.source !== "example");
 
   // Sort timestamped configs newest-first
-  const timestamped = [...wsConfigs.filter((c) => /\d{8}-\d{6}$/.test(c.id))]
-    .sort((a, b) => ((b as { mtime?: number }).mtime ?? 0) - ((a as { mtime?: number }).mtime ?? 0) || b.id.localeCompare(a.id));
+  const timestamped = [...wsConfigs.filter((c) => /\d{8}-\d{6}$/.test(c.id))].sort(
+    (a, b) =>
+      ((b as { mtime?: number }).mtime ?? 0) - ((a as { mtime?: number }).mtime ?? 0) ||
+      b.id.localeCompare(a.id),
+  );
   const canonical = wsConfigs.filter((c) => !/\d{8}-\d{6}$/.test(c.id));
   const latestId = timestamped[0]?.id ?? null;
   const displayConfigs = [...timestamped, ...canonical];
@@ -102,7 +114,9 @@ function RunnerPage() {
       selectedConfig.id === "lr-self" ||
       selectedConfig.name.toLowerCase().includes("self"));
 
-  const configHasAuth = configFile?.yaml ? configFile.yaml.includes("\nauth:") || configFile.yaml.startsWith("auth:") : null;
+  const configHasAuth = configFile?.yaml
+    ? configFile.yaml.includes("\nauth:") || configFile.yaml.startsWith("auth:")
+    : null;
   const credsOk = creds ? creds.hasEmail && creds.hasPassword : null;
   const authReady = configHasAuth && credsOk;
 
@@ -125,40 +139,41 @@ function RunnerPage() {
         <ActiveJobsBanner jobs={wsJobs} workspaceSlug={workspaceSlug} />
 
         {/* Live run + crawl visualization — shown when a run is in progress */}
-        {wsJobs.some(j => j.status === "running") && (() => {
-          const liveJob = wsJobs.find(j => j.status === "running");
-          // Use runId from job record OR from live progress (whichever is available first)
-          const effectiveRunId = liveJob?.runId ?? discoveredRunId;
-          return (
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-              <Panel className="p-5">
-                <div className="text-sm font-semibold mb-3 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                  Live journeys
-                </div>
-                <RunLiveGraph
-                  runId={effectiveRunId}
-                  pollingMs={2000}
-                  jobId={liveJob?.id}
-                  onRunIdDiscovered={setDiscoveredRunId}
-                />
-              </Panel>
-              <Panel className="p-5">
-                <div className="text-sm font-semibold mb-3 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-info animate-pulse" />
-                  Live crawl graph
-                </div>
-                {effectiveRunId ? (
-                  <CrawlLiveGraph runId={effectiveRunId} pollingMs={1500} />
-                ) : (
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <Loader2 className="size-3 animate-spin" /> Waiting for run ID…
+        {wsJobs.some((j) => j.status === "running") &&
+          (() => {
+            const liveJob = wsJobs.find((j) => j.status === "running");
+            // Use runId from job record OR from live progress (whichever is available first)
+            const effectiveRunId = liveJob?.runId ?? discoveredRunId;
+            return (
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                <Panel className="p-5">
+                  <div className="text-sm font-semibold mb-3 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                    Live journeys
                   </div>
-                )}
-              </Panel>
-            </div>
-          );
-        })()}
+                  <RunLiveGraph
+                    runId={effectiveRunId}
+                    pollingMs={2000}
+                    jobId={liveJob?.id}
+                    onRunIdDiscovered={setDiscoveredRunId}
+                  />
+                </Panel>
+                <Panel className="p-5">
+                  <div className="text-sm font-semibold mb-3 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-info animate-pulse" />
+                    Live crawl graph
+                  </div>
+                  {effectiveRunId ? (
+                    <CrawlLiveGraph runId={effectiveRunId} pollingMs={1500} />
+                  ) : (
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <Loader2 className="size-3 animate-spin" /> Waiting for run ID…
+                    </div>
+                  )}
+                </Panel>
+              </div>
+            );
+          })()}
 
         <Panel className="p-5 space-y-4">
           <div className="text-sm font-medium">Readiness</div>
@@ -214,9 +229,18 @@ function RunnerPage() {
                 const isLatest = c.id === latestId;
                 let label = c.id;
                 if (tsMatch) {
-                  const dt = new Date(`${tsMatch[2]}-${tsMatch[3]}-${tsMatch[4]}T${tsMatch[5]}:${tsMatch[6]}:${tsMatch[7]}Z`);
-                  const localStr = isNaN(dt.getTime()) ? `${tsMatch[2]}-${tsMatch[3]}-${tsMatch[4]} ${tsMatch[5]}:${tsMatch[6]}`
-                    : new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit", hour12: true }).format(dt);
+                  const dt = new Date(
+                    `${tsMatch[2]}-${tsMatch[3]}-${tsMatch[4]}T${tsMatch[5]}:${tsMatch[6]}:${tsMatch[7]}Z`,
+                  );
+                  const localStr = isNaN(dt.getTime())
+                    ? `${tsMatch[2]}-${tsMatch[3]}-${tsMatch[4]} ${tsMatch[5]}:${tsMatch[6]}`
+                    : new Intl.DateTimeFormat(undefined, {
+                        month: "short",
+                        day: "numeric",
+                        hour: "numeric",
+                        minute: "2-digit",
+                        hour12: true,
+                      }).format(dt);
                   label = `${tsMatch[1]} · ${localStr}${isLatest ? " (latest)" : ""}`;
                 }
                 return (
@@ -229,10 +253,14 @@ function RunnerPage() {
             {selectedConfig && (
               <div className="mt-2 rounded-md bg-surface-2 border border-border px-3 py-2 space-y-1">
                 <div className="text-[11px] text-muted-foreground">
-                  File: <code className="font-mono text-foreground">configs/{selectedConfig.id}.yaml</code>
+                  File:{" "}
+                  <code className="font-mono text-foreground">
+                    configs/{selectedConfig.id}.yaml
+                  </code>
                 </div>
                 <div className="text-[11px] font-mono text-muted-foreground/80 select-all break-all">
-                  ./rehearse run -c launch-rehearsal/artifacts/configs/{selectedConfig.id}.yaml -o launch-rehearsal/artifacts/
+                  ./rehearse run -c launch-rehearsal/artifacts/configs/{selectedConfig.id}.yaml -o
+                  launch-rehearsal/artifacts/
                 </div>
               </div>
             )}

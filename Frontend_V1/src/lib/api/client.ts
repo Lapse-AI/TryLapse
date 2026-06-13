@@ -80,9 +80,7 @@ export function artifactUrl(relPath: string): string {
   // Strip absolute prefix (launch-rehearsal/artifacts/ or /abs/path/.../artifacts/)
   // but keep relative sub-paths like artifacts/{run_id}/... intact —
   // /files/{rel} maps directly to artifacts_root/{rel} on the server.
-  const clean = relPath
-    .replace(/^launch-rehearsal\/artifacts\//, "")
-    .replace(/^\//, "");
+  const clean = relPath.replace(/^launch-rehearsal\/artifacts\//, "").replace(/^\//, "");
   return `${API_BASE}/files/${clean}`;
 }
 
@@ -130,7 +128,9 @@ export const api = {
       issuesResolved?: number;
       blockerCounts?: number[];
       narrative?: InsightNarrative;
-    }>(configPrefix ? `/api/trends?configPrefix=${encodeURIComponent(configPrefix)}` : "/api/trends"),
+    }>(
+      configPrefix ? `/api/trends?configPrefix=${encodeURIComponent(configPrefix)}` : "/api/trends",
+    ),
   digest: (n = 7) => apiFetch<CommandDigest>(`/api/digest?n=${n}`),
   compileRecording: (body: {
     journeyId?: string;
@@ -231,7 +231,12 @@ export const api = {
     }),
   getProductModel: (configId?: string | null) =>
     apiFetch<Record<string, unknown>>(`/api/product${configId ? `?configId=${configId}` : ""}`),
-  analyzeProduct: (body: { targetUrl: string; productName?: string; configId?: string; sitemapPages?: unknown[] }) =>
+  analyzeProduct: (body: {
+    targetUrl: string;
+    productName?: string;
+    configId?: string;
+    sitemapPages?: unknown[];
+  }) =>
     apiFetch<Record<string, unknown>>("/api/product/analyze", {
       method: "POST",
       body: JSON.stringify(body),
@@ -245,13 +250,25 @@ export const api = {
   discoverJourneys: (personas: unknown[], configId?: string | null, productModel?: unknown) =>
     apiFetch<{ personaJourneys: unknown[]; count: number }>("/api/journeys/discover", {
       method: "POST",
-      body: JSON.stringify({ personas, configId: configId || "", productModel: productModel || null }),
+      body: JSON.stringify({
+        personas,
+        configId: configId || "",
+        productModel: productModel || null,
+      }),
       timeoutMs: 180000,
     }),
-  discoverJourneysForPersona: (persona: unknown, configId?: string | null, productModel?: unknown) =>
+  discoverJourneysForPersona: (
+    persona: unknown,
+    configId?: string | null,
+    productModel?: unknown,
+  ) =>
     apiFetch<Record<string, unknown>>("/api/journeys/discover/persona", {
       method: "POST",
-      body: JSON.stringify({ persona, configId: configId || "", productModel: productModel || null }),
+      body: JSON.stringify({
+        persona,
+        configId: configId || "",
+        productModel: productModel || null,
+      }),
       timeoutMs: 120000,
     }),
   discoverJourneysForPersonaStream: async function* (
@@ -265,7 +282,11 @@ export const api = {
     const res = await fetch(`${API_BASE}/api/journeys/discover/persona/stream`, {
       method: "POST",
       headers,
-      body: JSON.stringify({ persona, configId: configId || "", productModel: productModel || null }),
+      body: JSON.stringify({
+        persona,
+        configId: configId || "",
+        productModel: productModel || null,
+      }),
     });
     if (!res.ok || !res.body) throw new Error(`Stream failed: ${res.status}`);
     const reader = res.body.getReader();
@@ -279,7 +300,11 @@ export const api = {
       buf = lines.pop() ?? "";
       for (const line of lines) {
         if (line.startsWith("data: ")) {
-          try { yield JSON.parse(line.slice(6)) as Record<string, unknown>; } catch { /* skip */ }
+          try {
+            yield JSON.parse(line.slice(6)) as Record<string, unknown>;
+          } catch {
+            /* skip */
+          }
         }
       }
     }
@@ -484,14 +509,21 @@ export const api = {
     };
     // Try the dedicated endpoint; fall back to /files/ for servers without this route
     try {
-      const result = await apiFetch<CrawlGraphData>(`/api/runs/${encodeURIComponent(runId)}/crawl-graph`);
+      const result = await apiFetch<CrawlGraphData>(
+        `/api/runs/${encodeURIComponent(runId)}/crawl-graph`,
+      );
       if (result && result.nodes?.length > 0) return result;
-    } catch { /* fall through */ }
+    } catch {
+      /* fall through */
+    }
     return apiFetch<CrawlGraphData>(`/files/runs/${encodeURIComponent(runId)}-crawl-graph.json`);
   },
-  getCredentials: () =>
-    apiFetch<{ hasEmail: boolean; hasPassword: boolean }>("/api/credentials"),
-  saveCredentials: (email: string, password: string, opts?: { configId?: string; loginPath?: string }) =>
+  getCredentials: () => apiFetch<{ hasEmail: boolean; hasPassword: boolean }>("/api/credentials"),
+  saveCredentials: (
+    email: string,
+    password: string,
+    opts?: { configId?: string; loginPath?: string },
+  ) =>
     apiFetch<{ ok: boolean; yamlUpdated: boolean }>("/api/credentials", {
       method: "POST",
       body: JSON.stringify({ email, password, ...opts }),
@@ -553,8 +585,7 @@ export const api = {
   // The library is workspace-global: personas can be reused across products.
 
   /** Fetch all library personas (newest first). */
-  listPersonaLibrary: () =>
-    apiFetch<LibraryPersona[]>("/api/persona-library"),
+  listPersonaLibrary: () => apiFetch<LibraryPersona[]>("/api/persona-library"),
 
   /** Fetch a single library persona by id. */
   getPersonaLibrary: (id: string) =>
@@ -575,17 +606,17 @@ export const api = {
     targetUrl?: string;
     save?: boolean;
   }) =>
-    apiFetch<{ persona: LibraryPersona; yamlFragment: string }>(
-      "/api/persona-library/generate",
-      { method: "POST", body: JSON.stringify(body) }
-    ),
+    apiFetch<{ persona: LibraryPersona; yamlFragment: string }>("/api/persona-library/generate", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
 
   /** Bulk-import all personas from an existing config into the library. */
   importPersonasFromConfig: (configId: string) =>
-    apiFetch<{ imported: number; personas: LibraryPersona[] }>(
-      "/api/persona-library/import",
-      { method: "POST", body: JSON.stringify({ configId }) }
-    ),
+    apiFetch<{ imported: number; personas: LibraryPersona[] }>("/api/persona-library/import", {
+      method: "POST",
+      body: JSON.stringify({ configId }),
+    }),
 
   /** Delete a library persona by id. */
   deletePersonaLibrary: (id: string) =>

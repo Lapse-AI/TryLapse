@@ -518,7 +518,11 @@ function Index() {
               <Activity className="size-4 text-primary" />
               <span className="font-display text-base font-semibold">Recent runs</span>
             </div>
-            <Link to="/$workspaceSlug/runs" params={{ workspaceSlug }} className="text-xs text-muted-foreground hover:text-foreground">
+            <Link
+              to="/$workspaceSlug/runs"
+              params={{ workspaceSlug }}
+              className="text-xs text-muted-foreground hover:text-foreground"
+            >
               View all →
             </Link>
           </div>
@@ -638,7 +642,9 @@ function NoRunsEmptyState({ onRun, isPending }: { onRun: () => void; isPending: 
             <Link
               to="/init"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity"
-              style={{ boxShadow: "0 2px 8px color-mix(in oklab, var(--primary) 30%, transparent)" }}
+              style={{
+                boxShadow: "0 2px 8px color-mix(in oklab, var(--primary) 30%, transparent)",
+              }}
             >
               Set up journeys →
             </Link>

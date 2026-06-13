@@ -128,7 +128,11 @@ function RunsList() {
               </tr>
             </thead>
             <tbody>
-              <RunHistoryLiveRows jobs={activeJobs} group={{ label: productLabel, targetUrl: targetLabel }} workspaceSlug={workspaceSlug} />
+              <RunHistoryLiveRows
+                jobs={activeJobs}
+                group={{ label: productLabel, targetUrl: targetLabel }}
+                workspaceSlug={workspaceSlug}
+              />
               {runSummaries.map((r) => {
                 const isChecked = selected.includes(r.id);
                 return (

@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import rrweb from 'rrweb';
+import { useEffect, useRef } from "react";
+import rrweb from "rrweb";
 
 interface RecordingEvent {
   type: number;
@@ -25,15 +25,15 @@ export function useRRWebRecorder(enabled: boolean = true) {
       recordCrossOriginIframes: false,
       sampling: {
         mousemove: 10,
-        input: 'last',
+        input: "last",
         scroll: 150,
       },
       maskAllInputs: false,
       maskInputOptions: {
         password: true,
       },
-      blockClass: 'rr-block',
-      ignoreClass: 'rr-ignore',
+      blockClass: "rr-block",
+      ignoreClass: "rr-ignore",
     });
 
     stopRecordRef.current = stop;
@@ -50,14 +50,14 @@ export function useRRWebRecorder(enabled: boolean = true) {
   const exportRecording = async (runId: string, journeyId: string) => {
     const events = recordingRef.current;
     if (events.length === 0) {
-      console.warn('No recording events to export');
+      console.warn("No recording events to export");
       return null;
     }
 
     try {
-      const response = await fetch('/api/recordings/save', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/recordings/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           runId,
           journeyId,
@@ -74,7 +74,7 @@ export function useRRWebRecorder(enabled: boolean = true) {
       const result = await response.json();
       return result;
     } catch (error) {
-      console.error('Failed to export recording:', error);
+      console.error("Failed to export recording:", error);
       return null;
     }
   };

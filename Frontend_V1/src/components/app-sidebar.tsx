@@ -119,7 +119,10 @@ export function AppSidebar() {
   // Start null to match server render, then populate from localStorage after mount
   const [userWorkspace, setUserWorkspace] = useState<ReturnType<typeof getWorkspace>>(null);
   const [mounted, setMounted] = useState(false);
-  useEffect(() => { setUserWorkspace(getWorkspace()); setMounted(true); }, []);
+  useEffect(() => {
+    setUserWorkspace(getWorkspace());
+    setMounted(true);
+  }, []);
 
   const handleSignOut = () => {
     signOut();
@@ -164,7 +167,10 @@ export function AppSidebar() {
             <div className="text-sm font-medium truncate" suppressHydrationWarning>
               {userWorkspace?.name ?? workspace?.name ?? group.label}
             </div>
-            <div className="text-[11px] text-muted-foreground font-mono truncate" suppressHydrationWarning>
+            <div
+              className="text-[11px] text-muted-foreground font-mono truncate"
+              suppressHydrationWarning
+            >
               {userWorkspace ? `/${userWorkspace.slug}` : targetLabel}
             </div>
             {userWorkspace && (

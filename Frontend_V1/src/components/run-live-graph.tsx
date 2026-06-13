@@ -1,5 +1,17 @@
 import { useEffect, useState } from "react";
-import { Loader2, CheckCircle2, XCircle, Clock, Zap, ChevronDown, ChevronUp, Info, Pause, Play, Square } from "lucide-react";
+import {
+  Loader2,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  Zap,
+  ChevronDown,
+  ChevronUp,
+  Info,
+  Pause,
+  Play,
+  Square,
+} from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 
@@ -57,18 +69,23 @@ const PHASE_LABELS: Record<string, string> = {
 function StatusIcon({ status, size = 14 }: { status: string; size?: number }) {
   const s = `w-${size === 14 ? "3.5" : "4"} h-${size === 14 ? "3.5" : "4"}`;
   if (status === "running") return <Loader2 className={`${s} animate-spin text-primary`} />;
-  if (status === "pass" || status === "done") return <CheckCircle2 className={`${s} text-emerald-500`} />;
+  if (status === "pass" || status === "done")
+    return <CheckCircle2 className={`${s} text-emerald-500`} />;
   if (status === "fail") return <XCircle className={`${s} text-red-500`} />;
   return <Clock className={`${s} text-muted-foreground/40`} />;
 }
 
 function StepDot({ step }: { step: StepProgress }) {
   const color =
-    step.status === "pass" ? "bg-emerald-500"
-    : step.status === "fail" ? "bg-red-500"
-    : step.status === "running" ? "bg-primary animate-pulse"
-    : step.status === "skip" ? "bg-muted-foreground/30"
-    : "bg-border";
+    step.status === "pass"
+      ? "bg-emerald-500"
+      : step.status === "fail"
+        ? "bg-red-500"
+        : step.status === "running"
+          ? "bg-primary animate-pulse"
+          : step.status === "skip"
+            ? "bg-muted-foreground/30"
+            : "bg-border";
   return (
     <div
       title={`${step.action}${step.intent ? `: ${step.intent}` : ""}${step.note ? ` — ${step.note}` : ""}`}
@@ -79,8 +96,8 @@ function StepDot({ step }: { step: StepProgress }) {
 
 function JourneyRow({ journey, isActive }: { journey: JourneyProgress; isActive: boolean }) {
   const [open, setOpen] = useState(false);
-  const passCount = journey.steps.filter(s => s.status === "pass").length;
-  const failCount = journey.steps.filter(s => s.status === "fail").length;
+  const passCount = journey.steps.filter((s) => s.status === "pass").length;
+  const failCount = journey.steps.filter((s) => s.status === "fail").length;
   const doneCount = passCount + failCount;
 
   return (
@@ -89,7 +106,7 @@ function JourneyRow({ journey, isActive }: { journey: JourneyProgress; isActive:
         className={`flex items-start gap-2 py-1.5 px-2 rounded-md transition-colors cursor-pointer ${
           isActive ? "bg-primary/5 border border-primary/20" : "hover:bg-surface-2/30"
         }`}
-        onClick={() => setOpen(o => !o)}
+        onClick={() => setOpen((o) => !o)}
       >
         <StatusIcon status={journey.status} />
         <div className="flex-1 min-w-0">
@@ -101,12 +118,16 @@ function JourneyRow({ journey, isActive }: { journey: JourneyProgress; isActive:
                   {(journey.duration_ms / 1000).toFixed(1)}s
                 </span>
               )}
-              {open ? <ChevronUp className="size-3 text-muted-foreground" /> : <ChevronDown className="size-3 text-muted-foreground" />}
+              {open ? (
+                <ChevronUp className="size-3 text-muted-foreground" />
+              ) : (
+                <ChevronDown className="size-3 text-muted-foreground" />
+              )}
             </div>
           </div>
           {!open && journey.steps.length > 0 && (
             <div className="flex items-center gap-0.5 mt-1 flex-wrap">
-              {journey.steps.map(step => (
+              {journey.steps.map((step) => (
                 <StepDot key={step.step_id} step={step} />
               ))}
               {doneCount > 0 && (
@@ -126,18 +147,25 @@ function JourneyRow({ journey, isActive }: { journey: JourneyProgress; isActive:
           {journey.steps.length === 0 ? (
             <div className="px-3 py-2 text-muted-foreground">No steps yet</div>
           ) : (
-            journey.steps.map(step => (
+            journey.steps.map((step) => (
               <div key={step.step_id} className="flex items-start gap-2 px-3 py-1.5">
-                <div className={`mt-0.5 w-2 h-2 rounded-full shrink-0 ${
-                  step.status === "pass" ? "bg-emerald-500"
-                  : step.status === "fail" ? "bg-red-500"
-                  : step.status === "running" ? "bg-primary animate-pulse"
-                  : "bg-border"
-                }`} />
+                <div
+                  className={`mt-0.5 w-2 h-2 rounded-full shrink-0 ${
+                    step.status === "pass"
+                      ? "bg-emerald-500"
+                      : step.status === "fail"
+                        ? "bg-red-500"
+                        : step.status === "running"
+                          ? "bg-primary animate-pulse"
+                          : "bg-border"
+                  }`}
+                />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-muted-foreground">{step.action}</span>
-                    {step.intent && <span className="truncate text-foreground/80">{step.intent}</span>}
+                    {step.intent && (
+                      <span className="truncate text-foreground/80">{step.intent}</span>
+                    )}
                     {step.duration_ms > 0 && (
                       <span className="ml-auto shrink-0 text-muted-foreground">
                         {(step.duration_ms / 1000).toFixed(2)}s
@@ -157,17 +185,27 @@ function JourneyRow({ journey, isActive }: { journey: JourneyProgress; isActive:
   );
 }
 
-function PersonaDetail({ persona, progress, onClose }: {
+function PersonaDetail({
+  persona,
+  progress,
+  onClose,
+}: {
   persona: PersonaProgress;
   progress: RunProgress;
   onClose: () => void;
 }) {
-  const passes = persona.journeys.filter(j => j.status === "pass").length;
-  const fails  = persona.journeys.filter(j => j.status === "fail").length;
-  const total  = persona.journeys.length;
+  const passes = persona.journeys.filter((j) => j.status === "pass").length;
+  const fails = persona.journeys.filter((j) => j.status === "fail").length;
+  const total = persona.journeys.length;
   const totalSteps = persona.journeys.reduce((a, j) => a + j.steps.length, 0);
-  const passedSteps = persona.journeys.reduce((a, j) => a + j.steps.filter(s => s.status === "pass").length, 0);
-  const failedSteps = persona.journeys.reduce((a, j) => a + j.steps.filter(s => s.status === "fail").length, 0);
+  const passedSteps = persona.journeys.reduce(
+    (a, j) => a + j.steps.filter((s) => s.status === "pass").length,
+    0,
+  );
+  const failedSteps = persona.journeys.reduce(
+    (a, j) => a + j.steps.filter((s) => s.status === "fail").length,
+    0,
+  );
   const totalMs = persona.journeys.reduce((a, j) => a + j.duration_ms, 0);
 
   return (
@@ -179,7 +217,10 @@ function PersonaDetail({ persona, progress, onClose }: {
           <span className="text-sm font-semibold">{persona.persona_name}</span>
           <span className="text-xs text-muted-foreground font-mono">{persona.persona_id}</span>
         </div>
-        <button onClick={onClose} className="text-muted-foreground hover:text-foreground text-xs px-2 py-0.5 rounded border border-border/60 hover:bg-surface-2">
+        <button
+          onClick={onClose}
+          className="text-muted-foreground hover:text-foreground text-xs px-2 py-0.5 rounded border border-border/60 hover:bg-surface-2"
+        >
           close
         </button>
       </div>
@@ -221,11 +262,14 @@ function PersonaDetail({ persona, progress, onClose }: {
 
       {/* Journey list with step expansion */}
       <div className="divide-y divide-border/40 max-h-64 overflow-y-auto">
-        {persona.journeys.map(journey => (
+        {persona.journeys.map((journey) => (
           <div key={journey.journey_id} className="px-2 py-0.5">
             <JourneyRow
               journey={journey}
-              isActive={progress.current_journey === journey.journey_id && progress.current_persona === persona.persona_id}
+              isActive={
+                progress.current_journey === journey.journey_id &&
+                progress.current_persona === persona.persona_id
+              }
             />
           </div>
         ))}
@@ -234,15 +278,22 @@ function PersonaDetail({ persona, progress, onClose }: {
   );
 }
 
-function PersonaColumn({ persona, progress, selected, onSelect }: {
+function PersonaColumn({
+  persona,
+  progress,
+  selected,
+  onSelect,
+}: {
   persona: PersonaProgress;
   progress: RunProgress;
   selected: boolean;
   onSelect: () => void;
 }) {
   const isActive = progress.current_persona === persona.persona_id;
-  const doneJourneys = persona.journeys.filter(j => j.status === "pass" || j.status === "fail").length;
-  const failedJourneys = persona.journeys.filter(j => j.status === "fail").length;
+  const doneJourneys = persona.journeys.filter(
+    (j) => j.status === "pass" || j.status === "fail",
+  ).length;
+  const failedJourneys = persona.journeys.filter((j) => j.status === "fail").length;
 
   return (
     <div
@@ -257,21 +308,28 @@ function PersonaColumn({ persona, progress, selected, onSelect }: {
       title="Click to expand details"
     >
       {/* Persona header */}
-      <div className={`px-3 py-2 flex items-center gap-2 ${
-        selected ? "bg-primary/15" : isActive ? "bg-primary/10" : "bg-surface-2/50"
-      }`}>
+      <div
+        className={`px-3 py-2 flex items-center gap-2 ${
+          selected ? "bg-primary/15" : isActive ? "bg-primary/10" : "bg-surface-2/50"
+        }`}
+      >
         <StatusIcon status={persona.status} size={16} />
         <div className="flex-1 min-w-0">
-          <div className="text-xs font-semibold leading-tight" title={persona.persona_name}>{persona.persona_name}</div>
+          <div className="text-xs font-semibold leading-tight" title={persona.persona_name}>
+            {persona.persona_name}
+          </div>
           <div className="text-[10px] text-muted-foreground">
             {doneJourneys}/{persona.journeys.length} journeys
-            {failedJourneys > 0 && <span className="text-red-400 ml-1">· {failedJourneys} failed</span>}
+            {failedJourneys > 0 && (
+              <span className="text-red-400 ml-1">· {failedJourneys} failed</span>
+            )}
           </div>
         </div>
-        {selected
-          ? <ChevronUp className="size-3 text-primary shrink-0" />
-          : <ChevronDown className="size-3 text-muted-foreground shrink-0" />
-        }
+        {selected ? (
+          <ChevronUp className="size-3 text-primary shrink-0" />
+        ) : (
+          <ChevronDown className="size-3 text-muted-foreground shrink-0" />
+        )}
       </div>
 
       {/* Journey list (collapsed view) */}
@@ -281,13 +339,15 @@ function PersonaColumn({ persona, progress, selected, onSelect }: {
             Waiting for journeys…
           </div>
         ) : (
-          persona.journeys.map(journey => (
+          persona.journeys.map((journey) => (
             <div key={journey.journey_id} className="px-1.5 py-0.5">
-              <div className={`flex items-start gap-2 py-1.5 px-2 rounded-md ${
-                progress.current_journey === journey.journey_id && isActive
-                  ? "bg-primary/5 border border-primary/20"
-                  : ""
-              }`}>
+              <div
+                className={`flex items-start gap-2 py-1.5 px-2 rounded-md ${
+                  progress.current_journey === journey.journey_id && isActive
+                    ? "bg-primary/5 border border-primary/20"
+                    : ""
+                }`}
+              >
                 <StatusIcon status={journey.status} />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
@@ -300,7 +360,7 @@ function PersonaColumn({ persona, progress, selected, onSelect }: {
                   </div>
                   {journey.steps.length > 0 && (
                     <div className="flex items-center gap-0.5 mt-1 flex-wrap">
-                      {journey.steps.slice(0, 12).map(step => (
+                      {journey.steps.slice(0, 12).map((step) => (
                         <StepDot key={step.step_id} step={step} />
                       ))}
                     </div>
@@ -344,9 +404,17 @@ export function RunLiveGraph({
         body: JSON.stringify({ signal }),
       });
       if (res.ok) {
-        if (signal === "pause") { setPaused(true); toast.success("Run paused"); }
-        if (signal === "resume") { setPaused(false); toast.success("Run resumed"); }
-        if (signal === "stop") { toast.success("Stop signal sent"); }
+        if (signal === "pause") {
+          setPaused(true);
+          toast.success("Run paused");
+        }
+        if (signal === "resume") {
+          setPaused(false);
+          toast.success("Run resumed");
+        }
+        if (signal === "stop") {
+          toast.success("Stop signal sent");
+        }
       } else {
         toast.error("Failed to send signal");
       }
@@ -363,7 +431,10 @@ export function RunLiveGraph({
       try {
         const url = runId ? `/api/progress?runId=${runId}` : "/api/progress";
         const res = await fetch(url);
-        if (!res.ok) { if (!cancelled) setNoProgress(true); return; }
+        if (!res.ok) {
+          if (!cancelled) setNoProgress(true);
+          return;
+        }
         const data = await res.json();
         if (!cancelled) {
           setProgress(data);
@@ -376,7 +447,10 @@ export function RunLiveGraph({
     };
     poll();
     const interval = setInterval(poll, pollingMs);
-    return () => { cancelled = true; clearInterval(interval); };
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
   }, [runId, pollingMs]);
 
   if (noProgress && !progress) {
@@ -405,16 +479,24 @@ export function RunLiveGraph({
 
   const isDone = progress.phase === "done" || progress.phase === "failed";
   const elapsedS = Math.floor(Date.now() / 1000 - progress.started_at);
-  const elapsedStr = elapsedS > 60 ? `${Math.floor(elapsedS / 60)}m ${elapsedS % 60}s` : `${elapsedS}s`;
-  const totalJourneys = progress.total_journeys || progress.personas.reduce((a, p) => a + p.journeys.length, 0);
-  const completedJourneys = progress.completed_journeys ||
-    progress.personas.reduce((a, p) => a + p.journeys.filter(j => j.status === "pass" || j.status === "fail").length, 0);
+  const elapsedStr =
+    elapsedS > 60 ? `${Math.floor(elapsedS / 60)}m ${elapsedS % 60}s` : `${elapsedS}s`;
+  const totalJourneys =
+    progress.total_journeys || progress.personas.reduce((a, p) => a + p.journeys.length, 0);
+  const completedJourneys =
+    progress.completed_journeys ||
+    progress.personas.reduce(
+      (a, p) => a + p.journeys.filter((j) => j.status === "pass" || j.status === "fail").length,
+      0,
+    );
   const pct = totalJourneys > 0 ? Math.round((completedJourneys / totalJourneys) * 100) : 0;
 
-  const browserPersonas = progress.personas.filter(p => p.journeys.some(j => j.steps.length > 0));
+  const browserPersonas = progress.personas.filter((p) =>
+    p.journeys.some((j) => j.steps.length > 0),
+  );
   const analysisOnlyCount = progress.personas.length - browserPersonas.length;
   const selectedPersona = selectedPersonaId
-    ? progress.personas.find(p => p.persona_id === selectedPersonaId) ?? null
+    ? (progress.personas.find((p) => p.persona_id === selectedPersonaId) ?? null)
     : null;
 
   return (
@@ -422,18 +504,29 @@ export function RunLiveGraph({
       {/* Header with pause/stop controls */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-2">
-          {isDone
-            ? <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-            : <Loader2 className="w-4 h-4 animate-spin text-primary" />}
-          <span className="text-sm font-medium">{PHASE_LABELS[progress.phase] ?? progress.phase}</span>
+          {isDone ? (
+            <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+          ) : (
+            <Loader2 className="w-4 h-4 animate-spin text-primary" />
+          )}
+          <span className="text-sm font-medium">
+            {PHASE_LABELS[progress.phase] ?? progress.phase}
+          </span>
           {progress.product_name && (
             <span className="text-xs text-muted-foreground">· {progress.product_name}</span>
           )}
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1"><Zap className="w-3 h-3" />{elapsedStr}</span>
-            {totalJourneys > 0 && <span>· {completedJourneys}/{totalJourneys} journeys</span>}
+            <span className="flex items-center gap-1">
+              <Zap className="w-3 h-3" />
+              {elapsedStr}
+            </span>
+            {totalJourneys > 0 && (
+              <span>
+                · {completedJourneys}/{totalJourneys} journeys
+              </span>
+            )}
           </div>
           {/* Run controls — visible as soon as we have a run_id */}
           {activeRunId && !isDone && (
@@ -456,7 +549,9 @@ export function RunLiveGraph({
                 </button>
               )}
               <button
-                onClick={() => { if (confirm("Stop this run?")) sendSignal("stop"); }}
+                onClick={() => {
+                  if (confirm("Stop this run?")) sendSignal("stop");
+                }}
                 disabled={controlling}
                 className="flex items-center gap-1 px-2 py-1 text-[11px] rounded border border-red-500/40 text-red-500 hover:bg-red-500/10 disabled:opacity-40"
               >
@@ -484,9 +579,17 @@ export function RunLiveGraph({
         <div className="flex items-start gap-2 rounded-md border border-border/60 bg-surface-2/40 px-3 py-2 text-[11px] text-muted-foreground">
           <Info className="size-3.5 mt-0.5 shrink-0" />
           <span>
-            <strong className="text-foreground">{browserPersonas.length === 0 ? progress.personas.length : browserPersonas.length}</strong> persona{browserPersonas.length === 1 ? "" : "s"} running browser journeys.{" "}
-            {analysisOnlyCount} persona{analysisOnlyCount === 1 ? "" : "s"} are analysis-only (they review the same run, not separate browser sessions).{" "}
-            Add <code className="font-mono bg-surface px-0.5 rounded">execute_all_personas_in_browser: true</code> to your config's <code className="font-mono bg-surface px-0.5 rounded">run:</code> section to browser-run all personas.
+            <strong className="text-foreground">
+              {browserPersonas.length === 0 ? progress.personas.length : browserPersonas.length}
+            </strong>{" "}
+            persona{browserPersonas.length === 1 ? "" : "s"} running browser journeys.{" "}
+            {analysisOnlyCount} persona{analysisOnlyCount === 1 ? "" : "s"} are analysis-only (they
+            review the same run, not separate browser sessions). Add{" "}
+            <code className="font-mono bg-surface px-0.5 rounded">
+              execute_all_personas_in_browser: true
+            </code>{" "}
+            to your config's <code className="font-mono bg-surface px-0.5 rounded">run:</code>{" "}
+            section to browser-run all personas.
           </span>
         </div>
       )}
@@ -502,15 +605,15 @@ export function RunLiveGraph({
       {progress.personas.length > 0 && (
         <>
           <div className="flex gap-3 overflow-x-auto pb-1">
-            {progress.personas.map(persona => (
+            {progress.personas.map((persona) => (
               <PersonaColumn
                 key={persona.persona_id}
                 persona={persona}
                 progress={progress}
                 selected={selectedPersonaId === persona.persona_id}
                 onSelect={() =>
-                  setSelectedPersonaId(id =>
-                    id === persona.persona_id ? null : persona.persona_id
+                  setSelectedPersonaId((id) =>
+                    id === persona.persona_id ? null : persona.persona_id,
                   )
                 }
               />

@@ -121,11 +121,7 @@ export function ExperimentRunBanner({
   return (
     <Panel className="p-4 md:p-5 space-y-2 border-primary/15 bg-primary/5">
       <div className="text-xs text-muted-foreground uppercase tracking-wider">Experiment</div>
-      {experiment.variantLabel && (
-        <Chip tone="violet">
-          {experiment.variantLabel}
-        </Chip>
-      )}
+      {experiment.variantLabel && <Chip tone="violet">{experiment.variantLabel}</Chip>}
       {experiment.hypothesis && (
         <p className="text-sm">
           <span className="text-muted-foreground">Hypothesis: </span>

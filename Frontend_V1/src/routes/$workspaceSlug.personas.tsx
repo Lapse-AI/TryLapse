@@ -146,16 +146,28 @@ function PersonaEditor({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label className="text-[11px] text-muted-foreground">Name</label>
-          <input className={inputCls} value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Senior HR Manager" />
+          <input
+            className={inputCls}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="e.g. Senior HR Manager"
+          />
         </div>
         <div>
           <label className="text-[11px] text-muted-foreground">Role</label>
-          <input className={inputCls} value={role} onChange={(e) => setRole(e.target.value)} placeholder="e.g. HR director, enterprise buyer" />
+          <input
+            className={inputCls}
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            placeholder="e.g. HR director, enterprise buyer"
+          />
         </div>
       </div>
 
       <div>
-        <label className="text-[11px] text-muted-foreground">Goals <span className="opacity-60">(one per line)</span></label>
+        <label className="text-[11px] text-muted-foreground">
+          Goals <span className="opacity-60">(one per line)</span>
+        </label>
         <textarea
           className="mt-0.5 w-full min-h-[60px] text-sm bg-surface border border-border rounded-xl px-3 py-2 resize-none focus:outline-none focus:ring-1 focus:ring-primary/30"
           value={goals}
@@ -167,12 +179,19 @@ function PersonaEditor({
       {/* Behavioral profile */}
       <div className="border-t border-border/50 pt-2">
         <div className="text-[11px] font-medium text-muted-foreground mb-2">
-          Behavioral profile <span className="font-normal opacity-60">(shapes journey generation + severity grading)</span>
+          Behavioral profile{" "}
+          <span className="font-normal opacity-60">
+            (shapes journey generation + severity grading)
+          </span>
         </div>
         <div className="grid grid-cols-3 gap-2">
           <div>
             <label className="text-[10px] text-muted-foreground">Tech literacy</label>
-            <select className={selectCls} value={techLiteracy} onChange={(e) => setTechLiteracy(e.target.value)}>
+            <select
+              className={selectCls}
+              value={techLiteracy}
+              onChange={(e) => setTechLiteracy(e.target.value)}
+            >
               <option value="novice">Novice</option>
               <option value="intermediate">Intermediate</option>
               <option value="expert">Expert</option>
@@ -180,7 +199,11 @@ function PersonaEditor({
           </div>
           <div>
             <label className="text-[10px] text-muted-foreground">Patience</label>
-            <select className={selectCls} value={patience} onChange={(e) => setPatience(e.target.value)}>
+            <select
+              className={selectCls}
+              value={patience}
+              onChange={(e) => setPatience(e.target.value)}
+            >
               <option value="low">Low</option>
               <option value="medium">Medium</option>
               <option value="high">High</option>
@@ -188,7 +211,11 @@ function PersonaEditor({
           </div>
           <div>
             <label className="text-[10px] text-muted-foreground">Trust level</label>
-            <select className={selectCls} value={trustLevel} onChange={(e) => setTrustLevel(e.target.value)}>
+            <select
+              className={selectCls}
+              value={trustLevel}
+              onChange={(e) => setTrustLevel(e.target.value)}
+            >
               <option value="skeptical">Skeptical</option>
               <option value="neutral">Neutral</option>
               <option value="trusting">Trusting</option>
@@ -197,21 +224,43 @@ function PersonaEditor({
         </div>
         <div className="mt-2">
           <label className="text-[10px] text-muted-foreground">Character</label>
-          <input className={`${inputCls} text-xs`} value={character} onChange={(e) => setCharacter(e.target.value)} placeholder='e.g. "anxious about billing, reads every tooltip"' />
+          <input
+            className={`${inputCls} text-xs`}
+            value={character}
+            onChange={(e) => setCharacter(e.target.value)}
+            placeholder='e.g. "anxious about billing, reads every tooltip"'
+          />
         </div>
         <div className="mt-2">
           <label className="text-[10px] text-muted-foreground">Usage context</label>
-          <input className={`${inputCls} text-xs`} value={usageContext} onChange={(e) => setUsageContext(e.target.value)} placeholder='e.g. "switching from Competitor X" or "first-time user"' />
+          <input
+            className={`${inputCls} text-xs`}
+            value={usageContext}
+            onChange={(e) => setUsageContext(e.target.value)}
+            placeholder='e.g. "switching from Competitor X" or "first-time user"'
+          />
         </div>
         <div className="mt-2">
-          <label className="text-[10px] text-muted-foreground">Tags <span className="opacity-60">(comma-separated)</span></label>
-          <input className={`${inputCls} text-xs`} value={tags} onChange={(e) => setTags(e.target.value)} placeholder="enterprise, mobile-first, compliance" />
+          <label className="text-[10px] text-muted-foreground">
+            Tags <span className="opacity-60">(comma-separated)</span>
+          </label>
+          <input
+            className={`${inputCls} text-xs`}
+            value={tags}
+            onChange={(e) => setTags(e.target.value)}
+            placeholder="enterprise, mobile-first, compliance"
+          />
         </div>
       </div>
 
       <div className="flex items-center justify-end gap-2 pt-1">
-        <button type="button" onClick={onCancel} className="text-xs px-3 py-1.5 rounded-full border border-border hover:bg-surface-2">
-          <X className="size-3 inline mr-1" />Cancel
+        <button
+          type="button"
+          onClick={onCancel}
+          className="text-xs px-3 py-1.5 rounded-full border border-border hover:bg-surface-2"
+        >
+          <X className="size-3 inline mr-1" />
+          Cancel
         </button>
         <button
           type="button"
@@ -221,13 +270,19 @@ function PersonaEditor({
               ...initial,
               name: name.trim(),
               role: role.trim(),
-              goals: goals.split("\n").map((g) => g.trim()).filter(Boolean),
+              goals: goals
+                .split("\n")
+                .map((g) => g.trim())
+                .filter(Boolean),
               tech_literacy: techLiteracy,
               patience,
               trust_level: trustLevel,
               character: character.trim() || undefined,
               usage_context: usageContext.trim() || undefined,
-              tags: tags.split(",").map((t) => t.trim()).filter(Boolean),
+              tags: tags
+                .split(",")
+                .map((t) => t.trim())
+                .filter(Boolean),
             })
           }
           className="text-xs px-4 py-1.5 rounded-full bg-primary text-primary-foreground flex items-center gap-1 font-medium disabled:opacity-40"
@@ -265,7 +320,9 @@ function AiGeneratePanel({ onGenerated }: { onGenerated: (p: LibraryPersona) => 
       <div className="flex items-center gap-2">
         <Sparkles className="size-4 text-primary" />
         <span className="text-sm font-medium">Generate with AI</span>
-        <span className="text-[11px] text-muted-foreground">Describe the user in plain language</span>
+        <span className="text-[11px] text-muted-foreground">
+          Describe the user in plain language
+        </span>
       </div>
 
       <div className="flex gap-2">
@@ -331,7 +388,11 @@ function AiGeneratePanel({ onGenerated }: { onGenerated: (p: LibraryPersona) => 
             >
               <Copy className="size-3" /> Copy YAML
             </button>
-            <button type="button" onClick={() => setPreview(null)} className="ml-auto text-muted-foreground hover:text-foreground">
+            <button
+              type="button"
+              onClick={() => setPreview(null)}
+              className="ml-auto text-muted-foreground hover:text-foreground"
+            >
               <X className="size-3.5" />
             </button>
           </div>
@@ -370,7 +431,9 @@ function PersonaCard({
       {persona.goals?.length > 0 && (
         <ul className="text-xs text-muted-foreground space-y-0.5 mb-3">
           {persona.goals.slice(0, 2).map((g, i) => (
-            <li key={i} className="truncate">· {g}</li>
+            <li key={i} className="truncate">
+              · {g}
+            </li>
           ))}
           {persona.goals.length > 2 && (
             <li className="text-[11px] opacity-60">+{persona.goals.length - 2} more</li>
@@ -390,7 +453,10 @@ function PersonaCard({
           {trustLabel(persona.trust_level)}
         </span>
         {(persona.tags ?? []).map((tag) => (
-          <span key={tag} className="text-[10px] px-1.5 py-0.5 rounded bg-surface-2 border border-border/50 text-muted-foreground/70">
+          <span
+            key={tag}
+            className="text-[10px] px-1.5 py-0.5 rounded bg-surface-2 border border-border/50 text-muted-foreground/70"
+          >
             #{tag}
           </span>
         ))}
@@ -505,14 +571,22 @@ function PersonaLibraryPage() {
           <>
             <button
               type="button"
-              onClick={() => { setShowAi(!showAi); setShowNew(false); setEditingPersona(null); }}
+              onClick={() => {
+                setShowAi(!showAi);
+                setShowNew(false);
+                setEditingPersona(null);
+              }}
               className="text-xs px-3 py-1.5 rounded-md border border-primary/30 text-primary hover:bg-primary/5 inline-flex items-center gap-1.5"
             >
               <Sparkles className="size-3.5" /> AI generate
             </button>
             <button
               type="button"
-              onClick={() => { setShowNew(true); setShowAi(false); setEditingPersona(null); }}
+              onClick={() => {
+                setShowNew(true);
+                setShowAi(false);
+                setEditingPersona(null);
+              }}
               className="text-xs px-3 py-1.5 rounded-md border border-border hover:bg-surface-2 inline-flex items-center gap-1.5"
             >
               <Plus className="size-3.5" /> New persona
@@ -523,11 +597,7 @@ function PersonaLibraryPage() {
 
       <div className="p-4 md:p-8 max-w-[1200px] space-y-6">
         {/* AI generate panel */}
-        {showAi && (
-          <AiGeneratePanel
-            onGenerated={() => setShowAi(false)}
-          />
-        )}
+        {showAi && <AiGeneratePanel onGenerated={() => setShowAi(false)} />}
 
         {/* New persona editor */}
         {showNew && (
@@ -565,7 +635,9 @@ function PersonaLibraryPage() {
             >
               <option value="">Select a config…</option>
               {configs.map((c) => (
-                <option key={c.id} value={c.id}>{c.id}</option>
+                <option key={c.id} value={c.id}>
+                  {c.id}
+                </option>
               ))}
             </select>
             <button
@@ -581,7 +653,8 @@ function PersonaLibraryPage() {
               {importFromConfig.isPending ? "Importing…" : "Import all"}
             </button>
             <span className="text-[11px] text-muted-foreground">
-              Adds all personas from the selected config into this library (idempotent — safe to run multiple times).
+              Adds all personas from the selected config into this library (idempotent — safe to run
+              multiple times).
             </span>
           </div>
         </Panel>

@@ -3,9 +3,17 @@
  * Shows the full execution hierarchy with pass/fail at every level.
  */
 import { useState } from "react";
-import { ChevronDown, ChevronRight, CheckCircle2, XCircle, Clock, Loader2, AlertCircle } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronRight,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  Loader2,
+  AlertCircle,
+} from "lucide-react";
 
-interface Step {
+export interface JourneyStepTreeStep {
   stepId: string;
   journeyId: string;
   journeyName: string;
@@ -31,7 +39,7 @@ interface Persona {
 interface JourneyGroup {
   id: string;
   name: string;
-  steps: Step[];
+  steps: JourneyStepTreeStep[];
   pass: number;
   fail: number;
   total: number;
@@ -71,45 +79,59 @@ function PassRateBar({ pass, total }: { pass: number; total: number }) {
           style={{ width: `${pct}%` }}
         />
       </div>
-      <span>{pass}/{total}</span>
+      <span>
+        {pass}/{total}
+      </span>
     </div>
   );
 }
 
-function StepRow({ step, index }: { step: Step; index: number }) {
+function StepRow({ step, index }: { step: JourneyStepTreeStep; index: number }) {
   const [open, setOpen] = useState(false);
-  const hasDetail = !!(step.note || (step.consoleErrors?.length) || (step.networkFailures?.length));
+  const hasDetail = !!(step.note || step.consoleErrors?.length || step.networkFailures?.length);
 
   return (
     <div className={`border-b border-border/30 last:border-0 ${step.flaky ? "bg-warn/5" : ""}`}>
       <div
         className={`flex items-start gap-2 px-4 py-1.5 text-[11px] ${hasDetail ? "cursor-pointer hover:bg-surface-2/40" : ""}`}
-        onClick={() => hasDetail && setOpen(o => !o)}
+        onClick={() => hasDetail && setOpen((o) => !o)}
       >
         <span className="text-muted-foreground/40 font-mono w-4 shrink-0 mt-0.5">{index + 1}</span>
         <OutcomeIcon outcome={step.outcome} size={14} />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className={`font-mono font-medium ${outcomeColor(step.outcome)}`}>{step.action}</span>
+            <span className={`font-mono font-medium ${outcomeColor(step.outcome)}`}>
+              {step.action}
+            </span>
             {step.requestedUrl && (
-              <span className="text-muted-foreground truncate max-w-[200px]">{step.requestedUrl}</span>
+              <span className="text-muted-foreground truncate max-w-[200px]">
+                {step.requestedUrl}
+              </span>
             )}
-            {step.flaky && <span className="text-warn text-[10px] border border-warn/30 rounded px-1">flaky</span>}
+            {step.flaky && (
+              <span className="text-warn text-[10px] border border-warn/30 rounded px-1">
+                flaky
+              </span>
+            )}
             {step.errorType && (
               <span className="text-red-400/80 text-[10px]">{step.errorType}</span>
             )}
           </div>
           {step.note && !open && (
-            <div className="text-muted-foreground/60 truncate mt-0.5 max-w-[400px]">{step.note}</div>
+            <div className="text-muted-foreground/60 truncate mt-0.5 max-w-[400px]">
+              {step.note}
+            </div>
           )}
         </div>
         <span className="text-muted-foreground/50 shrink-0 font-mono">
           {step.durationMs > 0 ? `${(step.durationMs / 1000).toFixed(2)}s` : "—"}
         </span>
-        {hasDetail && (
-          open ? <ChevronDown className="size-3 text-muted-foreground shrink-0 mt-0.5" />
-                : <ChevronRight className="size-3 text-muted-foreground shrink-0 mt-0.5" />
-        )}
+        {hasDetail &&
+          (open ? (
+            <ChevronDown className="size-3 text-muted-foreground shrink-0 mt-0.5" />
+          ) : (
+            <ChevronRight className="size-3 text-muted-foreground shrink-0 mt-0.5" />
+          ))}
       </div>
 
       {open && (
@@ -130,7 +152,9 @@ function StepRow({ step, index }: { step: Step; index: number }) {
             <div>
               <span className="text-red-400 font-medium">Console errors: </span>
               {step.consoleErrors!.map((e, i) => (
-                <div key={i} className="font-mono text-red-400/80 ml-2">{e}</div>
+                <div key={i} className="font-mono text-red-400/80 ml-2">
+                  {e}
+                </div>
               ))}
             </div>
           )}
@@ -138,14 +162,20 @@ function StepRow({ step, index }: { step: Step; index: number }) {
             <div>
               <span className="text-warn font-medium">Network failures: </span>
               {step.networkFailures!.map((e, i) => (
-                <div key={i} className="font-mono text-warn/80 ml-2">{e}</div>
+                <div key={i} className="font-mono text-warn/80 ml-2">
+                  {e}
+                </div>
               ))}
             </div>
           )}
           {step.behavior?.ux_concerns?.length && (
             <div>
               <span className="text-muted-foreground font-medium">UX concerns: </span>
-              {step.behavior.ux_concerns.map((c, i) => <div key={i} className="ml-2">{c}</div>)}
+              {step.behavior.ux_concerns.map((c, i) => (
+                <div key={i} className="ml-2">
+                  {c}
+                </div>
+              ))}
             </div>
           )}
         </div>
@@ -156,19 +186,36 @@ function StepRow({ step, index }: { step: Step; index: number }) {
 
 function JourneyBlock({ journey, defaultOpen }: { journey: JourneyGroup; defaultOpen?: boolean }) {
   const [open, setOpen] = useState(defaultOpen ?? false);
-  const grade = journey.fail === 0 && journey.pass > 0 ? "pass"
-    : journey.fail > 0 && journey.pass === 0 ? "fail"
-    : journey.fail > 0 ? "partial" : "pending";
-  const gradeColor = grade === "pass" ? "text-emerald-500" : grade === "fail" ? "text-red-500" : grade === "partial" ? "text-warn" : "text-muted-foreground/40";
+  const grade =
+    journey.fail === 0 && journey.pass > 0
+      ? "pass"
+      : journey.fail > 0 && journey.pass === 0
+        ? "fail"
+        : journey.fail > 0
+          ? "partial"
+          : "pending";
+  const gradeColor =
+    grade === "pass"
+      ? "text-emerald-500"
+      : grade === "fail"
+        ? "text-red-500"
+        : grade === "partial"
+          ? "text-warn"
+          : "text-muted-foreground/40";
 
   return (
-    <div className={`border border-border/60 rounded-md overflow-hidden ${grade === "fail" ? "border-red-500/20" : grade === "partial" ? "border-warn/20" : ""}`}>
+    <div
+      className={`border border-border/60 rounded-md overflow-hidden ${grade === "fail" ? "border-red-500/20" : grade === "partial" ? "border-warn/20" : ""}`}
+    >
       <button
         className={`w-full flex items-center gap-2 px-3 py-2 text-xs hover:bg-surface-2/40 transition-colors ${open ? "bg-surface-2/20" : ""}`}
-        onClick={() => setOpen(o => !o)}
+        onClick={() => setOpen((o) => !o)}
       >
-        {open ? <ChevronDown className="size-3 shrink-0 text-muted-foreground" />
-               : <ChevronRight className="size-3 shrink-0 text-muted-foreground" />}
+        {open ? (
+          <ChevronDown className="size-3 shrink-0 text-muted-foreground" />
+        ) : (
+          <ChevronRight className="size-3 shrink-0 text-muted-foreground" />
+        )}
         <span className={`font-medium ${gradeColor}`}>{journey.name}</span>
         <span className="text-muted-foreground/50 text-[10px]">{journey.id}</span>
         <div className="ml-auto flex items-center gap-3">
@@ -196,23 +243,39 @@ function JourneyBlock({ journey, defaultOpen }: { journey: JourneyGroup; default
 
 function PersonaSection({ group }: { group: PersonaGroup }) {
   const [open, setOpen] = useState(true);
-  const grade = group.total === 0 ? "pending"
-    : group.fail === 0 ? "pass"
-    : group.pass === 0 ? "fail" : "partial";
+  const grade =
+    group.total === 0
+      ? "pending"
+      : group.fail === 0
+        ? "pass"
+        : group.pass === 0
+          ? "fail"
+          : "partial";
 
   return (
     <div className="border border-border rounded-lg overflow-hidden">
       <button
         className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold hover:bg-surface-2/40 transition-colors ${open ? "border-b border-border/60 bg-surface-2/20" : ""}`}
-        onClick={() => setOpen(o => !o)}
+        onClick={() => setOpen((o) => !o)}
       >
-        {open ? <ChevronDown className="size-4 text-muted-foreground" /> : <ChevronRight className="size-4 text-muted-foreground" />}
-        {grade === "pass" ? <CheckCircle2 className="size-4 text-emerald-500" />
-          : grade === "fail" ? <XCircle className="size-4 text-red-500" />
-          : grade === "partial" ? <AlertCircle className="size-4 text-warn" />
-          : <Clock className="size-4 text-muted-foreground/40" />}
+        {open ? (
+          <ChevronDown className="size-4 text-muted-foreground" />
+        ) : (
+          <ChevronRight className="size-4 text-muted-foreground" />
+        )}
+        {grade === "pass" ? (
+          <CheckCircle2 className="size-4 text-emerald-500" />
+        ) : grade === "fail" ? (
+          <XCircle className="size-4 text-red-500" />
+        ) : grade === "partial" ? (
+          <AlertCircle className="size-4 text-warn" />
+        ) : (
+          <Clock className="size-4 text-muted-foreground/40" />
+        )}
         <span>{group.persona.name}</span>
-        <span className="text-xs font-normal text-muted-foreground font-mono">{group.persona.id}</span>
+        <span className="text-xs font-normal text-muted-foreground font-mono">
+          {group.persona.id}
+        </span>
         <div className="ml-auto flex items-center gap-4">
           <span className="text-xs text-muted-foreground">
             {group.journeys.length} journey{group.journeys.length !== 1 ? "s" : ""}
@@ -229,7 +292,11 @@ function PersonaSection({ group }: { group: PersonaGroup }) {
             </div>
           ) : (
             group.journeys.map((j, i) => (
-              <JourneyBlock key={j.id} journey={j} defaultOpen={i === 0 && group.journeys.length === 1} />
+              <JourneyBlock
+                key={j.id}
+                journey={j}
+                defaultOpen={i === 0 && group.journeys.length === 1}
+              />
             ))
           )}
         </div>
@@ -239,7 +306,7 @@ function PersonaSection({ group }: { group: PersonaGroup }) {
 }
 
 interface Props {
-  steps: Step[];
+  steps: JourneyStepTreeStep[];
   personas: Persona[];
   journeys: { id: string; name: string }[];
 }
@@ -248,8 +315,8 @@ export function JourneyStepTree({ steps, personas, journeys }: Props) {
   if (steps.length === 0 && personas.length === 0) {
     return (
       <div className="py-16 text-center text-sm text-muted-foreground">
-        No step execution data for this run. This happens when journey execution was skipped
-        or all journeys failed before any steps could complete.
+        No step execution data for this run. This happens when journey execution was skipped or all
+        journeys failed before any steps could complete.
       </div>
     );
   }
@@ -263,7 +330,7 @@ export function JourneyStepTree({ steps, personas, journeys }: Props) {
   }
 
   // Group steps by persona + journey
-  const journeyMap = new Map<string, Map<string, Step[]>>();
+  const journeyMap = new Map<string, Map<string, JourneyStepTreeStep[]>>();
   for (const step of steps) {
     if (!journeyMap.has(step.personaId)) journeyMap.set(step.personaId, new Map());
     const jm = journeyMap.get(step.personaId)!;
@@ -274,16 +341,30 @@ export function JourneyStepTree({ steps, personas, journeys }: Props) {
 
   // Build persona groups
   for (const [pid, jm] of journeyMap) {
-    const persona = personas.find(p => p.id === pid) ?? { id: pid, name: pid };
-    const group: PersonaGroup = personaMap.get(pid) ?? { persona, journeys: [], pass: 0, fail: 0, total: 0 };
+    const persona = personas.find((p) => p.id === pid) ?? { id: pid, name: pid };
+    const group: PersonaGroup = personaMap.get(pid) ?? {
+      persona,
+      journeys: [],
+      pass: 0,
+      fail: 0,
+      total: 0,
+    };
     personaMap.set(pid, group);
 
     for (const [jid, jSteps] of jm) {
-      const jName = jSteps[0]?.journeyName ?? journeys.find(j => j.id === jid)?.name ?? jid;
-      const pass = jSteps.filter(s => s.outcome === "pass").length;
-      const fail = jSteps.filter(s => s.outcome === "fail").length;
+      const jName = jSteps[0]?.journeyName ?? journeys.find((j) => j.id === jid)?.name ?? jid;
+      const pass = jSteps.filter((s) => s.outcome === "pass").length;
+      const fail = jSteps.filter((s) => s.outcome === "fail").length;
       const durationMs = jSteps.reduce((a, s) => a + (s.durationMs || 0), 0);
-      group.journeys.push({ id: jid, name: jName, steps: jSteps, pass, fail, total: jSteps.length, durationMs });
+      group.journeys.push({
+        id: jid,
+        name: jName,
+        steps: jSteps,
+        pass,
+        fail,
+        total: jSteps.length,
+        durationMs,
+      });
       group.pass += pass;
       group.fail += fail;
       group.total += jSteps.length;
@@ -296,11 +377,11 @@ export function JourneyStepTree({ steps, personas, journeys }: Props) {
   return (
     <div className="space-y-3">
       <div className="text-xs text-muted-foreground">
-        {steps.length} steps across {new Set(steps.map(s => s.journeyId)).size} journeys and{" "}
-        {new Set(steps.map(s => s.personaId)).size} personas.
-        Click a persona or journey to expand. Click a step to see details.
+        {steps.length} steps across {new Set(steps.map((s) => s.journeyId)).size} journeys and{" "}
+        {new Set(steps.map((s) => s.personaId)).size} personas. Click a persona or journey to
+        expand. Click a step to see details.
       </div>
-      {sorted.map(group => (
+      {sorted.map((group) => (
         <PersonaSection key={group.persona.id} group={group} />
       ))}
     </div>

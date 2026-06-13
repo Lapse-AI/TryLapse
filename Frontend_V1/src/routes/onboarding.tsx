@@ -134,7 +134,12 @@ function OnboardingPage() {
 
     // Fire real product analysis in background — non-blocking, fail silently
     if (productUrl.trim()) {
-      api.analyzeProduct({ targetUrl: productUrl.trim(), productName: productName.trim() || undefined }).catch(() => {});
+      api
+        .analyzeProduct({
+          targetUrl: productUrl.trim(),
+          productName: productName.trim() || undefined,
+        })
+        .catch(() => {});
     }
 
     let idx = 0;

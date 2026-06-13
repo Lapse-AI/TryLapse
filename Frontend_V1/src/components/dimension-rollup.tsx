@@ -159,7 +159,9 @@ export function DimensionBreakdownBanner({
               {dimension.score}
             </span>
             <span className="text-[11px] px-1.5 py-0.5 rounded border border-border text-muted-foreground">
-              {dimension.automated ? "Automated from step evidence" : "Estimated — no specific signal"}
+              {dimension.automated
+                ? "Automated from step evidence"
+                : "Estimated — no specific signal"}
             </span>
           </div>
           {dimension.signal && (

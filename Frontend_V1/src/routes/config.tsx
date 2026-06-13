@@ -71,8 +71,11 @@ function RunCredentialsPanel({ configId }: { configId: string }) {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full mt-0.5 text-xs bg-surface border border-border rounded px-2 py-1.5 pr-7 focus:outline-none focus:ring-1 focus:ring-primary/30"
             />
-            <button type="button" onClick={() => setShowPw(!showPw)}
-              className="absolute right-2 top-1/2 -translate-y-1/4 text-muted-foreground">
+            <button
+              type="button"
+              onClick={() => setShowPw(!showPw)}
+              className="absolute right-2 top-1/2 -translate-y-1/4 text-muted-foreground"
+            >
               {showPw ? <EyeOff className="size-3" /> : <Eye className="size-3" />}
             </button>
           </div>
@@ -80,7 +83,9 @@ function RunCredentialsPanel({ configId }: { configId: string }) {
         <div>
           <label className="text-[11px] text-muted-foreground">
             Login page path{" "}
-            <span className="text-muted-foreground/60">— adds auth block to current config YAML</span>
+            <span className="text-muted-foreground/60">
+              — adds auth block to current config YAML
+            </span>
           </label>
           <input
             type="text"
@@ -98,8 +103,8 @@ function RunCredentialsPanel({ configId }: { configId: string }) {
           {saving ? "Saving…" : saved ? "Saved ✓" : "Save credentials"}
         </button>
         <p className="text-[11px] text-muted-foreground">
-          Credentials stored in <code className="font-mono">.env</code> (never in YAML).
-          Login path updates the <code className="font-mono">auth:</code> block in the selected config.
+          Credentials stored in <code className="font-mono">.env</code> (never in YAML). Login path
+          updates the <code className="font-mono">auth:</code> block in the selected config.
         </p>
       </div>
     </div>

@@ -20,7 +20,13 @@ function StatusIcon({ status }: { status: string }) {
   return <Clock className="size-4 text-warn" />;
 }
 
-export function ActiveJobsBanner({ jobs, workspaceSlug }: { jobs: JobRecord[]; workspaceSlug?: string }) {
+export function ActiveJobsBanner({
+  jobs,
+  workspaceSlug,
+}: {
+  jobs: JobRecord[];
+  workspaceSlug?: string;
+}) {
   const active = jobs.filter((j) => j.status === "queued" || j.status === "running");
   const [paused, setPaused] = useState<Set<string>>(new Set());
   if (!active.length) return null;
@@ -32,7 +38,11 @@ export function ActiveJobsBanner({ jobs, workspaceSlug }: { jobs: JobRecord[]; w
         setPaused((prev) => new Set(prev).add(runId));
         toast.info("Run pausing — will stop before next journey");
       } else if (signal === "resume") {
-        setPaused((prev) => { const s = new Set(prev); s.delete(runId); return s; });
+        setPaused((prev) => {
+          const s = new Set(prev);
+          s.delete(runId);
+          return s;
+        });
         toast.success("Run resumed");
       } else {
         toast.info("Stop signal sent — run will finish current journey then stop");
@@ -99,7 +109,10 @@ export function ActiveJobsBanner({ jobs, workspaceSlug }: { jobs: JobRecord[]; w
       })}
       <p className="text-[11px] text-muted-foreground">
         Status updates every ~1.5s. Live jobs also appear at the top of{" "}
-        <a href={workspaceSlug ? `/${workspaceSlug}/runs` : "/runs"} className="text-primary hover:underline">
+        <a
+          href={workspaceSlug ? `/${workspaceSlug}/runs` : "/runs"}
+          className="text-primary hover:underline"
+        >
           Run history
         </a>{" "}
         before the run id exists.
@@ -108,7 +121,13 @@ export function ActiveJobsBanner({ jobs, workspaceSlug }: { jobs: JobRecord[]; w
   );
 }
 
-export function JobQueueTable({ jobs, workspaceSlug }: { jobs: JobRecord[]; workspaceSlug?: string }) {
+export function JobQueueTable({
+  jobs,
+  workspaceSlug,
+}: {
+  jobs: JobRecord[];
+  workspaceSlug?: string;
+}) {
   if (!jobs.length) {
     return (
       <div className="p-8 text-sm text-muted-foreground text-center">
@@ -157,7 +176,13 @@ export function JobQueueTable({ jobs, workspaceSlug }: { jobs: JobRecord[]; work
               {j.status === "failed" && j.error
                 ? j.error
                 : j.startedAt
-                  ? new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit", hour12: true }).format(new Date(j.startedAt))
+                  ? new Intl.DateTimeFormat(undefined, {
+                      month: "short",
+                      day: "numeric",
+                      hour: "numeric",
+                      minute: "2-digit",
+                      hour12: true,
+                    }).format(new Date(j.startedAt))
                   : "—"}
             </td>
           </tr>

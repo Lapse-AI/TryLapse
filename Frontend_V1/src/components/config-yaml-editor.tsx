@@ -37,9 +37,10 @@ export function ConfigYamlEditor({ workspaceConfigId }: Props) {
   const latestId = sortedConfigs[0]?.id ?? workspaceConfigId ?? "";
 
   // Auto-select the latest version when the workspace config first loads
-  const resolvedId = effectiveConfigId && relevantConfigs.some((c) => c.id === effectiveConfigId)
-    ? effectiveConfigId
-    : latestId;
+  const resolvedId =
+    effectiveConfigId && relevantConfigs.some((c) => c.id === effectiveConfigId)
+      ? effectiveConfigId
+      : latestId;
 
   const { data: file, refetch } = useConfigYaml(resolvedId);
   const [text, setText] = useState("");
@@ -60,7 +61,10 @@ export function ConfigYamlEditor({ workspaceConfigId }: Props) {
   }, [workspaceConfigId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const validate = async () => {
-    if (!live) { toast.error("Start ./rehearse serve first"); return; }
+    if (!live) {
+      toast.error("Start ./rehearse serve first");
+      return;
+    }
     setBusy("validate");
     try {
       const r = await api.validateConfigYaml(text);
@@ -70,11 +74,16 @@ export function ConfigYamlEditor({ workspaceConfigId }: Props) {
       else toast.error(r.errors?.[0] ?? "Invalid");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Validate failed");
-    } finally { setBusy(null); }
+    } finally {
+      setBusy(null);
+    }
   };
 
   const save = async () => {
-    if (!live) { toast.error("Start ./rehearse serve first"); return; }
+    if (!live) {
+      toast.error("Start ./rehearse serve first");
+      return;
+    }
     setBusy("save");
     try {
       await api.saveConfigYaml(text, resolvedId);
@@ -84,13 +93,17 @@ export function ConfigYamlEditor({ workspaceConfigId }: Props) {
       void refetch();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Save failed");
-    } finally { setBusy(null); }
+    } finally {
+      setBusy(null);
+    }
   };
 
   return (
     <Panel className="overflow-hidden">
       <div className="px-4 py-3 border-b border-border flex flex-wrap items-center justify-between gap-3">
-        <div className="text-xs text-muted-foreground">Config YAML · edit directly or via panels above</div>
+        <div className="text-xs text-muted-foreground">
+          Config YAML · edit directly or via panels above
+        </div>
         <div className="flex items-center gap-2 flex-wrap">
           {sortedConfigs.length > 1 ? (
             <div className="flex items-center gap-1.5">
@@ -113,7 +126,9 @@ export function ConfigYamlEditor({ workspaceConfigId }: Props) {
           ) : (
             <span className="text-xs font-mono text-muted-foreground">
               {resolvedId}.yaml
-              {sortedConfigs.length === 1 && <span className="text-muted-foreground/50 ml-1">(latest)</span>}
+              {sortedConfigs.length === 1 && (
+                <span className="text-muted-foreground/50 ml-1">(latest)</span>
+              )}
             </span>
           )}
           <Chip tone={valid === true ? "ready" : valid === false ? "danger" : "neutral"}>
@@ -141,7 +156,10 @@ export function ConfigYamlEditor({ workspaceConfigId }: Props) {
         aria-label="rehearse.yaml editor"
         className="w-full min-h-[380px] p-5 text-[12.5px] font-mono leading-relaxed bg-surface-2/20 text-foreground/95 border-0 focus:outline-none focus:ring-1 focus:ring-primary/20 resize-y"
         value={text}
-        onChange={(e) => { setText(e.target.value); setValid(null); }}
+        onChange={(e) => {
+          setText(e.target.value);
+          setValid(null);
+        }}
         spellCheck={false}
       />
       {errors.length > 0 && (

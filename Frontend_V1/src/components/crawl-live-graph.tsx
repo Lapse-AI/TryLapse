@@ -23,19 +23,19 @@ interface SimEdge {
 }
 
 const STATUS_COLOR: Record<NodeStatus, string> = {
-  visited:  "#3b82f6",
+  visited: "#3b82f6",
   visiting: "#22c55e",
-  queued:   "#6b7280",
-  skipped:  "#374151",
-  error:    "#ef4444",
+  queued: "#6b7280",
+  skipped: "#374151",
+  error: "#ef4444",
 };
 
 const STATUS_R: Record<NodeStatus, number> = {
-  visited:  7,
+  visited: 7,
   visiting: 10,
-  queued:   4,
-  skipped:  3,
-  error:    7,
+  queued: 4,
+  skipped: 3,
+  error: 7,
 };
 
 function pathLabel(url: string): string {
@@ -85,14 +85,15 @@ function useForceSimulation(
 
     function simulate() {
       const nodes = Array.from(map.values());
-      const edgeSet = new Set(rawEdges.map(e => `${e.source}||${e.target}`));
+      const edgeSet = new Set(rawEdges.map((e) => `${e.source}||${e.target}`));
 
       const alpha = 0.08;
       const repulsion = 1800;
       const springLen = 90;
       const springK = 0.04;
       const damping = 0.85;
-      const cx = width / 2, cy = height / 2;
+      const cx = width / 2,
+        cy = height / 2;
 
       // Gravity toward center
       for (const n of nodes) {
@@ -103,8 +104,10 @@ function useForceSimulation(
       // Repulsion between all node pairs
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
-          const a = nodes[i], b = nodes[j];
-          const dx = b.x - a.x, dy = b.y - a.y;
+          const a = nodes[i],
+            b = nodes[j];
+          const dx = b.x - a.x,
+            dy = b.y - a.y;
           const dist = Math.sqrt(dx * dx + dy * dy) || 1;
           const force = repulsion / (dist * dist);
           const fx = (dx / dist) * force;
@@ -118,9 +121,11 @@ function useForceSimulation(
 
       // Spring attraction along edges
       for (const e of rawEdges) {
-        const a = map.get(e.source), b = map.get(e.target);
+        const a = map.get(e.source),
+          b = map.get(e.target);
         if (!a || !b) continue;
-        const dx = b.x - a.x, dy = b.y - a.y;
+        const dx = b.x - a.x,
+          dy = b.y - a.y;
         const dist = Math.sqrt(dx * dx + dy * dy) || 1;
         const stretch = dist - springLen;
         const fx = (dx / dist) * stretch * springK;
@@ -140,7 +145,7 @@ function useForceSimulation(
         n.y = Math.max(pad, Math.min(height - pad, n.y + n.vy));
       }
 
-      setTick(t => t + 1);
+      setTick((t) => t + 1);
       frame = requestAnimationFrame(simulate);
     }
 
@@ -166,29 +171,34 @@ export function CrawlLiveGraph({ runId, phase, pollingMs = 1500 }: Props) {
     enabled: !!runId,
   });
 
-  const W = 560, H = 360;
+  const W = 560,
+    H = 360;
   const nodes = data?.nodes ?? [];
   const edges = data?.edges ?? [];
   const simNodes = useForceSimulation(nodes, edges, W, H);
   const nodeArr = Array.from(simNodes.values());
 
-  const visiting = nodes.filter(n => n.status === "visiting").length;
-  const visited  = nodes.filter(n => n.status === "visited").length;
-  const queued   = nodes.filter(n => n.status === "queued").length;
-  const skipped  = nodes.filter(n => n.status === "skipped").length;
+  const visiting = nodes.filter((n) => n.status === "visiting").length;
+  const visited = nodes.filter((n) => n.status === "visited").length;
+  const queued = nodes.filter((n) => n.status === "queued").length;
+  const skipped = nodes.filter((n) => n.status === "skipped").length;
 
   return (
     <div className="space-y-2">
       {/* Legend + stats */}
       <div className="flex flex-wrap items-center gap-4 text-[11px] text-muted-foreground px-1">
-        {(["visited","visiting","queued","skipped","error"] as NodeStatus[]).map(s => (
+        {(["visited", "visiting", "queued", "skipped", "error"] as NodeStatus[]).map((s) => (
           <span key={s} className="flex items-center gap-1">
-            <span className="inline-block rounded-full w-2 h-2" style={{ background: STATUS_COLOR[s] }} />
+            <span
+              className="inline-block rounded-full w-2 h-2"
+              style={{ background: STATUS_COLOR[s] }}
+            />
             {s}
           </span>
         ))}
         <span className="ml-auto font-mono">
-          {visited} visited · {visiting > 0 ? `${visiting} active · ` : ""}{queued} queued{skipped > 0 ? ` · ${skipped} skipped` : ""}
+          {visited} visited · {visiting > 0 ? `${visiting} active · ` : ""}
+          {queued} queued{skipped > 0 ? ` · ${skipped} skipped` : ""}
           {data?.maxPages ? ` / ${data.maxPages}` : ""}
         </span>
       </div>
@@ -197,34 +207,48 @@ export function CrawlLiveGraph({ runId, phase, pollingMs = 1500 }: Props) {
       <div className="rounded-md border border-border bg-surface/60 overflow-hidden">
         {nodes.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-36 gap-2 text-xs text-muted-foreground px-4 text-center">
-            {isLoading || (!isFetched && !!runId)
-              ? <><Loader2 className="size-4 animate-spin" /> Loading crawl graph…</>
-              : isCrawling
-                ? <><Loader2 className="size-4 animate-spin" /> Crawl in progress — graph appears as pages are visited</>
-                : <>
-                    No crawl graph data.
-                    <span className="text-[10px]">Restart the server to enable the crawl graph endpoint, or this run had no crawl phase.</span>
-                  </>
-            }
+            {isLoading || (!isFetched && !!runId) ? (
+              <>
+                <Loader2 className="size-4 animate-spin" /> Loading crawl graph…
+              </>
+            ) : isCrawling ? (
+              <>
+                <Loader2 className="size-4 animate-spin" /> Crawl in progress — graph appears as
+                pages are visited
+              </>
+            ) : (
+              <>
+                No crawl graph data.
+                <span className="text-[10px]">
+                  Restart the server to enable the crawl graph endpoint, or this run had no crawl
+                  phase.
+                </span>
+              </>
+            )}
           </div>
         ) : (
           <svg width={W} height={H} className="block">
             {/* Edges */}
             <g opacity={0.35}>
               {edges.map((e, i) => {
-                const a = simNodes.get(e.source), b = simNodes.get(e.target);
+                const a = simNodes.get(e.source),
+                  b = simNodes.get(e.target);
                 if (!a || !b) return null;
                 return (
                   <line
                     key={i}
-                    x1={a.x} y1={a.y} x2={b.x} y2={b.y}
-                    stroke="#6b7280" strokeWidth={1}
+                    x1={a.x}
+                    y1={a.y}
+                    x2={b.x}
+                    y2={b.y}
+                    stroke="#6b7280"
+                    strokeWidth={1}
                   />
                 );
               })}
             </g>
             {/* Nodes */}
-            {nodeArr.map(n => {
+            {nodeArr.map((n) => {
               const r = STATUS_R[n.status];
               const color = STATUS_COLOR[n.status];
               const isActive = n.status === "visiting";
@@ -232,11 +256,26 @@ export function CrawlLiveGraph({ runId, phase, pollingMs = 1500 }: Props) {
                 <g key={n.id} transform={`translate(${n.x},${n.y})`}>
                   {isActive && (
                     <circle r={r + 6} fill={color} opacity={0.2}>
-                      <animate attributeName="r" values={`${r+4};${r+10};${r+4}`} dur="1.2s" repeatCount="indefinite" />
-                      <animate attributeName="opacity" values="0.3;0.05;0.3" dur="1.2s" repeatCount="indefinite" />
+                      <animate
+                        attributeName="r"
+                        values={`${r + 4};${r + 10};${r + 4}`}
+                        dur="1.2s"
+                        repeatCount="indefinite"
+                      />
+                      <animate
+                        attributeName="opacity"
+                        values="0.3;0.05;0.3"
+                        dur="1.2s"
+                        repeatCount="indefinite"
+                      />
                     </circle>
                   )}
-                  <circle r={r} fill={color} stroke={isActive ? "#fff" : "none"} strokeWidth={isActive ? 1.5 : 0} />
+                  <circle
+                    r={r}
+                    fill={color}
+                    stroke={isActive ? "#fff" : "none"}
+                    strokeWidth={isActive ? 1.5 : 0}
+                  />
                   {(n.status === "visited" || n.status === "visiting") && (
                     <text
                       y={r + 10}

@@ -385,7 +385,10 @@ export function ScorecardPanel({ markdown, bundle }: { markdown: string; bundle?
   const run = bundle?.summary;
   const sevs = ["P0", "P1", "P2", "P3"] as const;
   const sevColors: Record<string, string> = {
-    P0: "danger", P1: "warn", P2: "info", P3: "neutral",
+    P0: "danger",
+    P1: "warn",
+    P2: "info",
+    P3: "neutral",
   };
 
   return (
@@ -405,7 +408,12 @@ export function ScorecardPanel({ markdown, bundle }: { markdown: string; bundle?
                 <div className="text-[11px] text-muted-foreground">{SEVERITY_LABEL[s]}</div>
                 <div
                   className="text-2xl font-bold font-mono tabular-nums mt-0.5"
-                  style={{ color: count > 0 && (s === "P0" || s === "P1") ? `var(--${sevColors[s]})` : undefined }}
+                  style={{
+                    color:
+                      count > 0 && (s === "P0" || s === "P1")
+                        ? `var(--${sevColors[s]})`
+                        : undefined,
+                  }}
                 >
                   {count}
                 </div>
@@ -418,8 +426,12 @@ export function ScorecardPanel({ markdown, bundle }: { markdown: string; bundle?
       {/* Executive summary */}
       {bundle?.narrative && (
         <div className="p-5 bg-primary/3 border-l-4 border-primary/30">
-          <div className="text-[11px] text-muted-foreground mb-2 font-medium uppercase tracking-wide">Executive summary</div>
-          <p className="text-sm font-medium leading-relaxed mb-4">{bundle.narrative.executiveSummary}</p>
+          <div className="text-[11px] text-muted-foreground mb-2 font-medium uppercase tracking-wide">
+            Executive summary
+          </div>
+          <p className="text-sm font-medium leading-relaxed mb-4">
+            {bundle.narrative.executiveSummary}
+          </p>
           <div className="grid md:grid-cols-2 gap-4 text-sm">
             <div>
               <div className="text-[11px] text-muted-foreground mb-1">For founders</div>
@@ -427,64 +439,75 @@ export function ScorecardPanel({ markdown, bundle }: { markdown: string; bundle?
             </div>
             <div>
               <div className="text-[11px] text-muted-foreground mb-1">For engineering</div>
-              <p className="text-foreground/85 leading-relaxed">{bundle.narrative.forEngineering}</p>
+              <p className="text-foreground/85 leading-relaxed">
+                {bundle.narrative.forEngineering}
+              </p>
             </div>
           </div>
         </div>
       )}
 
       {/* Issues by severity */}
-      {bundle && sevs.map((sev) => {
-        const sevIssues = bundle.issues.filter((i) => i.severity === sev);
-        if (!sevIssues.length) return null;
-        const tone = sevColors[sev] as "danger" | "warn" | "info" | "neutral";
-        return (
-          <div key={sev} className="p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <SeverityChip s={sev} />
-              <span className="text-sm font-semibold">{SEVERITY_LABEL[sev]}</span>
-              <span className="text-[11px] text-muted-foreground">{sevIssues.length} {sevIssues.length === 1 ? "issue" : "issues"}</span>
-            </div>
-            <div className="space-y-2">
-              {sevIssues.map((issue) => (
-                <div
-                  key={issue.id}
-                  className="rounded-lg border p-4 space-y-1.5"
-                  style={{
-                    borderColor: `color-mix(in oklab, var(--${tone}) 25%, var(--border))`,
-                    background: `color-mix(in oklab, var(--${tone}) 4%, transparent)`,
-                  }}
-                >
-                  <div className="flex items-start gap-3 justify-between">
-                    <h4 className="text-sm font-semibold leading-snug">{issue.title}</h4>
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      <Chip tone={issue.confidence === "high" ? "info" : "warn"}>{issue.confidence}</Chip>
-                      <Chip>{issue.owner}</Chip>
+      {bundle &&
+        sevs.map((sev) => {
+          const sevIssues = bundle.issues.filter((i) => i.severity === sev);
+          if (!sevIssues.length) return null;
+          const tone = sevColors[sev] as "danger" | "warn" | "info" | "neutral";
+          return (
+            <div key={sev} className="p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <SeverityChip s={sev} />
+                <span className="text-sm font-semibold">{SEVERITY_LABEL[sev]}</span>
+                <span className="text-[11px] text-muted-foreground">
+                  {sevIssues.length} {sevIssues.length === 1 ? "issue" : "issues"}
+                </span>
+              </div>
+              <div className="space-y-2">
+                {sevIssues.map((issue) => (
+                  <div
+                    key={issue.id}
+                    className="rounded-lg border p-4 space-y-1.5"
+                    style={{
+                      borderColor: `color-mix(in oklab, var(--${tone}) 25%, var(--border))`,
+                      background: `color-mix(in oklab, var(--${tone}) 4%, transparent)`,
+                    }}
+                  >
+                    <div className="flex items-start gap-3 justify-between">
+                      <h4 className="text-sm font-semibold leading-snug">{issue.title}</h4>
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <Chip tone={issue.confidence === "high" ? "info" : "warn"}>
+                          {issue.confidence}
+                        </Chip>
+                        <Chip>{issue.owner}</Chip>
+                      </div>
                     </div>
-                  </div>
-                  <p className="text-xs font-mono text-muted-foreground leading-relaxed">{issue.evidence}</p>
-                  <div className="flex items-center gap-3 text-[11px] text-muted-foreground flex-wrap">
-                    <span>{issue.persona}</span>
-                    <span>·</span>
-                    <span>{issue.journey}</span>
-                    <span>·</span>
-                    <span className="font-mono">{issue.stepId}</span>
-                    {issue.recurring > 1 && (
-                      <>
-                        <span>·</span>
-                        <span className="text-danger">recurring ×{issue.recurring}</span>
-                      </>
+                    <p className="text-xs font-mono text-muted-foreground leading-relaxed">
+                      {issue.evidence}
+                    </p>
+                    <div className="flex items-center gap-3 text-[11px] text-muted-foreground flex-wrap">
+                      <span>{issue.persona}</span>
+                      <span>·</span>
+                      <span>{issue.journey}</span>
+                      <span>·</span>
+                      <span className="font-mono">{issue.stepId}</span>
+                      {issue.recurring > 1 && (
+                        <>
+                          <span>·</span>
+                          <span className="text-danger">recurring ×{issue.recurring}</span>
+                        </>
+                      )}
+                    </div>
+                    {issue.suggestion && (
+                      <p className="text-xs text-foreground/75 mt-1 italic">
+                        Suggestion: {issue.suggestion}
+                      </p>
                     )}
                   </div>
-                  {issue.suggestion && (
-                    <p className="text-xs text-foreground/75 mt-1 italic">Suggestion: {issue.suggestion}</p>
-                  )}
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
 
       {/* Highlights */}
       {bundle && bundle.delights.length > 0 && (
@@ -519,12 +542,20 @@ export function ScorecardPanel({ markdown, bundle }: { markdown: string; bundle?
           <div className="text-[11px] text-muted-foreground mb-3 font-medium">Dimension scores</div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
             {bundle.dimensions.map((d) => (
-              <div key={d.name} className="flex items-center justify-between rounded-md border border-border bg-surface-2/30 px-3 py-2">
+              <div
+                key={d.name}
+                className="flex items-center justify-between rounded-md border border-border bg-surface-2/30 px-3 py-2"
+              >
                 <span className="text-xs text-muted-foreground truncate">{d.name}</span>
                 <span
                   className="font-mono font-bold text-sm tabular-nums ml-2 shrink-0"
                   style={{
-                    color: d.score >= 80 ? "var(--ready)" : d.score >= 60 ? "var(--warn)" : "var(--danger)",
+                    color:
+                      d.score >= 80
+                        ? "var(--ready)"
+                        : d.score >= 60
+                          ? "var(--warn)"
+                          : "var(--danger)",
                   }}
                 >
                   {d.score}
@@ -561,7 +592,12 @@ type ShotMeta = RunBundle["screenshots"][number];
 
 function ScreenshotCard({ s }: { s: ShotMeta }) {
   const [open, setOpen] = useState(false);
-  const outcomeColor = s.outcome === "pass" ? "text-ready" : s.outcome === "fail" ? "text-danger" : "text-muted-foreground";
+  const outcomeColor =
+    s.outcome === "pass"
+      ? "text-ready"
+      : s.outcome === "fail"
+        ? "text-danger"
+        : "text-muted-foreground";
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -570,9 +606,15 @@ function ScreenshotCard({ s }: { s: ShotMeta }) {
           onClick={() => setOpen(true)}
         >
           <div className="aspect-video relative overflow-hidden">
-            <AnnotatedScreenshot src={artifactUrl(s.path)} alt={s.stepId} className="h-full group-hover:scale-[1.02] transition-transform duration-200" />
+            <AnnotatedScreenshot
+              src={artifactUrl(s.path)}
+              alt={s.stepId}
+              className="h-full group-hover:scale-[1.02] transition-transform duration-200"
+            />
             {s.outcome && (
-              <span className={`absolute top-1.5 right-1.5 text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-background/80 backdrop-blur-sm ${outcomeColor}`}>
+              <span
+                className={`absolute top-1.5 right-1.5 text-[10px] font-medium px-1.5 py-0.5 rounded-full bg-background/80 backdrop-blur-sm ${outcomeColor}`}
+              >
                 {s.outcome}
               </span>
             )}
@@ -591,38 +633,60 @@ function ScreenshotCard({ s }: { s: ShotMeta }) {
           )}
         </DialogHeader>
         <div className="rounded-lg overflow-hidden border border-border bg-black">
-          <img src={artifactUrl(s.path)} alt={s.stepId} className="w-full object-contain max-h-[60vh]" />
+          <img
+            src={artifactUrl(s.path)}
+            alt={s.stepId}
+            className="w-full object-contain max-h-[60vh]"
+          />
         </div>
         <div className="grid grid-cols-2 gap-3 text-xs">
           {s.action && (
             <div className="space-y-0.5">
-              <div className="text-muted-foreground font-medium uppercase tracking-wide text-[10px]">Action</div>
-              <div className="font-mono">{s.action}{s.intent ? ` — ${s.intent}` : ""}</div>
+              <div className="text-muted-foreground font-medium uppercase tracking-wide text-[10px]">
+                Action
+              </div>
+              <div className="font-mono">
+                {s.action}
+                {s.intent ? ` — ${s.intent}` : ""}
+              </div>
             </div>
           )}
           {s.outcome && (
             <div className="space-y-0.5">
-              <div className="text-muted-foreground font-medium uppercase tracking-wide text-[10px]">Outcome</div>
-              <div className={`font-medium ${outcomeColor}`}>{s.outcome}{s.durationMs ? ` · ${(s.durationMs / 1000).toFixed(1)}s` : ""}</div>
+              <div className="text-muted-foreground font-medium uppercase tracking-wide text-[10px]">
+                Outcome
+              </div>
+              <div className={`font-medium ${outcomeColor}`}>
+                {s.outcome}
+                {s.durationMs ? ` · ${(s.durationMs / 1000).toFixed(1)}s` : ""}
+              </div>
             </div>
           )}
           {s.personaId && (
             <div className="space-y-0.5">
-              <div className="text-muted-foreground font-medium uppercase tracking-wide text-[10px]">Persona</div>
+              <div className="text-muted-foreground font-medium uppercase tracking-wide text-[10px]">
+                Persona
+              </div>
               <div className="font-mono">{s.personaId}</div>
             </div>
           )}
           {s.note && (
             <div className="space-y-0.5 col-span-2">
-              <div className="text-muted-foreground font-medium uppercase tracking-wide text-[10px]">Observation</div>
+              <div className="text-muted-foreground font-medium uppercase tracking-wide text-[10px]">
+                Observation
+              </div>
               <div className="text-foreground/80">{s.note}</div>
             </div>
           )}
           {(s.consoleErrors?.length ?? 0) > 0 && (
             <div className="space-y-0.5 col-span-2">
-              <div className="text-danger font-medium uppercase tracking-wide text-[10px]">Console errors</div>
+              <div className="text-danger font-medium uppercase tracking-wide text-[10px]">
+                Console errors
+              </div>
               {s.consoleErrors!.map((e, i) => (
-                <div key={i} className="font-mono text-danger/80 truncate">{e}</div>
+                <div key={i} className="font-mono text-danger/80 truncate">
+                  {e}
+                </div>
               ))}
             </div>
           )}
@@ -633,11 +697,7 @@ function ScreenshotCard({ s }: { s: ShotMeta }) {
   );
 }
 
-export function ScreenshotGallery({
-  shots,
-}: {
-  shots: ShotMeta[];
-}) {
+export function ScreenshotGallery({ shots }: { shots: ShotMeta[] }) {
   if (!shots.length) {
     return (
       <div className="p-8 text-center text-sm text-muted-foreground">No screenshots captured.</div>
@@ -853,7 +913,10 @@ export function AnnotationsPanel({
   );
 }
 
-type AnnotationAction = Extract<Annotation["action"], "agreed" | "disagree" | "false positive" | "pinned">;
+type AnnotationAction = Extract<
+  Annotation["action"],
+  "agreed" | "disagree" | "false positive" | "pinned"
+>;
 
 const ANNOTATION_ACTIONS: {
   action: AnnotationAction;
@@ -984,7 +1047,10 @@ export function ExportMenu({ runId, bundle }: { runId: string; bundle: RunBundle
             <button
               type="button"
               disabled={busy !== null}
-              onClick={() => { downloadReportMarkdown(bundle); toast.success("Report downloaded"); }}
+              onClick={() => {
+                downloadReportMarkdown(bundle);
+                toast.success("Report downloaded");
+              }}
               className="w-full text-left px-3 py-2 rounded-md border border-border hover:bg-surface-2 font-mono text-sm disabled:opacity-50"
             >
               report.md — full structured report

@@ -28,8 +28,19 @@ import { getWorkspace } from "@/lib/workspace";
 import { api } from "@/lib/api/client";
 import { toast } from "sonner";
 import {
-  Eye, EyeOff, Play, Loader2, ChevronDown, ChevronUp,
-  Globe, Users, Map, Code2, KeyRound, Zap, CheckCircle2,
+  Eye,
+  EyeOff,
+  Play,
+  Loader2,
+  ChevronDown,
+  ChevronUp,
+  Globe,
+  Users,
+  Map,
+  Code2,
+  KeyRound,
+  Zap,
+  CheckCircle2,
 } from "lucide-react";
 
 export const Route = createFileRoute("/$workspaceSlug/config")({
@@ -111,7 +122,9 @@ function RunCredentialsPanel({ configId }: { configId: string }) {
         <div>
           <label className="text-[11px] text-muted-foreground">
             Login page path{" "}
-            <span className="text-muted-foreground/60">— adds auth block to current config YAML</span>
+            <span className="text-muted-foreground/60">
+              — adds auth block to current config YAML
+            </span>
           </label>
           <input
             type="text"
@@ -166,9 +179,7 @@ function SectionHeader({
           {description && <p className="text-[12px] text-muted-foreground mt-0.5">{description}</p>}
         </div>
       </div>
-      {status === "configured" && (
-        <CheckCircle2 className="size-4 text-ready shrink-0 mt-1" />
-      )}
+      {status === "configured" && <CheckCircle2 className="size-4 text-ready shrink-0 mt-1" />}
     </div>
   );
 }
@@ -182,14 +193,28 @@ function SavedConfigPreview({ configId, onDismiss }: { configId: string; onDismi
       <div className="flex items-center justify-between px-4 py-3 border-b border-ready/20">
         <div className="flex items-center gap-2">
           <CheckCircle2 className="size-4 text-ready" />
-          <span className="text-sm font-medium">Saved: <span className="font-mono text-xs">{configId}.yaml</span></span>
-          <span className="text-[11px] text-muted-foreground">— {file?.yaml?.split("\n").filter(Boolean).length ?? "…"} lines</span>
+          <span className="text-sm font-medium">
+            Saved: <span className="font-mono text-xs">{configId}.yaml</span>
+          </span>
+          <span className="text-[11px] text-muted-foreground">
+            — {file?.yaml?.split("\n").filter(Boolean).length ?? "…"} lines
+          </span>
         </div>
         <div className="flex items-center gap-2">
-          <button type="button" onClick={() => setCollapsed(c => !c)} className="text-xs text-muted-foreground hover:text-foreground px-2 py-0.5 rounded border border-border/60">
+          <button
+            type="button"
+            onClick={() => setCollapsed((c) => !c)}
+            className="text-xs text-muted-foreground hover:text-foreground px-2 py-0.5 rounded border border-border/60"
+          >
             {collapsed ? "Show YAML" : "Hide YAML"}
           </button>
-          <button type="button" onClick={onDismiss} className="text-xs text-muted-foreground hover:text-foreground px-2 py-0.5 rounded border border-border/60">✕</button>
+          <button
+            type="button"
+            onClick={onDismiss}
+            className="text-xs text-muted-foreground hover:text-foreground px-2 py-0.5 rounded border border-border/60"
+          >
+            ✕
+          </button>
         </div>
       </div>
       {!collapsed && (
@@ -201,7 +226,13 @@ function SavedConfigPreview({ configId, onDismiss }: { configId: string; onDismi
   );
 }
 
-function AdvancedAccordion({ children, label = "Advanced settings" }: { children: React.ReactNode; label?: string }) {
+function AdvancedAccordion({
+  children,
+  label = "Advanced settings",
+}: {
+  children: React.ReactNode;
+  label?: string;
+}) {
   const [open, setOpen] = useState(false);
   return (
     <div className="rounded-2xl border border-border overflow-hidden">
@@ -214,13 +245,13 @@ function AdvancedAccordion({ children, label = "Advanced settings" }: { children
           <Code2 className="size-4" />
           {label}
         </div>
-        {open ? <ChevronUp className="size-4 text-muted-foreground" /> : <ChevronDown className="size-4 text-muted-foreground" />}
+        {open ? (
+          <ChevronUp className="size-4 text-muted-foreground" />
+        ) : (
+          <ChevronDown className="size-4 text-muted-foreground" />
+        )}
       </button>
-      {open && (
-        <div className="px-5 pb-5 border-t border-border space-y-5 pt-5">
-          {children}
-        </div>
-      )}
+      {open && <div className="px-5 pb-5 border-t border-border space-y-5 pt-5">{children}</div>}
     </div>
   );
 }
@@ -248,7 +279,10 @@ function ConfigPage() {
   const userWorkspace = getWorkspace();
 
   const workspaceConfigId = userWorkspace?.configPath
-    ? (userWorkspace.configPath.split("/").pop()?.replace(/\.ya?ml$/, "") ?? null)
+    ? (userWorkspace.configPath
+        .split("/")
+        .pop()
+        ?.replace(/\.ya?ml$/, "") ?? null)
     : null;
 
   const { data: wizard } = useInitWizard();
@@ -256,7 +290,7 @@ function ConfigPage() {
   const exampleConfigs = allConfigs.slice(0, 8);
   const hiddenConfigCount = Math.max(0, allConfigs.length - exampleConfigs.length);
   const dogfoodDefault =
-    ((wizard as unknown as { dogfood?: { targetUrl?: string } } | undefined)?.dogfood?.targetUrl) ??
+    (wizard as unknown as { dogfood?: { targetUrl?: string } } | undefined)?.dogfood?.targetUrl ??
     "http://127.0.0.1:8081";
 
   const [targetUrl, setTargetUrl] = useState("");
@@ -264,7 +298,11 @@ function ConfigPage() {
   const [withAuth, setWithAuth] = useState(false);
   const [selfTest, setSelfTest] = useState(false);
   const [allowLocalhost, setAllowLocalhost] = useState(false);
-  const [preflight, setPreflight] = useState<{ ok: boolean; status_code?: number; error?: string } | null>(null);
+  const [preflight, setPreflight] = useState<{
+    ok: boolean;
+    status_code?: number;
+    error?: string;
+  } | null>(null);
   const [piiRedaction, setPiiRedaction] = useState(false);
   const [executeAllPersonasInBrowser, setExecuteAllPersonasInBrowser] = useState(true);
   const [excludePathPrefixes, setExcludePathPrefixes] = useState("");
@@ -274,7 +312,14 @@ function ConfigPage() {
   const [configPersonas, setConfigPersonas] = useState<PersonaDraft[]>([]);
   const [personaRefreshKey, setPersonaRefreshKey] = useState(0);
   const [productModel, setProductModel] = useState<Record<string, unknown> | null>(null);
-  const [crawlCreds, setCrawlCreds] = useState<{ loginEmail: string; loginPassword: string; loginUrl: string; emailSelector: string; passwordSelector: string; submitSelector: string } | null>(null);
+  const [crawlCreds, setCrawlCreds] = useState<{
+    loginEmail: string;
+    loginPassword: string;
+    loginUrl: string;
+    emailSelector: string;
+    passwordSelector: string;
+    submitSelector: string;
+  } | null>(null);
   const [savedConfigId, setSavedConfigId] = useState<string | null>(null);
 
   const localhostTarget = useMemo(() => isLocalhostUrl(targetUrl), [targetUrl]);
@@ -285,7 +330,13 @@ function ConfigPage() {
     else if (wizard?.defaults?.targetUrl && !targetUrl)
       setTargetUrl(String(wizard.defaults.targetUrl));
     if (userWorkspace?.productName && !productName) setProductName(userWorkspace.productName);
-  }, [userWorkspace?.targetUrl, userWorkspace?.productName, wizard?.defaults?.targetUrl, targetUrl, productName]);
+  }, [
+    userWorkspace?.targetUrl,
+    userWorkspace?.productName,
+    wizard?.defaults?.targetUrl,
+    targetUrl,
+    productName,
+  ]);
 
   useEffect(() => {
     if (selfTest) setAllowLocalhost(true);
@@ -310,7 +361,7 @@ function ConfigPage() {
       {
         targetUrl,
         productName: productName || (dogfood ? "Launch Rehearsal Dashboard" : undefined),
-        withAuth: dogfood ? false : (withAuth || !!(crawlCreds?.loginEmail)),
+        withAuth: dogfood ? false : withAuth || !!crawlCreds?.loginEmail,
         piiRedaction,
         allowLocalhost: dogfood || allowLocalhost || localhostTarget,
         selfTest: dogfood,
@@ -333,10 +384,12 @@ function ConfigPage() {
           }
           // Save crawl credentials if filled in ProductIntelligencePanel
           if (crawlCreds?.loginEmail && crawlCreds?.loginPassword) {
-            api.saveCredentials(crawlCreds.loginEmail, crawlCreds.loginPassword, {
-              configId: result.id,
-              loginPath: crawlCreds.loginUrl || undefined,
-            }).catch(() => {});
+            api
+              .saveCredentials(crawlCreds.loginEmail, crawlCreds.loginPassword, {
+                configId: result.id,
+                loginPath: crawlCreds.loginUrl || undefined,
+              })
+              .catch(() => {});
           }
           setSavedConfigId(result.id);
           toast.success(`Saved as ${result.id}.yaml`, {
@@ -379,13 +432,65 @@ function ConfigPage() {
   // Load saved config personas for journey discovery when workspace config exists
   useEffect(() => {
     if (!workspaceConfigId || !live) return;
-    api.getConfigPersonas(workspaceConfigId)
+    api
+      .getConfigPersonas(workspaceConfigId)
       .then((data) => setConfigPersonas(data.personas as PersonaDraft[]))
       .catch(() => {});
   }, [workspaceConfigId, live]);
 
   // Journey discovery uses saved config personas first, falling back to newly staged ones
   const personasForDiscovery = configPersonas.length > 0 ? configPersonas : personas;
+
+  // Shared ProductIntelligencePanel callbacks — hoisted above the branch below
+  // so hooks run unconditionally regardless of which layout renders.
+  const handleProductModelReady = useCallback(
+    (m: Record<string, unknown>) => setProductModel(m),
+    [],
+  );
+  const handleCredsChange = useCallback(
+    (c: {
+      loginEmail: string;
+      loginPassword: string;
+      loginUrl: string;
+      emailSelector: string;
+      passwordSelector: string;
+      submitSelector: string;
+    }) => setCrawlCreds(c),
+    [],
+  );
+  const handleImportPersonas = useCallback(
+    async (detected: Array<{ id: string; name: string; role: string; goals: string[] }>) => {
+      if (!workspaceConfigId || !live) {
+        toast.error("Config not saved yet — save a config first");
+        return;
+      }
+      let added = 0;
+      let lastErr = "";
+      for (const p of detected) {
+        try {
+          await api.appendPersonaToConfig({ configId: workspaceConfigId, persona: p });
+          added++;
+        } catch (e) {
+          lastErr = e instanceof Error ? e.message : String(e);
+        }
+      }
+      try {
+        const fresh = await api.getConfigPersonas(workspaceConfigId);
+        setConfigPersonas(fresh.personas as PersonaDraft[]);
+        setPersonaRefreshKey((k) => k + 1);
+      } catch {
+        /* panel will show what it has */
+      }
+      if (added > 0) {
+        toast.success(`Imported ${added} persona${added !== 1 ? "s" : ""} from product analysis`);
+      } else if (lastErr) {
+        toast.error(`Import failed: ${lastErr}`);
+      } else {
+        toast.info("Personas already up to date");
+      }
+    },
+    [workspaceConfigId, live],
+  );
 
   // -------------------------------------------------------------------------
   // Workspace layout — create + edit in one place
@@ -395,7 +500,9 @@ function ConfigPage() {
     const setupSummary = [
       personas.length > 0 && `${personas.length} persona${personas.length !== 1 ? "s" : ""}`,
       workspaceConfigId && "config saved",
-    ].filter(Boolean).join(" · ");
+    ]
+      .filter(Boolean)
+      .join(" · ");
 
     return (
       <div>
@@ -418,7 +525,11 @@ function ConfigPage() {
                 onClick={() => handleGenerate()}
                 className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-foreground text-background font-medium text-sm disabled:opacity-40 hover:opacity-90 transition-opacity shadow-sm"
               >
-                {saveConfig.isPending ? <Loader2 className="size-4 animate-spin" /> : <Zap className="size-4" />}
+                {saveConfig.isPending ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <Zap className="size-4" />
+                )}
                 {saveConfig.isPending ? "Saving…" : "Save config"}
               </button>
             </div>
@@ -426,7 +537,6 @@ function ConfigPage() {
         />
 
         <div className="p-8 max-w-[1100px] space-y-10">
-
           {/* ── 1. Target & product intelligence ─────────────────────────── */}
           <section>
             <SectionHeader
@@ -440,35 +550,10 @@ function ConfigPage() {
               targetUrl={targetUrl}
               productName={productName}
               configId={workspaceConfigId}
-              onModelReady={useCallback((m: Record<string, unknown>) => setProductModel(m), [])}
-              onCredsChange={useCallback((c: { loginEmail: string; loginPassword: string; loginUrl: string; emailSelector: string; passwordSelector: string; submitSelector: string }) => setCrawlCreds(c), [])}
+              onModelReady={handleProductModelReady}
+              onCredsChange={handleCredsChange}
               startCollapsed={!!workspaceConfigId}
-              onImportPersonas={useCallback(async (detected: Array<{ id: string; name: string; role: string; goals: string[] }>) => {
-                if (!workspaceConfigId || !live) {
-                  toast.error("Config not saved yet — save a config first");
-                  return;
-                }
-                let added = 0;
-                let lastErr = "";
-                for (const p of detected) {
-                  try {
-                    await api.appendPersonaToConfig({ configId: workspaceConfigId, persona: p });
-                    added++;
-                  } catch (e) { lastErr = e instanceof Error ? e.message : String(e); }
-                }
-                try {
-                  const fresh = await api.getConfigPersonas(workspaceConfigId);
-                  setConfigPersonas(fresh.personas as PersonaDraft[]);
-                  setPersonaRefreshKey((k) => k + 1);
-                } catch { /* panel will show what it has */ }
-                if (added > 0) {
-                  toast.success(`Imported ${added} persona${added !== 1 ? "s" : ""} from product analysis`);
-                } else if (lastErr) {
-                  toast.error(`Import failed: ${lastErr}`);
-                } else {
-                  toast.info("Personas already up to date");
-                }
-              }, [workspaceConfigId, live])}
+              onImportPersonas={handleImportPersonas}
             />
           </section>
 
@@ -544,13 +629,21 @@ function ConfigPage() {
               {[
                 { label: "Members", value: String(ws.members) },
                 { label: "Retention", value: `${ws.retentionDays}d` },
-                { label: "PII redaction", value: ws.piiRedaction ? "on" : "off", action: () => saveWorkspace.mutate({ piiRedaction: !ws.piiRedaction }) },
+                {
+                  label: "PII redaction",
+                  value: ws.piiRedaction ? "on" : "off",
+                  action: () => saveWorkspace.mutate({ piiRedaction: !ws.piiRedaction }),
+                },
                 { label: "Enterprise mode", value: ws.strictEnterpriseMode ? "enabled" : "off" },
               ].map((s) => (
                 <div key={s.label} className="rounded-xl border border-border p-3">
                   <div className="text-[11px] text-muted-foreground">{s.label}</div>
                   {s.action ? (
-                    <button type="button" onClick={s.action} className="text-sm font-medium mt-0.5 underline decoration-dotted">
+                    <button
+                      type="button"
+                      onClick={s.action}
+                      className="text-sm font-medium mt-0.5 underline decoration-dotted"
+                    >
                       {s.value}
                     </button>
                   ) : (
@@ -564,7 +657,8 @@ function ConfigPage() {
               <div className="rounded-xl bg-surface-2 border border-border px-4 py-3">
                 <div className="text-[11px] text-muted-foreground mb-1">Run command</div>
                 <code className="text-[11px] font-mono text-foreground select-all break-all">
-                  ./rehearse run -c launch-rehearsal/artifacts/configs/{workspaceConfigId}.yaml -o launch-rehearsal/artifacts/
+                  ./rehearse run -c launch-rehearsal/artifacts/configs/{workspaceConfigId}.yaml -o
+                  launch-rehearsal/artifacts/
                 </code>
               </div>
             )}
@@ -603,7 +697,11 @@ function ConfigPage() {
                 onClick={() => handleGenerate()}
                 className="flex items-center gap-2 px-5 py-2 rounded-full bg-foreground text-background font-medium text-sm disabled:opacity-40 hover:opacity-90 transition-opacity"
               >
-                {saveConfig.isPending ? <Loader2 className="size-3.5 animate-spin" /> : <Zap className="size-3.5" />}
+                {saveConfig.isPending ? (
+                  <Loader2 className="size-3.5 animate-spin" />
+                ) : (
+                  <Zap className="size-3.5" />
+                )}
                 {saveConfig.isPending ? "Saving…" : "Save config"}
               </button>
             </div>
@@ -627,7 +725,12 @@ function ConfigPage() {
                   <div className="text-xs text-muted-foreground mb-2">Agent toggles</div>
                   <div className="flex flex-wrap gap-1">
                     {[...agentConfigDefaults.enabled, ...agentConfigDefaults.optional].map((a) => (
-                      <Chip key={a} tone={agentConfigDefaults.enabled.includes(a) ? "ready" : "neutral"}>{a}</Chip>
+                      <Chip
+                        key={a}
+                        tone={agentConfigDefaults.enabled.includes(a) ? "ready" : "neutral"}
+                      >
+                        {a}
+                      </Chip>
                     ))}
                   </div>
                 </div>
@@ -636,11 +739,15 @@ function ConfigPage() {
           </VisionOnly>
           <VisionOnly section="config.auditLog">
             <Panel className="p-5">
-              <div className="text-xs text-muted-foreground mb-3">Audit log · who ran, who viewed</div>
+              <div className="text-xs text-muted-foreground mb-3">
+                Audit log · who ran, who viewed
+              </div>
               <div className="divide-y divide-border text-sm font-mono">
                 {auditLog.map((e, i) => (
                   <div key={i} className="py-2 flex justify-between gap-4">
-                    <span>{e.at.slice(0, 19)} · {e.who} · {e.action}</span>
+                    <span>
+                      {e.at.slice(0, 19)} · {e.who} · {e.action}
+                    </span>
                     <span className="text-muted-foreground">{e.target}</span>
                   </div>
                 ))}
@@ -774,23 +881,50 @@ function ConfigPage() {
             )}
           </div>
           <label htmlFor="init-self-test" className="flex items-center gap-2 text-sm">
-            <input id="init-self-test" type="checkbox" checked={selfTest} onChange={(e) => setSelfTest(e.target.checked)} />
+            <input
+              id="init-self-test"
+              type="checkbox"
+              checked={selfTest}
+              onChange={(e) => setSelfTest(e.target.checked)}
+            />
             Self-test config (journeys for this dashboard UI)
           </label>
           <label htmlFor="init-allow-localhost" className="flex items-center gap-2 text-sm">
-            <input id="init-allow-localhost" type="checkbox" checked={allowLocalhost || selfTest} disabled={selfTest} onChange={(e) => setAllowLocalhost(e.target.checked)} />
+            <input
+              id="init-allow-localhost"
+              type="checkbox"
+              checked={allowLocalhost || selfTest}
+              disabled={selfTest}
+              onChange={(e) => setAllowLocalhost(e.target.checked)}
+            />
             Allow localhost / 127.0.0.1 (SSRF guard opt-in)
           </label>
           <label htmlFor="init-with-auth" className="flex items-center gap-2 text-sm">
-            <input id="init-with-auth" type="checkbox" checked={withAuth} disabled={selfTest} onChange={(e) => setWithAuth(e.target.checked)} />
+            <input
+              id="init-with-auth"
+              type="checkbox"
+              checked={withAuth}
+              disabled={selfTest}
+              onChange={(e) => setWithAuth(e.target.checked)}
+            />
             Include auth block (REHEARSE_EMAIL / REHEARSE_PASSWORD)
           </label>
           <label htmlFor="init-pii-redaction" className="flex items-center gap-2 text-sm">
-            <input id="init-pii-redaction" type="checkbox" checked={piiRedaction} onChange={(e) => setPiiRedaction(e.target.checked)} />
+            <input
+              id="init-pii-redaction"
+              type="checkbox"
+              checked={piiRedaction}
+              onChange={(e) => setPiiRedaction(e.target.checked)}
+            />
             PII redaction in scorecards
           </label>
           <label htmlFor="init-all-personas-browser" className="flex items-center gap-2 text-sm">
-            <input id="init-all-personas-browser" type="checkbox" checked={executeAllPersonasInBrowser} onChange={(e) => setExecuteAllPersonasInBrowser(e.target.checked)} />
+            <input
+              id="init-all-personas-browser"
+              type="checkbox"
+              checked={executeAllPersonasInBrowser}
+              onChange={(e) => setExecuteAllPersonasInBrowser(e.target.checked)}
+            />
             Execute all personas in browser (Phase C — slower, full E2E matrix)
           </label>
           <div>
@@ -809,7 +943,12 @@ function ConfigPage() {
             <legend className="text-xs text-muted-foreground">Viewport profiles</legend>
             {(["desktop", "tablet", "mobile"] as const).map((vp) => (
               <label key={vp} htmlFor={`init-vp-${vp}`} className="flex items-center gap-2 text-sm">
-                <input id={`init-vp-${vp}`} type="checkbox" checked={viewports[vp]} onChange={(e) => setViewports((prev) => ({ ...prev, [vp]: e.target.checked }))} />
+                <input
+                  id={`init-vp-${vp}`}
+                  type="checkbox"
+                  checked={viewports[vp]}
+                  onChange={(e) => setViewports((prev) => ({ ...prev, [vp]: e.target.checked }))}
+                />
                 {vp} {vp === "desktop" ? "(default)" : ""}
               </label>
             ))}
@@ -821,8 +960,8 @@ function ConfigPage() {
           targetUrl={targetUrl}
           productName={productName}
           configId={workspaceConfigId}
-          onModelReady={useCallback((m: Record<string, unknown>) => setProductModel(m), [])}
-          onCredsChange={useCallback((c: { loginEmail: string; loginPassword: string; loginUrl: string; emailSelector: string; passwordSelector: string; submitSelector: string }) => setCrawlCreds(c), [])}
+          onModelReady={handleProductModelReady}
+          onCredsChange={handleCredsChange}
         />
 
         <PersonaStudioPanel
@@ -868,7 +1007,9 @@ function ConfigPage() {
           <Panel className="p-6">
             <div className="text-xs text-muted-foreground mb-3">Start from example config</div>
             <ul className="font-mono text-xs space-y-1">
-              {exampleConfigs.map((c) => <li key={c.id}>{c.path}</li>)}
+              {exampleConfigs.map((c) => (
+                <li key={c.id}>{c.path}</li>
+              ))}
             </ul>
             {hiddenConfigCount > 0 && (
               <div className="mt-2 text-[11px] text-muted-foreground">

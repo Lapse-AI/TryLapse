@@ -1,7 +1,14 @@
 import { useEffect, useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type { Annotation, LibraryPersona, RunBundle, RunDiff, RunSummary, Workspace } from "@/lib/mock-data/types";
+import type {
+  Annotation,
+  LibraryPersona,
+  RunBundle,
+  RunDiff,
+  RunSummary,
+  Workspace,
+} from "@/lib/mock-data/types";
 import {
   getLatestRun as mockLatest,
   getRunBundle as mockBundle,
@@ -397,10 +404,7 @@ export function useJobs() {
           );
         } else if (now === "failed") {
           toast.error(j.error?.slice(0, 120) || `Job ${j.id} failed`);
-          fireRunNotification(
-            "Rehearsal failed",
-            j.error?.slice(0, 100) || `Job ${j.id} failed`,
-          );
+          fireRunNotification("Rehearsal failed", j.error?.slice(0, 100) || `Job ${j.id} failed`);
         }
         refreshedRuns = true;
       }
@@ -511,8 +515,12 @@ export function useSavePersonaLibrary() {
 export function useGeneratePersona() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (body: { prompt: string; productName?: string; targetUrl?: string; save?: boolean }) =>
-      api.generatePersonaLibrary(body),
+    mutationFn: (body: {
+      prompt: string;
+      productName?: string;
+      targetUrl?: string;
+      save?: boolean;
+    }) => api.generatePersonaLibrary(body),
     onSuccess: (result, variables) => {
       if (variables.save) {
         void qc.invalidateQueries({ queryKey: queryKeys.personaLibrary });
@@ -532,7 +540,9 @@ export function useImportPersonasFromConfig() {
     mutationFn: (configId: string) => api.importPersonasFromConfig(configId),
     onSuccess: (result) => {
       void qc.invalidateQueries({ queryKey: queryKeys.personaLibrary });
-      toast.success(`Imported ${result.imported} persona${result.imported !== 1 ? "s" : ""} into library`);
+      toast.success(
+        `Imported ${result.imported} persona${result.imported !== 1 ? "s" : ""} into library`,
+      );
     },
   });
 }

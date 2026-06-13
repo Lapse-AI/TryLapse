@@ -15,7 +15,15 @@ function statusLabel(status: string, paused: boolean): string {
 
 type GroupMeta = { label: string; targetUrl?: string };
 
-export function RunHistoryLiveRows({ jobs, group, workspaceSlug }: { jobs: JobRecord[]; group: GroupMeta; workspaceSlug?: string }) {
+export function RunHistoryLiveRows({
+  jobs,
+  group,
+  workspaceSlug,
+}: {
+  jobs: JobRecord[];
+  group: GroupMeta;
+  workspaceSlug?: string;
+}) {
   const [paused, setPaused] = useState<Set<string>>(new Set());
   if (!jobs.length) return null;
 
@@ -28,7 +36,11 @@ export function RunHistoryLiveRows({ jobs, group, workspaceSlug }: { jobs: JobRe
         setPaused((prev) => new Set(prev).add(runId));
         toast.info("Pausing — will stop before next journey");
       } else if (signal === "resume") {
-        setPaused((prev) => { const s = new Set(prev); s.delete(runId); return s; });
+        setPaused((prev) => {
+          const s = new Set(prev);
+          s.delete(runId);
+          return s;
+        });
         toast.success("Run resumed");
       } else {
         toast.info("Stop signal sent — finishes current journey then stops");
@@ -92,7 +104,9 @@ export function RunHistoryLiveRows({ jobs, group, workspaceSlug }: { jobs: JobRe
               <div className="flex items-center gap-2">
                 <Loader2 className="size-3.5 animate-spin text-info" />
                 <StatusDot status="neutral" />
-                <Chip tone={j.status === "queued" ? "warn" : "info"}>{statusLabel(j.status, isPaused)}</Chip>
+                <Chip tone={j.status === "queued" ? "warn" : "info"}>
+                  {statusLabel(j.status, isPaused)}
+                </Chip>
               </div>
             </td>
             <td className="px-5 py-3 font-mono tabular-nums text-muted-foreground">—</td>
