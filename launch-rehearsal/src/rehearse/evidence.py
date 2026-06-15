@@ -28,6 +28,8 @@ class StepSnapshot:
     heading_count: int = 0
     input_count: int = 0
     labeled_input_count: int = 0
+    missing_alt_count: int = 0
+    low_contrast_estimate: int = 0
     error_phrases_found: list[str] = field(default_factory=list)
     console_errors: list[str] = field(default_factory=list)
     console_warnings: list[str] = field(default_factory=list)
@@ -43,6 +45,11 @@ class StepSnapshot:
     focus_region: dict[str, Any] | None = None
     explore_log: list[dict[str, Any]] = field(default_factory=list)
     explore_summary: str | None = None
+    # Behavioral judge verdict (L3 deep analysis)
+    behavioral_verdict: str | None = None        # pass | partial | fail
+    behavioral_friction: list[str] = field(default_factory=list)
+    behavioral_ux_concerns: list[str] = field(default_factory=list)
+    chatbot_quality: dict[str, Any] | None = None
 
 
 @dataclass

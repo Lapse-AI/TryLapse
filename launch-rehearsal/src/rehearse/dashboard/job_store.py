@@ -59,12 +59,44 @@ def _row_to_job(row: sqlite3.Row) -> dict[str, Any]:
     return data
 
 
-def list_jobs(artifacts_root: Path, limit: int = 50) -> list[dict[str, Any]]:
+def list_jobs(
+    artifacts_root: Path,
+    limit: int = 50,
+    config_prefix: str | None = None,
+) -> list[dict[str, Any]]:
+    """Return up to `limit` jobs, newest first.
+
+    config_prefix
+        When supplied, only jobs whose stored ``config`` path stem starts with
+        this prefix are returned.  This is how workspace-scoped filtering works:
+        the caller derives the prefix from the workspace's active config filename
+        (e.g. ``faculty-dashboard-eight-vercel-app``) and passes it here so the
+        SQLite WHERE clause does the filtering rather than the client.
+
+        We push the filter into SQLite via ``json_extract`` so we scan only the
+        rows we need even as the jobs table grows.
+    """
     conn = _connect(artifacts_root)
     conn.row_factory = sqlite3.Row
-    rows = conn.execute(
-        "SELECT * FROM jobs ORDER BY started_at DESC LIMIT ?", (limit,)
-    ).fetchall()
+
+    if config_prefix:
+        # json_extract pulls the ``config`` field from the JSON blob column.
+        # We match jobs whose config path contains the prefix anywhere in the
+        # filename stem (handles both absolute paths and relative ones).
+        # INSTR is case-sensitive on SQLite by default which is fine since
+        # config file names are always lowercase slugs.
+        rows = conn.execute(
+            """SELECT * FROM jobs
+               WHERE json_extract(data, '$.config') LIKE ?
+               OR json_extract(data, '$.runId') LIKE ?
+               ORDER BY started_at DESC LIMIT ?""",
+            (f"%{config_prefix}%", f"{config_prefix}%", limit),
+        ).fetchall()
+    else:
+        rows = conn.execute(
+            "SELECT * FROM jobs ORDER BY started_at DESC LIMIT ?", (limit,)
+        ).fetchall()
+
     return [_row_to_job(r) for r in rows]
 
 

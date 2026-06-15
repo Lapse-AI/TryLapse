@@ -1,16 +1,41 @@
 import { useEffect, useState, useMemo, type ElementType, type ReactNode } from "react";
+import { HardHat } from "lucide-react";
 import type { Status, Severity } from "@/lib/mock-data";
 import { formatRel } from "@/lib/mock-data";
 
-/** Renders relative time only after mount to avoid SSR/CSR hydration mismatch. */
+/** Format ISO timestamp into user's local timezone. */
+function localTime(iso: string): string {
+  try {
+    return new Intl.DateTimeFormat(undefined, {
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    }).format(new Date(iso));
+  } catch {
+    return iso.slice(0, 16).replace("T", " ");
+  }
+}
+
+/** Renders local time after mount (avoids SSR mismatch). Title shows relative age. */
 export function ClientTime({ iso, fallback = "" }: { iso: string; fallback?: string }) {
-  const [text, setText] = useState(fallback);
+  const [local, setLocal] = useState(fallback);
+  const [rel, setRel] = useState("");
   useEffect(() => {
-    setText(formatRel(iso));
-    const id = setInterval(() => setText(formatRel(iso)), 60_000);
+    setLocal(localTime(iso));
+    setRel(formatRel(iso));
+    const id = setInterval(() => {
+      setLocal(localTime(iso));
+      setRel(formatRel(iso));
+    }, 30_000);
     return () => clearInterval(id);
   }, [iso]);
-  return <span suppressHydrationWarning>{text || fallback}</span>;
+  return (
+    <span suppressHydrationWarning title={rel || undefined}>
+      {local || fallback}
+    </span>
+  );
 }
 
 export function StatusDot({ status, className = "" }: { status: Status; className?: string }) {
@@ -26,9 +51,11 @@ export function StatusDot({ status, className = "" }: { status: Status; classNam
 export function Chip({
   children,
   tone = "neutral",
+  title,
 }: {
   children: ReactNode;
   tone?: Status | "info" | "violet";
+  title?: string;
 }) {
   const tones: Record<string, string> = {
     ready: "text-ready border-ready/25 bg-ready/8",
@@ -41,11 +68,19 @@ export function Chip({
   return (
     <span
       className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-medium border ${tones[tone]}`}
+      title={title}
     >
       {children}
     </span>
   );
 }
+
+export const SEVERITY_LABEL: Record<Severity, string> = {
+  P0: "Critical",
+  P1: "High",
+  P2: "Medium",
+  P3: "Low",
+};
 
 export function SeverityChip({ s }: { s: Severity }) {
   const tone: Record<Severity, "danger" | "warn" | "info" | "neutral"> = {
@@ -54,19 +89,29 @@ export function SeverityChip({ s }: { s: Severity }) {
     P2: "info",
     P3: "neutral",
   };
-  return <Chip tone={tone[s]}>{s}</Chip>;
+  return (
+    <Chip tone={tone[s]} title={s}>
+      {SEVERITY_LABEL[s]}
+    </Chip>
+  );
 }
 
 export function Panel({
   children,
   className = "",
   as: As = "div",
+  id,
 }: {
   children: ReactNode;
   className?: string;
   as?: ElementType;
+  id?: string;
 }) {
-  return <As className={`panel ${className}`}>{children}</As>;
+  return (
+    <As className={`panel ${className}`} id={id}>
+      {children}
+    </As>
+  );
 }
 
 export function SectionTitle({
@@ -114,7 +159,7 @@ export function PageHeader({
               {eyebrow}
             </span>
           </div>
-          <h1 className="font-display text-[34px] font-bold tracking-[-0.025em] leading-tight">
+          <h1 className="font-display text-[36px] font-light tracking-[-0.02em] leading-[1.1]">
             {title}
           </h1>
           {description && (
@@ -173,9 +218,10 @@ export function Sparkline({
     const max = Math.max(...safe);
     const range = max - min || 1;
     const denom = Math.max(safe.length - 1, 1);
+    const pad = 3;
     const coords = safe.map((v, i) => ({
       x: (i / denom) * w,
-      y: height - ((v - min) / range) * height,
+      y: height - pad - ((v - min) / range) * (height - pad * 2),
     }));
     return { safe, w, coords, points: coords.map(({ x, y }) => `${x},${y}`).join(" ") };
   }, [values, height]);
@@ -253,6 +299,25 @@ export function ReadinessGauge({ value, band }: { value: number; band?: Status }
         <div className="text-[11px] text-muted-foreground mt-1 font-mono">/ 100</div>
         <div className="mt-2">
           <Chip tone={tone}>{bandLabel}</Chip>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function UnderConstruction({ children }: { children: ReactNode }) {
+  return (
+    <div className="relative flex-1 min-h-0">
+      <div className="blur-sm pointer-events-none select-none opacity-60">{children}</div>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="bg-surface border border-border rounded-2xl px-10 py-8 text-center shadow-2xl max-w-sm">
+          <div className="size-14 rounded-xl bg-warn/10 border border-warn/20 flex items-center justify-center mx-auto mb-4">
+            <HardHat className="size-7 text-warn" />
+          </div>
+          <h2 className="font-display text-xl font-semibold">Under Construction</h2>
+          <p className="text-sm text-muted-foreground mt-2">
+            This feature is actively being built and will be available soon.
+          </p>
         </div>
       </div>
     </div>

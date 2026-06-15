@@ -1,0 +1,425 @@
+{
+  "run_id": "cal-20260529-193724",
+  "target_url": "https://cal.com",
+  "product_name": "Cal.com (practice target)",
+  "started_at": "2026-05-29T19:37:24.284118+00:00",
+  "finished_at": "2026-05-29T19:38:45.378883+00:00",
+  "duration_ms": 81095,
+  "auth_attempted": false,
+  "auth_outcome": null,
+  "steps": [
+    {
+      "step_id": "j1-land-p1-evaluator-s1",
+      "journey_id": "j1-land",
+      "journey_name": "Land and grasp value",
+      "persona_id": "p1-evaluator",
+      "action": "navigate",
+      "requested_url": "https://cal.com/",
+      "final_url": "https://cal.com/",
+      "page_title": "Cal.com | Scheduling Software for Online Bookings",
+      "http_status": 200,
+      "outcome": "pass",
+      "duration_ms": 2138,
+      "body_text_excerpt": "Solutions Enterprise Cal.ai Developer Resources Pricing Sign in Get started Cal.com launches v6.5 The better way to schedule your meetings A fully customizable scheduling software for individuals, businesses taking calls and developers building scheduling platforms where users meet users. Sign up with Google Sign up with email No credit card required C\u00e9dric van Ravesteijn Partnerships Meeting Are you an agency, influencer, SaaS founder, or business looking to collaborate with Cal.com? Let's chat! 15m 30m 45m 1h Cal Video Europe/Amsterdam May 2025 SUN MON TUE WED THU FRI SAT 0 15 15 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 0 Trusted by fast-growing companies around the world How it works With us, appointment scheduling is easy Effortless scheduling for business and individuals, powerful solutions for fast-growing modern companies. Get started Book a demo 01 Connect your calendar We'll handle all the cross-referencing, so you don't have to worry about double bookings. Cal.com 02 Set your availability Want to block off weekends? Set up any buffers? We make that easy. Mon 8:30 am 5:00 pm Tue 9:00 am 6:30 pm Wed 10:00 am 7:00 pm 03 Choose how to meet It could be a video chat, phone call, or a walk in the park! Benefits Your all-purpose scheduling app Discover a variety of our advanced features. Unlimited and free for individuals. Get started Book a demo Avoid meeting overload Only get booked when you want to. Set daily, weekly or monthly limits and add buffers around your events to allow you to focus or take a break. Notice and buffers Minimum notice 24 hours Buffer before event 30 mins Buffer after event 30 mins Time-slot intervals Use event length (default) Stand out with a custom booking link Customize your booking link so it\u2019s short and easy to remember for your bookers. No more long, complicated links one can easily forget. cal.com/cedric C\u00e9dric van Ravesteijn Partnerships & Collaborations Are you an agency, influencer, Saa",
+      "unlabeled_button_count": 0,
+      "link_count": 92,
+      "heading_count": 29,
+      "input_count": 1,
+      "labeled_input_count": 1,
+      "error_phrases_found": [],
+      "console_errors": [
+        "Fetch failed: Error: Key 'user.name' not found in response"
+      ],
+      "network_failures": [],
+      "artifact_paths": [
+        "artifacts/artifacts/cal-20260529-193724/j1-land-p1-evaluator-s1.png",
+        "artifacts/artifacts/cal-20260529-193724/j1-land-p1-evaluator-s1.txt"
+      ],
+      "note": null
+    },
+    {
+      "step_id": "j2-signup-path-p1-evaluator-s1",
+      "journey_id": "j2-signup-path",
+      "journey_name": "Start signup path",
+      "persona_id": "p1-evaluator",
+      "action": "navigate",
+      "requested_url": "https://cal.com/",
+      "final_url": "https://cal.com/",
+      "page_title": "Cal.com | Scheduling Software for Online Bookings",
+      "http_status": 200,
+      "outcome": "pass",
+      "duration_ms": 2267,
+      "body_text_excerpt": "Solutions Enterprise Cal.ai Developer Resources Pricing Sign in Get started Cal.com launches v6.5 The better way to schedule your meetings A fully customizable scheduling software for individuals, businesses taking calls and developers building scheduling platforms where users meet users. Sign up with Google Sign up with email No credit card required C\u00e9dric van Ravesteijn Partnerships Meeting Are you an agency, influencer, SaaS founder, or business looking to collaborate with Cal.com? Let's chat! 15m 30m 45m 1h Cal Video Europe/Amsterdam May 2025 SUN MON TUE WED THU FRI SAT 0 15 15 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 0 Trusted by fast-growing companies around the world How it works With us, appointment scheduling is easy Effortless scheduling for business and individuals, powerful solutions for fast-growing modern companies. Get started Book a demo 01 Connect your calendar We'll handle all the cross-referencing, so you don't have to worry about double bookings. Cal.com 02 Set your availability Want to block off weekends? Set up any buffers? We make that easy. Mon 8:30 am 5:00 pm Tue 9:00 am 6:30 pm Wed 10:00 am 7:00 pm 03 Choose how to meet It could be a video chat, phone call, or a walk in the park! Benefits Your all-purpose scheduling app Discover a variety of our advanced features. Unlimited and free for individuals. Get started Book a demo Avoid meeting overload Only get booked when you want to. Set daily, weekly or monthly limits and add buffers around your events to allow you to focus or take a break. Notice and buffers Minimum notice 24 hours Buffer before event 30 mins Buffer after event 30 mins Time-slot intervals Use event length (default) Stand out with a custom booking link Customize your booking link so it\u2019s short and easy to remember for your bookers. No more long, complicated links one can easily forget. cal.com/cedric C\u00e9dric van Ravesteijn Partnerships & Collaborations Are you an agency, influencer, Saa",
+      "unlabeled_button_count": 0,
+      "link_count": 92,
+      "heading_count": 29,
+      "input_count": 1,
+      "labeled_input_count": 1,
+      "error_phrases_found": [],
+      "console_errors": [
+        "Fetch failed: Error: Key 'user.name' not found in response"
+      ],
+      "network_failures": [],
+      "artifact_paths": [
+        "artifacts/artifacts/cal-20260529-193724/j2-signup-path-p1-evaluator-s1.png",
+        "artifacts/artifacts/cal-20260529-193724/j2-signup-path-p1-evaluator-s1.txt"
+      ],
+      "note": null
+    },
+    {
+      "step_id": "j2-signup-path-p1-evaluator-s2",
+      "journey_id": "j2-signup-path",
+      "journey_name": "Start signup path",
+      "persona_id": "p1-evaluator",
+      "action": "click",
+      "requested_url": null,
+      "final_url": "https://cal.com/",
+      "page_title": "Cal.com | Scheduling Software for Online Bookings",
+      "http_status": null,
+      "outcome": "pass",
+      "duration_ms": 425,
+      "body_text_excerpt": "Solutions Enterprise Cal.ai Developer Resources Pricing Sign in Get started Cal.com launches v6.5 The better way to schedule your meetings A fully customizable scheduling software for individuals, businesses taking calls and developers building scheduling platforms where users meet users. Sign up with Google Sign up with email No credit card required C\u00e9dric van Ravesteijn Partnerships Meeting Are you an agency, influencer, SaaS founder, or business looking to collaborate with Cal.com? Let's chat! 15m 30m 45m 1h Cal Video Europe/Amsterdam May 2025 SUN MON TUE WED THU FRI SAT 0 15 15 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 0 Trusted by fast-growing companies around the world How it works With us, appointment scheduling is easy Effortless scheduling for business and individuals, powerful solutions for fast-growing modern companies. Get started Book a demo 01 Connect your calendar We'll handle all the cross-referencing, so you don't have to worry about double bookings. Cal.com 02 Set your availability Want to block off weekends? Set up any buffers? We make that easy. Mon 8:30 am 5:00 pm Tue 9:00 am 6:30 pm Wed 10:00 am 7:00 pm 03 Choose how to meet It could be a video chat, phone call, or a walk in the park! Benefits Your all-purpose scheduling app Discover a variety of our advanced features. Unlimited and free for individuals. Get started Book a demo Avoid meeting overload Only get booked when you want to. Set daily, weekly or monthly limits and add buffers around your events to allow you to focus or take a break. Notice and buffers Minimum notice 3 hours Buffer before event 15 mins Buffer after event 15 mins Time-slot intervals 15 mins Stand out with a custom booking link Customize your booking link so it\u2019s short and easy to remember for your bookers. No more long, complicated links one can easily forget. cal.com/peer Peer Richelsen German Lessons Let's learn German! 15m 30m 45m 1h Google Meet Europe/Hamburg Streamline your ",
+      "unlabeled_button_count": 0,
+      "link_count": 92,
+      "heading_count": 29,
+      "input_count": 1,
+      "labeled_input_count": 1,
+      "error_phrases_found": [],
+      "console_errors": [],
+      "network_failures": [],
+      "artifact_paths": [
+        "artifacts/artifacts/cal-20260529-193724/j2-signup-path-p1-evaluator-s2.png",
+        "artifacts/artifacts/cal-20260529-193724/j2-signup-path-p1-evaluator-s2.txt"
+      ],
+      "note": null
+    },
+    {
+      "step_id": "j3-product-depth-p1-evaluator-s1",
+      "journey_id": "j3-product-depth",
+      "journey_name": "Explore product depth",
+      "persona_id": "p1-evaluator",
+      "action": "navigate",
+      "requested_url": "https://cal.com/",
+      "final_url": "https://cal.com/",
+      "page_title": "Cal.com | Scheduling Software for Online Bookings",
+      "http_status": 200,
+      "outcome": "pass",
+      "duration_ms": 2117,
+      "body_text_excerpt": "Solutions Enterprise Cal.ai Developer Resources Pricing Sign in Get started Cal.com launches v6.5 The better way to schedule your meetings A fully customizable scheduling software for individuals, businesses taking calls and developers building scheduling platforms where users meet users. Sign up with Google Sign up with email No credit card required C\u00e9dric van Ravesteijn Partnerships Meeting Are you an agency, influencer, SaaS founder, or business looking to collaborate with Cal.com? Let's chat! 15m 30m 45m 1h Cal Video Europe/Amsterdam May 2025 SUN MON TUE WED THU FRI SAT 0 15 15 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 0 Trusted by fast-growing companies around the world How it works With us, appointment scheduling is easy Effortless scheduling for business and individuals, powerful solutions for fast-growing modern companies. Get started Book a demo 01 Connect your calendar We'll handle all the cross-referencing, so you don't have to worry about double bookings. Cal.com 02 Set your availability Want to block off weekends? Set up any buffers? We make that easy. Mon 8:30 am 5:00 pm Tue 9:00 am 6:30 pm Wed 10:00 am 7:00 pm 03 Choose how to meet It could be a video chat, phone call, or a walk in the park! Benefits Your all-purpose scheduling app Discover a variety of our advanced features. Unlimited and free for individuals. Get started Book a demo Avoid meeting overload Only get booked when you want to. Set daily, weekly or monthly limits and add buffers around your events to allow you to focus or take a break. Notice and buffers Minimum notice 24 hours Buffer before event 30 mins Buffer after event 30 mins Time-slot intervals Use event length (default) Stand out with a custom booking link Customize your booking link so it\u2019s short and easy to remember for your bookers. No more long, complicated links one can easily forget. cal.com/cedric C\u00e9dric van Ravesteijn Partnerships & Collaborations Are you an agency, influencer, Saa",
+      "unlabeled_button_count": 0,
+      "link_count": 92,
+      "heading_count": 29,
+      "input_count": 1,
+      "labeled_input_count": 1,
+      "error_phrases_found": [],
+      "console_errors": [
+        "Fetch failed: Error: Key 'user.name' not found in response"
+      ],
+      "network_failures": [],
+      "artifact_paths": [
+        "artifacts/artifacts/cal-20260529-193724/j3-product-depth-p1-evaluator-s1.png",
+        "artifacts/artifacts/cal-20260529-193724/j3-product-depth-p1-evaluator-s1.txt"
+      ],
+      "note": null
+    },
+    {
+      "step_id": "j3-product-depth-p1-evaluator-s2",
+      "journey_id": "j3-product-depth",
+      "journey_name": "Explore product depth",
+      "persona_id": "p1-evaluator",
+      "action": "click",
+      "requested_url": null,
+      "final_url": "https://cal.com/",
+      "page_title": "Cal.com | Scheduling Software for Online Bookings",
+      "http_status": null,
+      "outcome": "pass",
+      "duration_ms": 357,
+      "body_text_excerpt": "Solutions Enterprise Cal.ai Developer Resources Pricing Sign in Get started Cal.com launches v6.5 The better way to schedule your meetings A fully customizable scheduling software for individuals, businesses taking calls and developers building scheduling platforms where users meet users. Sign up with Google Sign up with email No credit card required C\u00e9dric van Ravesteijn Partnerships Meeting Are you an agency, influencer, SaaS founder, or business looking to collaborate with Cal.com? Let's chat! 15m 30m 45m 1h Cal Video Europe/Amsterdam May 2025 SUN MON TUE WED THU FRI SAT 0 15 15 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 0 Trusted by fast-growing companies around the world How it works With us, appointment scheduling is easy Effortless scheduling for business and individuals, powerful solutions for fast-growing modern companies. Get started Book a demo 01 Connect your calendar We'll handle all the cross-referencing, so you don't have to worry about double bookings. Cal.com 02 Set your availability Want to block off weekends? Set up any buffers? We make that easy. Mon 8:30 am 5:00 pm Tue 9:00 am 6:30 pm Wed 10:00 am 7:00 pm 03 Choose how to meet It could be a video chat, phone call, or a walk in the park! Benefits Your all-purpose scheduling app Discover a variety of our advanced features. Unlimited and free for individuals. Get started Book a demo Avoid meeting overload Only get booked when you want to. Set daily, weekly or monthly limits and add buffers around your events to allow you to focus or take a break. Notice and buffers Minimum notice 24 hours Buffer before event 30 mins Buffer after event 30 mins Time-slot intervals Use event length (default) Stand out with a custom booking link Customize your booking link so it\u2019s short and easy to remember for your bookers. No more long, complicated links one can easily forget. cal.com/cedric C\u00e9dric van Ravesteijn Partnerships & Collaborations Are you an agency, influencer, Saa",
+      "unlabeled_button_count": 0,
+      "link_count": 92,
+      "heading_count": 29,
+      "input_count": 1,
+      "labeled_input_count": 1,
+      "error_phrases_found": [],
+      "console_errors": [],
+      "network_failures": [],
+      "artifact_paths": [
+        "artifacts/artifacts/cal-20260529-193724/j3-product-depth-p1-evaluator-s2.png",
+        "artifacts/artifacts/cal-20260529-193724/j3-product-depth-p1-evaluator-s2.txt"
+      ],
+      "note": null
+    },
+    {
+      "step_id": "j4-pricing-p1-evaluator-s1",
+      "journey_id": "j4-pricing",
+      "journey_name": "Pricing evaluation",
+      "persona_id": "p1-evaluator",
+      "action": "navigate",
+      "requested_url": "https://cal.com/pricing",
+      "final_url": "https://cal.com/pricing",
+      "page_title": "Pricing | Cal.com",
+      "http_status": 200,
+      "outcome": "pass",
+      "duration_ms": 2739,
+      "body_text_excerpt": "Solutions Enterprise Cal.ai Developer Resources Pricing Sign in Get started Pricing Choose your Cal.com subscription Start scheduling for free, with no usage limits. For collaborative features, choose one of our premium plans that fits your company size. Talk to sales See feature breakdown Individuals Free Everything you could need for scheduling as an individual. Use for free *Free forever Free features: 1 user Unlimited event types & calendars Email & SMS notifications Integrate with 100+ apps Mobile App Browser Extension Accept Stripe & PayPal payments Two-way Salesforce & HubSpot sync 1-click import Calendly events Teams YEARLY $12 per month/user Save 25% For small teams and startups with combined scheduling needs. Try for free *14 day free trial Free plan features, plus: Schedule accross 1 team Round-robin scheduling Managed & collective event types Recurring events Customizable email & SMS notifications Remove Cal.com branding Routing forms Booking analytics Custom APIs Organizations YEARLY $28 per month/user Save 25% For larger teams looking to have more control, privacy, and security. Try for free *14 day free trial Teams plan features, plus: Unlimited sub-teams Route by custom variables Company subdomain (yourcompany.cal.com) SAML SSO and SCIM SOC 2, HIPAA, ISO 27001 compliance check Instant meetings Domain-wide-delegation Role-based permissions Additional APIs Enterprise Custom The most advanced scheduling for enterprise without limits. Talk to sales *Annual pricing Organizations plan features, plus: Dedicated onboarding and engineering support SLA & uptime guarantees HRIS & directory integrations Priority Slack & account support Dedicated database Trusted by fast-growing companies around the world Feature breakdown Compare our Free and Teams plans to see why Cal.com is the better choice. Features Individual Scheduling as an individual. Free forever Try for free Teams Schedule as a team. $12 per month/user Save 25% Try for free Organizations Schedule compa",
+      "unlabeled_button_count": 0,
+      "link_count": 93,
+      "heading_count": 14,
+      "input_count": 1,
+      "labeled_input_count": 1,
+      "error_phrases_found": [],
+      "console_errors": [
+        "Fetch failed: Error: Key 'user.name' not found in response"
+      ],
+      "network_failures": [],
+      "artifact_paths": [
+        "artifacts/artifacts/cal-20260529-193724/j4-pricing-p1-evaluator-s1.png",
+        "artifacts/artifacts/cal-20260529-193724/j4-pricing-p1-evaluator-s1.txt"
+      ],
+      "note": null
+    },
+    {
+      "step_id": "j5-return-nav-p1-evaluator-s1",
+      "journey_id": "j5-return-nav",
+      "journey_name": "Return visitor navigation",
+      "persona_id": "p1-evaluator",
+      "action": "navigate",
+      "requested_url": "https://cal.com/pricing",
+      "final_url": "https://cal.com/pricing",
+      "page_title": "Pricing | Cal.com",
+      "http_status": 200,
+      "outcome": "pass",
+      "duration_ms": 1962,
+      "body_text_excerpt": "Solutions Enterprise Cal.ai Developer Resources Pricing Sign in Get started Pricing Choose your Cal.com subscription Start scheduling for free, with no usage limits. For collaborative features, choose one of our premium plans that fits your company size. Talk to sales See feature breakdown Individuals Free Everything you could need for scheduling as an individual. Use for free *Free forever Free features: 1 user Unlimited event types & calendars Email & SMS notifications Integrate with 100+ apps Mobile App Browser Extension Accept Stripe & PayPal payments Two-way Salesforce & HubSpot sync 1-click import Calendly events Teams YEARLY $12 per month/user Save 25% For small teams and startups with combined scheduling needs. Try for free *14 day free trial Free plan features, plus: Schedule accross 1 team Round-robin scheduling Managed & collective event types Recurring events Customizable email & SMS notifications Remove Cal.com branding Routing forms Booking analytics Custom APIs Organizations YEARLY $28 per month/user Save 25% For larger teams looking to have more control, privacy, and security. Try for free *14 day free trial Teams plan features, plus: Unlimited sub-teams Route by custom variables Company subdomain (yourcompany.cal.com) SAML SSO and SCIM SOC 2, HIPAA, ISO 27001 compliance check Instant meetings Domain-wide-delegation Role-based permissions Additional APIs Enterprise Custom The most advanced scheduling for enterprise without limits. Talk to sales *Annual pricing Organizations plan features, plus: Dedicated onboarding and engineering support SLA & uptime guarantees HRIS & directory integrations Priority Slack & account support Dedicated database Trusted by fast-growing companies around the world Feature breakdown Compare our Free and Teams plans to see why Cal.com is the better choice. Features Individual Scheduling as an individual. Free forever Try for free Teams Schedule as a team. $12 per month/user Save 25% Try for free Organizations Schedule compa",
+      "unlabeled_button_count": 0,
+      "link_count": 93,
+      "heading_count": 14,
+      "input_count": 1,
+      "labeled_input_count": 1,
+      "error_phrases_found": [],
+      "console_errors": [
+        "Fetch failed: Error: Key 'user.name' not found in response"
+      ],
+      "network_failures": [],
+      "artifact_paths": [
+        "artifacts/artifacts/cal-20260529-193724/j5-return-nav-p1-evaluator-s1.png",
+        "artifacts/artifacts/cal-20260529-193724/j5-return-nav-p1-evaluator-s1.txt"
+      ],
+      "note": null
+    },
+    {
+      "step_id": "j5-return-nav-p1-evaluator-s2",
+      "journey_id": "j5-return-nav",
+      "journey_name": "Return visitor navigation",
+      "persona_id": "p1-evaluator",
+      "action": "navigate",
+      "requested_url": "https://cal.com/",
+      "final_url": "https://cal.com/",
+      "page_title": "Cal.com | Scheduling Software for Online Bookings",
+      "http_status": 200,
+      "outcome": "pass",
+      "duration_ms": 2292,
+      "body_text_excerpt": "Solutions Enterprise Cal.ai Developer Resources Pricing Sign in Get started Cal.com launches v6.5 The better way to schedule your meetings A fully customizable scheduling software for individuals, businesses taking calls and developers building scheduling platforms where users meet users. Sign up with Google Sign up with email No credit card required C\u00e9dric van Ravesteijn Partnerships Meeting Are you an agency, influencer, SaaS founder, or business looking to collaborate with Cal.com? Let's chat! 15m 30m 45m 1h Cal Video Europe/Amsterdam May 2025 SUN MON TUE WED THU FRI SAT 0 15 15 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 0 Trusted by fast-growing companies around the world How it works With us, appointment scheduling is easy Effortless scheduling for business and individuals, powerful solutions for fast-growing modern companies. Get started Book a demo 01 Connect your calendar We'll handle all the cross-referencing, so you don't have to worry about double bookings. Cal.com 02 Set your availability Want to block off weekends? Set up any buffers? We make that easy. Mon 8:30 am 5:00 pm Tue 9:00 am 6:30 pm Wed 10:00 am 7:00 pm 03 Choose how to meet It could be a video chat, phone call, or a walk in the park! Benefits Your all-purpose scheduling app Discover a variety of our advanced features. Unlimited and free for individuals. Get started Book a demo Avoid meeting overload Only get booked when you want to. Set daily, weekly or monthly limits and add buffers around your events to allow you to focus or take a break. Notice and buffers Minimum notice 24 hours Buffer before event 30 mins Buffer after event 30 mins Time-slot intervals Use event length (default) Stand out with a custom booking link Customize your booking link so it\u2019s short and easy to remember for your bookers. No more long, complicated links one can easily forget. cal.com/cedric C\u00e9dric van Ravesteijn Partnerships & Collaborations Are you an agency, influencer, Saa",
+      "unlabeled_button_count": 0,
+      "link_count": 92,
+      "heading_count": 29,
+      "input_count": 1,
+      "labeled_input_count": 1,
+      "error_phrases_found": [],
+      "console_errors": [
+        "Fetch failed: Error: Key 'user.name' not found in response"
+      ],
+      "network_failures": [],
+      "artifact_paths": [
+        "artifacts/artifacts/cal-20260529-193724/j5-return-nav-p1-evaluator-s2.png",
+        "artifacts/artifacts/cal-20260529-193724/j5-return-nav-p1-evaluator-s2.txt"
+      ],
+      "note": null
+    },
+    {
+      "step_id": "auto-j1-dashboard-p1-evaluator-s1",
+      "journey_id": "auto-j1-dashboard",
+      "journey_name": "Auto: Dashboard",
+      "persona_id": "p1-evaluator",
+      "action": "navigate",
+      "requested_url": "https://cal.com/app",
+      "final_url": "https://cal.com/app",
+      "page_title": "Cal.com Companion for iOS, Android and Chrome",
+      "http_status": 200,
+      "outcome": "pass",
+      "duration_ms": 2239,
+      "body_text_excerpt": "Solutions Enterprise Cal.ai Developer Resources Pricing Sign in Get started Upvote Cal.com Companion now! Your scheduling companion in your pocket or browser. Take your favourite scheduling tool wherever you go. In your pocket or as a sidekick in your browser. Cal.com Companion is where you find time. Download Cal.com Companion for Safari, Microsoft Edge or Firefox. 9:41 Event Types 15 Minute Meeting Let's do a quick meme review 30 Minute Meeting Excited to make time for you Sales Demo A brief call with our team Dance lessons Never gonna give you up! Secret How did you find this? Walk and talk No video, just vibes Event Types Bookings Availability Trusted by fast-growing companies around the world Benefits One Tool. Multiple Devices. Endless Possibilities. With Cal.com Companion, managing your calendar has never been easier. Whether you're on mobile, desktop, or using your browser, you can seamlessly sync and schedule no matter where life takes you. Get started with Cal.com 1 Stay organized across all devices Access your calendar on mobile, desktop, or browser, and stay synchronized across all platforms for maximum convenience. 2 Effortless scheduling & customization Personalize alerts, time zones, and meeting settings to your needs, making scheduling easier and more efficient. 3 Boost your productivity Save time and reduce scheduling conflicts with automated scheduling and fast access across all devices. Available everywhere Cross-platform availability Cal.com Companion ensures that you can manage your schedule anytime, anywhere, on any device. Whether you're using your phone, browser, or desktop, you\u2019ll have everything you need to stay productive. Get started with Cal.com Mobile app Take your schedule on the go with the Cal.com Companion mobile app. Available on both Android and iOS, the app lets you schedule meetings, check availability, and receive real-time updates, all from the palm of your hand. Download now on: iPhone Android Browser extension The Cal.com Co",
+      "unlabeled_button_count": 0,
+      "link_count": 114,
+      "heading_count": 18,
+      "input_count": 1,
+      "labeled_input_count": 1,
+      "error_phrases_found": [],
+      "console_errors": [
+        "Fetch failed: Error: Key 'user.name' not found in response"
+      ],
+      "network_failures": [],
+      "artifact_paths": [
+        "artifacts/artifacts/cal-20260529-193724/auto-j1-dashboard-p1-evaluator-s1.png",
+        "artifacts/artifacts/cal-20260529-193724/auto-j1-dashboard-p1-evaluator-s1.txt"
+      ],
+      "note": null
+    },
+    {
+      "step_id": "auto-j2-authentication-p1-evaluator-s1",
+      "journey_id": "auto-j2-authentication",
+      "journey_name": "Auto: Authentication",
+      "persona_id": "p1-evaluator",
+      "action": "navigate",
+      "requested_url": "https://cal.com/auth/login",
+      "final_url": "https://app.cal.com/auth/login",
+      "page_title": "Login | Cal.com",
+      "http_status": 200,
+      "outcome": "partial",
+      "duration_ms": 4189,
+      "body_text_excerpt": "11:45 AM UTC -8 1:45 PM UTC -6 3:45 PM UTC -4 5:45 PM UTC -2 7:45 PM UTC +0 9:45 PM UTC +2 11:45 PM UTC +4 1:45 AM UTC +6 3:45 AM UTC +8 Cal.com Welcome back! Sign in to continue Sign in with Google Sign in with Microsoft or Email Password Forgot? Continue Create account \u00b7 Sign in with SAML/OIDC",
+      "unlabeled_button_count": 0,
+      "link_count": 2,
+      "heading_count": 1,
+      "input_count": 3,
+      "labeled_input_count": 2,
+      "error_phrases_found": [],
+      "console_errors": [
+        "Failed to load resource: the server responded with a status of 401 ()",
+        "Failed to load resource: the server responded with a status of 401 ()",
+        "Failed to load resource: the server responded with a status of 401 ()",
+        "%c << query #4 %cviewer.me.myStats%c %O \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n   \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n  ; font-weight: bold; \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n  ; font-weight: normal; {inpu",
+        "%c << query #3 %cviewer.me.get%c %O \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n   \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n  ; font-weight: bold; \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n  ; font-weight: normal; {input: u",
+        "%c << query #2 %cviewer.teams.hasTeamPlan%c %O \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n   \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n  ; font-weight: bold; \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n  ; font-weight: normal",
+        "Connecting to 'https://www.google.com/ccm/collect?rcb=0&frm=0&ae=g&auid=413764827.1780083446&dt=Login%20%7C%20Cal.com&en=page_view&dl=https%3A%2F%2Fapp.cal.com%2Fauth%2Flogin&scrsrc=www.googletagmanager.com&rnd=2130214474.1780083515&navt=n&npa=0&ep.ads_data_redaction=0&gtm=45He65r2v9135538394za200zd",
+        "Fetch API cannot load https://www.google.com/ccm/collect?rcb=0&frm=0&ae=g&auid=413764827.1780083446&dt=Login%20%7C%20Cal.com&en=page_view&dl=https%3A%2F%2Fapp.cal.com%2Fauth%2Flogin&scrsrc=www.googletagmanager.com&rnd=2130214474.1780083515&navt=n&npa=0&ep.ads_data_redaction=0&gtm=45He65r2v9135538394",
+        "Loading the image 'https://www.google.com/ccm/collect?rcb=0&frm=0&ae=g&auid=413764827.1780083446&dt=Login%20%7C%20Cal.com&en=page_view&dl=https%3A%2F%2Fapp.cal.com%2Fauth%2Flogin&scrsrc=www.googletagmanager.com&rnd=2130214474.1780083515&navt=n&npa=0&ep.ads_data_redaction=0&gtm=45He65r2v9135538394za2"
+      ],
+      "network_failures": [
+        "401 https://app.cal.com/api/trpc/me/myStats?input=%7B%22json%22%3Anull%2C%22meta%22%3A%7B%22values%22%3A%5B%22undefined%22%5D%7D%7D",
+        "401 https://app.cal.com/api/trpc/me/get?batch=1&input=%7B%220%22%3A%7B%22json%22%3Anull%2C%22meta%22%3A%7B%22values%22%3A%5B%22undefined%22%5D%7D%7D%7D",
+        "401 https://app.cal.com/api/trpc/teams/hasTeamPlan?batch=1&input=%7B%220%22%3A%7B%22json%22%3Anull%2C%22meta%22%3A%7B%22values%22%3A%5B%22undefined%22%5D%7D%7D%7D"
+      ],
+      "artifact_paths": [
+        "artifacts/artifacts/cal-20260529-193724/auto-j2-authentication-p1-evaluator-s1.png",
+        "artifacts/artifacts/cal-20260529-193724/auto-j2-authentication-p1-evaluator-s1.txt"
+      ],
+      "note": null
+    },
+    {
+      "step_id": "auto-j3-search-p1-evaluator-s1",
+      "journey_id": "auto-j3-search",
+      "journey_name": "Auto: Search",
+      "persona_id": "p1-evaluator",
+      "action": "navigate",
+      "requested_url": "https://cal.com/features/app-store",
+      "final_url": "https://cal.com/features/app-store",
+      "page_title": "App Store | Cal.com",
+      "http_status": 200,
+      "outcome": "pass",
+      "duration_ms": 2506,
+      "body_text_excerpt": "Solutions Enterprise Cal.ai Developer Resources Pricing Sign in Get started App store Discover the Cal.com app store Get started Learn more Trusted by fast-growing companies around the world Discover the Cal app store The whole idea behind Cal.com is to make scheduling easy, we want it to be an effortless process, and we want everybody to be able to access it. With this in mind, we built an app store. Our apps let you extend cal.com features, and makes integrating other services effortless. This makes it easy to customize your cal.com experience. Apps can be used to do things like add extra calendar connections or host a virtual team-building session. The Cal app store also makes it easy to coordinate things like podcast production, twitch streaming, and CMS outreach. With Cal.com calendar scheduling is simple, effortless and whenever you need it to be fun. Want to create your own app? Since Cal.com is an open-source startup, we encourage third party developers to create their own apps for others to use! We are the only scheduling software with a third party app store. Learn how to create and add your own app here. Apps Calendar, video, automation, and more! Get started Talk to sales Calendar Video Automation Analytics Web3 Messaging And more App store All your key tools in-sync with your meetings Cal.com works with all apps already in your flow ensuring everything works perfectly together. Get started Explore apps Trusted by fast-growing companies around the world Smarter, simpler scheduling Get started Talk to sales Cal.com\u00ae and Cal\u00ae are a registered trademark by Cal.com, Inc. All rights reserved. Our mission is to connect a billion people by 2031 through calendar scheduling. Select Language English German (Germany) French (France) Dutch (Netherlands) Portuguese (Portugal) Spanish (Spain) Italian (Italy) English Downloads iPhone Android Chrome Safari Edge Firefox MacOS Windows Linux Need Help? support@cal.com or visit cal.com/help. Solutions iOS/Android App Self-h",
+      "unlabeled_button_count": 0,
+      "link_count": 88,
+      "heading_count": 13,
+      "input_count": 1,
+      "labeled_input_count": 1,
+      "error_phrases_found": [],
+      "console_errors": [
+        "Connecting to 'https://bzr.openai.com/v1/sdk/events?pid=RjjunM53FUaPvHw8pSZYiz&st=oaiq-web&sv=0.1.6&t=1780083517026&ec=2' violates the following Content Security Policy directive: \"connect-src 'self'\". The action has been blocked.",
+        "Connecting to 'https://analytics.google.com/g/collect?v=2&tid=G-RX4HHQ613S&gtm=45je65r2v9135545983z89135538394za20gzb9135538394zd9135538394&_p=1780083513114&gcd=13l3l3l3l1l1&npa=0&dma=0&ecid=698277075&_eu=AAAAAGQC&are=1&cid=174147775.1780083446&frm=0&pscdl=noapi&rcb=9&sr=1280x900&uaa=arm&uab=64&uafv",
+        "Fetch API cannot load https://analytics.google.com/g/collect?v=2&tid=G-RX4HHQ613S&gtm=45je65r2v9135545983z89135538394za20gzb9135538394zd9135538394&_p=1780083513114&gcd=13l3l3l3l1l1&npa=0&dma=0&ecid=698277075&_eu=AAAAAGQC&are=1&cid=174147775.1780083446&frm=0&pscdl=noapi&rcb=9&sr=1280x900&uaa=arm&uab=",
+        "Connecting to 'https://www.google.com/g/collect?v=2&tid=G-RX4HHQ613S&gtm=45je65r2v9135545983z89135538394za20gzb9135538394zd9135538394&_p=1780083513114&gcd=13l3l3l3l1l1&npa=0&dma=0&ecid=698277075&_eu=AAAAAGQC&are=1&cid=174147775.1780083446&frm=0&pscdl=noapi&rcb=9&sr=1280x900&uaa=arm&uab=64&uafvl=Chro",
+        "Fetch API cannot load https://www.google.com/g/collect?v=2&tid=G-RX4HHQ613S&gtm=45je65r2v9135545983z89135538394za20gzb9135538394zd9135538394&_p=1780083513114&gcd=13l3l3l3l1l1&npa=0&dma=0&ecid=698277075&_eu=AAAAAGQC&are=1&cid=174147775.1780083446&frm=0&pscdl=noapi&rcb=9&sr=1280x900&uaa=arm&uab=64&uaf",
+        "Connecting to 'https://o574544.ingest.us.sentry.io/api/4509594045513728/envelope/?sentry_version=7&sentry_key=7fa2ea46dede9404597bde582525baca&sentry_client=sentry.javascript.nextjs%2F10.33.0' violates the following Content Security Policy directive: \"connect-src 'self'\". The action has been blocked",
+        "Fetch API cannot load https://o574544.ingest.us.sentry.io/api/4509594045513728/envelope/?sentry_version=7&sentry_key=7fa2ea46dede9404597bde582525baca&sentry_client=sentry.javascript.nextjs%2F10.33.0. Refused to connect because it violates the document's Content Security Policy.",
+        "Connecting to 'https://o574544.ingest.us.sentry.io/api/4509594045513728/envelope/?sentry_version=7&sentry_key=7fa2ea46dede9404597bde582525baca&sentry_client=sentry.javascript.nextjs%2F10.33.0' violates the following Content Security Policy directive: \"connect-src 'self'\". The action has been blocked",
+        "Fetch API cannot load https://o574544.ingest.us.sentry.io/api/4509594045513728/envelope/?sentry_version=7&sentry_key=7fa2ea46dede9404597bde582525baca&sentry_client=sentry.javascript.nextjs%2F10.33.0. Refused to connect because it violates the document's Content Security Policy.",
+        "Fetch failed: Error: Key 'user.name' not found in response"
+      ],
+      "network_failures": [],
+      "artifact_paths": [
+        "artifacts/artifacts/cal-20260529-193724/auto-j3-search-p1-evaluator-s1.png",
+        "artifacts/artifacts/cal-20260529-193724/auto-j3-search-p1-evaluator-s1.txt"
+      ],
+      "note": null
+    },
+    {
+      "step_id": "auto-j4-documentation-p1-evaluator-s1",
+      "journey_id": "auto-j4-documentation",
+      "journey_name": "Auto: Documentation",
+      "persona_id": "p1-evaluator",
+      "action": "navigate",
+      "requested_url": "https://cal.com/atoms",
+      "final_url": "https://cal.com/docs/atoms/introduction",
+      "page_title": "Introduction to Cal.com Atoms - Cal.com Docs",
+      "http_status": 200,
+      "outcome": "pass",
+      "duration_ms": 1590,
+      "body_text_excerpt": "Skip to main content Cal.com Docs home page Search... \u2318K Support Dashboard API v2 Reference Atoms Developing Self Hosting Getting Started Introduction to Cal.com Atoms Setup Cal OAuth Provider Onboarding Onboarding Embed Booking Booker Booker Embed Event Types Event Type List Event Types Availability Availability settings Create schedule List schedules Calendars Calendar settings Calendar view Google calendar connect Outlook calendar connect Apple calendar connect Integrations Conferencing Apps Stripe Connect Payment form Utility Troubleshooter Guides Managing booking fields Custom booking flow Custom slot selection flow Custom toasts Hooks Bookings hooks Calendars hooks Event types hooks Team hooks User hooks On this page What are atoms? Supported frameworks Prerequisites Getting started Authentication flow Getting Started Introduction to Cal.com Atoms Embed Cal.com scheduling components directly into your application Copy page Documentation Index Fetch the complete documentation index at: https://cal.com/docs/llms.txt Use this file to discover all available pages before exploring further. Cal.com Atoms are customizable React components that let you integrate Cal.com scheduling functionality directly into your application. Using OAuth authentication, your users can connect their Cal.com accounts and manage their scheduling without leaving your app. \u200b What are atoms? Atoms are pre-built UI components that handle: Booking - Let users book appointments with Cal.com users Availability - Display and manage availability schedules Event Types - Create and configure event types Calendar Integration - Connect Google, Outlook, and Apple calendars Payments - Accept payments via Stripe for bookings \u200b Supported frameworks Cal.com Atoms currently support: React 18 and React 19 Next.js 14 and Next.js 15 \u200b Prerequisites An OAuth client created via OAuth setup User access tokens obtained through the OAuth flow \u200b Getting started Ready to integrate atoms into your application? Follow",
+      "unlabeled_button_count": 0,
+      "link_count": 57,
+      "heading_count": 19,
+      "input_count": 2,
+      "labeled_input_count": 1,
+      "error_phrases_found": [],
+      "console_errors": [
+        "Access to fetch at 'https://cal.diy/installation' (redirected from 'https://cal.com/docs/self-hosting/installation?_rsc=BlMr3OldSBAhhgP6') from origin 'https://cal.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: Redirect is not allowed for a pre",
+        "Failed to load resource: net::ERR_FAILED",
+        "Failed to fetch RSC payload for https://cal.com/docs/self-hosting/installation. Falling back to browser navigation. TypeError: Failed to fetch\n    at y (https://cal.com/docs/_next/static/chunks/90018-06104c16f9e45575.js?dpl=dpl_BF9UKUBzndACSVEdd9pGVs5oAczQ:1:2242)\n    at async _ (https://cal.com/doc",
+        "Failed to load resource: the server responded with a status of 500 ()"
+      ],
+      "network_failures": [
+        "500 https://cal.com/docs?_rsc=dcCWk1ONTN7vI3_g"
+      ],
+      "artifact_paths": [
+        "artifacts/artifacts/cal-20260529-193724/auto-j4-documentation-p1-evaluator-s1.png",
+        "artifacts/artifacts/cal-20260529-193724/auto-j4-documentation-p1-evaluator-s1.txt"
+      ],
+      "note": null
+    },
+    {
+      "step_id": "auto-j5-hub-p1-evaluator-s1",
+      "journey_id": "auto-j5-hub",
+      "journey_name": "Auto: Navigation hub",
+      "persona_id": "p1-evaluator",
+      "action": "navigate",
+      "requested_url": "https://cal.com/apps",
+      "final_url": "https://cal.com/apps",
+      "page_title": "App store | Cal.com",
+      "http_status": 200,
+      "outcome": "partial",
+      "duration_ms": 4347,
+      "body_text_excerpt": "App store Connecting people, technology and the workplace. Featured categories Automation 23 apps Analytics 11 apps Other 11 apps Calendar 10 apps Payment 6 apps Crm 6 apps Messaging 3 apps Video 1 app Conferencing 27 apps Automation 23 apps Analytics 11 apps Other 11 apps Calendar 10 apps Payment 6 apps Crm 6 apps Messaging 3 apps Video 1 app Conferencing 27 apps Automation 23 apps Analytics 11 apps Other 11 apps Calendar 10 apps Payment 6 apps Crm 6 apps Messaging 3 apps Most popular viaSocket Automate Cal.com workflows with 2000+ app integrations. Details fonio.ai Der KI-Telefonassistent auf Deutsch Details Caretta Realtime Sales AI Details Clic Create, List and Interact with Your Cal.com links and connections easily. Details Cal Video Cal Video is the in-house web-based video conferencing platform powered by Daily.co, which is minimalistic and lightweight, but has most of the features you need. Details Default Google Calendar Google Calendar is a time management and scheduling service developed by Google. Allows users to create and edit events, with options available for type and time. Available to anyone that has a Gmail account on both mobile and web versions. Details Google Meet Google Meet is Google's web-based video conferencing platform, designed to compete with major conferencing platforms. Details Zoom Video Zoom is a secure and reliable video platform that supports all of your online communication needs. It can provide everything from one on one meetings, chat, phone, webinars, and large-scale online events. Available with both desktop, web, and mobile versions. Details Outlook Calendar Microsoft Office 365 is a suite of apps that helps you stay connected with others and get things done. It includes but is not limited to Microsoft Word, PowerPoint, Excel, Teams, OneNote and OneDrive. Office 365 allows you to work remotely with others on a team and collaborate in an online environment. Both web versions and desktop/mobile applications are available. Deta",
+      "unlabeled_button_count": 0,
+      "link_count": 348,
+      "heading_count": 341,
+      "input_count": 1,
+      "labeled_input_count": 1,
+      "error_phrases_found": [],
+      "console_errors": [
+        "Failed to load resource: the server responded with a status of 401 ()",
+        "%c << query #4 %cviewer.me.myStats%c %O \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n   \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n  ; font-weight: bold; \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n  ; font-weight: normal; {inpu",
+        "Failed to load resource: the server responded with a status of 401 ()",
+        "%c << query #2 %cviewer.teams.hasTeamPlan%c %O \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n   \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n  ; font-weight: bold; \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n  ; font-weight: normal",
+        "%c << query #7 %cviewer.teams.hasActiveTeamPlan%c %O \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n   \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n  ; font-weight: bold; \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n  ; font-weight: ",
+        "Failed to load resource: the server responded with a status of 401 ()",
+        "%c << query #3 %cviewer.me.get%c %O \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n   \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n  ; font-weight: bold; \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n  ; font-weight: normal; {input: u",
+        "%c << query #5 %cviewer.me.platformMe%c %O \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n   \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n  ; font-weight: bold; \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n  ; font-weight: normal; {i",
+        "%c << query #6 %cviewer.me.bookingUnconfirmedCount%c %O \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n   \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n  ; font-weight: bold; \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n  ; font-weigh",
+        "%c << query #8 %cviewer.me.getUserTopBanners%c %O \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n   \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n  ; font-weight: bold; \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n  ; font-weight: nor"
+      ],
+      "network_failures": [
+        "401 https://cal.com/api/trpc/me/myStats?input=%7B%22json%22%3Anull%2C%22meta%22%3A%7B%22values%22%3A%5B%22undefined%22%5D%7D%7D",
+        "401 https://cal.com/api/trpc/teams/hasTeamPlan,hasActiveTeamPlan?batch=1&input=%7B%220%22%3A%7B%22json%22%3Anull%2C%22meta%22%3A%7B%22values%22%3A%5B%22undefined%22%5D%7D%7D%2C%221%22%3A%7B%22json%22%3A%7B%22ownerOnly%22%3Atrue%7D%7D%7D",
+        "401 https://cal.com/api/trpc/me/get,platformMe,bookingUnconfirmedCount,getUserTopBanners?batch=1&input=%7B%220%22%3A%7B%22json%22%3Anull%2C%22meta%22%3A%7B%22values%22%3A%5B%22undefined%22%5D%7D%7D%2C%221%22%3A%7B%22json%22%3Anull%2C%22meta%22%3A%7B%22values%22%3A%5B%22undefined%22%5D%7D%7D%2C%222%2"
+      ],
+      "artifact_paths": [
+        "artifacts/artifacts/cal-20260529-193724/auto-j5-hub-p1-evaluator-s1.png",
+        "artifacts/artifacts/cal-20260529-193724/auto-j5-hub-p1-evaluator-s1.txt"
+      ],
+      "note": null
+    }
+  ],
+  "outcome": "complete"
+}

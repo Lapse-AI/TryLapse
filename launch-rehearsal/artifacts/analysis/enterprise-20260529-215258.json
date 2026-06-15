@@ -1,0 +1,615 @@
+{
+  "summary": {
+    "id": "enterprise-20260529-215258",
+    "productName": "Enterprise Dashboard (example)",
+    "target": "faculty-dashboard-eight.vercel.app",
+    "targetUrl": "https://faculty-dashboard-eight.vercel.app",
+    "env": "staging",
+    "workspaceId": "ws_default",
+    "startedAt": "2026-05-29T21:52:58.655477+00:00",
+    "finishedAt": "2026-05-29T21:53:58.519239+00:00",
+    "durationSec": 59,
+    "readiness": 28,
+    "readinessBand": "Red",
+    "status": "danger",
+    "blockers": 2,
+    "issues": 7,
+    "delights": 0,
+    "pages": 0,
+    "pagesCrawled": 0,
+    "stepCount": 6,
+    "agentCost": 0.1298,
+    "costEstimate": {
+      "usd": 0.1298,
+      "source": "heuristic",
+      "inputTokens": null,
+      "outputTokens": null,
+      "totalTokens": null,
+      "durationSec": 59,
+      "agentsRun": 0
+    },
+    "outcome": "complete",
+    "configHash": "2d7bed",
+    "agentsRun": 0,
+    "authAttempted": true,
+    "authOutcome": "failed_still_on_login",
+    "llmEnabled": false,
+    "crawlEnabled": false,
+    "orphans": 0,
+    "authGated": 0,
+    "networkLogPath": null,
+    "webVitalsPath": null,
+    "experiment": null
+  },
+  "steps": [
+    {
+      "stepId": "j1-deep-link-p1-evaluator-s1",
+      "journeyId": "j1-deep-link",
+      "journeyName": "Deep link to primary surface",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "https://faculty-dashboard-eight.vercel.app/database",
+      "finalUrl": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "partial",
+      "durationMs": 640,
+      "note": null,
+      "errorType": null,
+      "flaky": true,
+      "behavior": "hesitate",
+      "consoleErrors": [
+        "Error logging in: TypeError: Failed to fetch\n    at https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/login/page-e8e86b15c504707d.js:1:13876\n    at N (https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/login/page-e8e86b15c504707d.js:1:9425)\n    at iG (https://faculty"
+      ],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Welcome Back Enter your email and password to login. Email Address Password Remember me Login Only authorized users can access this dashboard.",
+      "artifactPaths": [
+        "artifacts/enterprise-20260529-215258/j1-deep-link-p1-evaluator-s1.png"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j2-primary-list-p1-evaluator-s1",
+      "journeyId": "j2-primary-list",
+      "journeyName": "Browse primary data view",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "https://faculty-dashboard-eight.vercel.app/database",
+      "finalUrl": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "partial",
+      "durationMs": 606,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "hesitate",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Welcome Back Enter your email and password to login. Email Address Password Remember me Login Only authorized users can access this dashboard.",
+      "artifactPaths": [
+        "artifacts/enterprise-20260529-215258/j2-primary-list-p1-evaluator-s1.png"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j2-primary-list-p1-evaluator-s2",
+      "journeyId": "j2-primary-list",
+      "journeyName": "Browse primary data view",
+      "personaId": "p1-evaluator",
+      "action": "wait",
+      "requestedUrl": null,
+      "finalUrl": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "pass",
+      "durationMs": 2031,
+      "note": null,
+      "errorType": null,
+      "flaky": true,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Welcome Back Enter your email and password to login. Email Address Password Remember me Login Only authorized users can access this dashboard.",
+      "artifactPaths": [
+        "artifacts/enterprise-20260529-215258/j2-primary-list-p1-evaluator-s2.png"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j3-secondary-module-p1-evaluator-s1",
+      "journeyId": "j3-secondary-module",
+      "journeyName": "Secondary module",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "https://faculty-dashboard-eight.vercel.app/analytics",
+      "finalUrl": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "partial",
+      "durationMs": 616,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "hesitate",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Welcome Back Enter your email and password to login. Email Address Password Remember me Login Only authorized users can access this dashboard.",
+      "artifactPaths": [
+        "artifacts/enterprise-20260529-215258/j3-secondary-module-p1-evaluator-s1.png"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j4-search-surface-p1-evaluator-s1",
+      "journeyId": "j4-search-surface",
+      "journeyName": "Search or AI surface",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "https://faculty-dashboard-eight.vercel.app/ai-search",
+      "finalUrl": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "partial",
+      "durationMs": 610,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "hesitate",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Welcome Back Enter your email and password to login. Email Address Password Remember me Login Only authorized users can access this dashboard.",
+      "artifactPaths": [
+        "artifacts/enterprise-20260529-215258/j4-search-surface-p1-evaluator-s1.png"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j5-admin-boundary-p1-evaluator-s1",
+      "journeyId": "j5-admin-boundary",
+      "journeyName": "Admin boundary check",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "https://faculty-dashboard-eight.vercel.app/admin",
+      "finalUrl": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "partial",
+      "durationMs": 632,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "hesitate",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Welcome Back Enter your email and password to login. Email Address Password Remember me Login Only authorized users can access this dashboard.",
+      "artifactPaths": [
+        "artifacts/enterprise-20260529-215258/j5-admin-boundary-p1-evaluator-s1.png"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    }
+  ],
+  "issues": [
+    {
+      "id": "I1",
+      "runId": "enterprise-20260529-215258",
+      "severity": "P0",
+      "title": "Auth wall on deep link",
+      "detail": "Navigated to /database but landed on /login \u2014 workflow blocked without session.",
+      "persona": "First-time evaluator",
+      "personaId": "p1-evaluator",
+      "journey": "Deep link and pagination at scale",
+      "journeyId": "j1-deep-link",
+      "stepId": "j1-deep-link-p1-evaluator-s1",
+      "dimension": "Trust",
+      "relatedDimensions": [],
+      "confidence": "high",
+      "owner": "backend",
+      "recurring": 1,
+      "evidence": "Navigated to /database but landed on /login \u2014 workflow blocked without session.",
+      "severityReason": "P0 from automated heuristics",
+      "suggestion": null,
+      "screenshotPath": "artifacts/enterprise-20260529-215258/j1-deep-link-p1-evaluator-s1.png"
+    },
+    {
+      "id": "I2",
+      "runId": "enterprise-20260529-215258",
+      "severity": "P2",
+      "title": "Icon-only or unlabeled buttons",
+      "detail": "12 button(s) lack accessible name across 6 step(s).",
+      "persona": "Daily operator",
+      "personaId": "p2-operator",
+      "journey": "Deep link and pagination at scale",
+      "journeyId": "j1-deep-link",
+      "stepId": "j1-deep-link-p1-evaluator-s1",
+      "dimension": "UI/UX",
+      "relatedDimensions": [
+        "Accessibility"
+      ],
+      "confidence": "high",
+      "owner": "frontend",
+      "recurring": 6,
+      "evidence": "12 button(s) lack accessible name across 6 step(s).",
+      "severityReason": "P2 from automated heuristics",
+      "suggestion": null,
+      "screenshotPath": "artifacts/enterprise-20260529-215258/j1-deep-link-p1-evaluator-s1.png"
+    },
+    {
+      "id": "I3",
+      "runId": "enterprise-20260529-215258",
+      "severity": "P2",
+      "title": "Form inputs missing labels",
+      "detail": "1 of 3 inputs lack label, aria-label, or placeholder.",
+      "persona": "First-time evaluator",
+      "personaId": "p1-evaluator",
+      "journey": "Deep link and pagination at scale",
+      "journeyId": "j1-deep-link",
+      "stepId": "j1-deep-link-p1-evaluator-s1",
+      "dimension": "Accessibility",
+      "relatedDimensions": [
+        "UI/UX"
+      ],
+      "confidence": "high",
+      "owner": "frontend",
+      "recurring": 1,
+      "evidence": "1 of 3 inputs lack label, aria-label, or placeholder.",
+      "severityReason": "P2 from automated heuristics",
+      "suggestion": null,
+      "screenshotPath": "artifacts/enterprise-20260529-215258/j1-deep-link-p1-evaluator-s1.png"
+    },
+    {
+      "id": "I4",
+      "runId": "enterprise-20260529-215258",
+      "severity": "P2",
+      "title": "Console errors on page",
+      "detail": "1 console error(s): Error logging in: TypeError: Failed to fetch\n    at https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/l",
+      "persona": "Daily operator",
+      "personaId": "p2-operator",
+      "journey": "Deep link and pagination at scale",
+      "journeyId": "j1-deep-link",
+      "stepId": "j1-deep-link-p1-evaluator-s1",
+      "dimension": "Functionality",
+      "relatedDimensions": [],
+      "confidence": "high",
+      "owner": "frontend",
+      "recurring": 1,
+      "evidence": "1 console error(s): Error logging in: TypeError: Failed to fetch\n    at https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/l",
+      "severityReason": "P2 from automated heuristics",
+      "suggestion": null,
+      "screenshotPath": "artifacts/enterprise-20260529-215258/j1-deep-link-p1-evaluator-s1.png"
+    },
+    {
+      "id": "I5",
+      "runId": "enterprise-20260529-215258",
+      "severity": "P0",
+      "title": "Authentication setup failed",
+      "detail": "Auth outcome: failed_still_on_login. Set credentials env vars or fix login path labels in config.",
+      "persona": "Admin / buyer",
+      "personaId": "p3-admin",
+      "journey": "unknown",
+      "journeyId": "unknown",
+      "stepId": "auth-setup",
+      "dimension": "Functionality",
+      "relatedDimensions": [],
+      "confidence": "high",
+      "owner": "backend",
+      "recurring": 1,
+      "evidence": "Auth outcome: failed_still_on_login. Set credentials env vars or fix login path labels in config.",
+      "severityReason": "P0 from automated heuristics",
+      "suggestion": null,
+      "screenshotPath": "artifacts/enterprise-20260529-215258/auth-setup.png"
+    },
+    {
+      "id": "DIM-ONBOARDING-ROLLUP",
+      "runId": "enterprise-20260529-215258",
+      "severity": "P3",
+      "title": "Onboarding signal from run evidence",
+      "detail": "Phase 2 heuristic from step evidence",
+      "persona": "First-time evaluator",
+      "personaId": "p1-evaluator",
+      "journey": "Run rollup",
+      "journeyId": "rollup",
+      "stepId": "run-rollup",
+      "dimension": "Onboarding",
+      "relatedDimensions": [],
+      "confidence": "high",
+      "owner": "frontend",
+      "recurring": 1,
+      "evidence": "Phase 2 heuristic from step evidence",
+      "severityReason": "P3 from automated dimension rollup",
+      "suggestion": null
+    },
+    {
+      "id": "DIM-RECOVERY-ROLLUP",
+      "runId": "enterprise-20260529-215258",
+      "severity": "P3",
+      "title": "Recovery signal from run evidence",
+      "detail": "Phase 2 heuristic from step evidence",
+      "persona": "First-time evaluator",
+      "personaId": "p1-evaluator",
+      "journey": "Run rollup",
+      "journeyId": "rollup",
+      "stepId": "run-rollup",
+      "dimension": "Recovery",
+      "relatedDimensions": [],
+      "confidence": "high",
+      "owner": "frontend",
+      "recurring": 1,
+      "evidence": "Phase 2 heuristic from step evidence",
+      "severityReason": "P3 from automated dimension rollup",
+      "suggestion": null
+    }
+  ],
+  "delights": [],
+  "agents": [
+    {
+      "id": "ag_compl",
+      "runId": "enterprise-20260529-215258",
+      "name": "Compliance",
+      "role": "PII, auth boundary signals (Phase 2)",
+      "phase": "compliance",
+      "status": "idle",
+      "durationSec": 0,
+      "costUsd": 0,
+      "lastSummary": "Not enabled for this run."
+    },
+    {
+      "id": "ag_perf",
+      "runId": "enterprise-20260529-215258",
+      "name": "Performance",
+      "role": "Latency, Web Vitals (Phase 2)",
+      "phase": "performance",
+      "status": "idle",
+      "durationSec": 0,
+      "costUsd": 0,
+      "lastSummary": "Not enabled for this run."
+    }
+  ],
+  "matrix": [
+    {
+      "personaId": "p1-evaluator",
+      "journeyId": "j1-deep-link",
+      "grade": "partial"
+    },
+    {
+      "personaId": "p2-operator",
+      "journeyId": "j1-deep-link",
+      "grade": "partial"
+    },
+    {
+      "personaId": "p3-admin",
+      "journeyId": "j1-deep-link",
+      "grade": "partial"
+    },
+    {
+      "personaId": "p1-evaluator",
+      "journeyId": "j2-primary-list",
+      "grade": "partial"
+    },
+    {
+      "personaId": "p2-operator",
+      "journeyId": "j2-primary-list",
+      "grade": "partial"
+    },
+    {
+      "personaId": "p3-admin",
+      "journeyId": "j2-primary-list",
+      "grade": "partial"
+    },
+    {
+      "personaId": "p1-evaluator",
+      "journeyId": "j3-profile",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-operator",
+      "journeyId": "j3-profile",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-admin",
+      "journeyId": "j3-profile",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-evaluator",
+      "journeyId": "j4-analytics",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-operator",
+      "journeyId": "j4-analytics",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-admin",
+      "journeyId": "j4-analytics",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-evaluator",
+      "journeyId": "j5-admin-boundary",
+      "grade": "partial"
+    },
+    {
+      "personaId": "p2-operator",
+      "journeyId": "j5-admin-boundary",
+      "grade": "partial"
+    },
+    {
+      "personaId": "p3-admin",
+      "journeyId": "j5-admin-boundary",
+      "grade": "partial"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "Functionality",
+      "score": 40,
+      "signal": "17% steps pass; 0 failures",
+      "automated": true
+    },
+    {
+      "name": "UI/UX",
+      "score": 40,
+      "signal": "12 unlabeled buttons; ~855ms avg step",
+      "automated": true
+    },
+    {
+      "name": "Information",
+      "score": 100,
+      "signal": "0 sparse-content pages",
+      "automated": true
+    },
+    {
+      "name": "Performance",
+      "score": 65,
+      "signal": "~855ms avg step",
+      "automated": true
+    },
+    {
+      "name": "Accessibility",
+      "score": 45,
+      "signal": "Phase 2 heuristic from step evidence",
+      "automated": false
+    },
+    {
+      "name": "Trust",
+      "score": 40,
+      "signal": "Phase 2 heuristic from step evidence",
+      "automated": false
+    },
+    {
+      "name": "Onboarding",
+      "score": 60,
+      "signal": "Phase 2 heuristic from step evidence",
+      "automated": false
+    },
+    {
+      "name": "Recovery",
+      "score": 60,
+      "signal": "Phase 2 heuristic from step evidence",
+      "automated": false
+    }
+  ],
+  "scorecardMd": "# Launch Rehearsal \u2014 Scorecard\n\n| Field | Value |\n|-------|--------|\n| **Run ID** | `enterprise-20260529-215258` |\n| **Date** | 2026-05-29 |\n| **Target** | https://faculty-dashboard-eight.vercel.app |\n| **Product** | Enterprise Dashboard (example) |\n| **Outcome** | complete |\n| **Duration** | 59s |\n\n---\n\n## Executive summary\n\n| | |\n|---|---|\n| **Readiness** | **Red** |\n| **Top blocker** | Auth wall on deep link |\n| **Top delight** | None detected |\n| **Issues** | 11 |\n| **Delights** | 0 |\n\n| **Auth** | failed_still_on_login |\n\n---\n\n## Persona \u00d7 journey matrix\n\n| Journey | P1 First-time | P2 Daily | P3 Admin |\n|---------|--------|--------|--------|\n| **j1-deep-link** Deep link to primary surface | **Fail** | **Fail** | **Partial** |\n| **j2-primary-list** Browse primary data view | **Fail** | **Fail** | **Partial** |\n| **j3-secondary-module** Secondary module | **Fail** | **Fail** | **Partial** |\n| **j4-search-surface** Search or AI surface | **Fail** | **Fail** | **Partial** |\n| **j5-admin-boundary** Admin boundary check | **Fail** | **Fail** | **Partial** |\n\n---\n\n## Multi-agent collaboration\n\n| Agent | Role | Summary |\n|-------|------|---------|\n| `journey-runner` | E2E journey execution | Executed 6 steps across 5 journeys (0 failures) |\n| `persona-p1-evaluator` | Evaluator: First-time evaluator (prospect / new user) | Analysis from prospect / new user perspective |\n| `persona-p2-operator` | Evaluator: Daily operator (power user) | Analysis from power user perspective |\n| `persona-p3-admin` | Evaluator: Admin / buyer (IT admin) | Analysis from IT admin perspective |\n| `llm-p1-evaluator` | LLM evaluator: First-time evaluator | First-time evaluator cannot reach any primary workflow because every journey red |\n| `llm-p2-operator` | LLM evaluator: Daily operator | All journeys stall at the login page with unlabeled buttons, preventing the dail |\n| `llm-p3-admin` | LLM evaluator: Admin / buyer | The login page is consistently presented across all journeys, but the admin pers |\n| `synthesizer` | Cross-agent synthesis | Synthesized 11 issues, 0 delights from 7 agent reports |\n\n---\n\n## Dimension rollup (automated subset)\n\n| Dimension | Score 1\u20135 | Signal |\n|-----------|-----------|--------|\n| Functionality | 2 | 17% steps pass; 0 failures |\n| UI/UX | 2 | 12 unlabeled buttons; ~855ms avg step |\n| Information clarity | 5 | 0 sparse-content pages |\n\n---\n\n## Issues (evidence-bound)\n\n### P1\n\n| ID | Finding | Personas | Evidence |\n|----|---------|----------|----------|\n| **I4** | Authentication setup failed \u2014 Auth outcome: failed_still_on_login. Set credentials env vars or fix login path labels in config. | p3-admin | `auth-setup` |\n| **I5** | All journeys blocked by login wall with no registration or demo option \u2014 Every journey (deep link, primary list, secondary module, search surface, admin boundary) redirects to the login page. The page only offers email/password login and a 'Remember me' checkbox. There is no 'Sign up', 'Create account', or 'Demo' link, making it impossible for a first-time evaluator without credentials to proceed. This completely blocks the persona's goal of reaching the primary workflow from a shared link. | p1-evaluator | `j1-deep-link-p1-evaluator-s1` |\n| **I7** | Login page blocks all journeys \u2014 Every journey ends at the login page with no way to proceed beyond authentication. The daily operator cannot access any dashboard features. | p2-operator | `j1-deep-link-p1-evaluator-s1` |\n\n### P2\n\n| ID | Finding | Personas | Evidence |\n|----|---------|----------|----------|\n| **I1** | Auth wall on deep link \u2014 Navigated to /database but landed on /login \u2014 workflow blocked without session. | p1-evaluator, p3-admin | `j1-deep-link-p1-evaluator-s1` |\n| **I2** | Icon-only or unlabeled buttons \u2014 2 button(s) lack accessible name on page. | p2-operator, p3-admin | `j1-deep-link-p1-evaluator-s1` |\n| **I3** | Form inputs missing labels \u2014 1 of 3 inputs lack label, aria-label, or placeholder. | p1-evaluator, p3-admin | `j1-deep-link-p1-evaluator-s1` |\n| **I6** | Login page has unlabeled buttons reducing accessibility \u2014 The login page contains 2 unlabeled buttons, which likely correspond to the 'Login' submit and possibly a 'Remember me' toggle. Without proper labels, screen readers and keyboard navigation are impaired, creating a poor experience for users relying on assistive technology. | p1-evaluator | `j1-deep-link-p1-evaluator-s1` |\n| **I8** | Unlabeled buttons on login form \u2014 The login page has 2 unlabeled buttons, which may confuse users and reduce accessibility. | p2-operator | `j1-deep-link-p1-evaluator-s1` |\n| **I9** | No visible trust or security signals on login page \u2014 The login page does not display any trust indicators (e.g., SSL padlock, security badge, or compliance logos) that an IT admin would expect to verify access boundaries and data protection. | p3-admin | `j1-deep-link-p1-evaluator-s1` |\n| **I10** | Login form not functional for admin boundary testing \u2014 The admin persona cannot proceed past the login page to verify role-based access boundaries because the login form appears to be non-interactive or lacks a testable authentication flow. | p3-admin | `j5-admin-boundary-p1-evaluator-s1` |\n\n### P3\n\n| ID | Finding | Personas | Evidence |\n|----|---------|----------|----------|\n| **I11** | Unlabeled buttons reduce accessibility and clarity \u2014 The login page contains 2 unlabeled buttons, which may confuse users and reduce trust for an admin evaluating the interface. | p3-admin | `j1-deep-link-p1-evaluator-s1` |\n\n---\n\n## Delights & strengths (required)\n\n*No automated delights detected. Manual review recommended.*\n\n---\n\n## Run log\n\n| Step | Journey | Action | Outcome | URL |\n|------|---------|--------|---------|-----|\n| `j1-deep-link-p1-evaluator-s1` | j1-deep-link | navigate | partial | https://faculty-dashboard-eight.vercel.app/login |\n| `j2-primary-list-p1-evaluator-s1` | j2-primary-list | navigate | partial | https://faculty-dashboard-eight.vercel.app/login |\n| `j2-primary-list-p1-evaluator-s2` | j2-primary-list | wait | pass | https://faculty-dashboard-eight.vercel.app/login |\n| `j3-secondary-module-p1-evaluator-s1` | j3-secondary-module | navigate | partial | https://faculty-dashboard-eight.vercel.app/login |\n| `j4-search-surface-p1-evaluator-s1` | j4-search-surface | navigate | partial | https://faculty-dashboard-eight.vercel.app/login |\n| `j5-admin-boundary-p1-evaluator-s1` | j5-admin-boundary | navigate | partial | https://faculty-dashboard-eight.vercel.app/login |\n\n---\n\n*Generated by Launch Rehearsal CLI \u2014 product-agnostic heuristics. Findings require human review before production decisions.*\n",
+  "sitemapMd": "No sitemap \u2014 crawl disabled or not run.",
+  "sitemapPages": [],
+  "sitemapEdges": [],
+  "screenshots": [
+    {
+      "path": "artifacts/enterprise-20260529-215258/j1-deep-link-p1-evaluator-s1.png",
+      "stepId": "j1-deep-link-p1-evaluator-s1",
+      "label": "Deep link to primary surface"
+    },
+    {
+      "path": "artifacts/enterprise-20260529-215258/j2-primary-list-p1-evaluator-s1.png",
+      "stepId": "j2-primary-list-p1-evaluator-s1",
+      "label": "Browse primary data view"
+    },
+    {
+      "path": "artifacts/enterprise-20260529-215258/j2-primary-list-p1-evaluator-s2.png",
+      "stepId": "j2-primary-list-p1-evaluator-s2",
+      "label": "Browse primary data view"
+    },
+    {
+      "path": "artifacts/enterprise-20260529-215258/j3-secondary-module-p1-evaluator-s1.png",
+      "stepId": "j3-secondary-module-p1-evaluator-s1",
+      "label": "Secondary module"
+    },
+    {
+      "path": "artifacts/enterprise-20260529-215258/j4-search-surface-p1-evaluator-s1.png",
+      "stepId": "j4-search-surface-p1-evaluator-s1",
+      "label": "Search or AI surface"
+    },
+    {
+      "path": "artifacts/enterprise-20260529-215258/j5-admin-boundary-p1-evaluator-s1.png",
+      "stepId": "j5-admin-boundary-p1-evaluator-s1",
+      "label": "Admin boundary check"
+    }
+  ],
+  "annotations": [],
+  "personas": [
+    {
+      "id": "p1-evaluator",
+      "name": "First-time evaluator",
+      "role": "prospect / new user",
+      "goal": "Reach database from deep link and open a candidate profile",
+      "patience": "medium"
+    },
+    {
+      "id": "p2-operator",
+      "name": "Daily operator",
+      "role": "power user",
+      "goal": "Filter candidates and paginate efficiently",
+      "patience": "medium"
+    },
+    {
+      "id": "p3-admin",
+      "name": "Admin / buyer",
+      "role": "IT admin",
+      "goal": "Verify analytics, admin boundaries, and trust signals",
+      "patience": "medium"
+    }
+  ],
+  "journeys": [
+    {
+      "id": "j1-deep-link",
+      "name": "Deep link and pagination at scale",
+      "steps": 4,
+      "category": "dashboard"
+    },
+    {
+      "id": "j2-primary-list",
+      "name": "Keyword and city filters",
+      "steps": 6,
+      "category": "dashboard"
+    },
+    {
+      "id": "j3-profile",
+      "name": "View candidate profile",
+      "steps": 5,
+      "category": "dashboard"
+    },
+    {
+      "id": "j4-analytics",
+      "name": "Analytics overview",
+      "steps": 2,
+      "category": "dashboard"
+    },
+    {
+      "id": "j5-admin-boundary",
+      "name": "Admin boundary check",
+      "steps": 2,
+      "category": "dashboard"
+    }
+  ],
+  "workflows": [],
+  "suggestedJourneys": [],
+  "narrative": {
+    "executiveSummary": "Argyle Faculty Dashboard at https://faculty-dashboard-eight.vercel.app rehearsed as **Red** readiness. 0/5 canonical steps passed (0%). 5 issue(s) and 0 delight(s) recorded. Primary concern: Authentication setup failed.",
+    "forFounders": "**Launch readiness: Red** \u2014 suitable for internal review before external calls.\nBroken journeys: View candidate profile, Analytics overview.\nFriction journeys: Deep link and pagination at scale, Keyword and city filters, Admin boundary check.\nBlockers to discuss: Authentication setup failed.",
+    "forEngineering": "Run `enterprise-20260529-215258` \u00b7 59s \u00b7 6 step records (incl. viewport/seed replays).\nNotable P2: Auth wall on deep link; Icon-only or unlabeled buttons; Form inputs missing labels; Console errors on page.",
+    "suggestedQuestions": [
+      "What is the single blocker we should fix before the next partner call?",
+      "Why did View candidate profile fail?",
+      "Did any step show flaky behavior across seeds or viewports?"
+    ],
+    "source": "template",
+    "readinessBand": "Red",
+    "issueCount": 5,
+    "delightCount": 0
+  }
+}

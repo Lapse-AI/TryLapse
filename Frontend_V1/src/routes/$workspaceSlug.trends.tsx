@@ -5,7 +5,7 @@ import { scheduledRuns } from "@/lib/mock-data";
 import { useLatestRun, useRunBundle, useTrends } from "@/lib/api/hooks";
 import { VisionOnly } from "@/components/vision-only";
 
-export const Route = createFileRoute("/trends")({
+export const Route = createFileRoute("/$workspaceSlug/trends")({
   head: () => ({ meta: [{ title: "Trends — Launch Rehearsal" }] }),
   component: Trends,
 });
@@ -15,12 +15,13 @@ function Trends() {
   const { data: bundle } = useRunBundle(latest?.id ?? "");
   const { data: trends } = useTrends();
   const readinessTrend = trends?.readiness ?? [];
-  const crawlSizeTrend = trends?.pages ?? [];
-  const flakeRateTrend = trends?.flakeRate ?? [];
+  const crawlSizeTrend = (trends?.pages ?? []).map(Number);
+  const flakeRateTrend = (trends?.flakeRate ?? []).map(Number);
   const recurrence = trends?.issueRecurrence ?? [];
+  const readinessTrendNums = readinessTrend.map(Number);
   const readinessAvg =
-    readinessTrend.length > 0
-      ? (readinessTrend.reduce((a, b) => a + b, 0) / readinessTrend.length).toFixed(1)
+    readinessTrendNums.length > 0
+      ? (readinessTrendNums.reduce((a, b) => a + b, 0) / readinessTrendNums.length).toFixed(1)
       : "—";
   if (!latest || !bundle) return null;
 
@@ -61,7 +62,7 @@ function Trends() {
           <Panel className="p-5">
             <div className="text-xs text-muted-foreground">Readiness trend</div>
             <div className="mt-3">
-              <Sparkline values={readinessTrend} height={48} />
+              <Sparkline values={readinessTrendNums} height={48} />
             </div>
           </Panel>
           <Panel className="p-5">

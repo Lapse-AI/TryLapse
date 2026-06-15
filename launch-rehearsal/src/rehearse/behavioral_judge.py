@@ -81,38 +81,36 @@ Synthesize the behavioral analysis for this journey. Return JSON:
 }}"""
 
 
-def _api_key() -> str | None:
-    return os.environ.get("DEEPSEEK_API_KEY") or os.environ.get("REHEARSE_LLM_API_KEY")
-
-
 def _call_llm(prompt: str) -> dict[str, Any] | None:
-    key = _api_key()
-    if not key:
-        return None
-    try:
-        import httpx
-        base = os.environ.get("REHEARSE_LLM_BASE_URL", "https://api.deepseek.com/v1")
-        model = os.environ.get("REHEARSE_LLM_MODEL", "deepseek-chat")
-        resp = httpx.post(
-            f"{base}/chat/completions",
-            headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
-            json={
-                "model": model,
-                "messages": [
-                    {"role": "system", "content": _JUDGE_SYSTEM},
-                    {"role": "user", "content": prompt},
-                ],
-                "temperature": 0.3,
-                "max_tokens": 1500,
-                "response_format": {"type": "json_object"},
-            },
-            timeout=30.0,
-        )
-        resp.raise_for_status()
-        raw = resp.json()["choices"][0]["message"]["content"]
-        return json.loads(raw)
-    except Exception:
-        return None
+    from rehearse.persona_journey_discovery import _llm_endpoints
+    import httpx
+    for (base, model, key) in _llm_endpoints():
+        try:
+            resp = httpx.post(
+                f"{base}/chat/completions",
+                headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+                json={
+                    "model": model,
+                    "messages": [
+                        {"role": "system", "content": _JUDGE_SYSTEM},
+                        {"role": "user", "content": prompt},
+                    ],
+                    "temperature": 0.3,
+                    "max_tokens": 1500,
+                    "response_format": {"type": "json_object"},
+                },
+                timeout=30.0,
+            )
+            if resp.status_code in (429, 500, 502, 503):
+                continue
+            resp.raise_for_status()
+            raw = resp.json()["choices"][0]["message"]["content"]
+            result = json.loads(raw)
+            if result:
+                return result
+        except Exception:
+            continue
+    return None
 
 
 def judge_step(

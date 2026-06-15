@@ -72,71 +72,72 @@
 }
 
 :root {
-  /* Elevated B2B palette — cool indigo-blue foundation with depth layers */
-  --background: oklch(0.967 0.01 265);
-  --foreground: oklch(0.21 0.025 260);
-  --surface: oklch(0.998 0.002 260);
-  --surface-2: oklch(0.972 0.007 263);
-  --surface-3: oklch(0.952 0.01 263);
-  --card: oklch(0.998 0.002 260);
-  --card-foreground: oklch(0.21 0.025 260);
-  --popover: oklch(0.998 0.002 260);
-  --popover-foreground: oklch(0.21 0.025 260);
+  /* Warm parchment palette — ElevenLabs-inspired tactile restraint */
+  --background: oklch(0.993 0.003 90);     /* #fdfcfc — parchment canvas */
+  --foreground: oklch(0.15 0.010 72);      /* near-black, warm undertone */
+  --surface: #ffffff;                       /* white elevated cards */
+  --surface-2: oklch(0.966 0.008 80);      /* #f5f3f1 warm sand — card surfaces */
+  --surface-3: oklch(0.946 0.012 78);      /* deeper warm sand */
+  --card: #ffffff;
+  --card-foreground: oklch(0.15 0.010 72);
+  --popover: #ffffff;
+  --popover-foreground: oklch(0.15 0.010 72);
 
-  --primary: oklch(0.52 0.18 265);
+  --primary: oklch(0.52 0.18 265);         /* indigo — data/interactive only */
   --primary-foreground: oklch(0.99 0.003 260);
-  --secondary: oklch(0.952 0.009 263);
-  --secondary-foreground: oklch(0.26 0.022 260);
-  --muted: oklch(0.962 0.007 263);
-  --muted-foreground: oklch(0.50 0.018 260);
-  --accent: oklch(0.955 0.014 265);
-  --accent-foreground: oklch(0.26 0.022 260);
+  --secondary: oklch(0.966 0.008 80);
+  --secondary-foreground: oklch(0.26 0.010 72);
+  --muted: oklch(0.966 0.008 80);
+  --muted-foreground: oklch(0.49 0.014 74);  /* #777169 driftwood */
+  --accent: oklch(0.955 0.010 78);
+  --accent-foreground: oklch(0.22 0.010 72);
   --destructive: oklch(0.58 0.22 25);
   --destructive-foreground: oklch(0.99 0.003 260);
-  --border: oklch(0.905 0.009 262);
-  --border-strong: oklch(0.855 0.012 262);
-  --input: oklch(0.905 0.009 262);
+  --border: oklch(0.906 0.003 88);           /* #e5e5e5 ash border */
+  --border-strong: oklch(0.862 0.005 82);
+  --input: oklch(0.906 0.003 88);
   --ring: oklch(0.52 0.18 265);
 
   --ready: oklch(0.56 0.14 160);
-  --warn: oklch(0.68 0.14 68);
+  --warn: oklch(0.65 0.14 68);
   --danger: oklch(0.58 0.22 25);
   --info: oklch(0.56 0.14 235);
   --violet: oklch(0.54 0.18 295);
 
-  --sidebar: oklch(0.97 0.009 265);
-  --sidebar-foreground: oklch(0.28 0.02 262);
+  --sidebar: oklch(0.972 0.006 82);         /* warm sand sidebar */
+  --sidebar-foreground: oklch(0.22 0.012 74);
   --sidebar-primary: oklch(0.52 0.18 265);
   --sidebar-primary-foreground: oklch(0.99 0.003 260);
-  --sidebar-accent: oklch(0.945 0.012 264);
-  --sidebar-accent-foreground: oklch(0.26 0.022 260);
-  --sidebar-border: oklch(0.895 0.011 264);
+  --sidebar-accent: oklch(0.958 0.010 80);
+  --sidebar-accent-foreground: oklch(0.22 0.010 72);
+  --sidebar-border: oklch(0.900 0.003 85);
   --sidebar-ring: oklch(0.52 0.18 265);
 
-  --grid-line: color-mix(in oklab, var(--foreground) 4%, transparent);
+  --grid-line: color-mix(in oklab, var(--foreground) 3.5%, transparent);
 
-  /* Shadow system — layered depth with primary color tints */
+  /* Shadow system — ElevenLabs sub-pixel hairline vocabulary */
   --shadow-xs:
-    0 1px 2px color-mix(in oklab, var(--foreground) 5%, transparent);
+    rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
   --shadow-sm:
-    0 1px 3px color-mix(in oklab, var(--foreground) 6%, transparent),
-    0 0 0 1px color-mix(in oklab, white 55%, transparent) inset;
+    rgba(0, 0, 0, 0.06) 0px 0px 0px 1px,
+    rgba(0, 0, 0, 0.04) 0px 1px 2px 0px;
   --shadow-md:
-    0 4px 16px -4px color-mix(in oklab, var(--foreground) 10%, transparent),
-    0 1px 4px color-mix(in oklab, var(--foreground) 5%, transparent),
-    0 0 0 1px color-mix(in oklab, white 45%, transparent) inset;
+    rgba(0, 0, 0, 0.06) 0px 0px 0px 1px,
+    rgba(0, 0, 0, 0.04) 0px 1px 2px 0px,
+    rgba(0, 0, 0, 0.04) 0px 2px 4px 0px;
   --shadow-primary:
-    0 4px 24px -4px color-mix(in oklab, var(--primary) 35%, transparent),
-    0 1px 6px color-mix(in oklab, var(--primary) 12%, transparent);
+    rgba(0, 0, 0, 0.40) 0px 0px 1px 0px,
+    rgba(0, 0, 0, 0.04) 0px 1px 1px 0px,
+    rgba(0, 0, 0, 0.04) 0px 2px 4px 0px;
   --shadow-soft:
-    0 1px 3px color-mix(in oklab, var(--foreground) 6%, transparent),
-    0 0 0 1px color-mix(in oklab, white 50%, transparent) inset;
+    rgba(0, 0, 0, 0.06) 0px 0px 0px 1px,
+    rgba(0, 0, 0, 0.04) 0px 1px 2px 0px;
 
-  /* Glow tokens — used on status indicators and the readiness gauge */
-  --glow-ready: 0 0 28px -4px color-mix(in oklab, var(--ready) 45%, transparent);
-  --glow-warn:  0 0 28px -4px color-mix(in oklab, var(--warn)  45%, transparent);
-  --glow-danger:0 0 28px -4px color-mix(in oklab, var(--danger) 45%, transparent);
-  --glow-primary:0 0 28px -4px color-mix(in oklab, var(--primary) 40%, transparent);
+  /* Glow tokens — softened for warm parchment context */
+  --glow-ready: 0 0 22px -4px color-mix(in oklab, var(--ready) 32%, transparent);
+  --glow-warn:  0 0 22px -4px color-mix(in oklab, var(--warn)  32%, transparent);
+  --glow-danger:0 0 22px -4px color-mix(in oklab, var(--danger) 32%, transparent);
+  --glow-primary:0 0 22px -4px color-mix(in oklab, var(--primary) 28%, transparent);
 }
 
 .dark {
@@ -151,12 +152,11 @@
     background-color: var(--color-background);
   }
   body {
-    /* Atmosphere gradient — gives glass surfaces something to blur against */
     background-color: var(--color-background);
+    /* Subtle warm atmosphere — just enough depth without the heavy purple orbs */
     background-image:
-      radial-gradient(ellipse 55% 48% at 2% 0%,   oklch(0.87 0.07 268 / 0.22), transparent 62%),
-      radial-gradient(ellipse 40% 35% at 98% 96%,  oklch(0.87 0.06 288 / 0.18), transparent 55%),
-      radial-gradient(ellipse 30% 25% at 60% 10%,  oklch(0.90 0.04 260 / 0.10), transparent 50%);
+      radial-gradient(ellipse 60% 50% at 0% 0%, oklch(0.93 0.012 80 / 0.30), transparent 60%),
+      radial-gradient(ellipse 45% 40% at 100% 100%, oklch(0.91 0.014 78 / 0.18), transparent 55%);
     color: var(--color-foreground);
     font-family: var(--font-sans);
     font-feature-settings: "ss01", "cv11";
@@ -168,7 +168,7 @@
   h4 {
     font-family: var(--font-display);
     letter-spacing: -0.02em;
-    font-weight: 600;
+    font-weight: 400;   /* restraint over mass — heavier weights applied inline when needed */
     text-wrap: balance;
   }
   ::selection {
@@ -200,51 +200,43 @@
   font-family: var(--font-sans);
   font-size: 0.6875rem;
   font-weight: 500;
-  letter-spacing: 0;
+  letter-spacing: 0.01em;
   border: 1px solid var(--border);
-  background: color-mix(in oklab, white 70%, var(--surface-2));
-  backdrop-filter: blur(8px);
+  background: var(--surface-2);
   color: var(--muted-foreground);
 }
 
-/* Solid card — primary content surface */
+/* Solid card — warm white elevated card */
 @utility panel {
   background: var(--surface);
+  border: none;
+  border-radius: 20px;
+  box-shadow: var(--shadow-primary);
+}
+
+/* Frosted glass panel — stat hero cards, top bar items */
+@utility panel-glass {
+  background: color-mix(in oklab, white 90%, var(--surface-2));
+  backdrop-filter: blur(10px) saturate(130%);
+  -webkit-backdrop-filter: blur(10px) saturate(130%);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 20px;
   box-shadow: var(--shadow-sm);
 }
 
-/* Frosted glass panel — top bar, sidebar, hero stat cards */
-@utility panel-glass {
-  background: color-mix(in oklab, white 80%, transparent);
-  backdrop-filter: blur(20px) saturate(160%);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border: 1px solid color-mix(in oklab, white 72%, var(--border));
-  border-radius: 14px;
-  box-shadow:
-    0 0 0 1px color-mix(in oklab, white 55%, transparent) inset,
-    0 4px 24px -4px color-mix(in oklab, var(--foreground) 8%, transparent),
-    0 1px 4px color-mix(in oklab, var(--foreground) 4%, transparent);
-}
-
-/* Elevated solid panel — used for readiness gauge container */
+/* Elevated solid panel — readiness gauge container */
 @utility panel-elevated {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  box-shadow:
-    0 0 0 1px color-mix(in oklab, white 60%, transparent) inset,
-    0 8px 36px -8px color-mix(in oklab, var(--primary) 14%, transparent),
-    0 2px 10px -2px color-mix(in oklab, var(--foreground) 8%, transparent);
+  background: #ffffff;
+  border: none;
+  border-radius: 24px;
+  box-shadow: var(--shadow-primary);
 }
 
-/* Recessed / secondary surface */
+/* Recessed / secondary surface — warm sand */
 @utility panel-quiet {
-  background: color-mix(in oklab, var(--surface-2) 60%, transparent);
-  backdrop-filter: blur(8px);
-  border: 1px solid color-mix(in oklab, var(--border) 60%, transparent);
-  border-radius: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
   box-shadow: none;
 }
 

@@ -90,12 +90,10 @@ function ReadinessBadge({ runId }: { runId: string | null }) {
     api
       .summaries()
       .then((list) => {
-        const r = list.find(
-          (s) => s.run_id === runId || (s as Record<string, string>).id === runId,
-        );
+        const r = list.find((s) => s.id === runId);
         if (r) {
-          setReadiness((r as Record<string, number>).readiness ?? null);
-          setBand((r as Record<string, string>).readinessBand ?? null);
+          setReadiness(r.readiness ?? null);
+          setBand(r.readinessBand ?? null);
         }
       })
       .catch(() => {});

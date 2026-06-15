@@ -21,6 +21,20 @@ Frontend_V1/.output/
 launch-rehearsal/artifacts/artifacts/
 launch-rehearsal/artifacts/chats/
 launch-rehearsal/artifacts/narratives/
+launch-rehearsal/artifacts/personas.json
+
+# Local dev/test runs — timestamped artifacts from `rehearse serve` testing,
+# not curated demo seed data. Demo seed files below are explicitly un-ignored.
+launch-rehearsal/artifacts/discovery_screenshots/
+launch-rehearsal/artifacts/interaction_maps/
+launch-rehearsal/artifacts/product_models/
+launch-rehearsal/artifacts/configs/local/
+launch-rehearsal/artifacts/configs/*-20[0-9][0-9][01][0-9][0-3][0-9]-*.yaml
+launch-rehearsal/artifacts/runs/*-20[0-9][0-9][01][0-9][0-3][0-9]-*
+launch-rehearsal/artifacts/analysis/*-20[0-9][0-9][01][0-9][0-3][0-9]-*.json
+launch-rehearsal/artifacts/scorecards/*-20[0-9][0-9][01][0-9][0-3][0-9]-*-scorecard.md
+launch-rehearsal/artifacts/sitemaps/*-20[0-9][0-9][01][0-9][0-3][0-9]-*
+
 # Demo runs tracked for deployed dashboard seed (no screenshots)
 !launch-rehearsal/artifacts/runs/enterprise-20260530-234231.json
 !launch-rehearsal/artifacts/runs/enterprise-20260530-234459.json

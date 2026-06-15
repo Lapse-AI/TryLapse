@@ -21,6 +21,13 @@ def _resolve_config_path(artifacts_root: Path, config_id: str) -> Path | None:
     candidate = cfg_dir / f"{config_id}.yaml"
     if candidate.is_file():
         return candidate
+    # also check one level of subdirectories (e.g. local/, user-scoped dirs)
+    if cfg_dir.is_dir():
+        for subdir in cfg_dir.iterdir():
+            if subdir.is_dir():
+                sub = subdir / f"{config_id}.yaml"
+                if sub.is_file():
+                    return sub
     for item in list_configs(artifacts_root):
         if item["id"] == config_id:
             p = Path(item["path"])
@@ -294,3 +301,44 @@ def append_navigate_journey(
     new_yaml = yaml.dump(data, default_flow_style=False, sort_keys=False, allow_unicode=True)
     save_config_yaml(artifacts_root, new_yaml, config_id=config_id)
     return {"configId": config_id, "journeyId": jid, "url": url}
+
+
+def append_discovered_journeys(
+    artifacts_root: Path,
+    *,
+    config_id: str,
+    journeys: list[dict],
+) -> dict[str, Any]:
+    """Convert discovered journeys to DSL entries and append to the config YAML.
+
+    Skips journeys whose id already exists in the config (idempotent).
+    Returns counts of added vs skipped.
+    """
+    from rehearse.persona_journey_discovery import discovered_journey_to_config_entry
+
+    meta = get_config_yaml(artifacts_root, config_id)
+    data = yaml.safe_load(meta["yaml"]) or {}
+    existing = list(data.get("journeys") or [])
+    existing_ids = {j.get("id") for j in existing}
+
+    added, skipped = 0, 0
+    for raw in journeys:
+        try:
+            entry = discovered_journey_to_config_entry(raw)
+        except Exception:
+            skipped += 1
+            continue
+        if not entry.get("steps"):
+            skipped += 1
+            continue
+        if entry["id"] in existing_ids:
+            skipped += 1
+            continue
+        existing.append(entry)
+        existing_ids.add(entry["id"])
+        added += 1
+
+    data["journeys"] = existing
+    new_yaml = yaml.dump(data, default_flow_style=False, sort_keys=False, allow_unicode=True)
+    save_config_yaml(artifacts_root, new_yaml, config_id=config_id)
+    return {"configId": config_id, "added": added, "skipped": skipped, "total": len(existing)}

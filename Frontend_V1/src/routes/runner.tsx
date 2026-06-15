@@ -1,13 +1,26 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { PageHeader, Panel, Chip } from "@/components/ui-bits";
-import { useJobs, useTriggerJob, useConfigs, useApiHealth } from "@/lib/api/hooks";
+import { useJobs, useTriggerJob, useConfigs, useApiHealth, useConfigYaml } from "@/lib/api/hooks";
 import { usePersistedConfigId } from "@/hooks/use-persisted-config-id";
 import { useTestGroup } from "@/hooks/use-test-group";
+import { getWorkspace } from "@/lib/workspace";
 import { ActiveJobsBanner, JobQueueTable } from "@/components/job-queue-status";
 import { VariantRehearsalPanel } from "@/components/variant-rehearsal-panel";
 import { CohortRehearsalPanel } from "@/components/cohort-rehearsal-panel";
-import { Loader2, Play, Network, FlaskConical, Settings } from "lucide-react";
+import { RunLiveGraph } from "@/components/run-live-graph";
+import { CrawlLiveGraph } from "@/components/crawl-live-graph";
+import {
+  Loader2,
+  Play,
+  Network,
+  FlaskConical,
+  Settings,
+  AlertTriangle,
+  CheckCircle2,
+} from "lucide-react";
+import { api } from "@/lib/api/client";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/runner")({
@@ -22,16 +35,50 @@ function RunnerPage() {
   const trigger = useTriggerJob();
   const { isSignedIn, group, resolvedConfigId } = useTestGroup();
   const { configId, pickConfig } = usePersistedConfigId();
+  const workspace = getWorkspace();
+  const configHref = workspace?.slug ? `/${workspace.slug}/config` : "/config";
   const [useLlm, setUseLlm] = useState(true);
+  const [discoveredRunId, setDiscoveredRunId] = useState<string | undefined>();
 
-  // Prefer canonical named configs over auto-generated timestamped snapshots
-  const cleanConfigs = configs
-    .filter((c) => !/\d{8}-\d{6}$/.test(c.id))
-    .concat(configs.filter((c) => /\d{8}-\d{6}$/.test(c.id)).slice(0, 3));
-  const displayConfigs = cleanConfigs.length ? cleanConfigs : configs.slice(0, 10);
+  const { data: creds } = useQuery({
+    queryKey: ["credentials"],
+    queryFn: () => api.getCredentials(),
+    enabled: !!live,
+    refetchInterval: 5000,
+  });
+  const { data: configFile } = useConfigYaml(configId ?? "");
 
+  // Derive workspace run_id_prefix from the saved configPath
+  const wsConfigId = workspace?.configPath
+    ? (workspace.configPath
+        .split("/")
+        .pop()
+        ?.replace(/\.ya?ml$/, "") ?? "")
+    : "";
+  const wsPrefix = wsConfigId.replace(/-\d{8}-\d{6}$/, ""); // e.g. "faculty-dashboard-eight-vercel-app"
+
+  // Filter to workspace-relevant configs only (skip unrelated and example configs)
+  const wsConfigs = wsPrefix
+    ? configs.filter((c) => c.source !== "example" && c.id.startsWith(wsPrefix))
+    : configs.filter((c) => c.source !== "example");
+
+  // Sort timestamped configs newest-first
+  const timestamped = [...wsConfigs.filter((c) => /\d{8}-\d{6}$/.test(c.id))].sort(
+    (a, b) =>
+      ((b as { mtime?: number }).mtime ?? 0) - ((a as { mtime?: number }).mtime ?? 0) ||
+      b.id.localeCompare(a.id),
+  );
+  const canonical = wsConfigs.filter((c) => !/\d{8}-\d{6}$/.test(c.id));
+  const latestId = timestamped[0]?.id ?? null;
+  const displayConfigs = [...timestamped, ...canonical];
+
+  // Prefer: explicit user pick → workspace-linked config → latest timestamped → first
   const selectedConfig =
-    configs.find((c) => c.id === configId) ?? configs.find((c) => c.id === "lr-self") ?? configs[0];
+    wsConfigs.find((c) => c.id === configId) ??
+    (wsPrefix ? wsConfigs.find((c) => c.id === wsConfigId) : undefined) ??
+    (latestId ? wsConfigs.find((c) => c.id === latestId) : undefined) ??
+    wsConfigs[0] ??
+    configs[0];
 
   const selfConfig =
     configs.find((c) => c.id === "lr-self") ?? configs.find((c) => c.id === "self-dashboard");
@@ -59,6 +106,12 @@ function RunnerPage() {
       selectedConfig.id === "lr-self" ||
       selectedConfig.name.toLowerCase().includes("self"));
 
+  const configHasAuth = configFile?.yaml
+    ? configFile.yaml.includes("\nauth:") || configFile.yaml.startsWith("auth:")
+    : null;
+  const credsOk = creds ? creds.hasEmail && creds.hasPassword : null;
+  const authReady = configHasAuth && credsOk;
+
   return (
     <div>
       <PageHeader
@@ -67,7 +120,7 @@ function RunnerPage() {
         description="POST /api/jobs — background CLI runs with live status. Pick a config, then run or crawl."
         actions={
           <Link
-            to="/config"
+            to={configHref}
             className="text-xs font-mono px-3 py-1.5 rounded-md border border-border hover:bg-surface-2 inline-flex items-center gap-1.5"
           >
             <Settings className="size-3.5" /> Config (YAML)
@@ -75,7 +128,44 @@ function RunnerPage() {
         }
       />
       <div className="p-8 max-w-[1400px] space-y-6">
-        <ActiveJobsBanner jobs={jobs} />
+        <ActiveJobsBanner jobs={jobs} workspaceSlug={workspace?.slug} />
+
+        {/* Live run + crawl visualization — shown when a run is in progress */}
+        {jobs.some((j) => j.status === "running") &&
+          (() => {
+            const liveJob = jobs.find((j) => j.status === "running");
+            // Use runId from job record OR from live progress (whichever is available first)
+            const effectiveRunId = liveJob?.runId ?? discoveredRunId;
+            return (
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                <Panel className="p-5">
+                  <div className="text-sm font-semibold mb-3 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                    Live journeys
+                  </div>
+                  <RunLiveGraph
+                    runId={effectiveRunId}
+                    pollingMs={2000}
+                    jobId={liveJob?.id}
+                    onRunIdDiscovered={setDiscoveredRunId}
+                  />
+                </Panel>
+                <Panel className="p-5">
+                  <div className="text-sm font-semibold mb-3 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-info animate-pulse" />
+                    Live crawl graph
+                  </div>
+                  {effectiveRunId ? (
+                    <CrawlLiveGraph runId={effectiveRunId} pollingMs={1500} />
+                  ) : (
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <Loader2 className="size-3 animate-spin" /> Waiting for run ID…
+                    </div>
+                  )}
+                </Panel>
+              </div>
+            );
+          })()}
 
         <Panel className="p-5 space-y-4">
           <div className="text-sm font-medium">Readiness</div>
@@ -91,6 +181,16 @@ function RunnerPage() {
             )}
             {jobs.some((j) => j.status === "running" || j.status === "queued") && (
               <Chip tone="info">Job in progress</Chip>
+            )}
+            {live && creds && (
+              <Chip tone={credsOk ? "ready" : "warn"}>
+                {credsOk ? "Credentials set" : "No credentials"}
+              </Chip>
+            )}
+            {live && configHasAuth !== null && (
+              <Chip tone={configHasAuth ? "ready" : "warn"}>
+                {configHasAuth ? "Auth block present" : "No auth block in YAML"}
+              </Chip>
             )}
           </div>
           {!live && (
@@ -116,19 +216,53 @@ function RunnerPage() {
               onChange={(e) => pickConfig(e.target.value)}
               disabled={!configs.length}
             >
-              {displayConfigs.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.id}
-                </option>
-              ))}
+              {displayConfigs.map((c) => {
+                const tsMatch = c.id.match(/^(.+)-(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})$/);
+                const isLatest = c.id === latestId;
+                let label = c.id;
+                if (tsMatch) {
+                  // Parse as UTC (filenames use UTC), display in browser local time
+                  const dt = new Date(
+                    `${tsMatch[2]}-${tsMatch[3]}-${tsMatch[4]}T${tsMatch[5]}:${tsMatch[6]}:${tsMatch[7]}Z`,
+                  );
+                  const localStr = isNaN(dt.getTime())
+                    ? `${tsMatch[2]}-${tsMatch[3]}-${tsMatch[4]} ${tsMatch[5]}:${tsMatch[6]}`
+                    : new Intl.DateTimeFormat(undefined, {
+                        month: "short",
+                        day: "numeric",
+                        hour: "numeric",
+                        minute: "2-digit",
+                        hour12: true,
+                      }).format(dt);
+                  label = `${tsMatch[1]} · ${localStr}${isLatest ? " (latest)" : ""}`;
+                }
+                return (
+                  <option key={c.id} value={c.id}>
+                    {label}
+                  </option>
+                );
+              })}
             </select>
+            {selectedConfig && (
+              <div className="mt-2 rounded-md bg-surface-2 border border-border px-3 py-2 space-y-1">
+                <div className="text-[11px] text-muted-foreground">
+                  File:{" "}
+                  <code className="font-mono text-foreground">
+                    configs/{selectedConfig.id}.yaml
+                  </code>
+                </div>
+                <div className="text-[11px] font-mono text-muted-foreground/80 select-all break-all">
+                  ./rehearse run -c launch-rehearsal/artifacts/configs/{selectedConfig.id}.yaml -o
+                  launch-rehearsal/artifacts/
+                </div>
+              </div>
+            )}
             <p className="text-[11px] text-muted-foreground mt-2">
               Edit on{" "}
-              <Link to="/config" className="text-primary hover:underline">
+              <Link to={configHref} className="text-primary hover:underline">
                 Config (YAML)
               </Link>
               . Selection persists across Sitemap, Workflows, and Runner.
-              {isSignedIn && " Switch test group in the top bar to change the default config."}
             </p>
             {hasInteractiveHint && (
               <p className="text-[11px] text-muted-foreground mt-1">
@@ -147,6 +281,27 @@ function RunnerPage() {
             />
             LLM enrichment (personas + summaries) — reads DEEPSEEK_API_KEY from repo .env
           </label>
+          {live && configHasAuth !== null && (!credsOk || !configHasAuth) && (
+            <div className="flex items-start gap-2 rounded-md border border-warn/40 bg-warn/5 px-3 py-2 text-[11px] text-warn">
+              <AlertTriangle className="size-3.5 mt-0.5 shrink-0" />
+              <span>
+                {!configHasAuth && !credsOk
+                  ? "Missing credentials and auth block — run will skip login. "
+                  : !configHasAuth
+                    ? "No auth block in this config YAML — run will skip login. "
+                    : "Credentials not set — run will skip login. "}
+                <Link to={configHref} className="underline hover:text-foreground">
+                  Fix on Config page
+                </Link>
+              </span>
+            </div>
+          )}
+          {live && authReady && (
+            <div className="flex items-center gap-2 rounded-md border border-ready/40 bg-ready/5 px-3 py-2 text-[11px] text-ready">
+              <CheckCircle2 className="size-3.5 shrink-0" />
+              Auth ready — credentials set and auth block present in config.
+            </div>
+          )}
           <div className="flex flex-wrap gap-3 items-center">
             <button
               type="button"
@@ -190,7 +345,7 @@ function RunnerPage() {
 
         <Panel className="overflow-hidden">
           <div className="p-5 border-b border-border font-display font-semibold">Job queue</div>
-          <JobQueueTable jobs={jobs} />
+          <JobQueueTable jobs={jobs} workspaceSlug={workspace?.slug} />
         </Panel>
       </div>
     </div>

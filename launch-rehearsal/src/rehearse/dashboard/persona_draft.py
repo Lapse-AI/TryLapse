@@ -315,3 +315,142 @@ def suggest_personas_for_product(
         "source": "heuristic",
         "hint": "Core three are always in generated YAML. Add suggestions or AI drafts as extras.",
     }
+
+
+# ── Library persona AI generation ─────────────────────────────────────────────
+# This generates a richer persona than draft_persona_from_prompt: it includes
+# all five behavioral depth fields (tech_literacy, patience, trust_level,
+# character, usage_context) and optional tags.  It is used by the Persona
+# Library page — not the Init wizard.
+
+_LIBRARY_PERSONA_SYSTEM = """You are a UX research expert generating a richly detailed synthetic user persona
+for product evaluation.  The persona will be saved to a reusable persona library and used to
+drive automated browser-based journey testing.
+
+Respond with JSON only — no markdown fences, no commentary:
+{
+  "name": "Short display name (2-4 words)",
+  "role": "One-line job title or role description",
+  "goals": ["goal 1 (specific, action-oriented)", "goal 2", "goal 3"],
+  "tech_literacy": "novice|intermediate|expert",
+  "patience": "low|medium|high",
+  "trust_level": "skeptical|neutral|trusting",
+  "character": "2-3 sentence psychological texture — habits, anxieties, quirks that shape UX decisions",
+  "usage_context": "One sentence: how they arrive at this product (e.g. 'Switching from Competitor X', 'First time trying a tool like this', 'Assigned by IT after company rollout')",
+  "tags": ["tag1", "tag2"]
+}
+
+Rules:
+- goals: 2-4 concrete, observable outcomes — not aspirations, but tasks they'd measure success by
+- tech_literacy: choose the one that best describes how they interact with software products
+- patience: how long they'll tolerate confusion before abandoning a flow
+- trust_level: default disposition toward new software — do they read fine print or just click accept?
+- character: be specific and human — avoid generic phrases like "busy professional"
+- tags: 1-3 short labels for filtering (e.g. "enterprise", "mobile-first", "compliance")
+"""
+
+
+def draft_library_persona(
+    prompt: str,
+    *,
+    product_name: str | None = None,
+    target_url: str | None = None,
+) -> dict[str, Any]:
+    """Generate a full behavioral persona for the library from a natural-language prompt.
+
+    Falls back to a heuristic template if LLM is unavailable.
+    Returns a complete persona dict ready to pass to persona_store.save_persona().
+    """
+    prompt = (prompt or "").strip()
+    if len(prompt) < 6:
+        raise ValueError("Describe the user in at least a few words")
+
+    result: dict[str, Any] | None = None
+
+    if llm_enabled():
+        from rehearse.llm import (
+            _api_key, _base_url, _http_timeout, _max_retries, _model,
+            _post_chat_with_fallback,
+        )
+        import httpx, time
+
+        key = _api_key()
+        if key:
+            context_parts = [f"User description: {prompt}"]
+            if product_name:
+                context_parts.append(f"Product: {product_name}")
+            if target_url:
+                context_parts.append(f"URL: {target_url}")
+            context_str = "\n".join(context_parts)
+
+            payload: dict[str, Any] = {
+                "model": _model(),
+                "messages": [
+                    {"role": "system", "content": _LIBRARY_PERSONA_SYSTEM},
+                    {"role": "user", "content": context_str},
+                ],
+                "temperature": 0.5,
+                "max_tokens": 600,
+                "response_format": {"type": "json_object"},
+            }
+            timeout = _http_timeout()
+            for attempt in range(_max_retries() + 1):
+                try:
+                    with httpx.Client(timeout=timeout) as client:
+                        resp = _post_chat_with_fallback(client, payload)
+                        if resp.status_code >= 400 and "response_format" in payload:
+                            payload = {k: v for k, v in payload.items() if k != "response_format"}
+                            resp = _post_chat_with_fallback(client, payload)
+                        resp.raise_for_status()
+                        raw_content = resp.json()["choices"][0]["message"]["content"]
+                        break
+                except (httpx.ReadTimeout, httpx.ConnectTimeout):
+                    if attempt < _max_retries():
+                        time.sleep(2 ** attempt)
+                        continue
+                    raw_content = None
+                    break
+                except Exception:
+                    raw_content = None
+                    break
+            else:
+                raw_content = None
+
+            if raw_content:
+                try:
+                    parsed = json.loads(raw_content)
+                except json.JSONDecodeError:
+                    m = re.search(r"\{[\s\S]*\}", raw_content)
+                    parsed = json.loads(m.group()) if m else None
+
+                if isinstance(parsed, dict):
+                    result = parsed
+
+    if result is None:
+        # Heuristic fallback — populate behavioral fields with sensible defaults
+        tmpl = _template_persona(prompt, product_name=product_name)
+        result = {
+            "name": tmpl["name"],
+            "role": tmpl["role"],
+            "goals": tmpl["goals"],
+            "tech_literacy": "intermediate",
+            "patience": "medium",
+            "trust_level": "neutral",
+            "character": "",
+            "usage_context": prompt[:200],
+            "tags": [],
+        }
+
+    # Normalise and stamp source
+    result["source"] = "ai-generated"
+    # Ensure id is derived from name for library storage
+    raw_name = str(result.get("name") or prompt)
+    result.setdefault("id", f"lib-{re.sub(r'[^a-z0-9]+', '-', raw_name.lower()).strip('-')[:40]}")
+    result.setdefault("enabled", True)
+    for field, default in [
+        ("tech_literacy", "intermediate"), ("patience", "medium"),
+        ("trust_level", "neutral"), ("character", ""), ("usage_context", ""), ("tags", []),
+    ]:
+        result.setdefault(field, default)
+
+    return result

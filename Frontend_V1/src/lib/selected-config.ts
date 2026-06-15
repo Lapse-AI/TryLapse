@@ -1,6 +1,6 @@
 const STORAGE_KEY = "rehearse:selectedConfigId";
 
-export function getSelectedConfigId(fallback = "lr-self"): string {
+export function getSelectedConfigId(fallback = ""): string {
   if (typeof window === "undefined") return fallback;
   try {
     return localStorage.getItem(STORAGE_KEY) || fallback;

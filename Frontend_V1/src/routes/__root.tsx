@@ -4,10 +4,14 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
+  redirect,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
+import { getTestUser } from "@/lib/test-auth";
+import { getWorkspace } from "@/lib/workspace";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -15,6 +19,7 @@ import { AppSidebar } from "../components/app-sidebar";
 import { RehearseTopBar } from "../components/rehearse-top-bar";
 import { ApiRequiredBanner } from "../components/api-required-banner";
 import { Toaster } from "../components/ui/sonner";
+import { RecordingWrapper } from "../components/recording-wrapper";
 
 function NotFoundComponent() {
   return (
@@ -69,7 +74,22 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   );
 }
 
+const PUBLIC_PATHS = new Set(["/signin", "/signup", "/onboarding"]);
+
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  beforeLoad: ({ location }) => {
+    if (typeof window === "undefined") return;
+    const isPublic =
+      PUBLIC_PATHS.has(location.pathname) || location.pathname.startsWith("/onboarding");
+    if (isPublic) return;
+    if (!getTestUser()) throw redirect({ to: "/signin" });
+    if (location.pathname === "/") {
+      const ws = getWorkspace();
+      if (ws)
+        throw redirect({ to: "/$workspaceSlug/dashboard", params: { workspaceSlug: ws.slug } });
+      throw redirect({ to: "/onboarding" });
+    }
+  },
   head: () => ({
     meta: [
       { charSet: "utf-8" },
@@ -112,21 +132,33 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isAuthPage = PUBLIC_PATHS.has(pathname) || pathname.startsWith("/onboarding");
+  const recordingRef = useRef(null);
+
   return (
-    <QueryClientProvider client={queryClient}>
-      <div className="flex min-h-screen w-full bg-background text-foreground">
-        <div className="hidden md:flex">
-          <AppSidebar />
-        </div>
-        <div className="flex-1 flex flex-col min-w-0">
-          <RehearseTopBar />
-          <ApiRequiredBanner />
-          <main className="flex-1 min-w-0 overflow-x-hidden">
+    <RecordingWrapper recordRef={recordingRef} enabled={!isAuthPage}>
+      <QueryClientProvider client={queryClient}>
+        {isAuthPage ? (
+          <div className="min-h-screen bg-background text-foreground">
             <Outlet />
-          </main>
-        </div>
-      </div>
-      <Toaster />
-    </QueryClientProvider>
+          </div>
+        ) : (
+          <div className="flex min-h-screen w-full bg-background text-foreground">
+            <div className="hidden md:flex">
+              <AppSidebar />
+            </div>
+            <div className="flex-1 flex flex-col min-w-0">
+              <RehearseTopBar />
+              <ApiRequiredBanner />
+              <main className="flex-1 min-w-0 overflow-x-hidden">
+                <Outlet />
+              </main>
+            </div>
+          </div>
+        )}
+        <Toaster />
+      </QueryClientProvider>
+    </RecordingWrapper>
   );
 }

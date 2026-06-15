@@ -8,6 +8,7 @@ import type {
   ExperimentSpec,
   InsightNarrative,
   Integration,
+  LibraryPersona,
   RunBundle,
   RunDiff,
   RunSummary,
@@ -48,25 +49,37 @@ export function getStoredJwt(): string {
   return localStorage.getItem(JWT_STORAGE_KEY) || "";
 }
 
-async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
+async function apiFetch<T>(path: string, init?: RequestInit & { timeoutMs?: number }): Promise<T> {
   const bearer = API_TOKEN || getStoredJwt();
   const authHeaders: Record<string, string> = bearer ? { Authorization: `Bearer ${bearer}` } : {};
-  const res = await fetch(`${API_BASE}${path}`, {
-    ...init,
-    headers: {
-      "Content-Type": "application/json",
-      ...authHeaders,
-      ...(init?.headers ?? {}),
-    },
-  });
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new ApiError(text || res.statusText, res.status);
+  const timeoutMs = init?.timeoutMs ?? 30000;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const { timeoutMs: _t, ...fetchInit } = init ?? {};
+    const res = await fetch(`${API_BASE}${path}`, {
+      ...fetchInit,
+      signal: controller.signal,
+      headers: {
+        "Content-Type": "application/json",
+        ...authHeaders,
+        ...(fetchInit?.headers ?? {}),
+      },
+    });
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      throw new ApiError(text || res.statusText, res.status);
+    }
+    return res.json() as Promise<T>;
+  } finally {
+    clearTimeout(timer);
   }
-  return res.json() as Promise<T>;
 }
 
 export function artifactUrl(relPath: string): string {
+  // Strip absolute prefix (launch-rehearsal/artifacts/ or /abs/path/.../artifacts/)
+  // but keep relative sub-paths like artifacts/{run_id}/... intact —
+  // /files/{rel} maps directly to artifacts_root/{rel} on the server.
   const clean = relPath.replace(/^launch-rehearsal\/artifacts\//, "").replace(/^\//, "");
   return `${API_BASE}/files/${clean}`;
 }
@@ -97,7 +110,7 @@ export const api = {
     ),
   diff: (a: string, b: string) =>
     apiFetch<RunDiff>(`/api/diff?a=${encodeURIComponent(a)}&b=${encodeURIComponent(b)}`),
-  trends: () =>
+  trends: (configPrefix?: string) =>
     apiFetch<{
       readiness: (number | string)[];
       pages: number[];
@@ -115,7 +128,9 @@ export const api = {
       issuesResolved?: number;
       blockerCounts?: number[];
       narrative?: InsightNarrative;
-    }>("/api/trends"),
+    }>(
+      configPrefix ? `/api/trends?configPrefix=${encodeURIComponent(configPrefix)}` : "/api/trends",
+    ),
   digest: (n = 7) => apiFetch<CommandDigest>(`/api/digest?n=${n}`),
   compileRecording: (body: {
     journeyId?: string;
@@ -214,27 +229,94 @@ export const api = {
       method: "POST",
       body: JSON.stringify(body),
     }),
-  getProductModel: () => apiFetch<Record<string, unknown>>("/api/product"),
-  analyzeProduct: (body: { targetUrl: string; productName?: string; sitemapPages?: unknown[] }) =>
+  getProductModel: (configId?: string | null) =>
+    apiFetch<Record<string, unknown>>(`/api/product${configId ? `?configId=${configId}` : ""}`),
+  analyzeProduct: (body: {
+    targetUrl: string;
+    productName?: string;
+    configId?: string;
+    sitemapPages?: unknown[];
+  }) =>
     apiFetch<Record<string, unknown>>("/api/product/analyze", {
       method: "POST",
       body: JSON.stringify(body),
+      timeoutMs: 180000, // 3 min — crawl + vision + LLM
     }),
-  updateProductModel: (updates: Record<string, unknown>) =>
+  updateProductModel: (updates: Record<string, unknown>, configId?: string | null) =>
     apiFetch<Record<string, unknown>>("/api/product/update", {
       method: "POST",
-      body: JSON.stringify(updates),
+      body: JSON.stringify({ ...updates, configId: configId || "" }),
     }),
-  discoverJourneys: (personas: unknown[]) =>
+  discoverJourneys: (personas: unknown[], configId?: string | null, productModel?: unknown) =>
     apiFetch<{ personaJourneys: unknown[]; count: number }>("/api/journeys/discover", {
       method: "POST",
-      body: JSON.stringify({ personas }),
+      body: JSON.stringify({
+        personas,
+        configId: configId || "",
+        productModel: productModel || null,
+      }),
+      timeoutMs: 180000,
     }),
-  discoverJourneysForPersona: (persona: unknown) =>
+  discoverJourneysForPersona: (
+    persona: unknown,
+    configId?: string | null,
+    productModel?: unknown,
+  ) =>
     apiFetch<Record<string, unknown>>("/api/journeys/discover/persona", {
       method: "POST",
-      body: JSON.stringify({ persona }),
+      body: JSON.stringify({
+        persona,
+        configId: configId || "",
+        productModel: productModel || null,
+      }),
+      timeoutMs: 120000,
     }),
+  discoverJourneysForPersonaStream: async function* (
+    persona: unknown,
+    configId?: string | null,
+    productModel?: unknown,
+  ): AsyncGenerator<Record<string, unknown>> {
+    const bearer = API_TOKEN || getStoredJwt();
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (bearer) headers["Authorization"] = `Bearer ${bearer}`;
+    const res = await fetch(`${API_BASE}/api/journeys/discover/persona/stream`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        persona,
+        configId: configId || "",
+        productModel: productModel || null,
+      }),
+    });
+    if (!res.ok || !res.body) throw new Error(`Stream failed: ${res.status}`);
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buf = "";
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += decoder.decode(value, { stream: true });
+      const lines = buf.split("\n");
+      buf = lines.pop() ?? "";
+      for (const line of lines) {
+        if (line.startsWith("data: ")) {
+          try {
+            yield JSON.parse(line.slice(6)) as Record<string, unknown>;
+          } catch {
+            /* skip */
+          }
+        }
+      }
+    }
+  },
+  importJourneysToConfig: (configId: string, journeys: unknown[]) =>
+    apiFetch<{ configId: string; added: number; skipped: number; total: number }>(
+      "/api/journeys/import",
+      {
+        method: "POST",
+        body: JSON.stringify({ configId, journeys }),
+      },
+    ),
   getExperimentReport: (jobId: string) =>
     apiFetch<{
       jobId: string;
@@ -410,10 +492,46 @@ export const api = {
     personaLens?: boolean;
     personaEnabled?: Record<string, boolean>;
     extraPersonas?: Record<string, unknown>[];
+    localTimestamp?: string; // YYYYMMDD-HHmmss in user's local timezone
+    existingConfigId?: string; // copy journeys from this config into the new file
   }) =>
     apiFetch<{ id: string; path: string; name: string }>("/api/configs", {
       method: "POST",
       body: JSON.stringify(body),
+    }),
+  crawlGraph: async (runId: string) => {
+    type CrawlGraphData = {
+      targetUrl?: string;
+      nodes: { id: string; status: "queued" | "visiting" | "visited" | "skipped" | "error" }[];
+      edges: { source: string; target: string }[];
+      visitedCount: number;
+      maxPages: number;
+    };
+    // Try the dedicated endpoint; fall back to /files/ for servers without this route
+    try {
+      const result = await apiFetch<CrawlGraphData>(
+        `/api/runs/${encodeURIComponent(runId)}/crawl-graph`,
+      );
+      if (result && result.nodes?.length > 0) return result;
+    } catch {
+      /* fall through */
+    }
+    return apiFetch<CrawlGraphData>(`/files/runs/${encodeURIComponent(runId)}-crawl-graph.json`);
+  },
+  getCredentials: () => apiFetch<{ hasEmail: boolean; hasPassword: boolean }>("/api/credentials"),
+  saveCredentials: (
+    email: string,
+    password: string,
+    opts?: { configId?: string; loginPath?: string },
+  ) =>
+    apiFetch<{ ok: boolean; yamlUpdated: boolean }>("/api/credentials", {
+      method: "POST",
+      body: JSON.stringify({ email, password, ...opts }),
+    }),
+  controlRun: (runId: string, signal: "pause" | "resume" | "stop") =>
+    apiFetch<{ runId: string; signal: string }>(`/api/runs/${encodeURIComponent(runId)}/control`, {
+      method: "POST",
+      body: JSON.stringify({ signal }),
     }),
   graphmlUrl: (runId: string) => `${API_BASE}/api/sitemap/${runId}/graphml`,
 
@@ -441,6 +559,7 @@ export const api = {
         targetUrl: string;
         productName: string;
         teamRole: string;
+        configPath: string;
         createdAt: string;
       }[]
     >("/api/workspaces/me"),
@@ -458,6 +577,50 @@ export const api = {
       targetUrl: string;
       productName: string;
       teamRole: string;
+      configPath: string;
       createdAt: string;
     }>("/api/workspaces", { method: "POST", body: JSON.stringify(body) }),
+
+  // ── Persona Library ─────────────────────────────────────────────────────
+  // The library is workspace-global: personas can be reused across products.
+
+  /** Fetch all library personas (newest first). */
+  listPersonaLibrary: () => apiFetch<LibraryPersona[]>("/api/persona-library"),
+
+  /** Fetch a single library persona by id. */
+  getPersonaLibrary: (id: string) =>
+    apiFetch<LibraryPersona>(`/api/persona-library/${encodeURIComponent(id)}`),
+
+  /** Create or update a persona in the library. */
+  savePersonaLibrary: (persona: Partial<LibraryPersona> & { name: string; role: string }) =>
+    apiFetch<LibraryPersona>("/api/persona-library", {
+      method: "POST",
+      body: JSON.stringify(persona),
+    }),
+
+  /** AI-generate a rich behavioral persona.
+   *  Pass save=true to persist immediately, or false to preview first. */
+  generatePersonaLibrary: (body: {
+    prompt: string;
+    productName?: string;
+    targetUrl?: string;
+    save?: boolean;
+  }) =>
+    apiFetch<{ persona: LibraryPersona; yamlFragment: string }>("/api/persona-library/generate", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+
+  /** Bulk-import all personas from an existing config into the library. */
+  importPersonasFromConfig: (configId: string) =>
+    apiFetch<{ imported: number; personas: LibraryPersona[] }>("/api/persona-library/import", {
+      method: "POST",
+      body: JSON.stringify({ configId }),
+    }),
+
+  /** Delete a library persona by id. */
+  deletePersonaLibrary: (id: string) =>
+    apiFetch<{ deleted: string }>(`/api/persona-library/${encodeURIComponent(id)}`, {
+      method: "DELETE",
+    }),
 };

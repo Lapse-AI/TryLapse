@@ -1,0 +1,35 @@
+{
+  "origin": "https://faculty-dashboard-eight.vercel.app/database",
+  "page_count": 1,
+  "hub_paths": [
+    "/database/database"
+  ],
+  "orphan_paths": [],
+  "auth_gated_paths": [
+    "/database/database"
+  ],
+  "error_paths": [
+    "/database/database"
+  ],
+  "pages": [
+    {
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "path": "/database/database",
+      "title": "Argyle Analytics Dashboard",
+      "depth": 0,
+      "status": 404,
+      "h1": "",
+      "link_count": 0,
+      "form_count": 1,
+      "input_count": 3,
+      "button_count": 3,
+      "word_count": 22,
+      "outbound_paths": [],
+      "redirected_to_login": true,
+      "error_phrases": [
+        "http_404"
+      ],
+      "duration_ms": 1286
+    }
+  ]
+}

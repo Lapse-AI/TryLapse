@@ -55,13 +55,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s1-seed1-loop1.png"
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s1-seed1-loop1.png",
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s1-seed1-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -80,13 +82,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s2-seed1-loop1.png"
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s2-seed1-loop1.png",
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s2-seed1-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -105,13 +109,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s3-seed1-loop1.png"
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s3-seed1-loop1.png",
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s3-seed1-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -130,13 +136,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s4-seed1-loop1.png"
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s4-seed1-loop1.png",
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s4-seed1-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -155,6 +163,7 @@
       "note": null,
       "errorType": null,
       "flaky": true,
+      "behavior": "continue",
       "consoleErrors": [
         "Error fetching profiles: TypeError: Failed to fetch",
         "Error loading skills: TypeError: Failed to fetch\n    at e (https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/database/page-515c16c95f50d97d.js:1:3261)\n    at https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/database/page-515c16c95f50d97d.js:1:3962\n    at ob (https:"
@@ -164,7 +173,8 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s1-seed2-loop1.png"
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s1-seed2-loop1.png",
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s1-seed2-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -183,13 +193,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s2-seed2-loop1.png"
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s2-seed2-loop1.png",
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s2-seed2-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -208,13 +220,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s3-seed2-loop1.png"
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s3-seed2-loop1.png",
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s3-seed2-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -233,13 +247,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s4-seed2-loop1.png"
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s4-seed2-loop1.png",
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s4-seed2-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -258,6 +274,7 @@
       "note": null,
       "errorType": null,
       "flaky": true,
+      "behavior": "continue",
       "consoleErrors": [
         "Error loading skills: TypeError: Failed to fetch\n    at e (https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/database/page-515c16c95f50d97d.js:1:3261)\n    at https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/database/page-515c16c95f50d97d.js:1:3962\n    at ob (https:",
         "Error fetching profiles: TypeError: Failed to fetch\n    at r (https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/database/page-515c16c95f50d97d.js:1:26650)\n    at https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/database/page-515c16c95f50d97d.js:1:3405\n    at https:"
@@ -267,7 +284,8 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s1-seed3-loop1.png"
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s1-seed3-loop1.png",
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s1-seed3-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -286,13 +304,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s2-seed3-loop1.png"
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s2-seed3-loop1.png",
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s2-seed3-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -311,13 +331,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s3-seed3-loop1.png"
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s3-seed3-loop1.png",
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s3-seed3-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -336,13 +358,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s4-seed3-loop1.png"
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s4-seed3-loop1.png",
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s4-seed3-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -361,13 +385,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s1-seed1-loop1.png"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s1-seed1-loop1.png",
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s1-seed1-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -386,13 +412,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s2-seed1-loop1.png"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s2-seed1-loop1.png",
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s2-seed1-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -411,13 +439,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s3-seed1-loop1.png"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s3-seed1-loop1.png",
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s3-seed1-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -436,13 +466,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s4-seed1-loop1.png"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s4-seed1-loop1.png",
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s4-seed1-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -461,13 +493,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s5-seed1-loop1.png"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s5-seed1-loop1.png",
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s5-seed1-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -486,13 +520,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s6-seed1-loop1.png"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s6-seed1-loop1.png",
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s6-seed1-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -511,6 +547,7 @@
       "note": null,
       "errorType": null,
       "flaky": true,
+      "behavior": "continue",
       "consoleErrors": [
         "Error loading skills: TypeError: Failed to fetch\n    at e (https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/database/page-515c16c95f50d97d.js:1:3261)\n    at https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/database/page-515c16c95f50d97d.js:1:3962\n    at ob (https:",
         "Error fetching profiles: TypeError: Failed to fetch"
@@ -520,7 +557,8 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s1-seed2-loop1.png"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s1-seed2-loop1.png",
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s1-seed2-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -539,13 +577,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s2-seed2-loop1.png"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s2-seed2-loop1.png",
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s2-seed2-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -564,13 +604,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s3-seed2-loop1.png"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s3-seed2-loop1.png",
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s3-seed2-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -589,13 +631,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s4-seed2-loop1.png"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s4-seed2-loop1.png",
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s4-seed2-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -614,13 +658,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s5-seed2-loop1.png"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s5-seed2-loop1.png",
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s5-seed2-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -639,13 +685,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s6-seed2-loop1.png"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s6-seed2-loop1.png",
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s6-seed2-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -664,6 +712,7 @@
       "note": null,
       "errorType": null,
       "flaky": true,
+      "behavior": "continue",
       "consoleErrors": [
         "Error fetching profiles: TypeError: Failed to fetch\n    at r (https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/database/page-515c16c95f50d97d.js:1:26650)\n    at https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/database/page-515c16c95f50d97d.js:1:3405\n    at https:",
         "Error loading skills: TypeError: Failed to fetch\n    at e (https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/database/page-515c16c95f50d97d.js:1:3261)\n    at https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/database/page-515c16c95f50d97d.js:1:3962\n    at ob (https:"
@@ -673,7 +722,8 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s1-seed3-loop1.png"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s1-seed3-loop1.png",
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s1-seed3-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -692,13 +742,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s2-seed3-loop1.png"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s2-seed3-loop1.png",
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s2-seed3-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -717,13 +769,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s3-seed3-loop1.png"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s3-seed3-loop1.png",
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s3-seed3-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -742,13 +796,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s4-seed3-loop1.png"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s4-seed3-loop1.png",
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s4-seed3-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -767,13 +823,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s5-seed3-loop1.png"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s5-seed3-loop1.png",
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s5-seed3-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -792,13 +850,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s6-seed3-loop1.png"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s6-seed3-loop1.png",
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s6-seed3-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -817,13 +877,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s1-seed1-loop1.png"
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s1-seed1-loop1.png",
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s1-seed1-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -842,13 +904,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s2-seed1-loop1.png"
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s2-seed1-loop1.png",
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s2-seed1-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -867,13 +931,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s3-seed1-loop1.png"
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s3-seed1-loop1.png",
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s3-seed1-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -892,13 +958,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s4-seed1-loop1.png"
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s4-seed1-loop1.png",
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s4-seed1-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -917,13 +985,15 @@
       "note": "open_link: followed new-tab navigation",
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Argyle Analytics Back to Database Alefiya Rangwala Mumbai Total Experience: 22 years Skills & ",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s5-seed1-loop1.png"
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s5-seed1-loop1.png",
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s5-seed1-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -942,6 +1012,7 @@
       "note": null,
       "errorType": null,
       "flaky": true,
+      "behavior": "continue",
       "consoleErrors": [
         "Error fetching profiles: TypeError: Failed to fetch\n    at r (https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/database/page-515c16c95f50d97d.js:1:26650)\n    at https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/database/page-515c16c95f50d97d.js:1:3405\n    at https:"
       ],
@@ -950,7 +1021,8 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s1-seed2-loop1.png"
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s1-seed2-loop1.png",
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s1-seed2-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -969,13 +1041,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s2-seed2-loop1.png"
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s2-seed2-loop1.png",
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s2-seed2-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -994,13 +1068,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s3-seed2-loop1.png"
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s3-seed2-loop1.png",
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s3-seed2-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1019,13 +1095,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s4-seed2-loop1.png"
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s4-seed2-loop1.png",
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s4-seed2-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1044,13 +1122,15 @@
       "note": "open_link: followed new-tab navigation",
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Argyle Analytics Back to Database Alefiya Rangwala Mumbai Total Experience: 22 years Skills & ",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s5-seed2-loop1.png"
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s5-seed2-loop1.png",
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s5-seed2-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1069,6 +1149,7 @@
       "note": null,
       "errorType": null,
       "flaky": true,
+      "behavior": "continue",
       "consoleErrors": [
         "Error fetching profiles: TypeError: Failed to fetch"
       ],
@@ -1077,7 +1158,8 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s1-seed3-loop1.png"
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s1-seed3-loop1.png",
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s1-seed3-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1096,13 +1178,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s2-seed3-loop1.png"
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s2-seed3-loop1.png",
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s2-seed3-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1121,13 +1205,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s3-seed3-loop1.png"
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s3-seed3-loop1.png",
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s3-seed3-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1146,13 +1232,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s4-seed3-loop1.png"
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s4-seed3-loop1.png",
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s4-seed3-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1171,13 +1259,15 @@
       "note": "open_link: followed new-tab navigation",
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Argyle Analytics Back to Database Alefiya Rangwala Mumbai Total Experience: 22 years Skills & ",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s5-seed3-loop1.png"
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s5-seed3-loop1.png",
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s5-seed3-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1196,13 +1286,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Analytics Total Profiles 1809 candidates in the database Avg. Experience (Est.) 10 years estim",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s1-seed1-loop1.png"
+        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s1-seed1-loop1.png",
+        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s1-seed1-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1221,13 +1313,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Analytics Total Profiles 1809 candidates in the database Avg. Experience (Est.) 10 years estim",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s2-seed1-loop1.png"
+        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s2-seed1-loop1.png",
+        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s2-seed1-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1246,6 +1340,7 @@
       "note": null,
       "errorType": null,
       "flaky": true,
+      "behavior": "continue",
       "consoleErrors": [
         "Error fetching profiles: TypeError: Failed to fetch"
       ],
@@ -1254,7 +1349,8 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Analytics Total Profiles 1809 candidates in the database Avg. Experience (Est.) 10 years estim",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s1-seed2-loop1.png"
+        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s1-seed2-loop1.png",
+        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s1-seed2-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1273,13 +1369,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Analytics Total Profiles 1809 candidates in the database Avg. Experience (Est.) 10 years estim",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s2-seed2-loop1.png"
+        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s2-seed2-loop1.png",
+        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s2-seed2-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1298,6 +1396,7 @@
       "note": null,
       "errorType": null,
       "flaky": true,
+      "behavior": "continue",
       "consoleErrors": [
         "Error fetching profiles: TypeError: Failed to fetch"
       ],
@@ -1306,7 +1405,8 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Analytics Total Profiles 1809 candidates in the database Avg. Experience (Est.) 10 years estim",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s1-seed3-loop1.png"
+        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s1-seed3-loop1.png",
+        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s1-seed3-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1325,13 +1425,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Analytics Total Profiles 1809 candidates in the database Avg. Experience (Est.) 10 years estim",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s2-seed3-loop1.png"
+        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s2-seed3-loop1.png",
+        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s2-seed3-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1350,13 +1452,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Admin Admin Dashboard Manage file updates and system operations File Update Processor Process ",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s1-seed1-loop1.png"
+        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s1-seed1-loop1.png",
+        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s1-seed1-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1375,13 +1479,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Admin Admin Dashboard Manage file updates and system operations File Update Processor Process ",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s2-seed1-loop1.png"
+        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s2-seed1-loop1.png",
+        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s2-seed1-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1400,13 +1506,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Admin Admin Dashboard Manage file updates and system operations File Update Processor Process ",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s1-seed2-loop1.png"
+        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s1-seed2-loop1.png",
+        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s1-seed2-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1425,13 +1533,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Admin Admin Dashboard Manage file updates and system operations File Update Processor Process ",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s2-seed2-loop1.png"
+        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s2-seed2-loop1.png",
+        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s2-seed2-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1450,13 +1560,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Admin Admin Dashboard Manage file updates and system operations File Update Processor Process ",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s1-seed3-loop1.png"
+        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s1-seed3-loop1.png",
+        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s1-seed3-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1475,13 +1587,15 @@
       "note": null,
       "errorType": null,
       "flaky": false,
+      "behavior": "continue",
       "consoleErrors": [],
       "consoleWarnings": [],
       "networkFailures": [],
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Admin Admin Dashboard Manage file updates and system operations File Update Processor Process ",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s2-seed3-loop1.png"
+        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s2-seed3-loop1.png",
+        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s2-seed3-loop1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,

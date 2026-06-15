@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useParams, useSearch, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import {
   PageHeader,
@@ -9,6 +9,7 @@ import {
   SeverityChip,
   Stat,
   ClientTime,
+  SEVERITY_LABEL,
 } from "@/components/ui-bits";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DimensionRollupGrid, DimensionBreakdownBanner } from "@/components/dimension-rollup";
@@ -26,6 +27,8 @@ import {
   RunNarrativePanel,
 } from "@/components/run-detail";
 import { ManualAnnotationPanel } from "@/components/manual-annotation-panel";
+import { CrawlLiveGraph } from "@/components/crawl-live-graph";
+import { JourneyStepTree, type JourneyStepTreeStep } from "@/components/journey-step-tree";
 import { ExperimentRunBanner } from "@/components/experiment-spec-panel";
 import {
   formatDuration,
@@ -34,6 +37,7 @@ import {
   bundlePersonas,
   bundleJourneys,
   cellGrade,
+  matrixGrade,
   type Severity,
   type Issue,
 } from "@/lib/mock-data";
@@ -44,7 +48,8 @@ import {
   displayAgentSummary,
 } from "@/lib/run-metrics";
 import { countIssuesForDimension, issueMatchesDimension } from "@/lib/dimension-match";
-import { useRunBundle, useRunSummaries } from "@/lib/api/hooks";
+import { useRunBundle, useRunSummaries, useTriggerJob } from "@/lib/api/hooks";
+import { getWorkspace } from "@/lib/workspace";
 import {
   Dialog,
   DialogContent,
@@ -63,13 +68,18 @@ import {
   Camera,
   MessageSquare,
   GitBranch,
+  Network,
+  RotateCcw,
 } from "lucide-react";
+import { toast } from "sonner";
 
 const searchSchema = z.object({
   tab: z.string().optional(),
   step: z.string().optional(),
   dimension: z.string().optional(),
 });
+
+type RunSearch = z.infer<typeof searchSchema>;
 
 export const Route = createFileRoute("/runs/$runId")({
   validateSearch: searchSchema,
@@ -81,6 +91,25 @@ export const Route = createFileRoute("/runs/$runId")({
 });
 
 const ALL_SEVERITIES: Severity[] = ["P0", "P1", "P2", "P3"];
+
+function formatRunId(id: string): string {
+  const m = id.match(/(\d{8})-(\d{6})$/);
+  if (!m) return id;
+  const [, date, time] = m;
+  try {
+    const dt = new Date(
+      `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6, 8)}T${time.slice(0, 2)}:${time.slice(2, 4)}:00`,
+    );
+    if (isNaN(dt.getTime())) return id;
+    return (
+      dt.toLocaleDateString("en-US", { month: "short", day: "numeric" }) +
+      " · " +
+      dt.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })
+    );
+  } catch {
+    return id;
+  }
+}
 
 function MatrixCellDialog({
   pi,
@@ -156,14 +185,26 @@ function MatrixCellDialog({
   );
 }
 
-function RunDetail() {
-  const { runId } = Route.useParams();
-  const { tab: tabSearch, step: highlightStepId, dimension: dimensionFilter } = Route.useSearch();
-  const navigate = Route.useNavigate();
+export function RunDetail() {
+  // Use strict:false so this component works from both /runs/$runId
+  // and /$workspaceSlug/runs/$runId without route-specific binding.
+  const { runId } = useParams({ strict: false }) as { runId: string };
+  const {
+    tab: tabSearch,
+    step: highlightStepId,
+    dimension: dimensionFilter,
+  } = useSearch({ strict: false }) as {
+    tab?: string;
+    step?: string;
+    dimension?: string;
+  };
+  const navigate = useNavigate();
   const { data: bundle, isLoading } = useRunBundle(runId);
   const { data: runSummaries = [] } = useRunSummaries();
   const [active, setActive] = useState<Set<Severity>>(new Set(ALL_SEVERITIES));
   const [compareRunId, setCompareRunId] = useState(runSummaries[1]?.id ?? "");
+  const trigger = useTriggerJob();
+  const wsSlug = getWorkspace()?.slug;
   const [activeTab, setActiveTab] = useState(tabSearch ?? "overview");
 
   useEffect(() => {
@@ -178,10 +219,11 @@ function RunDetail() {
 
   const selectDimension = (name: string) => {
     const next = dimensionFilter === name ? undefined : name;
+
     void navigate({
-      search: (prev) => ({ ...prev, dimension: next }),
+      search: (prev: RunSearch): RunSearch => ({ ...prev, dimension: next }),
       hash: next ? "dimension-breakdown" : undefined,
-    });
+    } as Parameters<typeof navigate>[0]);
   };
 
   const activeDimensionMeta = dimensionFilter
@@ -224,7 +266,7 @@ function RunDetail() {
     <div>
       <PageHeader
         eyebrow={`Run · ${run.env}`}
-        title={run.id}
+        title={formatRunId(run.id)}
         description={
           <>
             {run.productName} ·{" "}
@@ -252,13 +294,40 @@ function RunDetail() {
         }
         actions={
           <>
-            <Link
-              to="/compare"
-              search={{ a: runSummaries[1]?.id, b: run.id }}
-              className="text-xs px-3 py-1.5 rounded-md border border-border hover:bg-surface-2 inline-flex items-center gap-1.5"
+            <button
+              type="button"
+              disabled={trigger.isPending}
+              onClick={() => {
+                const configId = run.configId ?? run.id.replace(/-\d{8}-\d{6}$/, "");
+                trigger.mutate(
+                  { mode: "run", configPath: configId, llm: true },
+                  { onSuccess: () => toast.success("Re-run triggered — check the Runner page") },
+                );
+              }}
+              className="text-xs px-3 py-1.5 rounded-md border border-border hover:bg-surface-2 inline-flex items-center gap-1.5 disabled:opacity-40"
+              title="Re-run with the same config"
             >
-              <GitCompare className="size-3.5" /> Diff
-            </Link>
+              <RotateCcw className="size-3.5" />
+              {trigger.isPending ? "Triggering…" : "Re-run"}
+            </button>
+            {wsSlug ? (
+              <Link
+                to="/$workspaceSlug/compare"
+                params={{ workspaceSlug: wsSlug }}
+                search={{ a: runSummaries[1]?.id, b: run.id }}
+                className="text-xs px-3 py-1.5 rounded-md border border-border hover:bg-surface-2 inline-flex items-center gap-1.5"
+              >
+                <GitCompare className="size-3.5" /> Diff
+              </Link>
+            ) : (
+              <Link
+                to="/compare"
+                search={{ a: runSummaries[1]?.id, b: run.id }}
+                className="text-xs px-3 py-1.5 rounded-md border border-border hover:bg-surface-2 inline-flex items-center gap-1.5"
+              >
+                <GitCompare className="size-3.5" /> Diff
+              </Link>
+            )}
             <ExportMenu runId={run.id} bundle={bundle} />
           </>
         }
@@ -273,8 +342,8 @@ function RunDetail() {
             hint={`Band: ${run.readinessBand}`}
             title={READINESS_BAND_HELP}
           />
-          <Stat label="Blockers" value={blockerCount} hint="P0 + P1" tone="danger" />
-          <Stat label="Delights" value={run.delights} tone="ready" />
+          <Stat label="Blockers" value={blockerCount} hint="Critical + High" tone="danger" />
+          <Stat label="Highlights" value={run.delights} tone="ready" />
           <Stat
             label="Steps"
             value={run.stepCount}
@@ -296,13 +365,14 @@ function RunDetail() {
           value={activeTab}
           onValueChange={(v) => {
             setActiveTab(v);
+
             void navigate({
-              search: (prev) => ({
+              search: (prev: RunSearch): RunSearch => ({
                 ...prev,
                 tab: v === "overview" ? undefined : v,
                 step: v === "steps" ? prev.step : undefined,
               }),
-            });
+            } as Parameters<typeof navigate>[0]);
           }}
           className="space-y-4"
         >
@@ -317,6 +387,14 @@ function RunDetail() {
             <TabsTrigger value="steps" className="text-xs">
               <ListTree className="size-3 mr-1 inline" />
               Steps ({bundle.steps.length})
+            </TabsTrigger>
+            <TabsTrigger value="journeys" className="text-xs">
+              <ListTree className="size-3 mr-1 inline" />
+              Journeys
+            </TabsTrigger>
+            <TabsTrigger value="crawl-graph" className="text-xs">
+              <Network className="size-3 mr-1 inline" />
+              Crawl Graph
             </TabsTrigger>
             <TabsTrigger value="sitemap" className="text-xs">
               <GitBranch className="size-3 mr-1 inline" />
@@ -334,10 +412,63 @@ function RunDetail() {
               <MessageSquare className="size-3 mr-1 inline" />
               Annotations
             </TabsTrigger>
+            <TabsTrigger value="recordings" className="text-xs">
+              <Camera className="size-3 mr-1 inline" />
+              Recording
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-8 mt-0">
             <ExperimentRunBanner experiment={run.experiment} />
+            {run.outcome === "partial" && bundle.steps.length > 0 && (
+              <Panel className="p-4 border border-warn/30 bg-warn/5 flex items-start gap-3">
+                <span className="text-warn text-lg mt-0.5">⚠</span>
+                <div>
+                  <div className="text-sm font-semibold text-warn">
+                    Partial run — timed out or stopped early
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {bundle.steps.length} step{bundle.steps.length !== 1 ? "s" : ""} captured before
+                    the run was interrupted. Results below reflect only the completed journeys.
+                    Re-run to get the full picture.
+                  </p>
+                </div>
+              </Panel>
+            )}
+            {bundle.steps.length === 0 && (bundle.parallelErrors?.length ?? 0) > 0 && (
+              <Panel className="p-4 border border-danger/30 bg-danger/5 space-y-2">
+                <div className="text-sm font-semibold text-danger">
+                  Journey execution failed — 0 steps recorded
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Parallel browser workers threw errors. Auth cookies may not have reached workers,
+                  or Playwright threading failed. Check errors below, then restart the server and
+                  re-run.
+                </p>
+                <div className="space-y-1 max-h-48 overflow-y-auto">
+                  {bundle.parallelErrors!.map((e, i) => (
+                    <pre
+                      key={i}
+                      className="text-[10px] font-mono text-danger/80 bg-surface/60 rounded px-2 py-1 whitespace-pre-wrap"
+                    >
+                      {e}
+                    </pre>
+                  ))}
+                </div>
+              </Panel>
+            )}
+            {bundle.steps.length === 0 &&
+              (bundle.parallelErrors?.length ?? 0) === 0 &&
+              run.stepCount === 0 && (
+                <Panel className="p-4 border border-warn/30 bg-warn/5">
+                  <div className="text-sm font-semibold text-warn">0 browser steps recorded</div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Journey execution produced no step data. Common causes: auth wasn't set up
+                    (check Config → Run credentials), all journeys failed immediately, or the server
+                    wasn't restarted after a code change.
+                  </p>
+                </Panel>
+              )}
             <RunNarrativePanel runId={run.id} bundle={bundle} />
             <RunObservabilityPanel bundle={bundle} />
             <Panel className="p-4 md:p-6 overflow-x-auto">
@@ -348,9 +479,9 @@ function RunDetail() {
                     {runPersonas.length} personas × {runJourneys.length} journeys
                   </h2>
                   <p className="text-[11px] text-muted-foreground mt-2 max-w-xl">
-                    Browser steps run as the first persona (evaluator) only. P2 and P3 columns
-                    reflect the same technical journey outcome through persona-specific findings,
-                    not separate browser sessions.
+                    Browser steps run as the first persona (evaluator) only. Medium and Low severity
+                    columns reflect the same technical journey outcome through persona-specific
+                    findings, not separate browser sessions.
                   </p>
                 </div>
                 <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
@@ -407,7 +538,7 @@ function RunDetail() {
             <Panel className="p-6">
               <div className="text-xs text-muted-foreground mb-2">
                 Dimension rollup · {bundle.dimensions.filter((d) => d.automated).length} automated ·{" "}
-                {bundle.dimensions.filter((d) => !d.automated).length} Phase 2
+                {bundle.dimensions.filter((d) => !d.automated).length} estimated
               </div>
               <p className="text-[11px] text-muted-foreground mb-4 max-w-2xl">
                 {READINESS_BAND_HELP}
@@ -428,9 +559,9 @@ function RunDetail() {
                 relatedCount={countIssuesForDimension(bundle.issues, activeDimensionMeta.name)}
                 onClear={() =>
                   void navigate({
-                    search: (prev) => ({ ...prev, dimension: undefined }),
+                    search: (prev: RunSearch): RunSearch => ({ ...prev, dimension: undefined }),
                     hash: undefined,
-                  })
+                  } as Parameters<typeof navigate>[0])
                 }
               />
             )}
@@ -468,7 +599,7 @@ function RunDetail() {
                             : undefined
                         }
                       >
-                        {s} · {count}
+                        {SEVERITY_LABEL[s]} · {count}
                       </button>
                     );
                   })}
@@ -533,9 +664,7 @@ function RunDetail() {
 
             {bundle.delights.length > 0 && (
               <Panel className="p-6">
-                <div className="text-xs text-muted-foreground mb-4">
-                  Delights — required section
-                </div>
+                <div className="text-xs text-muted-foreground mb-4">Highlights</div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {bundle.delights.map((d) => (
                     <div key={d.id} className="border border-border rounded-lg p-4 bg-surface-2/30">
@@ -614,12 +743,33 @@ function RunDetail() {
 
           <TabsContent value="scorecard">
             <Panel className="overflow-hidden">
-              <ScorecardPanel markdown={bundle.scorecardMd} />
+              <ScorecardPanel markdown={bundle.scorecardMd} bundle={bundle} />
             </Panel>
           </TabsContent>
           <TabsContent value="steps">
             <Panel className="overflow-hidden">
               <StepsTable steps={bundle.steps} highlightStepId={highlightStepId} />
+            </Panel>
+          </TabsContent>
+          <TabsContent value="journeys">
+            <Panel className="p-6">
+              <div className="text-sm font-medium mb-1">Journey execution tree</div>
+              <p className="text-xs text-muted-foreground mb-4">
+                Each persona's journeys and their step-by-step outcomes. Click any row to expand.
+              </p>
+              <JourneyStepTree
+                steps={bundle.steps as unknown as JourneyStepTreeStep[]}
+                personas={runPersonas.map((p) => ({ id: p.id, name: p.name }))}
+                journeys={runJourneys.map((j) => ({ id: j.id, name: j.name }))}
+              />
+            </Panel>
+          </TabsContent>
+          <TabsContent value="crawl-graph">
+            <Panel className="p-6">
+              <div className="text-sm font-medium mb-4">
+                Crawl graph — pages discovered during crawl phase
+              </div>
+              <CrawlLiveGraph runId={run.id} phase="done" pollingMs={0} />
             </Panel>
           </TabsContent>
           <TabsContent value="sitemap">
@@ -657,6 +807,30 @@ function RunDetail() {
             <ManualAnnotationPanel runId={run.id} />
             <Panel className="overflow-hidden">
               <AnnotationsPanel runId={run.id} annotations={bundle.annotations} />
+            </Panel>
+          </TabsContent>
+          <TabsContent value="recordings">
+            <Panel className="overflow-hidden">
+              <div className="relative">
+                <div className="p-4 space-y-4 blur-sm pointer-events-none select-none opacity-50">
+                  <h3 className="text-sm font-semibold">Journey Recording</h3>
+                  <p className="text-xs text-muted-foreground">
+                    View event replay and video recordings of journeys
+                  </p>
+                  <div className="h-32 bg-surface-2 rounded-lg" />
+                </div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="bg-surface border border-border rounded-2xl px-8 py-6 text-center shadow-xl">
+                    <div className="size-12 rounded-xl bg-warn/10 border border-warn/20 flex items-center justify-center mx-auto mb-3">
+                      <Camera className="size-6 text-warn" />
+                    </div>
+                    <h3 className="font-display text-base font-semibold">Recordings Coming Soon</h3>
+                    <p className="text-xs text-muted-foreground mt-1.5 max-w-xs">
+                      rrweb session replay will be available in a future release.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </Panel>
           </TabsContent>
         </Tabs>

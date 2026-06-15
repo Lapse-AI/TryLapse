@@ -21,8 +21,44 @@ from rehearse.dashboard.job_store import (
 _run_serial_lock = threading.Lock()
 
 
-def list_jobs(artifacts_root: Path) -> list[dict[str, Any]]:
-    return _db_list_jobs(artifacts_root)
+def _try_salvage_partial_run(artifacts_root: Path, run_id_or_prefix: str | None, output_dir: Path) -> None:
+    """After a failed/timed-out run, rebuild the analysis bundle from whatever completed.
+
+    This makes partial runs show their completed steps instead of 0/0/0.
+    """
+    if not run_id_or_prefix:
+        return
+    try:
+        from rehearse.analysis_export import rebuild_bundle_from_artifacts
+        from rehearse.dashboard.store import _latest_run_id_for_prefix
+
+        # If we have an exact run_id, use it; otherwise find the latest for the prefix
+        run_id = run_id_or_prefix
+        run_file = output_dir / "runs" / f"{run_id}.json"
+        if not run_file.is_file():
+            run_id = _latest_run_id_for_prefix(output_dir, run_id_or_prefix)
+        if not run_id:
+            return
+
+        # Only rebuild if we actually have some steps recorded
+        progress_file = output_dir / "runs" / f"{run_id}-progress.json"
+        if progress_file.is_file():
+            import json as _json
+            prog = _json.loads(progress_file.read_text())
+            if prog.get("completed_journeys", 0) == 0:
+                return  # nothing to salvage
+
+        rebuild_bundle_from_artifacts(output_dir, run_id)
+    except Exception:
+        pass  # best-effort; never block the failure update
+
+
+def list_jobs(
+    artifacts_root: Path,
+    config_prefix: str | None = None,
+) -> list[dict[str, Any]]:
+    """List jobs, optionally scoped to a workspace by config filename prefix."""
+    return _db_list_jobs(artifacts_root, config_prefix=config_prefix)
 
 
 def _save_job(artifacts_root: Path, job: dict[str, Any]) -> None:
@@ -142,7 +178,7 @@ def enqueue_variant_run(
         if use_llm:
             cmd.append("--llm")
         try:
-            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=3600,
+            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=32400,
                                   env=_load_env(artifacts_root))
             if proc.returncode == 0:
                 return parse_run_id_from_cli_output(proc.stdout, proc.stderr)
@@ -252,7 +288,7 @@ def enqueue_cohort_run(
         if use_llm:
             cmd.append("--llm")
         try:
-            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=3600,
+            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=32400,
                                   env=_load_env(artifacts_root))
             if proc.returncode == 0:
                 return parse_run_id_from_cli_output(proc.stdout, proc.stderr)
@@ -408,7 +444,16 @@ def enqueue_run(
 
     def _worker() -> None:
         with _run_serial_lock:
-            _update_job(artifacts_root, job_id, {"status": "running"})
+            # Pre-assign run_id so the job record has it before the subprocess starts.
+            # This lets the frontend send pause/stop signals while the run is live.
+            pre_run_id: str | None = None
+            if mode == "run" and run_prefix:
+                from rehearse.evidence import new_run_id as _new_run_id
+                pre_run_id = _new_run_id(run_prefix)
+                _update_job(artifacts_root, job_id, {"status": "running", "runId": pre_run_id})
+            else:
+                _update_job(artifacts_root, job_id, {"status": "running"})
+
             cmd = [
                 str(rehearse_bin),
                 "crawl" if mode == "crawl" else "run",
@@ -421,12 +466,14 @@ def enqueue_run(
                 cmd.append("--llm")
             if mode == "run" and no_crawl:
                 cmd.append("--no-crawl")
+            if pre_run_id:
+                cmd.extend(["--run-id", pre_run_id])
             try:
                 proc = subprocess.run(
                     cmd,
                     capture_output=True,
                     text=True,
-                    timeout=3600,
+                    timeout=32400,
                     env=_load_env(artifacts_root),
                 )
                 if proc.returncode == 0:
@@ -444,6 +491,8 @@ def enqueue_run(
                         },
                     )
                 else:
+                    # Non-zero exit — try to salvage a partial bundle before marking failed
+                    _try_salvage_partial_run(artifacts_root, pre_run_id or run_prefix, output_dir)
                     _update_job(
                         artifacts_root,
                         job_id,
@@ -454,6 +503,8 @@ def enqueue_run(
                         },
                     )
             except Exception as exc:
+                # Timeout or crash — salvage whatever completed before marking failed
+                _try_salvage_partial_run(artifacts_root, pre_run_id or run_prefix, output_dir)
                 _update_job(
                     artifacts_root,
                     job_id,

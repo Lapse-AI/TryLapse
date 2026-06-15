@@ -96,14 +96,15 @@ export type RunSummary = {
   pages: number;
   stepCount: number;
   agentCost: number;
+  outcome?: "complete" | "dry_run_complete" | "failed" | "partial" | string | null;
   costEstimate?: {
     usd: number;
     source?: string;
     inputTokens?: number;
     outputTokens?: number;
   };
-  outcome: "complete" | "dry_run_complete" | "failed";
   configHash: string;
+  configId?: string | null;
   authAttempted?: boolean;
   authOutcome?: string;
   llmEnabled?: boolean;
@@ -318,7 +319,20 @@ export type RunBundle = {
   sitemapMd: string;
   sitemapPages: SitemapPage[];
   sitemapEdges: SitemapEdge[];
-  screenshots: { path: string; stepId: string; label: string }[];
+  screenshots: {
+    path: string;
+    stepId: string;
+    label: string;
+    action?: string;
+    intent?: string;
+    url?: string;
+    outcome?: string;
+    note?: string | null;
+    personaId?: string;
+    journeyName?: string;
+    durationMs?: number;
+    consoleErrors?: string[];
+  }[];
   annotations: Annotation[];
   personas?: Persona[];
   journeys?: Journey[];
@@ -330,6 +344,29 @@ export type RunBundle = {
     signals: string[];
   }[];
   suggestedJourneys?: SuggestedJourney[];
+  // Deep analysis engine fields
+  productModel?: Record<string, unknown>;
+  interactionMap?: {
+    buttonCount: number;
+    formCount: number;
+    apiCallCount: number;
+    errorCount: number;
+    chatbotDetected: boolean;
+  } | null;
+  behavioralJourneys?: Record<
+    string,
+    {
+      behavioral_journey_verdict: string;
+      goal_completion: string;
+      friction_score: number;
+      key_friction_points: string[];
+      ux_improvements: { type: string; finding: string; recommendation: string }[];
+      information_access_issues: string[];
+      journey_length_assessment: string;
+      behavioral_summary: string;
+    }
+  > | null;
+  parallelErrors?: string[];
 };
 
 export type Workspace = {
@@ -371,4 +408,35 @@ export type BacklogItem = {
   owner: Issue["owner"];
   fixBeforeLaunch: boolean;
   exportTargets: ("linear" | "jira" | "github")[];
+};
+
+/**
+ * A persona record stored in the global persona library (artifacts/personas.json).
+ *
+ * Mirrors the Python persona_store.py schema exactly so the two stay in sync.
+ * Fields beyond id/name/role/goals are the Phase-1 behavioral depth fields
+ * introduced in feat/deep-analysis-wiring.
+ */
+export type LibraryPersona = {
+  id: string;
+  name: string;
+  role: string;
+  goals: string[];
+  enabled: boolean;
+  /** "novice" | "intermediate" | "expert" */
+  tech_literacy: string;
+  /** "low" | "medium" | "high" */
+  patience: string;
+  /** "skeptical" | "neutral" | "trusting" */
+  trust_level: string;
+  /** Free-text psychological texture, e.g. "anxious about billing, reads every tooltip" */
+  character: string;
+  /** One sentence on how they arrive at the product */
+  usage_context: string;
+  /** User-defined filter labels */
+  tags: string[];
+  /** "manual" | "ai-generated" | "imported-from-config" */
+  source: string;
+  created_at: string;
+  updated_at: string;
 };

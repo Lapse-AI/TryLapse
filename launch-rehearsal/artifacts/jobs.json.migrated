@@ -1,0 +1,442 @@
+[
+  {
+    "id": "job_cc714f88",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "done",
+    "startedAt": "2026-06-03T14:26:48.400709+00:00",
+    "finishedAt": "2026-06-03T14:31:07.833151+00:00",
+    "runId": "lr-self-20260603-142649",
+    "error": null
+  },
+  {
+    "id": "job_10131b1f",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self-20260601-072624.yaml",
+    "status": "done",
+    "startedAt": "2026-06-02T15:41:51.865951+00:00",
+    "finishedAt": "2026-06-02T15:44:44.609055+00:00",
+    "runId": "lr-self-20260602-154152",
+    "error": null
+  },
+  {
+    "id": "job_0a2c6ead",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self-20260601-071739.yaml",
+    "status": "done",
+    "startedAt": "2026-06-01T07:26:23.671468+00:00",
+    "finishedAt": "2026-06-01T07:28:14.145897+00:00",
+    "runId": "lr-self-20260601-072624",
+    "error": null
+  },
+  {
+    "id": "job_05f26895",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self-20260601-071239.yaml",
+    "status": "done",
+    "startedAt": "2026-06-01T07:17:39.033908+00:00",
+    "finishedAt": "2026-06-01T07:19:17.111057+00:00",
+    "runId": "lr-self-20260601-071739",
+    "error": null
+  },
+  {
+    "id": "job_e8f119ee",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "done",
+    "startedAt": "2026-06-01T07:12:39.069564+00:00",
+    "finishedAt": "2026-06-01T07:14:26.691282+00:00",
+    "runId": "lr-self-20260601-071239",
+    "error": null
+  },
+  {
+    "id": "job_c85a44b1",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self-20260531-184130.yaml",
+    "status": "done",
+    "startedAt": "2026-05-31T18:45:33.590468+00:00",
+    "finishedAt": "2026-05-31T18:47:10.106718+00:00",
+    "runId": "lr-self-20260531-184533",
+    "error": null
+  },
+  {
+    "id": "job_a1e94c1c",
+    "mode": "crawl",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self-20260531-184130.yaml",
+    "status": "done",
+    "startedAt": "2026-05-31T18:45:16.910454+00:00",
+    "finishedAt": "2026-05-31T18:45:27.808624+00:00",
+    "runId": "lr-self-20260531-184517",
+    "error": null
+  },
+  {
+    "id": "job_9acdc0ea",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "done",
+    "startedAt": "2026-05-31T18:41:30.075470+00:00",
+    "finishedAt": "2026-05-31T18:43:07.066627+00:00",
+    "runId": "lr-self-20260531-184130",
+    "error": null
+  },
+  {
+    "id": "job_803d23ad",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "failed",
+    "startedAt": "2026-05-31T18:38:17.248586+00:00",
+    "finishedAt": "2026-05-31T18:38:27.728552+00:00",
+    "runId": null,
+    "error": "Interrupted \u2014 rehearse serve restarted"
+  },
+  {
+    "id": "job_b8cb1197",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "done",
+    "startedAt": "2026-05-31T18:23:30.522596+00:00",
+    "finishedAt": "2026-05-31T18:28:20.298961+00:00",
+    "runId": "lr-self-20260531-182634",
+    "error": null
+  },
+  {
+    "id": "job_05a90f3b",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "failed",
+    "startedAt": "2026-05-31T18:17:42.460782+00:00",
+    "finishedAt": "2026-05-31T18:23:18.830248+00:00",
+    "runId": null,
+    "error": "Interrupted \u2014 rehearse serve restarted"
+  },
+  {
+    "id": "job_a4d466f3",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "failed",
+    "startedAt": "2026-05-31T18:17:40.850618+00:00",
+    "finishedAt": "2026-05-31T18:23:18.830248+00:00",
+    "runId": null,
+    "error": "Interrupted \u2014 rehearse serve restarted"
+  },
+  {
+    "id": "job_38bf0a5d",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "failed",
+    "startedAt": "2026-05-31T18:17:37.769265+00:00",
+    "finishedAt": "2026-05-31T18:23:18.830248+00:00",
+    "runId": null,
+    "error": "Interrupted \u2014 rehearse serve restarted"
+  },
+  {
+    "id": "job_9bf2e9ff",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "failed",
+    "startedAt": "2026-05-31T18:17:36.802167+00:00",
+    "finishedAt": "2026-05-31T18:23:18.830248+00:00",
+    "runId": null,
+    "error": "Interrupted \u2014 rehearse serve restarted"
+  },
+  {
+    "id": "job_40c5b73b",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "failed",
+    "startedAt": "2026-05-31T18:17:28.960199+00:00",
+    "finishedAt": "2026-05-31T18:23:18.830248+00:00",
+    "runId": null,
+    "error": "Interrupted \u2014 rehearse serve restarted"
+  },
+  {
+    "id": "job_36d90829",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "failed",
+    "startedAt": "2026-05-31T18:17:28.799189+00:00",
+    "finishedAt": "2026-05-31T18:23:18.830248+00:00",
+    "runId": null,
+    "error": "Interrupted \u2014 rehearse serve restarted"
+  },
+  {
+    "id": "job_a28992a9",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "failed",
+    "startedAt": "2026-05-31T18:17:25.842519+00:00",
+    "finishedAt": "2026-05-31T18:23:18.830248+00:00",
+    "runId": null,
+    "error": "Interrupted \u2014 rehearse serve restarted"
+  },
+  {
+    "id": "job_d213d9b2",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "failed",
+    "startedAt": "2026-05-31T18:17:22.924327+00:00",
+    "finishedAt": "2026-05-31T18:23:18.830248+00:00",
+    "runId": null,
+    "error": "Interrupted \u2014 rehearse serve restarted"
+  },
+  {
+    "id": "job_229114db",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "failed",
+    "startedAt": "2026-05-31T18:17:14.238904+00:00",
+    "finishedAt": "2026-05-31T18:23:18.830248+00:00",
+    "runId": null,
+    "error": "Interrupted \u2014 rehearse serve restarted"
+  },
+  {
+    "id": "job_6b0d333b",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "failed",
+    "startedAt": "2026-05-31T18:17:13.975915+00:00",
+    "finishedAt": "2026-05-31T18:23:18.830248+00:00",
+    "runId": null,
+    "error": "Interrupted \u2014 rehearse serve restarted"
+  },
+  {
+    "id": "job_d3c15d22",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "failed",
+    "startedAt": "2026-05-31T18:17:11.643148+00:00",
+    "finishedAt": "2026-05-31T18:23:18.830248+00:00",
+    "runId": null,
+    "error": "Interrupted \u2014 rehearse serve restarted"
+  },
+  {
+    "id": "job_db10d7f7",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "failed",
+    "startedAt": "2026-05-31T18:17:06.468290+00:00",
+    "finishedAt": "2026-05-31T18:23:18.830248+00:00",
+    "runId": null,
+    "error": "Interrupted \u2014 rehearse serve restarted"
+  },
+  {
+    "id": "job_39c5ca5f",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "failed",
+    "startedAt": "2026-05-31T18:17:05.718941+00:00",
+    "finishedAt": "2026-05-31T18:23:18.830248+00:00",
+    "runId": null,
+    "error": "Interrupted \u2014 rehearse serve restarted"
+  },
+  {
+    "id": "job_5a1582c4",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "failed",
+    "startedAt": "2026-05-31T18:16:58.065385+00:00",
+    "finishedAt": "2026-05-31T18:23:18.830248+00:00",
+    "runId": null,
+    "error": "Interrupted \u2014 rehearse serve restarted"
+  },
+  {
+    "id": "job_00ca0073",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "failed",
+    "startedAt": "2026-05-31T18:16:57.560601+00:00",
+    "finishedAt": "2026-05-31T18:23:18.830248+00:00",
+    "runId": null,
+    "error": "Interrupted \u2014 rehearse serve restarted"
+  },
+  {
+    "id": "job_81093394",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "failed",
+    "startedAt": "2026-05-31T18:16:51.642476+00:00",
+    "finishedAt": "2026-05-31T18:23:18.830248+00:00",
+    "runId": null,
+    "error": "Interrupted \u2014 rehearse serve restarted"
+  },
+  {
+    "id": "job_9f275efc",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "failed",
+    "startedAt": "2026-05-31T18:16:47.318757+00:00",
+    "finishedAt": "2026-05-31T18:23:18.830248+00:00",
+    "runId": null,
+    "error": "Interrupted \u2014 rehearse serve restarted"
+  },
+  {
+    "id": "job_05dcf0f4",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "failed",
+    "startedAt": "2026-05-31T18:15:37.613129+00:00",
+    "finishedAt": "2026-05-31T18:22:55.412089+00:00",
+    "runId": null,
+    "error": "Expecting value: line 1 column 1 (char 0)"
+  },
+  {
+    "id": "job_d70171b7",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "done",
+    "startedAt": "2026-05-31T18:15:36.487160+00:00",
+    "finishedAt": "2026-05-31T18:22:54.843117+00:00",
+    "runId": "lr-self-20260531-181536",
+    "error": null
+  },
+  {
+    "id": "job_aae942e0",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "failed",
+    "startedAt": "2026-05-31T18:15:31.927461+00:00",
+    "finishedAt": "2026-05-31T18:23:18.830248+00:00",
+    "runId": null,
+    "error": "Interrupted \u2014 rehearse serve restarted"
+  },
+  {
+    "id": "job_a1fc186b",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "failed",
+    "startedAt": "2026-05-31T18:15:30.987899+00:00",
+    "finishedAt": "2026-05-31T18:23:18.830248+00:00",
+    "runId": null,
+    "error": "Interrupted \u2014 rehearse serve restarted"
+  },
+  {
+    "id": "job_13be77b2",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "done",
+    "startedAt": "2026-05-31T18:15:26.642817+00:00",
+    "finishedAt": "2026-05-31T18:21:44.838525+00:00",
+    "runId": "lr-self-20260531-181526",
+    "error": null
+  },
+  {
+    "id": "job_69dc1e0f",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "done",
+    "startedAt": "2026-05-31T18:15:25.193212+00:00",
+    "finishedAt": "2026-05-31T18:21:35.054556+00:00",
+    "runId": "lr-self-20260531-181525",
+    "error": null
+  },
+  {
+    "id": "job_e6cdf065",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "failed",
+    "startedAt": "2026-05-31T18:14:31.019213+00:00",
+    "finishedAt": "2026-05-31T18:16:34.104245+00:00",
+    "runId": null,
+    "error": "ks/Python.framework/Versions/3.14/lib/python3.14/json/decoder.py\", line 345, in decode\n    obj, end = self.raw_decode(s, idx=_w(s, 0).end())\n               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/homebrew/Cellar/python@3.14/3.14.4/Frameworks/Python.framework/Versions/3.14/lib/python3.14/json/decoder.py\", line 361, in raw_decode\n    obj, end = self.scan_once(s, idx)\n               ~~~~~~~~~~~~~~^^^^^^^^\njson.decoder.JSONDecodeError: Expecting ',' delimiter: line 9 column 4 (char 337)\n"
+  },
+  {
+    "id": "job_91e747d4",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "done",
+    "startedAt": "2026-05-31T18:14:27.833715+00:00",
+    "finishedAt": "2026-05-31T18:16:42.094584+00:00",
+    "runId": "lr-self-20260531-181428",
+    "error": null
+  },
+  {
+    "id": "job_5933676e",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "failed",
+    "startedAt": "2026-05-31T17:52:06.695760+00:00",
+    "finishedAt": "2026-05-31T17:52:07.161288+00:00",
+    "runId": null,
+    "error": "e/launch-rehearsal/src/rehearse/agents/__init__.py\", line 3, in <module>\n    from rehearse.agents.orchestrator import AgentOrchestrator\n  File \"/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/src/rehearse/agents/orchestrator.py\", line 8, in <module>\n    from rehearse.agents.journey_agent import JourneyAgent\n  File \"/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/src/rehearse/agents/journey_agent.py\", line 27\n    *,\n    ^\nSyntaxError: * argument may appear only once\n"
+  },
+  {
+    "id": "job_ca4470fc",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "failed",
+    "startedAt": "2026-05-31T17:43:05.451310+00:00",
+    "finishedAt": "2026-05-31T17:43:05.715198+00:00",
+    "runId": null,
+    "error": "Error [ConfigError]: Expected 5 journeys, got 6\n"
+  },
+  {
+    "id": "job_4a01c034",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "failed",
+    "startedAt": "2026-05-31T17:36:14.517327+00:00",
+    "finishedAt": "2026-05-31T17:36:15.280321+00:00",
+    "runId": null,
+    "error": "Error [ConfigError]: Expected 5 journeys, got 6\n"
+  },
+  {
+    "id": "job_349020f3",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "done",
+    "startedAt": "2026-05-31T05:00:19.955851+00:00",
+    "finishedAt": "2026-05-31T05:01:28.086682+00:00",
+    "runId": "lr-self-20260531-050020",
+    "error": null
+  },
+  {
+    "id": "job_65a65d84",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self-20260531-042429.yaml",
+    "status": "done",
+    "startedAt": "2026-05-31T04:58:22.671649+00:00",
+    "finishedAt": "2026-05-31T04:59:33.533984+00:00",
+    "runId": "lr-self-20260531-045823",
+    "error": null
+  },
+  {
+    "id": "job_be0c5814",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "failed",
+    "startedAt": "2026-05-31T04:54:51.161608+00:00",
+    "finishedAt": "2026-05-31T04:55:22.626660+00:00",
+    "runId": null,
+    "error": "/src/rehearse/agents/crawl_agent.py\", line 40, in execute\n    ctx.sitemap = SiteMap.from_pages(ctx.config.target_url, pages)\n                  ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/src/rehearse/sitemap.py\", line 46, in from_pages\n    error_paths = [p.path for p in pages if page_has_crawl_error(p)]\n                                            ^^^^^^^^^^^^^^^^^^^^\nNameError: name 'page_has_crawl_error' is not defined\n"
+  },
+  {
+    "id": "job_c30fdeb6",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/lr-self.yaml",
+    "status": "done",
+    "startedAt": "2026-05-31T04:24:29.447150+00:00",
+    "finishedAt": "2026-05-31T04:25:33.026963+00:00",
+    "runId": null,
+    "error": null
+  },
+  {
+    "id": "job_af399512",
+    "mode": "run",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/enterprise-20260530-234231.yaml",
+    "status": "done",
+    "startedAt": "2026-05-30T23:44:59.129899+00:00",
+    "finishedAt": "2026-05-30T23:45:44.837222+00:00",
+    "runId": null,
+    "error": null
+  },
+  {
+    "id": "job_f84c1425",
+    "mode": "crawl",
+    "config": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/enterprise-20260530-234231.yaml",
+    "status": "done",
+    "startedAt": "2026-05-30T23:44:57.934129+00:00",
+    "finishedAt": "2026-05-30T23:45:14.470857+00:00",
+    "runId": null,
+    "error": null
+  }
+]

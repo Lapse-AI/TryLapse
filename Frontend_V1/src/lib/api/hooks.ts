@@ -1,7 +1,14 @@
 import { useEffect, useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type { Annotation, RunBundle, RunDiff, RunSummary, Workspace } from "@/lib/mock-data/types";
+import type {
+  Annotation,
+  LibraryPersona,
+  RunBundle,
+  RunDiff,
+  RunSummary,
+  Workspace,
+} from "@/lib/mock-data/types";
 import {
   getLatestRun as mockLatest,
   getRunBundle as mockBundle,
@@ -23,6 +30,7 @@ import { allowsMockFallback } from "@/lib/ui-mode";
 import { jobMatchesTestGroup, runMatchesTestGroup } from "@/lib/test-groups";
 import { getTestGroupId } from "@/lib/test-auth";
 import { getTestGroup } from "@/lib/test-groups";
+import { getWorkspace } from "@/lib/workspace";
 import { api, checkApiHealth, type JobRecord } from "./client";
 
 export type { JobRecord };
@@ -39,7 +47,7 @@ export const queryKeys = {
   summaries: ["rehearse", "summaries"] as const,
   bundle: (id: string) => ["rehearse", "bundle", id] as const,
   diff: (a: string, b: string) => ["rehearse", "diff", a, b] as const,
-  trends: ["rehearse", "trends"] as const,
+  trends: (prefix?: string) => ["rehearse", "trends", prefix ?? ""] as const,
   digest: (n: number) => ["rehearse", "digest", n] as const,
   search: (q: string) => ["rehearse", "search", q] as const,
   workspace: ["rehearse", "workspace"] as const,
@@ -50,6 +58,8 @@ export const queryKeys = {
   init: ["rehearse", "init"] as const,
   jobs: ["rehearse", "jobs"] as const,
   configs: ["rehearse", "configs"] as const,
+  personaLibrary: ["rehearse", "persona-library"] as const,
+  personaLibraryItem: (id: string) => ["rehearse", "persona-library", id] as const,
 };
 
 export function useApiHealth() {
@@ -76,17 +86,67 @@ export function useRunSummaries() {
   });
 }
 
-/** Runs for the active test group (Cal.com, Argyle, self-test, staging). */
+/** Runs scoped to the active workspace or test group. */
 export function useScopedRunSummaries() {
   const { data: all = [], ...rest } = useRunSummaries();
+  const userWorkspace = getWorkspace();
+
+  if (userWorkspace) {
+    // Real workspace: filter by matching target URL host
+    const wsHost = (() => {
+      try {
+        return new URL(userWorkspace.targetUrl).hostname;
+      } catch {
+        return "";
+      }
+    })();
+    const scoped = all.filter((r) => {
+      if (!r.targetUrl) return false;
+      try {
+        return new URL(r.targetUrl).hostname === wsHost;
+      } catch {
+        return false;
+      }
+    });
+    const group = getTestGroup(getTestGroupId());
+    return { data: scoped, allRuns: all, group, ...rest };
+  }
+
+  // Demo/test mode: filter by test group
   const group = getTestGroup(getTestGroupId());
   const scoped = all.filter((r) => runMatchesTestGroup(r, group));
   return { data: scoped, allRuns: all, group, ...rest };
 }
 
-/** Active jobs (queued/running) for the current product — shown in Run history before the run exists. */
+/** Active jobs (queued/running) scoped to the active workspace or test group. */
 export function useScopedActiveJobs() {
   const { data: jobs = [], ...rest } = useJobs();
+  const userWorkspace = getWorkspace();
+
+  if (userWorkspace) {
+    const wsHost = (() => {
+      try {
+        return new URL(userWorkspace.targetUrl).hostname;
+      } catch {
+        return "";
+      }
+    })();
+    const active = jobs.filter((j) => {
+      if (j.status !== "queued" && j.status !== "running") return false;
+      if (!j.config) return false;
+      // Match jobs whose target host aligns with workspace
+      try {
+        return (j as { targetUrl?: string }).targetUrl
+          ? new URL((j as { targetUrl?: string }).targetUrl!).hostname === wsHost
+          : true;
+      } catch {
+        return true;
+      }
+    });
+    const group = getTestGroup(getTestGroupId());
+    return { data: active, group, ...rest };
+  }
+
   const group = getTestGroup(getTestGroupId());
   const active = jobs.filter(
     (j) => (j.status === "queued" || j.status === "running") && jobMatchesTestGroup(j, group),
@@ -160,10 +220,14 @@ export function useCommandDigest(n = 7) {
 export function useTrends() {
   const health = useApiHealth();
   const live = health.data === true;
+  const ws = getWorkspace();
+  const configPrefix = ws?.configPath
+    ? (ws.configPath.split("/").pop() ?? "").replace(/\.ya?ml$/i, "").split("-")[0] || undefined
+    : undefined;
   return useQuery({
-    queryKey: queryKeys.trends,
+    queryKey: queryKeys.trends(configPrefix),
     queryFn: async () => {
-      if (live) return api.trends();
+      if (live) return api.trends(configPrefix);
       if (mockAllowed(live)) {
         return {
           readiness: mockReadinessTrend,
@@ -181,8 +245,9 @@ export function useTrends() {
       return { readiness: [], pages: [], flakeRate: [], runIds: [], labels: [] };
     },
     enabled: health.isSuccess && (live || allowsMockFallback()),
-    staleTime: NARRATIVE_STALE_MS,
-    refetchOnWindowFocus: false,
+    staleTime: 2 * 60 * 1000,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
   });
 }
 
@@ -282,6 +347,27 @@ function jobsHaveActive(jobs: JobRecord[] | undefined): boolean {
   return (jobs ?? []).some((j) => j.status === "queued" || j.status === "running");
 }
 
+function requestNotificationPermission() {
+  if ("Notification" in window && Notification.permission === "default") {
+    void Notification.requestPermission();
+  }
+}
+
+function fireRunNotification(title: string, body: string, runId?: string) {
+  if (!("Notification" in window) || Notification.permission !== "granted") return;
+  const n = new Notification(title, {
+    body,
+    icon: "/favicon.ico",
+    tag: runId ?? "rehearsal-run",
+  });
+  if (runId) {
+    n.onclick = () => {
+      window.focus();
+      window.location.href = `/runs/${runId}`;
+    };
+  }
+}
+
 export function useJobs() {
   const health = useApiHealth();
   const qc = useQueryClient();
@@ -311,8 +397,14 @@ export function useJobs() {
           toast.success(`Run finished: ${j.runId}`, {
             action: { label: "Open", onClick: () => (window.location.href = `/runs/${j.runId}`) },
           });
+          fireRunNotification(
+            "Rehearsal complete",
+            `Run ${j.runId} finished. Open to view the scorecard.`,
+            j.runId,
+          );
         } else if (now === "failed") {
           toast.error(j.error?.slice(0, 120) || `Job ${j.id} failed`);
+          fireRunNotification("Rehearsal failed", j.error?.slice(0, 100) || `Job ${j.id} failed`);
         }
         refreshedRuns = true;
       }
@@ -321,7 +413,7 @@ export function useJobs() {
 
     if (refreshedRuns) {
       void qc.invalidateQueries({ queryKey: queryKeys.summaries });
-      void qc.invalidateQueries({ queryKey: queryKeys.trends });
+      void qc.invalidateQueries({ queryKey: ["rehearse", "trends"] });
       void qc.invalidateQueries({ queryKey: ["rehearse", "digest"] });
     }
   }, [query.data, qc]);
@@ -332,10 +424,19 @@ export function useJobs() {
 export function useTriggerJob() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: api.triggerJob,
+    mutationFn: (body: Parameters<typeof api.triggerJob>[0]) => {
+      // Inject workspace configPath so the run targets the user's product, not the demo config
+      const ws = getWorkspace();
+      if (ws?.configPath && !body.configPath) {
+        return api.triggerJob({ ...body, configPath: ws.configPath });
+      }
+      return api.triggerJob(body);
+    },
     onSuccess: (job) => {
       toast.info(`Job ${job.status}: ${job.id}`, { description: "Watch status on Runner" });
       void qc.invalidateQueries({ queryKey: queryKeys.jobs });
+      // Ask permission to send an OS notification when this run completes
+      requestNotificationPermission();
     },
     onError: (err) => {
       toast.error(err instanceof Error ? err.message : "Could not start job");
@@ -377,5 +478,83 @@ export function useAddAnnotation(runId: string) {
   return useMutation({
     mutationFn: (ann: Annotation) => api.addAnnotation(runId, ann),
     onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.bundle(runId) }),
+  });
+}
+
+// ── Persona Library hooks ───────────────────────────────────────────────────
+// These hit /api/persona-library, a workspace-global persona store that
+// lives in artifacts/personas.json.  Personas saved here can be imported
+// into any config without re-describing them from scratch.
+
+/** Fetch all library personas.  Polls every 60s to stay fresh. */
+export function usePersonaLibrary() {
+  const health = useApiHealth();
+  return useQuery({
+    queryKey: queryKeys.personaLibrary,
+    queryFn: () => api.listPersonaLibrary(),
+    enabled: health.data === true,
+    staleTime: 60_000,
+  });
+}
+
+/** Save (create or update) a persona in the library. */
+export function useSavePersonaLibrary() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (p: Partial<LibraryPersona> & { name: string; role: string }) =>
+      api.savePersonaLibrary(p),
+    onSuccess: (saved) => {
+      void qc.invalidateQueries({ queryKey: queryKeys.personaLibrary });
+      void qc.invalidateQueries({ queryKey: queryKeys.personaLibraryItem(saved.id) });
+      toast.success(`Persona "${saved.name}" saved to library`);
+    },
+  });
+}
+
+/** AI-generate a rich behavioral persona and optionally save it. */
+export function useGeneratePersona() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: {
+      prompt: string;
+      productName?: string;
+      targetUrl?: string;
+      save?: boolean;
+    }) => api.generatePersonaLibrary(body),
+    onSuccess: (result, variables) => {
+      if (variables.save) {
+        void qc.invalidateQueries({ queryKey: queryKeys.personaLibrary });
+        toast.success(`Persona "${result.persona.name}" generated and saved`);
+      }
+    },
+    onError: (err) => {
+      toast.error(err instanceof Error ? err.message : "Generation failed");
+    },
+  });
+}
+
+/** Bulk-import all personas from a config into the library. */
+export function useImportPersonasFromConfig() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (configId: string) => api.importPersonasFromConfig(configId),
+    onSuccess: (result) => {
+      void qc.invalidateQueries({ queryKey: queryKeys.personaLibrary });
+      toast.success(
+        `Imported ${result.imported} persona${result.imported !== 1 ? "s" : ""} into library`,
+      );
+    },
+  });
+}
+
+/** Delete a persona from the library. */
+export function useDeletePersonaLibrary() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.deletePersonaLibrary(id),
+    onSuccess: (_, id) => {
+      void qc.invalidateQueries({ queryKey: queryKeys.personaLibrary });
+      void qc.invalidateQueries({ queryKey: queryKeys.personaLibraryItem(id) });
+    },
   });
 }

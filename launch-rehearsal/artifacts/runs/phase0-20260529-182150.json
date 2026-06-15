@@ -1,0 +1,248 @@
+{
+  "run_id": "phase0-20260529-182150",
+  "target_url": "https://cal.com",
+  "started_at": "2026-05-29T18:21:50.966661+00:00",
+  "steps": [
+    {
+      "step_id": "j1-land-value-p1-jordan-s1",
+      "journey_id": "j1-land-value",
+      "persona_id": "p1-jordan",
+      "action": "navigate",
+      "url": "https://cal.com/",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j2-start-signup-p1-jordan-s1",
+      "journey_id": "j2-start-signup",
+      "persona_id": "p1-jordan",
+      "action": "navigate",
+      "url": "https://cal.com/",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j2-start-signup-p1-jordan-s2",
+      "journey_id": "j2-start-signup",
+      "persona_id": "p1-jordan",
+      "action": "click",
+      "url": null,
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j3-explore-depth-p1-jordan-s1",
+      "journey_id": "j3-explore-depth",
+      "persona_id": "p1-jordan",
+      "action": "navigate",
+      "url": "https://cal.com/",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j3-explore-depth-p1-jordan-s2",
+      "journey_id": "j3-explore-depth",
+      "persona_id": "p1-jordan",
+      "action": "click",
+      "url": null,
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j4-pricing-p1-jordan-s1",
+      "journey_id": "j4-pricing",
+      "persona_id": "p1-jordan",
+      "action": "navigate",
+      "url": "https://cal.com/pricing",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j5-return-nav-p1-jordan-s1",
+      "journey_id": "j5-return-nav",
+      "persona_id": "p1-jordan",
+      "action": "navigate",
+      "url": "https://cal.com/pricing",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j5-return-nav-p1-jordan-s2",
+      "journey_id": "j5-return-nav",
+      "persona_id": "p1-jordan",
+      "action": "navigate",
+      "url": "https://cal.com/",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j1-land-value-p2-sam-s1",
+      "journey_id": "j1-land-value",
+      "persona_id": "p2-sam",
+      "action": "navigate",
+      "url": "https://cal.com/",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j2-start-signup-p2-sam-s1",
+      "journey_id": "j2-start-signup",
+      "persona_id": "p2-sam",
+      "action": "navigate",
+      "url": "https://cal.com/",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j2-start-signup-p2-sam-s2",
+      "journey_id": "j2-start-signup",
+      "persona_id": "p2-sam",
+      "action": "click",
+      "url": null,
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j3-explore-depth-p2-sam-s1",
+      "journey_id": "j3-explore-depth",
+      "persona_id": "p2-sam",
+      "action": "navigate",
+      "url": "https://cal.com/",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j3-explore-depth-p2-sam-s2",
+      "journey_id": "j3-explore-depth",
+      "persona_id": "p2-sam",
+      "action": "click",
+      "url": null,
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j4-pricing-p2-sam-s1",
+      "journey_id": "j4-pricing",
+      "persona_id": "p2-sam",
+      "action": "navigate",
+      "url": "https://cal.com/pricing",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j5-return-nav-p2-sam-s1",
+      "journey_id": "j5-return-nav",
+      "persona_id": "p2-sam",
+      "action": "navigate",
+      "url": "https://cal.com/pricing",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j5-return-nav-p2-sam-s2",
+      "journey_id": "j5-return-nav",
+      "persona_id": "p2-sam",
+      "action": "navigate",
+      "url": "https://cal.com/",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j1-land-value-p3-alex-s1",
+      "journey_id": "j1-land-value",
+      "persona_id": "p3-alex",
+      "action": "navigate",
+      "url": "https://cal.com/",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j2-start-signup-p3-alex-s1",
+      "journey_id": "j2-start-signup",
+      "persona_id": "p3-alex",
+      "action": "navigate",
+      "url": "https://cal.com/",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j2-start-signup-p3-alex-s2",
+      "journey_id": "j2-start-signup",
+      "persona_id": "p3-alex",
+      "action": "click",
+      "url": null,
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j3-explore-depth-p3-alex-s1",
+      "journey_id": "j3-explore-depth",
+      "persona_id": "p3-alex",
+      "action": "navigate",
+      "url": "https://cal.com/",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j3-explore-depth-p3-alex-s2",
+      "journey_id": "j3-explore-depth",
+      "persona_id": "p3-alex",
+      "action": "click",
+      "url": null,
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j4-pricing-p3-alex-s1",
+      "journey_id": "j4-pricing",
+      "persona_id": "p3-alex",
+      "action": "navigate",
+      "url": "https://cal.com/pricing",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j5-return-nav-p3-alex-s1",
+      "journey_id": "j5-return-nav",
+      "persona_id": "p3-alex",
+      "action": "navigate",
+      "url": "https://cal.com/pricing",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    },
+    {
+      "step_id": "j5-return-nav-p3-alex-s2",
+      "journey_id": "j5-return-nav",
+      "persona_id": "p3-alex",
+      "action": "navigate",
+      "url": "https://cal.com/",
+      "outcome": "skipped",
+      "artifact_paths": [],
+      "note": "dry-run: browser not invoked"
+    }
+  ],
+  "outcome": "dry_run_complete"
+}

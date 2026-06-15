@@ -1,0 +1,2770 @@
+{
+  "summary": {
+    "id": "lr-self-20260531-045823",
+    "productName": "Launch Rehearsal Dashboard",
+    "target": "127.0.0.1:8081",
+    "targetUrl": "http://127.0.0.1:8081",
+    "env": "staging",
+    "workspaceId": "ws_default",
+    "startedAt": "2026-05-31T04:58:23.182499+00:00",
+    "finishedAt": "2026-05-31T04:59:32.994656+00:00",
+    "durationSec": 69,
+    "readiness": 95,
+    "readinessBand": "Green",
+    "status": "ready",
+    "blockers": 0,
+    "issues": 0,
+    "delights": 3,
+    "pages": 35,
+    "pagesCrawled": 35,
+    "stepCount": 13,
+    "agentCost": 0.1431,
+    "costEstimate": {
+      "usd": 0.1431,
+      "source": "heuristic",
+      "inputTokens": null,
+      "outputTokens": null,
+      "totalTokens": null,
+      "durationSec": 69,
+      "agentsRun": 0
+    },
+    "outcome": "complete",
+    "configHash": "841b83",
+    "agentsRun": 0,
+    "authAttempted": false,
+    "authOutcome": null,
+    "llmEnabled": false,
+    "crawlEnabled": true,
+    "orphans": 0,
+    "authGated": 0,
+    "networkLogPath": null,
+    "webVitalsPath": null,
+    "experiment": null
+  },
+  "steps": [
+    {
+      "stepId": "j1-command-center-p1-evaluator-s1-seed1-loop1",
+      "journeyId": "j1-command-center",
+      "journeyName": "Command center",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/",
+      "finalUrl": "http://127.0.0.1:8081/",
+      "outcome": "pass",
+      "durationMs": 965,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
+      "artifactPaths": [
+        "artifacts/lr-self-20260531-045823/j1-command-center-p1-evaluator-s1-seed1-loop1.png",
+        "artifacts/lr-self-20260531-045823/j1-command-center-p1-evaluator-s1-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j1-command-center-p1-evaluator-s2-seed1-loop1",
+      "journeyId": "j1-command-center",
+      "journeyName": "Command center",
+      "personaId": "p1-evaluator",
+      "action": "wait",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/",
+      "outcome": "pass",
+      "durationMs": 2642,
+      "note": null,
+      "errorType": null,
+      "flaky": true,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
+      "artifactPaths": [
+        "artifacts/lr-self-20260531-045823/j1-command-center-p1-evaluator-s2-seed1-loop1.png",
+        "artifacts/lr-self-20260531-045823/j1-command-center-p1-evaluator-s2-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j2-runs-p1-evaluator-s1-seed1-loop1",
+      "journeyId": "j2-runs",
+      "journeyName": "Runs list",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/runs",
+      "finalUrl": "http://127.0.0.1:8081/runs",
+      "outcome": "pass",
+      "durationMs": 891,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
+      "artifactPaths": [
+        "artifacts/lr-self-20260531-045823/j2-runs-p1-evaluator-s1-seed1-loop1.png",
+        "artifacts/lr-self-20260531-045823/j2-runs-p1-evaluator-s1-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j2-runs-p1-evaluator-s2-seed1-loop1",
+      "journeyId": "j2-runs",
+      "journeyName": "Runs list",
+      "personaId": "p1-evaluator",
+      "action": "wait",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/runs",
+      "outcome": "pass",
+      "durationMs": 2118,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
+      "artifactPaths": [
+        "artifacts/lr-self-20260531-045823/j2-runs-p1-evaluator-s2-seed1-loop1.png",
+        "artifacts/lr-self-20260531-045823/j2-runs-p1-evaluator-s2-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j3-compare-p1-evaluator-s1-seed1-loop1",
+      "journeyId": "j3-compare",
+      "journeyName": "Compare runs",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/compare",
+      "finalUrl": "http://127.0.0.1:8081/compare",
+      "outcome": "pass",
+      "durationMs": 789,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
+      "artifactPaths": [
+        "artifacts/lr-self-20260531-045823/j3-compare-p1-evaluator-s1-seed1-loop1.png",
+        "artifacts/lr-self-20260531-045823/j3-compare-p1-evaluator-s1-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j3-compare-p1-evaluator-s2-seed1-loop1",
+      "journeyId": "j3-compare",
+      "journeyName": "Compare runs",
+      "personaId": "p1-evaluator",
+      "action": "wait",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/compare",
+      "outcome": "pass",
+      "durationMs": 2067,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
+      "artifactPaths": [
+        "artifacts/lr-self-20260531-045823/j3-compare-p1-evaluator-s2-seed1-loop1.png",
+        "artifacts/lr-self-20260531-045823/j3-compare-p1-evaluator-s2-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j4-init-p1-evaluator-s1-seed1-loop1",
+      "journeyId": "j4-init",
+      "journeyName": "Init wizard",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/init",
+      "finalUrl": "http://127.0.0.1:8081/init",
+      "outcome": "pass",
+      "durationMs": 854,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
+      "artifactPaths": [
+        "artifacts/lr-self-20260531-045823/j4-init-p1-evaluator-s1-seed1-loop1.png",
+        "artifacts/lr-self-20260531-045823/j4-init-p1-evaluator-s1-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j4-init-p1-evaluator-s2-seed1-loop1",
+      "journeyId": "j4-init",
+      "journeyName": "Init wizard",
+      "personaId": "p1-evaluator",
+      "action": "wait",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/init",
+      "outcome": "pass",
+      "durationMs": 2085,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
+      "artifactPaths": [
+        "artifacts/lr-self-20260531-045823/j4-init-p1-evaluator-s2-seed1-loop1.png",
+        "artifacts/lr-self-20260531-045823/j4-init-p1-evaluator-s2-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j5-runner-p1-evaluator-s1-seed1-loop1",
+      "journeyId": "j5-runner",
+      "journeyName": "Runner triggers",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/runner",
+      "finalUrl": "http://127.0.0.1:8081/runner",
+      "outcome": "pass",
+      "durationMs": 725,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
+      "artifactPaths": [
+        "artifacts/lr-self-20260531-045823/j5-runner-p1-evaluator-s1-seed1-loop1.png",
+        "artifacts/lr-self-20260531-045823/j5-runner-p1-evaluator-s1-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "j5-runner-p1-evaluator-s2-seed1-loop1",
+      "journeyId": "j5-runner",
+      "journeyName": "Runner triggers",
+      "personaId": "p1-evaluator",
+      "action": "wait",
+      "requestedUrl": null,
+      "finalUrl": "http://127.0.0.1:8081/runner",
+      "outcome": "pass",
+      "durationMs": 2087,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
+      "artifactPaths": [
+        "artifacts/lr-self-20260531-045823/j5-runner-p1-evaluator-s2-seed1-loop1.png",
+        "artifacts/lr-self-20260531-045823/j5-runner-p1-evaluator-s2-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "auto-j1-dashboard-p1-evaluator-s1-seed1-loop1",
+      "journeyId": "auto-j1-dashboard",
+      "journeyName": "Auto: Dashboard",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/config",
+      "finalUrl": "http://127.0.0.1:8081/config",
+      "outcome": "pass",
+      "durationMs": 821,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
+      "artifactPaths": [
+        "artifacts/lr-self-20260531-045823/auto-j1-dashboard-p1-evaluator-s1-seed1-loop1.png",
+        "artifacts/lr-self-20260531-045823/auto-j1-dashboard-p1-evaluator-s1-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "auto-j4-explore-p1-evaluator-s1-seed1-loop1",
+      "journeyId": "auto-j4-explore",
+      "journeyName": "Auto: Explore /recommendations",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/recommendations",
+      "finalUrl": "http://127.0.0.1:8081/recommendations",
+      "outcome": "pass",
+      "durationMs": 756,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
+      "artifactPaths": [
+        "artifacts/lr-self-20260531-045823/auto-j4-explore-p1-evaluator-s1-seed1-loop1.png",
+        "artifacts/lr-self-20260531-045823/auto-j4-explore-p1-evaluator-s1-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    },
+    {
+      "stepId": "auto-j5-explore-p1-evaluator-s1-seed1-loop1",
+      "journeyId": "auto-j5-explore",
+      "journeyName": "Auto: Explore /runs/argyle-20260530-235539",
+      "personaId": "p1-evaluator",
+      "action": "navigate",
+      "requestedUrl": "http://127.0.0.1:8081/runs/argyle-20260530-235539",
+      "finalUrl": "http://127.0.0.1:8081/runs/argyle-20260530-235539",
+      "outcome": "pass",
+      "durationMs": 782,
+      "note": null,
+      "errorType": null,
+      "flaky": false,
+      "behavior": "continue",
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "webVitals": {},
+      "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
+      "artifactPaths": [
+        "artifacts/lr-self-20260531-045823/auto-j5-explore-p1-evaluator-s1-seed1-loop1.png",
+        "artifacts/lr-self-20260531-045823/auto-j5-explore-p1-evaluator-s1-seed1-loop1.txt"
+      ],
+      "exploreLog": [],
+      "exploreSummary": null,
+      "focusRegion": null
+    }
+  ],
+  "issues": [],
+  "delights": [
+    {
+      "id": "D1",
+      "runId": "lr-self-20260531-045823",
+      "title": "Clear navigation structure",
+      "quote": "Page has 16 links and 1 headings.",
+      "persona": "First-time evaluator",
+      "journey": "auto-j1-dashboard",
+      "stepId": "auto-j1-dashboard-p1-evaluator-s1-seed1-loop1",
+      "marketingReady": true,
+      "confidence": "high"
+    },
+    {
+      "id": "D2",
+      "runId": "lr-self-20260531-045823",
+      "title": "Informative landing content",
+      "quote": "Page includes headings and substantive body copy for first-time evaluators.",
+      "persona": "First-time evaluator",
+      "journey": "auto-j1-dashboard",
+      "stepId": "auto-j1-dashboard-p1-evaluator-s1-seed1-loop1",
+      "marketingReady": true,
+      "confidence": "high"
+    },
+    {
+      "id": "D3",
+      "runId": "lr-self-20260531-045823",
+      "title": "Accessible form labels",
+      "quote": "All 2 form inputs have labels or placeholders.",
+      "persona": "Admin / buyer",
+      "journey": "auto-j4-explore",
+      "stepId": "auto-j4-explore-p1-evaluator-s1-seed1-loop1",
+      "marketingReady": true,
+      "confidence": "high"
+    }
+  ],
+  "agents": [
+    {
+      "id": "ag_compl",
+      "runId": "lr-self-20260531-045823",
+      "name": "Compliance",
+      "role": "PII, auth boundary signals (Phase 2)",
+      "phase": "compliance",
+      "status": "idle",
+      "durationSec": 0,
+      "costUsd": 0,
+      "lastSummary": "Not enabled for this run."
+    },
+    {
+      "id": "ag_perf",
+      "runId": "lr-self-20260531-045823",
+      "name": "Performance",
+      "role": "Latency, Web Vitals (Phase 2)",
+      "phase": "performance",
+      "status": "idle",
+      "durationSec": 0,
+      "costUsd": 0,
+      "lastSummary": "Not enabled for this run."
+    }
+  ],
+  "matrix": [
+    {
+      "personaId": "p1-evaluator",
+      "journeyId": "j1-command-center",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p2-operator",
+      "journeyId": "j1-command-center",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p3-admin",
+      "journeyId": "j1-command-center",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p1-evaluator",
+      "journeyId": "j2-runs",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p2-operator",
+      "journeyId": "j2-runs",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p3-admin",
+      "journeyId": "j2-runs",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p1-evaluator",
+      "journeyId": "j3-compare",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p2-operator",
+      "journeyId": "j3-compare",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p3-admin",
+      "journeyId": "j3-compare",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p1-evaluator",
+      "journeyId": "j4-init",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p2-operator",
+      "journeyId": "j4-init",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p3-admin",
+      "journeyId": "j4-init",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p1-evaluator",
+      "journeyId": "j5-runner",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p2-operator",
+      "journeyId": "j5-runner",
+      "grade": "pass"
+    },
+    {
+      "personaId": "p3-admin",
+      "journeyId": "j5-runner",
+      "grade": "pass"
+    }
+  ],
+  "dimensions": [
+    {
+      "name": "Functionality",
+      "score": 100,
+      "signal": "100% steps pass; 0 failures",
+      "automated": true
+    },
+    {
+      "name": "UI/UX",
+      "score": 100,
+      "signal": "0 unlabeled buttons; ~1352ms avg step",
+      "automated": true
+    },
+    {
+      "name": "Information",
+      "score": 100,
+      "signal": "0 sparse-content pages",
+      "automated": true
+    },
+    {
+      "name": "Performance",
+      "score": 95,
+      "signal": "~1352ms avg step",
+      "automated": true
+    },
+    {
+      "name": "Accessibility",
+      "score": 95,
+      "signal": "Phase 2 heuristic from step evidence",
+      "automated": false
+    },
+    {
+      "name": "Trust",
+      "score": 95,
+      "signal": "Phase 2 heuristic from step evidence",
+      "automated": false
+    },
+    {
+      "name": "Onboarding",
+      "score": 95,
+      "signal": "Phase 2 heuristic from step evidence",
+      "automated": false
+    },
+    {
+      "name": "Recovery",
+      "score": 95,
+      "signal": "Phase 2 heuristic from step evidence",
+      "automated": false
+    }
+  ],
+  "scorecardMd": "# Launch Rehearsal \u2014 Scorecard\n\n| Field | Value |\n|-------|--------|\n| **Run ID** | `lr-self-20260531-045823` |\n| **Date** | 2026-05-31 |\n| **Target** | http://127.0.0.1:8081 |\n| **Product** | Launch Rehearsal Dashboard |\n| **Outcome** | complete |\n| **Duration** | 69s |\n\n---\n\n## Executive summary\n\n| | |\n|---|---|\n| **Readiness** | **Amber** |\n| **Top blocker** | Compare runs page returns errors |\n| **Top delight** | Clear navigation structure |\n| **Issues** | 9 |\n| **Delights** | 4 |\n\n| **Pages crawled** | 35 |\n| **Auto journeys added** | 3 |\n\n---\n\n## Persona \u00d7 journey matrix\n\n| Journey | P1 First-time | P2 Daily | P3 Admin |\n|---------|--------|--------|--------|\n| **j1-command-center** Command center | **Pass** | **Pass** | **Pass** |\n| **j2-runs** Runs list | **Pass** | **Pass** | **Pass** |\n| **j3-compare** Compare runs | **Partial** | **Fail** | **Fail** |\n| **j4-init** Init wizard | **Pass** | **Pass** | **Pass** |\n| **j5-runner** Runner triggers | **Fail** | **Fail** | **Fail** |\n| **auto-j1-dashboard** Auto: Dashboard | **Pass** | **Pass** | **Pass** |\n| **auto-j4-explore** Auto: Explore /recommendations | **Partial** | **Partial** | **Fail** |\n| **auto-j5-explore** Auto: Explore /runs/argyle-202 | **Pass** | **Pass** | **Pass** |\n\n---\n\n## Site map (crawl)\n\n# Site map\n\n**Origin:** http://127.0.0.1:8081  \n**Pages crawled:** 35  \n\n## Hub pages (most outbound links)\n\n- `/runs` \u2014 Runs \u2014 Launch Rehearsal\n- `/` \u2014 Command center \u2014 Launch Rehearsal\n- `/compare` \u2014 Compare runs \u2014 Launch Rehearsal\n- `/library` \u2014 Journey library \u2014 Launch Rehearsal\n- `/runs/argyle-20260530-235539` \u2014 argyle-20260530-235539 \u2014 Run detail\n- `/runs/argyle-20260530-235656` \u2014 argyle-20260530-235656 \u2014 Run detail\n- `/runs/argyle-20260531-000517` \u2014 argyle-20260531-000517 \u2014 Run detail\n- `/runs/enterprise-20260530-234231` \u2014 enterprise-20260530-234231 \u2014 Run detail\n\n## All pages\n\n| Path | Title | Depth | Links | Forms | Words |\n|------|-------|-------|-------|-------|-------|\n| `/` | Command center \u2014 Launch Rehearsal | 0 | 29 | 0 | 348 |\n| `/agents` | Agents \u2014 Launch Rehearsal | 1 | 16 | 0 | 455 |\n| `/alerts` | Alerts \u2014 Launch Rehearsal | 1 | 16 | 0 | 151 |\n| `/api/sitemap/lr-self-20260531-042429/graphml` |  | 2 | 0 | 0 | 1931 |\n| `/cli` | CLI \u2014 Launch Rehearsal | 1 | 16 | 0 | 334 |\n| `/compare` | Compare runs \u2014 Launch Rehearsal | 1 | 18 | 0 | 212 |\n| `/config` | Workspace \u2014 Launch Rehearsal | 1 | 16 | 0 | 356 |\n| `/init` | Init wizard \u2014 Launch Rehearsal | 1 | 17 | 0 | 250 |\n| `/integrations` | Integrations \u2014 Launch Rehearsal | 1 | 16 | 0 | 124 |\n| `/library` | Journey library \u2014 Launch Rehearsal | 1 | 18 | 0 | 152 |\n| `/recommendations` | Recommendations \u2014 Launch Rehearsal | 1 | 22 | 0 | 235 |\n| `/runner` | Runner \u2014 Launch Rehearsal | 1 | 17 | 0 | 144 |\n| `/runs` | Runs \u2014 Launch Rehearsal | 1 | 36 | 0 | 382 |\n| `/runs/argyle-20260529-184202` | argyle-20260529-184202 \u2014 Run detail | 2 | 20 | 0 | 348 |\n| `/runs/argyle-20260530-235539` | argyle-20260530-235539 \u2014 Run detail | 1 | 20 | 0 | 355 |\n| `/runs/argyle-20260530-235656` | argyle-20260530-235656 \u2014 Run detail | 1 | 20 | 0 | 916 |\n| `/runs/argyle-20260531-000517` | argyle-20260531-000517 \u2014 Run detail | 1 | 20 | 0 | 1026 |\n| `/runs/cal-20260529-192836` | cal-20260529-192836 \u2014 Run detail | 2 | 20 | 0 | 382 |\n| `/runs/cal-20260529-192901` | cal-20260529-192901 \u2014 Run detail | 2 | 20 | 0 | 382 |\n| `/runs/cal-20260529-193724` | cal-20260529-193724 \u2014 Run detail | 2 | 20 | 0 | 415 |\n| `/runs/cal-20260529-213154` | cal-20260529-213154 \u2014 Run detail | 2 | 20 | 0 | 382 |\n| `/runs/enterprise-20260529-213552` | enterprise-20260529-213552 \u2014 Run detail | 2 | 20 | 0 | 460 |\n| `/runs/enterprise-20260529-215258` | enterprise-20260529-215258 \u2014 Run detail | 2 | 20 | 0 | 460 |\n| `/runs/enterprise-20260529-215418` | enterprise-20260529-215418 \u2014 Run detail | 2 | 20 | 0 | 422 |\n| `/runs/enterprise-20260530-045757` | enterprise-20260530-045757 \u2014 Run detail | 2 | 20 | 0 | 463 |\n| `/runs/enterprise-20260530-152221` | enterprise-20260530-152221 \u2014 Run detail | 2 | 20 | 0 | 460 |\n| `/runs/enterprise-20260530-152749` | enterprise-20260530-152749 \u2014 Run detail | 2 | 20 | 0 | 460 |\n| `/runs/enterprise-20260530-153239` | enterprise-20260530-153239 \u2014 Run detail | 2 | 20 | 0 | 422 |\n| `/runs/enterprise-20260530-234231` | enterprise-20260530-234231 \u2014 Run detail | 1 | 20 | 0 | 895 |\n| `/runs/enterprise-20260530-234459` | enterprise-20260530-234459 \u2014 Run detail | 1 | 20 | 0 | 909 |\n| `/runs/lr-self-20260531-042429` | lr-self-20260531-042429 \u2014 Run detail | 1 | 20 | 0 | 825 |\n| `/runs/phase0-20260529-182150` | phase0-20260529-182150 \u2014 Run detail | 2 | 20 | 0 | 348 |\n| `/sitemap` | Site map \u2014 Launch Rehearsal | 1 | 16 | 0 | 55 |\n| `/trends` | Trends \u2014 Launch Rehearsal | 1 | 16 | 0 | 308 |\n| `/workflows` | Workflows \u2014 Launch Rehearsal | 1 | 16 | 0 | 240 |\n\n---\n\n## Detected workflows\n\n| Type | Path | Title | Signals |\n|------|------|-------|---------|\n| dashboard | `/config` | Workspace \u2014 Launch Rehearsal | \u2014 |\n| integration | `/integrations` | Integrations \u2014 Launch Rehearsal | \u2014 |\n| integration | `/api/sitemap/lr-self-20260531-042429/graphml` |  | \u2014 |\n\n---\n\n## Multi-agent collaboration\n\n| Agent | Role | Summary |\n|-------|------|---------|\n| `crawler` | Site structure discovery | Crawled 35 pages; 0 auth-gated; 0 orphans |\n| `workflow` | Workflow & journey planning | Detected workflow types: dashboard, integration |\n| `journey-runner` | E2E journey execution | Executed 13 steps across 8 journeys (0 failures, 0 flaky steps, seeds=1) |\n| `persona-p1-evaluator` | Evaluator: First-time evaluator (prospect / new user) | Analysis from prospect / new user perspective |\n| `persona-p2-operator` | Evaluator: Daily operator (power user) | Analysis from power user perspective |\n| `persona-p3-admin` | Evaluator: Admin / buyer (IT admin) | Analysis from IT admin perspective |\n| `llm-p1-evaluator` | LLM evaluator: First-time evaluator | First-time evaluator sees multiple page errors and a red run status on landing,  |\n| `llm-p2-operator` | LLM evaluator: Daily operator | Daily operator encounters errors in Compare runs and Runner pages, blocking core |\n| `llm-p3-admin` | LLM evaluator: Admin / buyer | Admin journey reveals multiple errors on key pages (compare, runner, recommendat |\n| `synthesizer` | Cross-agent synthesis | Synthesized 9 issues, 4 delights from 9 agent reports |\n\n---\n\n## Dimension rollup (automated subset)\n\n| Dimension | Score 1\u20135 | Signal |\n|-----------|-----------|--------|\n| Functionality | 5 | 100% steps pass; 0 failures |\n| UI/UX | 5 | 0 unlabeled buttons; ~1352ms avg step |\n| Information clarity | 5 | 0 sparse-content pages |\n\n---\n\n## Issues (evidence-bound)\n\n### P1\n\n| ID | Finding | Personas | Evidence |\n|----|---------|----------|----------|\n| **I5** | Runner page fails to load \u2014 Both navigate and wait steps for the Runner journey report a 'failed' error, preventing the operator from executing runs. | p2-operator | `j5-runner-p1-evaluator-s1-seed1-loop1` |\n\n### P2\n\n| ID | Finding | Personas | Evidence |\n|----|---------|----------|----------|\n| **I1** | Compare runs page returns errors \u2014 The Compare runs page shows errors during navigation and wait, potentially preventing the comparison workflow from working properly. | p1-evaluator | `j3-compare-p1-evaluator-s1-seed1-loop1` |\n| **I2** | Runner page fails \u2014 The Runner page returns failures during navigation and wait, blocking the primary run execution workflow. | p1-evaluator | `j5-runner-p1-evaluator-s1-seed1-loop1` |\n| **I4** | Landing page shows cryptic red run status without context (hypothesis) \u2014 The command center landing page displays a latest run with status 'Red' but no explanation of what that means, which can confuse new users. | p1-evaluator | `j1-command-center-p1-evaluator-s1-seed1-loop1` |\n| **I6** | Compare runs page errors \u2014 The Compare runs page shows an 'error' during navigate and wait steps, hindering the operator's ability to compare runs. | p2-operator | `j3-compare-p1-evaluator-s1-seed1-loop1` |\n| **I7** | Recommendations page errors \u2014 The Recommendations page displays an 'error' on navigation, which may affect the operator's ability to get insights. | p2-operator | `auto-j4-explore-p1-evaluator-s1-seed1-loop1` |\n| **I8** | Compare runs page exhibits errors \u2014 The Compare runs page (j3-compare) consistently shows 'error' in both navigate and wait steps, indicating a functional failure that impacts reliability. | p3-admin | `j3-compare-p1-evaluator-s1-seed1-loop1` |\n| **I9** | Runner page shows 'failed' errors \u2014 The Runner page (j5-runner) reports 'failed' in both steps, undermining the trust in execution monitoring. | p3-admin | `j5-runner-p1-evaluator-s1-seed1-loop1` |\n\n### P3\n\n| ID | Finding | Personas | Evidence |\n|----|---------|----------|----------|\n| **I3** | Recommendations page has errors \u2014 The Recommendations page shows an error, which may reduce trust in the product's intelligence features. | p1-evaluator | `auto-j4-explore-p1-evaluator-s1-seed1-loop1` |\n\n---\n\n## Delights & strengths (required)\n\n| ID | Delight | Personas | Evidence |\n|----|---------|----------|----------|\n| **D1** | Clear navigation structure \u2014 Page has 29 links and 4 headings. | p1-evaluator, p2-operator | `j1-command-center-p1-evaluator-s1-seed1-loop1` |\n| **D2** | Informative landing content \u2014 Page includes headings and substantive body copy for first-time evaluators. | p1-evaluator | `j1-command-center-p1-evaluator-s1-seed1-loop1` |\n| **D3** | Accessible form labels \u2014 All 3 form inputs have labels or placeholders. | p3-admin | `j3-compare-p1-evaluator-s1-seed1-loop1` |\n| **D4** | Fast interactions for repeat tasks \u2014 13 steps completed under 3s. | p2-operator | `j1-command-center-p1-evaluator-s1-seed1-loop1` |\n\n---\n\n## Run log\n\n| Step | Journey | Action | Outcome | URL |\n|------|---------|--------|---------|-----|\n| `j1-command-center-p1-evaluator-s1-seed1-loop1` | j1-command-center | navigate | pass | http://127.0.0.1:8081/ |\n| `j1-command-center-p1-evaluator-s2-seed1-loop1` | j1-command-center | wait | pass | http://127.0.0.1:8081/ |\n| `j2-runs-p1-evaluator-s1-seed1-loop1` | j2-runs | navigate | pass | http://127.0.0.1:8081/runs |\n| `j2-runs-p1-evaluator-s2-seed1-loop1` | j2-runs | wait | pass | http://127.0.0.1:8081/runs |\n| `j3-compare-p1-evaluator-s1-seed1-loop1` | j3-compare | navigate | pass | http://127.0.0.1:8081/compare |\n| `j3-compare-p1-evaluator-s2-seed1-loop1` | j3-compare | wait | pass | http://127.0.0.1:8081/compare |\n| `j4-init-p1-evaluator-s1-seed1-loop1` | j4-init | navigate | pass | http://127.0.0.1:8081/init |\n| `j4-init-p1-evaluator-s2-seed1-loop1` | j4-init | wait | pass | http://127.0.0.1:8081/init |\n| `j5-runner-p1-evaluator-s1-seed1-loop1` | j5-runner | navigate | pass | http://127.0.0.1:8081/runner |\n| `j5-runner-p1-evaluator-s2-seed1-loop1` | j5-runner | wait | pass | http://127.0.0.1:8081/runner |\n| `auto-j1-dashboard-p1-evaluator-s1-seed1-loop1` | auto-j1-dashboard | navigate | pass | http://127.0.0.1:8081/config |\n| `auto-j4-explore-p1-evaluator-s1-seed1-loop1` | auto-j4-explore | navigate | pass | http://127.0.0.1:8081/recommendations |\n| `auto-j5-explore-p1-evaluator-s1-seed1-loop1` | auto-j5-explore | navigate | pass | http://127.0.0.1:8081/runs/argyle-20260530-235539 |\n\n---\n\n*Generated by Launch Rehearsal CLI \u2014 product-agnostic heuristics. Findings require human review before production decisions.*\n",
+  "sitemapMd": "# Site map\n\n**Origin:** http://127.0.0.1:8081  \n**Pages crawled:** 35  \n\n## Hub pages (most outbound links)\n\n- `/runs` \u2014 Runs \u2014 Launch Rehearsal\n- `/` \u2014 Command center \u2014 Launch Rehearsal\n- `/compare` \u2014 Compare runs \u2014 Launch Rehearsal\n- `/library` \u2014 Journey library \u2014 Launch Rehearsal\n- `/runs/argyle-20260530-235539` \u2014 argyle-20260530-235539 \u2014 Run detail\n- `/runs/argyle-20260530-235656` \u2014 argyle-20260530-235656 \u2014 Run detail\n- `/runs/argyle-20260531-000517` \u2014 argyle-20260531-000517 \u2014 Run detail\n- `/runs/enterprise-20260530-234231` \u2014 enterprise-20260530-234231 \u2014 Run detail\n\n## All pages\n\n| Path | Title | Depth | Links | Forms | Words |\n|------|-------|-------|-------|-------|-------|\n| `/` | Command center \u2014 Launch Rehearsal | 0 | 29 | 0 | 348 |\n| `/agents` | Agents \u2014 Launch Rehearsal | 1 | 16 | 0 | 455 |\n| `/alerts` | Alerts \u2014 Launch Rehearsal | 1 | 16 | 0 | 151 |\n| `/api/sitemap/lr-self-20260531-042429/graphml` |  | 2 | 0 | 0 | 1931 |\n| `/cli` | CLI \u2014 Launch Rehearsal | 1 | 16 | 0 | 334 |\n| `/compare` | Compare runs \u2014 Launch Rehearsal | 1 | 18 | 0 | 212 |\n| `/config` | Workspace \u2014 Launch Rehearsal | 1 | 16 | 0 | 356 |\n| `/init` | Init wizard \u2014 Launch Rehearsal | 1 | 17 | 0 | 250 |\n| `/integrations` | Integrations \u2014 Launch Rehearsal | 1 | 16 | 0 | 124 |\n| `/library` | Journey library \u2014 Launch Rehearsal | 1 | 18 | 0 | 152 |\n| `/recommendations` | Recommendations \u2014 Launch Rehearsal | 1 | 22 | 0 | 235 |\n| `/runner` | Runner \u2014 Launch Rehearsal | 1 | 17 | 0 | 144 |\n| `/runs` | Runs \u2014 Launch Rehearsal | 1 | 36 | 0 | 382 |\n| `/runs/argyle-20260529-184202` | argyle-20260529-184202 \u2014 Run detail | 2 | 20 | 0 | 348 |\n| `/runs/argyle-20260530-235539` | argyle-20260530-235539 \u2014 Run detail | 1 | 20 | 0 | 355 |\n| `/runs/argyle-20260530-235656` | argyle-20260530-235656 \u2014 Run detail | 1 | 20 | 0 | 916 |\n| `/runs/argyle-20260531-000517` | argyle-20260531-000517 \u2014 Run detail | 1 | 20 | 0 | 1026 |\n| `/runs/cal-20260529-192836` | cal-20260529-192836 \u2014 Run detail | 2 | 20 | 0 | 382 |\n| `/runs/cal-20260529-192901` | cal-20260529-192901 \u2014 Run detail | 2 | 20 | 0 | 382 |\n| `/runs/cal-20260529-193724` | cal-20260529-193724 \u2014 Run detail | 2 | 20 | 0 | 415 |\n| `/runs/cal-20260529-213154` | cal-20260529-213154 \u2014 Run detail | 2 | 20 | 0 | 382 |\n| `/runs/enterprise-20260529-213552` | enterprise-20260529-213552 \u2014 Run detail | 2 | 20 | 0 | 460 |\n| `/runs/enterprise-20260529-215258` | enterprise-20260529-215258 \u2014 Run detail | 2 | 20 | 0 | 460 |\n| `/runs/enterprise-20260529-215418` | enterprise-20260529-215418 \u2014 Run detail | 2 | 20 | 0 | 422 |\n| `/runs/enterprise-20260530-045757` | enterprise-20260530-045757 \u2014 Run detail | 2 | 20 | 0 | 463 |\n| `/runs/enterprise-20260530-152221` | enterprise-20260530-152221 \u2014 Run detail | 2 | 20 | 0 | 460 |\n| `/runs/enterprise-20260530-152749` | enterprise-20260530-152749 \u2014 Run detail | 2 | 20 | 0 | 460 |\n| `/runs/enterprise-20260530-153239` | enterprise-20260530-153239 \u2014 Run detail | 2 | 20 | 0 | 422 |\n| `/runs/enterprise-20260530-234231` | enterprise-20260530-234231 \u2014 Run detail | 1 | 20 | 0 | 895 |\n| `/runs/enterprise-20260530-234459` | enterprise-20260530-234459 \u2014 Run detail | 1 | 20 | 0 | 909 |\n| `/runs/lr-self-20260531-042429` | lr-self-20260531-042429 \u2014 Run detail | 1 | 20 | 0 | 825 |\n| `/runs/phase0-20260529-182150` | phase0-20260529-182150 \u2014 Run detail | 2 | 20 | 0 | 348 |\n| `/sitemap` | Site map \u2014 Launch Rehearsal | 1 | 16 | 0 | 55 |\n| `/trends` | Trends \u2014 Launch Rehearsal | 1 | 16 | 0 | 308 |\n| `/workflows` | Workflows \u2014 Launch Rehearsal | 1 | 16 | 0 | 240 |",
+  "sitemapPages": [
+    {
+      "id": "pg_1",
+      "path": "/",
+      "title": "Command center \u2014 Launch Rehearsal",
+      "type": "hub",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_2",
+      "path": "/agents",
+      "title": "Agents \u2014 Launch Rehearsal",
+      "type": "leaf",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_3",
+      "path": "/alerts",
+      "title": "Alerts \u2014 Launch Rehearsal",
+      "type": "leaf",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_4",
+      "path": "/cli",
+      "title": "CLI \u2014 Launch Rehearsal",
+      "type": "leaf",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_5",
+      "path": "/compare",
+      "title": "Compare runs \u2014 Launch Rehearsal",
+      "type": "hub",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_6",
+      "path": "/config",
+      "title": "Workspace \u2014 Launch Rehearsal",
+      "type": "leaf",
+      "workflow": "dashboard",
+      "errors": 0
+    },
+    {
+      "id": "pg_7",
+      "path": "/init",
+      "title": "Init wizard \u2014 Launch Rehearsal",
+      "type": "leaf",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_8",
+      "path": "/integrations",
+      "title": "Integrations \u2014 Launch Rehearsal",
+      "type": "leaf",
+      "workflow": "integration",
+      "errors": 0
+    },
+    {
+      "id": "pg_9",
+      "path": "/library",
+      "title": "Journey library \u2014 Launch Rehearsal",
+      "type": "hub",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_10",
+      "path": "/recommendations",
+      "title": "Recommendations \u2014 Launch Rehearsal",
+      "type": "leaf",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_11",
+      "path": "/runner",
+      "title": "Runner \u2014 Launch Rehearsal",
+      "type": "leaf",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_12",
+      "path": "/runs",
+      "title": "Runs \u2014 Launch Rehearsal",
+      "type": "hub",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_13",
+      "path": "/runs/argyle-20260530-235539",
+      "title": "argyle-20260530-235539 \u2014 Run detail",
+      "type": "hub",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_14",
+      "path": "/runs/argyle-20260530-235656",
+      "title": "argyle-20260530-235656 \u2014 Run detail",
+      "type": "hub",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_15",
+      "path": "/runs/argyle-20260531-000517",
+      "title": "argyle-20260531-000517 \u2014 Run detail",
+      "type": "hub",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_16",
+      "path": "/runs/enterprise-20260530-234231",
+      "title": "enterprise-20260530-234231 \u2014 Run detail",
+      "type": "hub",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_17",
+      "path": "/runs/enterprise-20260530-234459",
+      "title": "enterprise-20260530-234459 \u2014 Run detail",
+      "type": "hub",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_18",
+      "path": "/runs/lr-self-20260531-042429",
+      "title": "lr-self-20260531-042429 \u2014 Run detail",
+      "type": "leaf",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_19",
+      "path": "/sitemap",
+      "title": "Site map \u2014 Launch Rehearsal",
+      "type": "leaf",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_20",
+      "path": "/trends",
+      "title": "Trends \u2014 Launch Rehearsal",
+      "type": "leaf",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_21",
+      "path": "/workflows",
+      "title": "Workflows \u2014 Launch Rehearsal",
+      "type": "leaf",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_22",
+      "path": "/api/sitemap/lr-self-20260531-042429/graphml",
+      "title": "/api/sitemap/lr-self-20260531-042429/graphml",
+      "type": "leaf",
+      "workflow": "integration",
+      "errors": 0
+    },
+    {
+      "id": "pg_23",
+      "path": "/runs/argyle-20260529-184202",
+      "title": "argyle-20260529-184202 \u2014 Run detail",
+      "type": "hub",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_24",
+      "path": "/runs/cal-20260529-192836",
+      "title": "cal-20260529-192836 \u2014 Run detail",
+      "type": "leaf",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_25",
+      "path": "/runs/cal-20260529-192901",
+      "title": "cal-20260529-192901 \u2014 Run detail",
+      "type": "leaf",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_26",
+      "path": "/runs/cal-20260529-193724",
+      "title": "cal-20260529-193724 \u2014 Run detail",
+      "type": "leaf",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_27",
+      "path": "/runs/cal-20260529-213154",
+      "title": "cal-20260529-213154 \u2014 Run detail",
+      "type": "leaf",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_28",
+      "path": "/runs/enterprise-20260529-213552",
+      "title": "enterprise-20260529-213552 \u2014 Run detail",
+      "type": "leaf",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_29",
+      "path": "/runs/enterprise-20260529-215258",
+      "title": "enterprise-20260529-215258 \u2014 Run detail",
+      "type": "leaf",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_30",
+      "path": "/runs/enterprise-20260529-215418",
+      "title": "enterprise-20260529-215418 \u2014 Run detail",
+      "type": "leaf",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_31",
+      "path": "/runs/enterprise-20260530-045757",
+      "title": "enterprise-20260530-045757 \u2014 Run detail",
+      "type": "leaf",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_32",
+      "path": "/runs/enterprise-20260530-152221",
+      "title": "enterprise-20260530-152221 \u2014 Run detail",
+      "type": "leaf",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_33",
+      "path": "/runs/enterprise-20260530-152749",
+      "title": "enterprise-20260530-152749 \u2014 Run detail",
+      "type": "leaf",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_34",
+      "path": "/runs/enterprise-20260530-153239",
+      "title": "enterprise-20260530-153239 \u2014 Run detail",
+      "type": "leaf",
+      "workflow": null,
+      "errors": 0
+    },
+    {
+      "id": "pg_35",
+      "path": "/runs/phase0-20260529-182150",
+      "title": "phase0-20260529-182150 \u2014 Run detail",
+      "type": "leaf",
+      "workflow": null,
+      "errors": 0
+    }
+  ],
+  "sitemapEdges": [
+    {
+      "from": "pg_1",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_2",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_2",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_3",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_3",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_3",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_4",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_4",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_4",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_4",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_5",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_5",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_5",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_5",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_5",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_6",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_6",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_6",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_6",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_6",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_6",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_7",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_7",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_7",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_7",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_7",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_7",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_7",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_8",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_8",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_8",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_8",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_8",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_8",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_8",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_8",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_9",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_9",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_9",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_9",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_9",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_9",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_9",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_9",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_9",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_10",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_10",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_10",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_10",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_10",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_10",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_10",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_10",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_10",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_10",
+      "to": "pg_10"
+    },
+    {
+      "from": "pg_11",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_11",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_11",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_11",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_11",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_11",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_11",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_11",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_11",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_11",
+      "to": "pg_10"
+    },
+    {
+      "from": "pg_11",
+      "to": "pg_11"
+    },
+    {
+      "from": "pg_12",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_12",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_12",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_12",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_12",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_12",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_12",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_12",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_12",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_12",
+      "to": "pg_10"
+    },
+    {
+      "from": "pg_12",
+      "to": "pg_11"
+    },
+    {
+      "from": "pg_12",
+      "to": "pg_12"
+    },
+    {
+      "from": "pg_13",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_13",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_13",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_13",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_13",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_13",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_13",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_13",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_13",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_13",
+      "to": "pg_10"
+    },
+    {
+      "from": "pg_13",
+      "to": "pg_11"
+    },
+    {
+      "from": "pg_13",
+      "to": "pg_12"
+    },
+    {
+      "from": "pg_13",
+      "to": "pg_13"
+    },
+    {
+      "from": "pg_14",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_14",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_14",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_14",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_14",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_14",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_14",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_14",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_14",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_14",
+      "to": "pg_10"
+    },
+    {
+      "from": "pg_14",
+      "to": "pg_11"
+    },
+    {
+      "from": "pg_14",
+      "to": "pg_12"
+    },
+    {
+      "from": "pg_14",
+      "to": "pg_14"
+    },
+    {
+      "from": "pg_15",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_15",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_15",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_15",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_15",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_15",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_15",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_15",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_15",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_15",
+      "to": "pg_10"
+    },
+    {
+      "from": "pg_15",
+      "to": "pg_11"
+    },
+    {
+      "from": "pg_15",
+      "to": "pg_12"
+    },
+    {
+      "from": "pg_15",
+      "to": "pg_15"
+    },
+    {
+      "from": "pg_16",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_16",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_16",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_16",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_16",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_16",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_16",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_16",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_16",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_16",
+      "to": "pg_10"
+    },
+    {
+      "from": "pg_16",
+      "to": "pg_11"
+    },
+    {
+      "from": "pg_16",
+      "to": "pg_12"
+    },
+    {
+      "from": "pg_16",
+      "to": "pg_16"
+    },
+    {
+      "from": "pg_17",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_17",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_17",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_17",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_17",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_17",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_17",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_17",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_17",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_17",
+      "to": "pg_10"
+    },
+    {
+      "from": "pg_17",
+      "to": "pg_11"
+    },
+    {
+      "from": "pg_17",
+      "to": "pg_12"
+    },
+    {
+      "from": "pg_17",
+      "to": "pg_17"
+    },
+    {
+      "from": "pg_18",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_18",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_18",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_18",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_18",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_18",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_18",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_18",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_18",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_18",
+      "to": "pg_10"
+    },
+    {
+      "from": "pg_18",
+      "to": "pg_11"
+    },
+    {
+      "from": "pg_18",
+      "to": "pg_12"
+    },
+    {
+      "from": "pg_18",
+      "to": "pg_18"
+    },
+    {
+      "from": "pg_19",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_19",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_19",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_19",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_19",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_19",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_19",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_19",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_19",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_19",
+      "to": "pg_10"
+    },
+    {
+      "from": "pg_19",
+      "to": "pg_11"
+    },
+    {
+      "from": "pg_19",
+      "to": "pg_12"
+    },
+    {
+      "from": "pg_19",
+      "to": "pg_18"
+    },
+    {
+      "from": "pg_19",
+      "to": "pg_19"
+    },
+    {
+      "from": "pg_20",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_20",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_20",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_20",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_20",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_20",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_20",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_20",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_20",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_20",
+      "to": "pg_10"
+    },
+    {
+      "from": "pg_20",
+      "to": "pg_11"
+    },
+    {
+      "from": "pg_20",
+      "to": "pg_12"
+    },
+    {
+      "from": "pg_20",
+      "to": "pg_18"
+    },
+    {
+      "from": "pg_20",
+      "to": "pg_19"
+    },
+    {
+      "from": "pg_20",
+      "to": "pg_20"
+    },
+    {
+      "from": "pg_21",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_21",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_21",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_21",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_21",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_21",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_21",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_21",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_21",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_21",
+      "to": "pg_10"
+    },
+    {
+      "from": "pg_21",
+      "to": "pg_11"
+    },
+    {
+      "from": "pg_21",
+      "to": "pg_12"
+    },
+    {
+      "from": "pg_21",
+      "to": "pg_18"
+    },
+    {
+      "from": "pg_21",
+      "to": "pg_19"
+    },
+    {
+      "from": "pg_21",
+      "to": "pg_20"
+    },
+    {
+      "from": "pg_21",
+      "to": "pg_21"
+    },
+    {
+      "from": "pg_23",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_23",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_23",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_23",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_23",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_23",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_23",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_23",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_23",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_23",
+      "to": "pg_10"
+    },
+    {
+      "from": "pg_23",
+      "to": "pg_11"
+    },
+    {
+      "from": "pg_23",
+      "to": "pg_12"
+    },
+    {
+      "from": "pg_23",
+      "to": "pg_23"
+    },
+    {
+      "from": "pg_23",
+      "to": "pg_18"
+    },
+    {
+      "from": "pg_23",
+      "to": "pg_19"
+    },
+    {
+      "from": "pg_23",
+      "to": "pg_20"
+    },
+    {
+      "from": "pg_23",
+      "to": "pg_21"
+    },
+    {
+      "from": "pg_24",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_24",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_24",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_24",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_24",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_24",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_24",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_24",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_24",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_24",
+      "to": "pg_10"
+    },
+    {
+      "from": "pg_24",
+      "to": "pg_11"
+    },
+    {
+      "from": "pg_24",
+      "to": "pg_12"
+    },
+    {
+      "from": "pg_24",
+      "to": "pg_24"
+    },
+    {
+      "from": "pg_24",
+      "to": "pg_18"
+    },
+    {
+      "from": "pg_24",
+      "to": "pg_19"
+    },
+    {
+      "from": "pg_24",
+      "to": "pg_20"
+    },
+    {
+      "from": "pg_24",
+      "to": "pg_21"
+    },
+    {
+      "from": "pg_25",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_25",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_25",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_25",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_25",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_25",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_25",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_25",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_25",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_25",
+      "to": "pg_10"
+    },
+    {
+      "from": "pg_25",
+      "to": "pg_11"
+    },
+    {
+      "from": "pg_25",
+      "to": "pg_12"
+    },
+    {
+      "from": "pg_25",
+      "to": "pg_25"
+    },
+    {
+      "from": "pg_25",
+      "to": "pg_18"
+    },
+    {
+      "from": "pg_25",
+      "to": "pg_19"
+    },
+    {
+      "from": "pg_25",
+      "to": "pg_20"
+    },
+    {
+      "from": "pg_25",
+      "to": "pg_21"
+    },
+    {
+      "from": "pg_26",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_26",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_26",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_26",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_26",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_26",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_26",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_26",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_26",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_26",
+      "to": "pg_10"
+    },
+    {
+      "from": "pg_26",
+      "to": "pg_11"
+    },
+    {
+      "from": "pg_26",
+      "to": "pg_12"
+    },
+    {
+      "from": "pg_26",
+      "to": "pg_26"
+    },
+    {
+      "from": "pg_26",
+      "to": "pg_18"
+    },
+    {
+      "from": "pg_26",
+      "to": "pg_19"
+    },
+    {
+      "from": "pg_26",
+      "to": "pg_20"
+    },
+    {
+      "from": "pg_26",
+      "to": "pg_21"
+    },
+    {
+      "from": "pg_27",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_27",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_27",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_27",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_27",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_27",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_27",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_27",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_27",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_27",
+      "to": "pg_10"
+    },
+    {
+      "from": "pg_27",
+      "to": "pg_11"
+    },
+    {
+      "from": "pg_27",
+      "to": "pg_12"
+    },
+    {
+      "from": "pg_27",
+      "to": "pg_27"
+    },
+    {
+      "from": "pg_27",
+      "to": "pg_18"
+    },
+    {
+      "from": "pg_27",
+      "to": "pg_19"
+    },
+    {
+      "from": "pg_27",
+      "to": "pg_20"
+    },
+    {
+      "from": "pg_27",
+      "to": "pg_21"
+    },
+    {
+      "from": "pg_28",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_28",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_28",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_28",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_28",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_28",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_28",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_28",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_28",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_28",
+      "to": "pg_10"
+    },
+    {
+      "from": "pg_28",
+      "to": "pg_11"
+    },
+    {
+      "from": "pg_28",
+      "to": "pg_12"
+    },
+    {
+      "from": "pg_28",
+      "to": "pg_28"
+    },
+    {
+      "from": "pg_28",
+      "to": "pg_18"
+    },
+    {
+      "from": "pg_28",
+      "to": "pg_19"
+    },
+    {
+      "from": "pg_28",
+      "to": "pg_20"
+    },
+    {
+      "from": "pg_28",
+      "to": "pg_21"
+    },
+    {
+      "from": "pg_29",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_29",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_29",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_29",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_29",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_29",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_29",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_29",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_29",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_29",
+      "to": "pg_10"
+    },
+    {
+      "from": "pg_29",
+      "to": "pg_11"
+    },
+    {
+      "from": "pg_29",
+      "to": "pg_12"
+    },
+    {
+      "from": "pg_29",
+      "to": "pg_29"
+    },
+    {
+      "from": "pg_29",
+      "to": "pg_18"
+    },
+    {
+      "from": "pg_29",
+      "to": "pg_19"
+    },
+    {
+      "from": "pg_29",
+      "to": "pg_20"
+    },
+    {
+      "from": "pg_29",
+      "to": "pg_21"
+    },
+    {
+      "from": "pg_30",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_30",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_30",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_30",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_30",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_30",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_30",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_30",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_30",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_30",
+      "to": "pg_10"
+    },
+    {
+      "from": "pg_30",
+      "to": "pg_11"
+    },
+    {
+      "from": "pg_30",
+      "to": "pg_12"
+    },
+    {
+      "from": "pg_30",
+      "to": "pg_30"
+    },
+    {
+      "from": "pg_30",
+      "to": "pg_18"
+    },
+    {
+      "from": "pg_30",
+      "to": "pg_19"
+    },
+    {
+      "from": "pg_30",
+      "to": "pg_20"
+    },
+    {
+      "from": "pg_30",
+      "to": "pg_21"
+    },
+    {
+      "from": "pg_31",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_31",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_31",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_31",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_31",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_31",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_31",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_31",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_31",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_31",
+      "to": "pg_10"
+    },
+    {
+      "from": "pg_31",
+      "to": "pg_11"
+    },
+    {
+      "from": "pg_31",
+      "to": "pg_12"
+    },
+    {
+      "from": "pg_31",
+      "to": "pg_31"
+    },
+    {
+      "from": "pg_31",
+      "to": "pg_18"
+    },
+    {
+      "from": "pg_31",
+      "to": "pg_19"
+    },
+    {
+      "from": "pg_31",
+      "to": "pg_20"
+    },
+    {
+      "from": "pg_31",
+      "to": "pg_21"
+    },
+    {
+      "from": "pg_32",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_32",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_32",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_32",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_32",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_32",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_32",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_32",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_32",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_32",
+      "to": "pg_10"
+    },
+    {
+      "from": "pg_32",
+      "to": "pg_11"
+    },
+    {
+      "from": "pg_32",
+      "to": "pg_12"
+    },
+    {
+      "from": "pg_32",
+      "to": "pg_32"
+    },
+    {
+      "from": "pg_32",
+      "to": "pg_18"
+    },
+    {
+      "from": "pg_32",
+      "to": "pg_19"
+    },
+    {
+      "from": "pg_32",
+      "to": "pg_20"
+    },
+    {
+      "from": "pg_32",
+      "to": "pg_21"
+    },
+    {
+      "from": "pg_33",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_33",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_33",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_33",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_33",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_33",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_33",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_33",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_33",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_33",
+      "to": "pg_10"
+    },
+    {
+      "from": "pg_33",
+      "to": "pg_11"
+    },
+    {
+      "from": "pg_33",
+      "to": "pg_12"
+    },
+    {
+      "from": "pg_33",
+      "to": "pg_33"
+    },
+    {
+      "from": "pg_33",
+      "to": "pg_18"
+    },
+    {
+      "from": "pg_33",
+      "to": "pg_19"
+    },
+    {
+      "from": "pg_33",
+      "to": "pg_20"
+    },
+    {
+      "from": "pg_33",
+      "to": "pg_21"
+    },
+    {
+      "from": "pg_34",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_34",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_34",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_34",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_34",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_34",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_34",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_34",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_34",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_34",
+      "to": "pg_10"
+    },
+    {
+      "from": "pg_34",
+      "to": "pg_11"
+    },
+    {
+      "from": "pg_34",
+      "to": "pg_12"
+    },
+    {
+      "from": "pg_34",
+      "to": "pg_34"
+    },
+    {
+      "from": "pg_34",
+      "to": "pg_18"
+    },
+    {
+      "from": "pg_34",
+      "to": "pg_19"
+    },
+    {
+      "from": "pg_34",
+      "to": "pg_20"
+    },
+    {
+      "from": "pg_34",
+      "to": "pg_21"
+    },
+    {
+      "from": "pg_35",
+      "to": "pg_1"
+    },
+    {
+      "from": "pg_35",
+      "to": "pg_2"
+    },
+    {
+      "from": "pg_35",
+      "to": "pg_3"
+    },
+    {
+      "from": "pg_35",
+      "to": "pg_4"
+    },
+    {
+      "from": "pg_35",
+      "to": "pg_5"
+    },
+    {
+      "from": "pg_35",
+      "to": "pg_6"
+    },
+    {
+      "from": "pg_35",
+      "to": "pg_7"
+    },
+    {
+      "from": "pg_35",
+      "to": "pg_8"
+    },
+    {
+      "from": "pg_35",
+      "to": "pg_9"
+    },
+    {
+      "from": "pg_35",
+      "to": "pg_10"
+    },
+    {
+      "from": "pg_35",
+      "to": "pg_11"
+    },
+    {
+      "from": "pg_35",
+      "to": "pg_12"
+    },
+    {
+      "from": "pg_35",
+      "to": "pg_18"
+    },
+    {
+      "from": "pg_35",
+      "to": "pg_35"
+    },
+    {
+      "from": "pg_35",
+      "to": "pg_19"
+    },
+    {
+      "from": "pg_35",
+      "to": "pg_20"
+    },
+    {
+      "from": "pg_35",
+      "to": "pg_21"
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "artifacts/lr-self-20260531-045823/j1-command-center-p1-evaluator-s1-seed1-loop1.png",
+      "stepId": "j1-command-center-p1-evaluator-s1-seed1-loop1",
+      "label": "Command center"
+    },
+    {
+      "path": "artifacts/lr-self-20260531-045823/j1-command-center-p1-evaluator-s2-seed1-loop1.png",
+      "stepId": "j1-command-center-p1-evaluator-s2-seed1-loop1",
+      "label": "Command center"
+    },
+    {
+      "path": "artifacts/lr-self-20260531-045823/j2-runs-p1-evaluator-s1-seed1-loop1.png",
+      "stepId": "j2-runs-p1-evaluator-s1-seed1-loop1",
+      "label": "Runs list"
+    },
+    {
+      "path": "artifacts/lr-self-20260531-045823/j2-runs-p1-evaluator-s2-seed1-loop1.png",
+      "stepId": "j2-runs-p1-evaluator-s2-seed1-loop1",
+      "label": "Runs list"
+    },
+    {
+      "path": "artifacts/lr-self-20260531-045823/j3-compare-p1-evaluator-s1-seed1-loop1.png",
+      "stepId": "j3-compare-p1-evaluator-s1-seed1-loop1",
+      "label": "Compare runs"
+    },
+    {
+      "path": "artifacts/lr-self-20260531-045823/j3-compare-p1-evaluator-s2-seed1-loop1.png",
+      "stepId": "j3-compare-p1-evaluator-s2-seed1-loop1",
+      "label": "Compare runs"
+    },
+    {
+      "path": "artifacts/lr-self-20260531-045823/j4-init-p1-evaluator-s1-seed1-loop1.png",
+      "stepId": "j4-init-p1-evaluator-s1-seed1-loop1",
+      "label": "Init wizard"
+    },
+    {
+      "path": "artifacts/lr-self-20260531-045823/j4-init-p1-evaluator-s2-seed1-loop1.png",
+      "stepId": "j4-init-p1-evaluator-s2-seed1-loop1",
+      "label": "Init wizard"
+    },
+    {
+      "path": "artifacts/lr-self-20260531-045823/j5-runner-p1-evaluator-s1-seed1-loop1.png",
+      "stepId": "j5-runner-p1-evaluator-s1-seed1-loop1",
+      "label": "Runner triggers"
+    },
+    {
+      "path": "artifacts/lr-self-20260531-045823/j5-runner-p1-evaluator-s2-seed1-loop1.png",
+      "stepId": "j5-runner-p1-evaluator-s2-seed1-loop1",
+      "label": "Runner triggers"
+    },
+    {
+      "path": "artifacts/lr-self-20260531-045823/auto-j1-dashboard-p1-evaluator-s1-seed1-loop1.png",
+      "stepId": "auto-j1-dashboard-p1-evaluator-s1-seed1-loop1",
+      "label": "Auto: Dashboard"
+    },
+    {
+      "path": "artifacts/lr-self-20260531-045823/auto-j4-explore-p1-evaluator-s1-seed1-loop1.png",
+      "stepId": "auto-j4-explore-p1-evaluator-s1-seed1-loop1",
+      "label": "Auto: Explore /recommendations"
+    },
+    {
+      "path": "artifacts/lr-self-20260531-045823/auto-j5-explore-p1-evaluator-s1-seed1-loop1.png",
+      "stepId": "auto-j5-explore-p1-evaluator-s1-seed1-loop1",
+      "label": "Auto: Explore /runs/argyle-20260530-235539"
+    }
+  ],
+  "annotations": [],
+  "personas": [
+    {
+      "id": "p1-evaluator",
+      "name": "First-time evaluator",
+      "role": "prospect / new user",
+      "goal": "Understand value from landing and primary workflow",
+      "patience": "medium"
+    },
+    {
+      "id": "p2-operator",
+      "name": "Daily operator",
+      "role": "power user",
+      "goal": "Complete core tasks quickly and reliably",
+      "patience": "medium"
+    },
+    {
+      "id": "p3-admin",
+      "name": "Admin / buyer",
+      "role": "IT admin",
+      "goal": "Verify access boundaries and trust signals",
+      "patience": "medium"
+    }
+  ],
+  "journeys": [
+    {
+      "id": "j1-command-center",
+      "name": "Command center",
+      "steps": 2,
+      "category": "dashboard"
+    },
+    {
+      "id": "j2-runs",
+      "name": "Runs list",
+      "steps": 2,
+      "category": "dashboard"
+    },
+    {
+      "id": "j3-compare",
+      "name": "Compare runs",
+      "steps": 2,
+      "category": "dashboard"
+    },
+    {
+      "id": "j4-init",
+      "name": "Init wizard",
+      "steps": 2,
+      "category": "dashboard"
+    },
+    {
+      "id": "j5-runner",
+      "name": "Runner triggers",
+      "steps": 2,
+      "category": "dashboard"
+    }
+  ],
+  "workflows": [
+    {
+      "category": "dashboard",
+      "path": "/config",
+      "title": "Workspace \u2014 Launch Rehearsal",
+      "confidence": 0.7,
+      "signals": []
+    },
+    {
+      "category": "integration",
+      "path": "/integrations",
+      "title": "Integrations \u2014 Launch Rehearsal",
+      "confidence": 0.7,
+      "signals": []
+    },
+    {
+      "category": "integration",
+      "path": "/api/sitemap/lr-self-20260531-042429/graphml",
+      "title": "",
+      "confidence": 0.7,
+      "signals": []
+    }
+  ],
+  "suggestedJourneys": [
+    {
+      "id": "auto-j1-dashboard",
+      "name": "Auto: Dashboard",
+      "steps": [
+        {
+          "action": "navigate",
+          "url": "http://127.0.0.1:8081/config"
+        }
+      ]
+    },
+    {
+      "id": "auto-j2-hub",
+      "name": "Auto: Navigation hub",
+      "steps": [
+        {
+          "action": "navigate",
+          "url": "http://127.0.0.1:8081/runs"
+        }
+      ]
+    },
+    {
+      "id": "auto-j3-explore",
+      "name": "Auto: Explore /",
+      "steps": [
+        {
+          "action": "navigate",
+          "url": "http://127.0.0.1:8081/"
+        }
+      ]
+    },
+    {
+      "id": "auto-j4-explore",
+      "name": "Auto: Explore /recommendations",
+      "steps": [
+        {
+          "action": "navigate",
+          "url": "http://127.0.0.1:8081/recommendations"
+        }
+      ]
+    },
+    {
+      "id": "auto-j5-explore",
+      "name": "Auto: Explore /runs/argyle-20260530-235539",
+      "steps": [
+        {
+          "action": "navigate",
+          "url": "http://127.0.0.1:8081/runs/argyle-20260530-235539"
+        }
+      ]
+    }
+  ],
+  "narrative": {
+    "executiveSummary": "Launch Rehearsal Dashboard at http://127.0.0.1:8081 rehearsed as **Green** readiness. 13/13 canonical steps passed (100%). 0 issue(s) and 3 delight(s) recorded. Bright spot: Clear navigation structure.",
+    "forFounders": "**Launch readiness: Green** \u2014 suitable for a confident partner readout.",
+    "forEngineering": "Run `lr-self-20260531-045823` \u00b7 69s \u00b7 13 step records (incl. viewport/seed replays).\nCrawl: 35 pages, 0 error paths, 0 orphans.",
+    "suggestedQuestions": [
+      "What polish items (P3) are worth doing before GA?",
+      "Which journey had the worst persona \u00d7 path outcome?",
+      "Did any step show flaky behavior across seeds or viewports?"
+    ],
+    "source": "template",
+    "readinessBand": "Green",
+    "issueCount": 0,
+    "delightCount": 3
+  }
+}

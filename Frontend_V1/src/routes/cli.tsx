@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PageHeader, Panel, Chip } from "@/components/ui-bits";
+import { PageHeader, Panel, Chip, UnderConstruction } from "@/components/ui-bits";
 import { Copy } from "lucide-react";
 
 export const Route = createFileRoute("/cli")({
@@ -75,71 +75,72 @@ Launch Rehearsal dashboard → http://127.0.0.1:8765`;
 
 function CliPage() {
   return (
-    <div>
-      <PageHeader
-        eyebrow="ship"
-        title="rehearse — CLI reference"
-        description="The CLI ships today. This dashboard reads the same artifacts the CLI writes under artifacts/."
-      />
-      <div className="p-8 max-w-[1400px] space-y-6">
-        <Panel className="p-5">
-          <div className="text-xs text-muted-foreground mb-2">Install (from TryLapse repo)</div>
-          <div className="bg-surface-2/50 border border-border rounded-lg p-4 flex items-center justify-between font-mono text-sm">
-            <span>
-              <span className="text-muted-foreground">$</span> cd launch-rehearsal && pip install -e
-              . && playwright install chromium
-            </span>
-            <button type="button" className="text-muted-foreground hover:text-foreground">
-              <Copy className="size-4" />
-            </button>
-          </div>
-          <div className="mt-2 text-xs text-muted-foreground">
-            From repo root:{" "}
-            <span className="font-mono">
-              ./rehearse run -c launch-rehearsal/examples/cal-com-phase0.yaml
-            </span>
-          </div>
-        </Panel>
-
-        <Panel className="overflow-hidden">
-          <div className="p-5 border-b border-border">
-            <div className="text-xs text-muted-foreground">Commands</div>
-            <div className="font-display text-lg font-semibold mt-0.5">
-              {commands.length} total · {commands.filter((c) => c.status === "shipped").length}{" "}
-              shipped
+    <UnderConstruction>
+      <div>
+        <PageHeader
+          eyebrow="ship"
+          title="rehearse — CLI reference"
+          description="The CLI ships today. This dashboard reads the same artifacts the CLI writes under artifacts/."
+        />
+        <div className="p-8 max-w-[1400px] space-y-6">
+          <Panel className="p-5">
+            <div className="text-xs text-muted-foreground mb-2">Install (from TryLapse repo)</div>
+            <div className="bg-surface-2/50 border border-border rounded-lg p-4 flex items-center justify-between font-mono text-sm">
+              <span>
+                <span className="text-muted-foreground">$</span> cd launch-rehearsal && pip install
+                -e . && playwright install chromium
+              </span>
+              <button type="button" className="text-muted-foreground hover:text-foreground">
+                <Copy className="size-4" />
+              </button>
             </div>
-          </div>
-          <div className="divide-y divide-border">
-            {commands.map((c) => (
-              <div
-                key={c.cmd}
-                className="p-4 flex items-center justify-between hover:bg-surface-2/30 gap-4"
-              >
-                <div className="min-w-0">
-                  <code className="font-mono text-sm text-primary break-all">{c.cmd}</code>
-                  <div className="text-xs text-muted-foreground mt-1">{c.desc}</div>
-                </div>
-                <Chip tone={c.status === "shipped" ? "ready" : "violet"}>{c.status}</Chip>
+            <div className="mt-2 text-xs text-muted-foreground">
+              From repo root:{" "}
+              <span className="font-mono">
+                ./rehearse run -c launch-rehearsal/examples/cal-com-phase0.yaml
+              </span>
+            </div>
+          </Panel>
+
+          <Panel className="overflow-hidden">
+            <div className="p-5 border-b border-border">
+              <div className="text-xs text-muted-foreground">Commands</div>
+              <div className="font-display text-lg font-semibold mt-0.5">
+                {commands.length} total · {commands.filter((c) => c.status === "shipped").length}{" "}
+                shipped
               </div>
-            ))}
-          </div>
-        </Panel>
+            </div>
+            <div className="divide-y divide-border">
+              {commands.map((c) => (
+                <div
+                  key={c.cmd}
+                  className="p-4 flex items-center justify-between hover:bg-surface-2/30 gap-4"
+                >
+                  <div className="min-w-0">
+                    <code className="font-mono text-sm text-primary break-all">{c.cmd}</code>
+                    <div className="text-xs text-muted-foreground mt-1">{c.desc}</div>
+                  </div>
+                  <Chip tone={c.status === "shipped" ? "ready" : "violet"}>{c.status}</Chip>
+                </div>
+              ))}
+            </div>
+          </Panel>
 
-        <Panel className="overflow-hidden">
-          <div className="p-4 border-b border-border flex items-center justify-between">
-            <div className="text-xs text-muted-foreground">Example output</div>
-            <Chip>rehearse run + serve</Chip>
-          </div>
-          <pre className="p-5 text-[12.5px] font-mono leading-relaxed overflow-x-auto bg-surface-2/30 text-foreground/95 whitespace-pre">
-            {example}
-          </pre>
-        </Panel>
+          <Panel className="overflow-hidden">
+            <div className="p-4 border-b border-border flex items-center justify-between">
+              <div className="text-xs text-muted-foreground">Example output</div>
+              <Chip>rehearse run + serve</Chip>
+            </div>
+            <pre className="p-5 text-[12.5px] font-mono leading-relaxed overflow-x-auto bg-surface-2/30 text-foreground/95 whitespace-pre">
+              {example}
+            </pre>
+          </Panel>
 
-        <Panel className="p-5">
-          <div className="text-xs text-muted-foreground mb-2">
-            Artifact layout (backend contract)
-          </div>
-          <pre className="text-xs font-mono text-muted-foreground">{`artifacts/
+          <Panel className="p-5">
+            <div className="text-xs text-muted-foreground mb-2">
+              Artifact layout (backend contract)
+            </div>
+            <pre className="text-xs font-mono text-muted-foreground">{`artifacts/
   runs/<run_id>.json          # step evidence
   scorecards/<run_id>-scorecard.md
   sitemaps/<run_id>-sitemap.json
@@ -147,24 +148,25 @@ function CliPage() {
   artifacts/<run_id>/*.png    # screenshots
   analysis/<run_id>.json     # structured issues + narrative
   chats/<run_id>.json        # persistent run chat threads`}</pre>
-        </Panel>
+          </Panel>
 
-        <Panel className="p-5">
-          <div className="text-xs text-muted-foreground mb-3">Dashboard API (rehearse serve)</div>
-          <ul className="text-sm font-mono space-y-2">
-            <li>GET /api/trends — readiness/pages/flake + narrative insight</li>
-            <li>GET /api/digest?n=7 — command center digest</li>
-            <li>GET/POST /api/runs/&#123;id&#125;/chat — run Q&amp;A thread</li>
-            <li>GET /api/diff?a=&amp;b= — compare runs + “What changed” narrative</li>
-            <li>POST /api/recordings/compile — journey recorder → YAML fragment</li>
-            <li>
-              POST /api/configs — init wizard YAML write (viewports,
-              execute_all_personas_in_browser)
-            </li>
-            <li>POST /api/jobs — background run/crawl (llm flag supported)</li>
-          </ul>
-        </Panel>
+          <Panel className="p-5">
+            <div className="text-xs text-muted-foreground mb-3">Dashboard API (rehearse serve)</div>
+            <ul className="text-sm font-mono space-y-2">
+              <li>GET /api/trends — readiness/pages/flake + narrative insight</li>
+              <li>GET /api/digest?n=7 — command center digest</li>
+              <li>GET/POST /api/runs/&#123;id&#125;/chat — run Q&amp;A thread</li>
+              <li>GET /api/diff?a=&amp;b= — compare runs + “What changed” narrative</li>
+              <li>POST /api/recordings/compile — journey recorder → YAML fragment</li>
+              <li>
+                POST /api/configs — init wizard YAML write (viewports,
+                execute_all_personas_in_browser)
+              </li>
+              <li>POST /api/jobs — background run/crawl (llm flag supported)</li>
+            </ul>
+          </Panel>
+        </div>
       </div>
-    </div>
+    </UnderConstruction>
   );
 }

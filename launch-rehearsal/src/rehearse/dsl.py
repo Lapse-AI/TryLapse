@@ -58,6 +58,7 @@ class Journey:
     id: str
     name: str
     steps: list[Step]
+    persona_ids: list[str] = field(default_factory=list)  # empty = runs for all personas
 
 
 @dataclass
@@ -67,6 +68,12 @@ class Persona:
     role: str
     goals: list[str]
     enabled: bool = True
+    # Behavioral depth — all optional, safe defaults preserve existing behavior
+    tech_literacy: str = "intermediate"  # "novice" | "intermediate" | "expert"
+    patience: str = "medium"             # "low" | "medium" | "high"
+    trust_level: str = "neutral"         # "skeptical" | "neutral" | "trusting"
+    character: str = ""                  # free-text psychological texture
+    usage_context: str = ""              # "first-time user", "switching from X", etc.
 
 
 @dataclass
@@ -101,12 +108,13 @@ class ExperimentSpec:
 
 @dataclass
 class Budgets:
-    max_steps_per_journey: int = 20
-    max_run_seconds: int = 1800
+    max_steps_per_journey: int = 30
+    max_run_seconds: int = 7200  # 2 hours — was 30 min, not enough for multi-persona runs
     step_timeout_ms: int = 30000
     parallel_seeds: int = 1
     repeat_micro_loop: int = 1
     explore_max_rounds: int = 3
+    parallel_journeys: int = 1  # concurrent journey workers (each gets own browser context)
 
 
 @dataclass
@@ -182,6 +190,11 @@ def load_config(path: Path) -> RunConfig:
             role=p["role"],
             goals=list(p.get("goals") or []),
             enabled=bool(p.get("enabled", True)),
+            tech_literacy=str(p.get("tech_literacy") or "intermediate"),
+            patience=str(p.get("patience") or "medium"),
+            trust_level=str(p.get("trust_level") or "neutral"),
+            character=str(p.get("character") or ""),
+            usage_context=str(p.get("usage_context") or ""),
         )
         for p in personas_raw
     ]
@@ -190,18 +203,20 @@ def load_config(path: Path) -> RunConfig:
             id=j["id"],
             name=j["name"],
             steps=[_parse_step(s) for s in j.get("steps") or []],
+            persona_ids=list(j.get("persona_ids") or []),
         )
         for j in journeys_raw
     ]
 
     b = data.get("budgets") or {}
     budgets = Budgets(
-        max_steps_per_journey=int(b.get("max_steps_per_journey", 20)),
-        max_run_seconds=int(b.get("max_run_seconds", 1800)),
+        max_steps_per_journey=int(b.get("max_steps_per_journey", 30)),
+        max_run_seconds=int(b.get("max_run_seconds", 7200)),
         step_timeout_ms=int(b.get("step_timeout_ms", 30000)),
         parallel_seeds=max(1, int(b.get("parallel_seeds", 1))),
         repeat_micro_loop=max(1, int(b.get("repeat_micro_loop", 1))),
         explore_max_rounds=max(1, int(b.get("explore_max_rounds", 3))),
+        parallel_journeys=max(1, min(10, int(b.get("parallel_journeys", 1)))),
     )
 
     auth_raw = data.get("auth")

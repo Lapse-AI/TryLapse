@@ -441,24 +441,50 @@ def _score_dimensions(
     unlabeled = sum(s.unlabeled_button_count for s in steps)
     avg_duration = sum(s.duration_ms for s in steps) / len(steps)
 
-    # Information: use heading structure + body length, not just char count
     total_inputs = sum(getattr(s, "input_count", 0) for s in steps)
     labeled_inputs = sum(getattr(s, "labeled_input_count", 0) for s in steps)
     total_headings = sum(getattr(s, "heading_count", 0) for s in steps)
     total_links = sum(getattr(s, "link_count", 0) for s in steps)
+
+    # Information clarity — multi-signal content richness (replaces crude 80-char threshold)
+    #
+    # Signals:
+    #  content_depth   — average body text length on navigate steps (longer = richer)
+    #  heading_density — headings per navigate step (structure signal)
+    #  link_density    — links per navigate step (navigation richness)
+    #  sparse_pages    — pages with low text AND no headings AND few links (combined)
+    #
+    # Scoring rubric:
+    #  5 — rich content (avg body > 400 chars, ≥1 heading/page, ≥3 links/page, 0 sparse)
+    #  4 — adequate (avg body > 200 chars OR good structure, ≤1 sparse page)
+    #  3 — thin content (avg body 80-200 chars, sparse pages, or no heading structure)
+    #  2 — very sparse (avg body < 80 chars, no headings, few links)
+    nav_steps = [s for s in steps if s.action == "navigate"]
+    n_nav = len(nav_steps) or 1
+    avg_body_len = sum(len(s.body_text_excerpt or "") for s in nav_steps) / n_nav
+    heading_density = total_headings / n_nav
+    link_density = total_links / n_nav
     sparse = sum(
-        1 for s in steps
-        if len(s.body_text_excerpt or "") < 80
+        1 for s in nav_steps
+        if len(s.body_text_excerpt or "") < 120
         and getattr(s, "heading_count", 0) == 0
         and getattr(s, "link_count", 0) < 3
     )
-    has_structure = total_headings > 0 and total_links > 2
+    has_structure = heading_density >= 0.8 and link_density >= 2
+
+    if avg_body_len >= 400 and has_structure and sparse == 0:
+        info = 5
+    elif avg_body_len >= 200 or (has_structure and sparse <= 1):
+        info = 4
+    elif avg_body_len >= 80 or sparse <= 2:
+        info = 3
+    else:
+        info = 2
+    if sitemap and sitemap.orphan_paths:
+        info = max(2, info - 1)
 
     func = 5 if pass_rate >= 0.9 and fail_count == 0 else 4 if pass_rate >= 0.7 else 3 if pass_rate >= 0.5 else 2
     ui = 5 if unlabeled == 0 and avg_duration < 4000 else 4 if unlabeled <= 2 else 3 if unlabeled <= 5 else 2
-    info = 5 if sparse == 0 and has_structure else 4 if sparse <= 1 else 3 if sparse <= 2 else 2
-    if sitemap and sitemap.orphan_paths:
-        info = max(2, info - 1)
 
     # Build descriptive signals
     input_label_note = ""
@@ -467,10 +493,15 @@ def _score_dimensions(
         if unlabeled_inputs > 0:
             input_label_note = f"; {unlabeled_inputs}/{total_inputs} inputs unlabeled"
 
+    info_note = (
+        f"avg body {int(avg_body_len)}ch; {heading_density:.1f} hdg/page; "
+        f"{link_density:.1f} links/page; {sparse} sparse pages"
+    )
+
     return {
         "Functionality": (func, f"{pass_rate:.0%} steps pass; {fail_count} failures"),
         "UI/UX": (ui, f"{unlabeled} unlabeled buttons{input_label_note}; ~{int(avg_duration)}ms avg step"),
-        "Information clarity": (info, f"{sparse} content-sparse pages; {total_headings} headings; {total_links} links"),
+        "Information clarity": (info, info_note),
     }
 
 

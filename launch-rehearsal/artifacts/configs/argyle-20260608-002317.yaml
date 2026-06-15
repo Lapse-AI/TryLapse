@@ -1,0 +1,100 @@
+run:
+  target_url: https://faculty-dashboard-eight.vercel.app/database
+  run_id_prefix: argyle
+  product_name: Argyle Faculty Dashboard
+  viewports:
+  - desktop
+  - tablet
+  - mobile
+  allow_localhost: false
+  persona_lens: true
+crawl:
+  enabled: true
+  max_depth: 2
+  max_pages: 24
+  supplement_journeys: true
+personas:
+- id: p1-new-signup
+  name: New signup
+  role: first-time user
+  goals:
+  - Complete onboarding and reach first success
+  - Identify missing docs or confusing steps
+- id: p2-power-user
+  name: Power user
+  role: experienced user
+  goals:
+  - Complete core tasks quickly
+  - Test integrations and API surfaces
+- id: p3-dogfood
+  name: Developer dogfooder
+  role: internal engineer
+  goals:
+  - Use dev-facing features and find rough edges
+  - Validate that error messages are actionable
+- id: p4-internal-champion
+  name: Internal champion
+  role: team lead / champion
+  goals:
+  - Validate admin features work correctly
+  - Test team collaboration and permissions
+  - Find feature gaps for internal adoption
+- id: p4-champion
+  name: Internal champion
+  role: team lead / champion
+  goals:
+  - Validate rollout to their team
+  - Find blockers before wider launch
+journeys:
+- id: j-argyle-login
+  name: Login to Argyle
+  priority: smoke
+  steps:
+  - action: navigate
+    url: /
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: login button
+  - action: wait
+    value: '1500'
+- id: j-argyle-explore-dashboard
+  name: Explore Dashboard
+  priority: smoke
+  steps:
+  - action: navigate
+    url: /database
+  - action: wait
+    value: '2000'
+  - action: scroll
+    intent: down
+- id: j-argyle-view-users
+  name: View Users List
+  priority: smoke
+  steps:
+  - action: navigate
+    url: /database
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: users tab or menu
+- id: j-argyle-admin-settings
+  name: Access Admin Settings
+  priority: smoke
+  steps:
+  - action: navigate
+    url: /database
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: admin or settings menu
+- id: j-argyle-team-collaboration
+  name: Test Team Collaboration
+  priority: smoke
+  steps:
+  - action: navigate
+    url: /database
+  - action: wait
+    value: '2000'
+  - action: explore
+    intent: team collaboration features
