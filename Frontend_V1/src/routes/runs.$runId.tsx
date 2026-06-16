@@ -12,6 +12,7 @@ import {
   SEVERITY_LABEL,
   LaunchGateBadge,
   ScoreDeltaBadge,
+  BenchmarkContext,
 } from "@/components/ui-bits";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DimensionRollupGrid, DimensionBreakdownBanner } from "@/components/dimension-rollup";
@@ -355,6 +356,9 @@ export function RunDetail() {
               <div className="mt-2">
                 <LaunchGateBadge gate={run.launchGate} />
               </div>
+            )}
+            {run.industryBenchmark && (
+              <BenchmarkContext bench={run.industryBenchmark} />
             )}
           </Stat>
           <Stat label="Blockers" value={blockerCount} hint="Critical + High" tone="danger" />

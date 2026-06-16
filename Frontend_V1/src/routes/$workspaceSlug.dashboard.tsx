@@ -10,6 +10,7 @@ import {
   ClientTime,
   LaunchGateBadge,
   ScoreDeltaBadge,
+  BenchmarkContext,
 } from "@/components/ui-bits";
 import { DimensionRollupGrid } from "@/components/dimension-rollup";
 import { formatDuration, bandFromIssues, countBlockers } from "@/lib/mock-data";
@@ -287,6 +288,9 @@ function Index() {
                       <div className="mt-2">
                         <LaunchGateBadge gate={latest.launchGate} />
                       </div>
+                    )}
+                    {latest.industryBenchmark && (
+                      <BenchmarkContext bench={latest.industryBenchmark} />
                     )}
                     <div className="mt-2 overflow-visible">
                       <Sparkline

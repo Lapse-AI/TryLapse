@@ -79,6 +79,15 @@ export type Delight = {
 
 export type LaunchGate = "PASS" | "REVIEW" | "CAUTION" | "BLOCKED";
 
+export type IndustryBenchmark = {
+  category: string;
+  categoryLabel: string;
+  median: number;
+  delta: number;
+  percentile: number;
+  source: string;
+};
+
 export type RunSummary = {
   id: string;
   productName: string;
@@ -95,6 +104,7 @@ export type RunSummary = {
   launchGate?: LaunchGate | null;
   scoreDelta?: number | null;
   previousScore?: number | null;
+  industryBenchmark?: IndustryBenchmark | null;
   blockers: number;
   issues: number;
   delights: number;

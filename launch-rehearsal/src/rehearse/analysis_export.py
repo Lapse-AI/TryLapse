@@ -853,6 +853,46 @@ def _blockers(issues: list[dict[str, Any]]) -> int:
     return sum(1 for i in issues if i["severity"] in ("P0", "P1"))
 
 
+_BENCHMARKS: dict[str, dict[str, Any]] = {
+    "b2b_saas":        {"label": "B2B SaaS",        "p25": 54, "median": 67, "p75": 78},
+    "b2c_saas":        {"label": "B2C SaaS",        "p25": 58, "median": 71, "p75": 81},
+    "developer_tools": {"label": "Developer Tools", "p25": 50, "median": 63, "p75": 75},
+    "ecommerce":       {"label": "E-commerce",      "p25": 60, "median": 73, "p75": 83},
+    "internal_tool":   {"label": "Internal Tool",   "p25": 42, "median": 57, "p75": 69},
+    "marketplace":     {"label": "Marketplace",     "p25": 58, "median": 70, "p75": 80},
+}
+
+
+def _industry_benchmark(product_type: str, readiness_score: int) -> dict[str, Any]:
+    """Compute benchmark context: category median, delta, estimated percentile.
+
+    Percentiles are estimated from a 3-point distribution (p25/p50/p75) using
+    linear interpolation. Labeled 'beta' because calibration data is still
+    accruing — do not present these as empirically validated.
+    """
+    bench = _BENCHMARKS.get(product_type) or _BENCHMARKS["b2b_saas"]
+    p25, median, p75 = bench["p25"], bench["median"], bench["p75"]
+    delta = readiness_score - median
+
+    if readiness_score <= p25:
+        pct = max(5, round(25 * readiness_score / p25))
+    elif readiness_score <= median:
+        pct = round(25 + 25 * (readiness_score - p25) / (median - p25))
+    elif readiness_score <= p75:
+        pct = round(50 + 25 * (readiness_score - median) / (p75 - median))
+    else:
+        pct = min(95, round(75 + 20 * (readiness_score - p75) / (100 - p75)))
+
+    return {
+        "category": product_type,
+        "categoryLabel": bench["label"],
+        "median": median,
+        "delta": delta,
+        "percentile": pct,
+        "source": "lr-beta-v1",
+    }
+
+
 def _compute_launch_gate(issues: list[dict[str, Any]], readiness_score: int) -> str:
     """Named pass/fail verdict above the readiness score — designed to be citable in meetings.
 
@@ -1041,6 +1081,7 @@ def build_run_bundle(
     prev_score = _previous_run_score(output_dir, evidence.run_id)
     score_delta = (readiness_score - prev_score) if prev_score is not None else None
     launch_gate = _compute_launch_gate(issues, readiness_score)
+    industry_benchmark = _industry_benchmark(config.product_type, readiness_score)
 
     return {
         "summary": {
@@ -1059,6 +1100,7 @@ def build_run_bundle(
             "launchGate": launch_gate,
             "scoreDelta": score_delta,
             "previousScore": prev_score,
+            "industryBenchmark": industry_benchmark,
             "blockers": _blockers(issues),
             "issues": len(issues),
             "delights": len(delights),

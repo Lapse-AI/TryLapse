@@ -132,6 +132,7 @@ class RunConfig:
     viewports: list[str] = field(default_factory=lambda: ["desktop"])
     execute_all_personas_in_browser: bool = False
     persona_lens: bool = True
+    product_type: str = "b2b_saas"
 
     def materialize_steps(self) -> None:
         base = self.target_url.rstrip("/")
@@ -271,6 +272,7 @@ def load_config(path: Path) -> RunConfig:
         viewports=normalize_viewports(run.get("viewports")),
         execute_all_personas_in_browser=bool(run.get("execute_all_personas_in_browser", False)),
         persona_lens=bool(run.get("persona_lens", True)),
+        product_type=str(run.get("product_type", "b2b_saas")),
     )
     cfg.materialize_steps()
     return cfg

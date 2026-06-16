@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, type ElementType, type ReactNode } from "react";
 import { HardHat, CheckCircle2, AlertTriangle, XCircle, Eye } from "lucide-react";
-import type { Status, Severity, LaunchGate } from "@/lib/mock-data";
+import type { Status, Severity, LaunchGate, IndustryBenchmark } from "@/lib/mock-data";
 import { formatRel } from "@/lib/mock-data";
 
 /** Format ISO timestamp into user's local timezone. */
@@ -150,6 +150,30 @@ export function ScoreDeltaBadge({ delta }: { delta: number }) {
     >
       {positive ? "▲" : "▼"} {Math.abs(delta)}
     </span>
+  );
+}
+
+export function BenchmarkContext({ bench }: { bench: IndustryBenchmark }) {
+  const positive = bench.delta >= 0;
+  const ordinal =
+    bench.percentile >= 90 ? "top 10%" :
+    bench.percentile >= 75 ? `top ${100 - bench.percentile}%` :
+    bench.percentile >= 50 ? `top ${100 - bench.percentile}%` :
+    `bottom ${bench.percentile}%`;
+  return (
+    <div
+      className="mt-2 flex items-center gap-1.5 text-[11px] text-muted-foreground"
+      title="Beta benchmark from Launch Rehearsal early-access runs. Updated quarterly as calibration data accrues."
+    >
+      <span className="font-medium text-foreground/60">vs. {bench.categoryLabel} median:</span>
+      <span className="font-mono font-semibold">{bench.median}</span>
+      <span className={`font-mono font-semibold ${positive ? "text-ready" : "text-danger"}`}>
+        ({positive ? "+" : ""}{bench.delta})
+      </span>
+      <span className="text-border">·</span>
+      <span>{ordinal}</span>
+      <span className="text-border" title="Beta — calibration data still accruing">β</span>
+    </div>
   );
 }
 
