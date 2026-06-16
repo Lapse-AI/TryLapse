@@ -1,6 +1,14 @@
 import { createFileRoute, Link, useParams, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { PageHeader, Panel, Chip, StatusDot, ClientTime, LaunchGateBadge, ScoreDeltaBadge } from "@/components/ui-bits";
+import {
+  PageHeader,
+  Panel,
+  Chip,
+  StatusDot,
+  ClientTime,
+  LaunchGateBadge,
+  ScoreDeltaBadge,
+} from "@/components/ui-bits";
 import { formatDuration } from "@/lib/mock-data";
 import { useScopedRunSummaries, useScopedActiveJobs } from "@/lib/api/hooks";
 import { RunHistoryLiveRows } from "@/components/run-history-live-rows";
