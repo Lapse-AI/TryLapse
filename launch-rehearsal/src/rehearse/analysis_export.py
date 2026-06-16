@@ -853,6 +853,64 @@ def _blockers(issues: list[dict[str, Any]]) -> int:
     return sum(1 for i in issues if i["severity"] in ("P0", "P1"))
 
 
+def _issue_fingerprint(issue: dict[str, Any]) -> str:
+    """Stable cross-run key for an issue — used to count recurrence."""
+    error_type = issue.get("errorType", "")
+    if error_type:
+        return f"error::{error_type}"
+    return f"{issue.get('dimension', '')}::{issue.get('title', '').lower()}"
+
+
+def _enrich_recurrence(issues: list[dict[str, Any]], output_dir: Path, current_run_id: str) -> None:
+    """Set recurring=N for each issue where N = number of prior runs (same config prefix) that had this issue.
+
+    Reads the last 20 analysis JSON files matching the same config prefix to build a
+    frequency table, then stamps each issue. Issues absent from all prior runs keep
+    recurring=1 (first occurrence). Issues that appeared in K prior runs get recurring=K+1.
+    """
+    import re as _re
+    m = _re.match(r"^(.*)-\d{8}-\d{6}$", current_run_id)
+    config_prefix = m.group(1) if m else current_run_id
+
+    analysis_dir = output_dir / "analysis"
+    if not analysis_dir.is_dir():
+        return
+
+    # Collect all prior analysis files for this config prefix, newest first
+    prior_files = sorted(
+        [f for f in analysis_dir.glob(f"{config_prefix}-*.json") if f.stem != current_run_id],
+        key=lambda f: f.stat().st_mtime,
+        reverse=True,
+    )[:20]
+
+    if not prior_files:
+        return
+
+    # Count how many prior runs contained each fingerprint
+    freq: dict[str, int] = {}
+    for path in prior_files:
+        try:
+            prior = json.loads(path.read_text())
+            seen_in_this_run: set[str] = set()
+            for prior_issue in prior.get("issues", []):
+                fp = _issue_fingerprint(prior_issue)
+                if fp not in seen_in_this_run:
+                    freq[fp] = freq.get(fp, 0) + 1
+                    seen_in_this_run.add(fp)
+        except Exception:
+            continue
+
+    for issue in issues:
+        fp = _issue_fingerprint(issue)
+        prior_count = freq.get(fp, 0)
+        if prior_count > 0:
+            issue["recurring"] = prior_count + 1  # prior runs + current run
+            issue["isRecurring"] = True
+        else:
+            issue["recurring"] = 1
+            issue["isRecurring"] = False
+
+
 def build_run_bundle(
     config: RunConfig,
     evidence: RunEvidence,
@@ -872,6 +930,7 @@ def build_run_bundle(
     _enrich_unlabeled_issue_totals(issues, evidence)
     dimensions = _expand_dimensions(analysis.dimensions, evidence)
     _append_dimension_rollup_issues(issues, evidence, dimensions, config)
+    _enrich_recurrence(issues, output_dir, evidence.run_id)
     delights = _serialize_delights(config, evidence, analysis)
     sitemap_pages, sitemap_edges, sitemap_md = _serialize_sitemap(
         ctx.sitemap if ctx else None, evidence.run_id, ctx.workflows if ctx else None

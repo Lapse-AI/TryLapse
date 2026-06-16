@@ -1,0 +1,55 @@
+topic: "Scoring Trust Mechanisms: How automated readiness scores earn engineering team trust"
+
+items:
+  - name: Lighthouse Performance Score
+    category: Existing Trusted Scoring Tools
+    description: How Google Lighthouse's 0-100 score earns trust — methodology, signal grounding, threshold transparency, weighted metrics, lab vs field anchoring, and why engineers cite it.
+
+  - name: Core Web Vitals (CWV)
+    category: Existing Trusted Scoring Tools
+    description: How Google CWV builds trust via P75 percentile anchoring, named thresholds (Good/Needs Improvement/Poor), real-user data correlation, and the SEO-ranking incentive that drives adoption.
+
+  - name: WCAG and Axe Accessibility Scoring
+    category: Existing Trusted Scoring Tools
+    description: WCAG categorical pass/fail vs Axe numeric severity scores — what makes accessibility scores actionable vs ignored, and how regulatory anchoring drives trust.
+
+  - name: CVSS Security Scoring
+    category: Existing Trusted Scoring Tools
+    description: CVSS 0-10 score for CVEs — base/temporal/environmental scoring, named bands (Critical/High/Medium/Low), cross-tool consistency, and why security teams treat it as ground truth.
+
+  - name: SonarQube Quality Gates
+    category: Existing Trusted Scoring Tools
+    description: How SonarQube's quality gates (pass/fail on coverage, duplication, bugs, code smells) earn CI trust — why binary gates work better than numeric scores for engineers.
+
+  - name: Datadog SLOs and Error Budgets
+    category: Existing Trusted Scoring Tools
+    description: How Datadog SLO/SLA reliability metrics (99.9% uptime, error budget burn rate) are trusted in production readiness reviews — the role of time-windowed evidence and objective measurement.
+
+  - name: Google SRE Production Readiness Review
+    category: Frameworks and Checklists
+    description: Google's PRR framework — structured questionnaire-based launch readiness assessment. How it earns trust through completeness, stakeholder sign-off, and named criteria rather than aggregate scores.
+
+  - name: AWS Well-Architected Framework
+    category: Frameworks and Checklists
+    description: AWS's multi-pillar assessment tool — how it builds trust via named pillars, specific questions, and severity-tagged risks rather than a single number.
+
+  - name: Statistical Calibration Theory
+    category: Calibration Theory
+    description: Probabilistic calibration (reliability diagrams, expected calibration error, Brier score) from ML evaluation — how a score is "well-calibrated" when confidence 80% → 80% accuracy, and what this means for a readiness score.
+
+  - name: Psychometrics and Composite Scoring
+    category: Calibration Theory
+    description: Academic psychometric methods for composite scores (IRT, Rasch models, factor analysis) — what makes a composite index feel valid vs arbitrary, how to handle dimension weighting, and the "face validity" concept.
+
+  - name: Net Promoter Score Trust Mechanics
+    category: Business Metric Trust Patterns
+    description: How NPS (0-10 → Promoter/Passive/Detractor → Net score) achieved near-universal executive trust despite methodological criticisms — the role of simplicity, benchmarkability, and industry adoption.
+
+  - name: Engineering Team Metric Adoption Psychology
+    category: Human Factors
+    description: Research on why engineering teams adopt or ignore metrics — cognitive factors, the role of actionability, urgency framing, metric overload, and what makes a score citable in a stand-up vs background noise.
+
+execution:
+  batch_size: 4
+  items_per_agent: 1
+  output_dir: "./scoring_trust_mechanisms/results"

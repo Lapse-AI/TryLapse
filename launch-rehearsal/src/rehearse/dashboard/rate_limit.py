@@ -50,8 +50,17 @@ _limiter = RateLimiter(window_sec=60.0)
 # Limits per group
 LIMITS: dict[str, int] = {
     "jobs":    5,   # POST /api/jobs* — prevents run storm
+    "llm":     10,  # endpoints that trigger LLM + browser (expensive)
     "config":  30,  # config reads/writes
     "default": 120, # everything else
+}
+
+_LLM_PATHS = {
+    "/api/product/analyze",
+    "/api/persona-library/generate",
+    "/api/journeys/draft",
+    "/api/personas/draft",
+    "/api/personas/suggest",
 }
 
 
@@ -60,7 +69,9 @@ def check_rate_limit(ip: str, path: str) -> tuple[bool, str]:
     Check rate limit for the given IP and path.
     Returns (allowed, group_name).
     """
-    if path.startswith("/api/jobs"):
+    if path in _LLM_PATHS:
+        group, limit = "llm", LIMITS["llm"]
+    elif path.startswith("/api/jobs"):
         group, limit = "jobs", LIMITS["jobs"]
     elif path.startswith("/api/configs"):
         group, limit = "config", LIMITS["config"]

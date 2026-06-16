@@ -99,6 +99,9 @@ def _write_cred_env(artifacts_root: Path, email: str, password: str) -> None:
     """Persist REHEARSE_EMAIL/PASSWORD to project-root .env so both _load_env and
     load_dotenv_files pick them up on next restart."""
     import os as _os
+    # Strip newlines to prevent .env injection (e.g. email="x\nSECRET=injected")
+    email = email.replace("\n", "").replace("\r", "")
+    password = password.replace("\n", "").replace("\r", "")
     if email:
         _os.environ["REHEARSE_EMAIL"] = email
     if password:
@@ -591,6 +594,11 @@ class _Handler(BaseHTTPRequestHandler):
 
         if path.startswith("/api/persona-library/") and len(path.split("/")) == 4:
             pid = path.split("/")[-1]
+            try:
+                _safe_id(pid, "id")
+            except ValueError as e:
+                self._send_json({"error": str(e)}, status=400)
+                return
             from rehearse.dashboard.persona_store import get_persona
             p = get_persona(root, pid)
             if p is None:
@@ -759,14 +767,16 @@ class _Handler(BaseHTTPRequestHandler):
         if not self._check_auth(path):
             return
 
-        # Rate limiting (jobs endpoints — prevent run storms)
-        if path.startswith("/api/jobs") or path.startswith("/api/jobs/"):
-            from rehearse.dashboard.rate_limit import check_rate_limit
+        # Rate limiting (jobs + expensive LLM endpoints)
+        from rehearse.dashboard.rate_limit import check_rate_limit, _LLM_PATHS
+        _needs_rate_check = path.startswith("/api/jobs") or path in _LLM_PATHS
+        if _needs_rate_check:
             client_ip = self.headers.get("X-Forwarded-For", self.client_address[0]).split(",")[0].strip()
             allowed, group = check_rate_limit(client_ip, path)
             if not allowed:
+                limit_msg = "5 job requests" if group == "jobs" else "10 LLM requests"
                 self._send_json(
-                    {"error": f"Rate limit exceeded ({group}). Max 5 job requests per 60s per IP."},
+                    {"error": f"Rate limit exceeded ({group}). Max {limit_msg} per 60s per IP."},
                     status=429,
                 )
                 return
@@ -1482,6 +1492,11 @@ class _Handler(BaseHTTPRequestHandler):
             parts = path.strip("/").split("/")
             if len(parts) >= 4 and parts[-1] == "chat":
                 run_id = parts[2]
+                try:
+                    _safe_id(run_id, "runId")
+                except ValueError as e:
+                    self._send_json({"error": str(e)}, status=400)
+                    return
                 bundle = load_bundle(root, run_id)
                 if not bundle:
                     self._send_json({"error": "run not found"}, status=404)
@@ -1528,6 +1543,11 @@ class _Handler(BaseHTTPRequestHandler):
         if path == "/api/jobs/cohort":
             body = self._read_json_body()
             cfg = Path(body.get("configPath", ""))
+            try:
+                cfg.resolve().relative_to(root.resolve())
+            except (ValueError, OSError):
+                self._send_json({"error": "configPath must be within artifacts root"}, status=400)
+                return
             if not cfg.is_file():
                 self._send_json({"error": "configPath required"}, status=400)
                 return
@@ -1546,6 +1566,13 @@ class _Handler(BaseHTTPRequestHandler):
             body = self._read_json_body()
             config_a = Path(body.get("configAPath", ""))
             config_b = Path(body.get("configBPath", ""))
+            try:
+                root_resolved = root.resolve()
+                config_a.resolve().relative_to(root_resolved)
+                config_b.resolve().relative_to(root_resolved)
+            except (ValueError, OSError):
+                self._send_json({"error": "configAPath and configBPath must be within artifacts root"}, status=400)
+                return
             if not config_a.is_file() or not config_b.is_file():
                 self._send_json({"error": "configAPath and configBPath must be valid files"}, status=400)
                 return
@@ -1564,6 +1591,12 @@ class _Handler(BaseHTTPRequestHandler):
         if path == "/api/jobs":
             body = self._read_json_body()
             config_path = Path(body.get("configPath", ""))
+            if config_path.parts:  # only bounds-check if a path was actually provided
+                try:
+                    config_path.resolve().relative_to(root.resolve())
+                except (ValueError, OSError):
+                    self._send_json({"error": "configPath must be within artifacts root"}, status=400)
+                    return
             if not config_path.is_file():
                 configs = list_configs(root)
                 if configs:
@@ -1584,6 +1617,11 @@ class _Handler(BaseHTTPRequestHandler):
 
         if path.startswith("/api/annotations/"):
             run_id = path.split("/")[-1]
+            try:
+                _safe_id(run_id, "runId")
+            except ValueError as e:
+                self._send_json({"error": str(e)}, status=400)
+                return
             body = self._read_json_body()
             anns = save_annotation(root, run_id, body)
             self._send_json(anns)
@@ -1654,8 +1692,10 @@ class _Handler(BaseHTTPRequestHandler):
         # DELETE /api/persona-library/{id}
         if path.startswith("/api/persona-library/"):
             pid = path.split("/")[-1]
-            if not pid:
-                self._send_json({"error": "id required"}, status=400)
+            try:
+                _safe_id(pid, "id")
+            except ValueError as e:
+                self._send_json({"error": str(e)}, status=400)
                 return
             from rehearse.dashboard.persona_store import delete_persona
             found = delete_persona(root, pid)

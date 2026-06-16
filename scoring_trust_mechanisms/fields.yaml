@@ -1,0 +1,102 @@
+field_categories:
+  - category: Basic Info
+    fields:
+      - name: name
+        description: Name of the scoring system / framework
+        detail_level: brief
+        required: true
+      - name: category
+        description: Which research category this falls under
+        detail_level: brief
+        required: true
+      - name: official_url
+        description: Main documentation or product URL
+        detail_level: brief
+        required: false
+
+  - category: Scoring Mechanism
+    fields:
+      - name: score_type
+        description: "Type of output: numeric (0-100), categorical (Pass/Fail), banded (Good/Warn/Poor), or composite"
+        detail_level: brief
+        required: true
+      - name: score_range
+        description: "The range and units of the score (e.g. 0-100, 0-10, percentage, CVSS vector)"
+        detail_level: brief
+        required: true
+      - name: signal_grounding
+        description: What real-world signals feed into the score — what is actually measured, how measurements are taken
+        detail_level: detailed
+        required: true
+      - name: weighting_approach
+        description: How different signals are weighted or combined — transparent/opaque, fixed/dynamic, documented rationale
+        detail_level: detailed
+        required: true
+      - name: threshold_rationale
+        description: How thresholds (pass/fail, band boundaries) are defined — empirical data, expert consensus, regulatory requirement, or arbitrary
+        detail_level: detailed
+        required: true
+
+  - category: Trust-Building Techniques
+    fields:
+      - name: transparency_mechanisms
+        description: How the scoring methodology is documented, explained, and made inspectable to users
+        detail_level: detailed
+        required: true
+      - name: benchmarkability
+        description: Whether scores can be compared across projects, over time, or against industry baselines
+        detail_level: detailed
+        required: true
+      - name: actionability_design
+        description: How the score drives specific next actions — what prevents "score paralysis" or ignoring the number
+        detail_level: detailed
+        required: true
+      - name: external_anchoring
+        description: External forces that drive adoption — regulatory requirements, SEO impact, investor expectations, certification bodies
+        detail_level: detailed
+        required: false
+      - name: social_proof_mechanisms
+        description: How industry adoption, case studies, or visible citations reinforce trust in the score
+        detail_level: detailed
+        required: false
+
+  - category: Engineering Team Adoption
+    fields:
+      - name: adoption_drivers
+        description: Why engineering teams actually use this — intrinsic (it helps) vs extrinsic (required) motivation
+        detail_level: detailed
+        required: true
+      - name: common_failure_modes
+        description: When engineering teams ignore or game this score — what causes dismissal or Goodhart's Law effects
+        detail_level: detailed
+        required: true
+      - name: citation_pattern
+        description: In what context do teams cite this score in meetings/docs? What triggers a verbal reference?
+        detail_level: detailed
+        required: false
+
+  - category: Lessons for Launch Rehearsal
+    fields:
+      - name: key_lesson
+        description: The single most important insight from this scoring system that applies to building a trusted readiness score
+        detail_level: detailed
+        required: true
+      - name: direct_applicability
+        description: "Specific technique(s) from this system that Launch Rehearsal should borrow, copy, or adapt"
+        detail_level: detailed
+        required: true
+      - name: anti_patterns_to_avoid
+        description: What this scoring system gets wrong that Launch Rehearsal should actively avoid
+        detail_level: detailed
+        required: false
+
+  - category: Sources
+    fields:
+      - name: primary_sources
+        description: List of {title, url} evidence objects — must include at least 2 for required fields
+        detail_level: detailed
+        required: true
+      - name: uncertain
+        description: List of field names where data was not found or is speculative
+        detail_level: brief
+        required: false
