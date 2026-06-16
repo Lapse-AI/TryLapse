@@ -8,6 +8,8 @@ import {
   Chip,
   StatusDot,
   ClientTime,
+  LaunchGateBadge,
+  ScoreDeltaBadge,
 } from "@/components/ui-bits";
 import { DimensionRollupGrid } from "@/components/dimension-rollup";
 import { formatDuration, bandFromIssues, countBlockers } from "@/lib/mock-data";
@@ -277,7 +279,15 @@ function Index() {
                       <span className="text-[11px] text-muted-foreground font-mono">
                         / 100 · {latest.readinessBand}
                       </span>
+                      {latest.scoreDelta != null && latest.scoreDelta !== 0 && (
+                        <ScoreDeltaBadge delta={latest.scoreDelta} />
+                      )}
                     </div>
+                    {latest.launchGate && (
+                      <div className="mt-2">
+                        <LaunchGateBadge gate={latest.launchGate} />
+                      </div>
+                    )}
                     <div className="mt-2 overflow-visible">
                       <Sparkline
                         values={(trends?.readiness ?? [latest.readiness]) as number[]}

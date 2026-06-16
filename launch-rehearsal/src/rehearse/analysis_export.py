@@ -853,6 +853,50 @@ def _blockers(issues: list[dict[str, Any]]) -> int:
     return sum(1 for i in issues if i["severity"] in ("P0", "P1"))
 
 
+def _compute_launch_gate(issues: list[dict[str, Any]], readiness_score: int) -> str:
+    """Named pass/fail verdict above the readiness score — designed to be citable in meetings.
+
+    BLOCKED  → any P0 issue found (auth wall, budget exceeded, critical failure)
+    CAUTION  → any P1 issue found (no P0), or score < 55
+    PASS     → no P0/P1 issues and score ≥ 70
+    REVIEW   → everything else (score 55-69, or P2/P3 only issues)
+    """
+    has_p0 = any(i.get("severity") == "P0" for i in issues)
+    has_p1 = any(i.get("severity") == "P1" for i in issues)
+    if has_p0:
+        return "BLOCKED"
+    if has_p1 or readiness_score < 55:
+        return "CAUTION"
+    if readiness_score >= 70:
+        return "PASS"
+    return "REVIEW"
+
+
+def _previous_run_score(output_dir: Path, current_run_id: str) -> int | None:
+    """Return the readiness score from the most recent prior run for the same config prefix."""
+    import re as _re
+    m = _re.match(r"^(.*)-\d{8}-\d{6}$", current_run_id)
+    config_prefix = m.group(1) if m else current_run_id
+
+    analysis_dir = output_dir / "analysis"
+    if not analysis_dir.is_dir():
+        return None
+
+    prior_files = sorted(
+        [f for f in analysis_dir.glob(f"{config_prefix}-*.json") if f.stem != current_run_id],
+        key=lambda f: f.stat().st_mtime,
+        reverse=True,
+    )
+    if not prior_files:
+        return None
+    try:
+        data = json.loads(prior_files[0].read_text())
+        score = data.get("summary", {}).get("readiness")
+        return int(score) if score is not None else None
+    except Exception:
+        return None
+
+
 def _issue_fingerprint(issue: dict[str, Any]) -> str:
     """Stable cross-run key for an issue — used to count recurrence."""
     error_type = issue.get("errorType", "")
@@ -993,6 +1037,11 @@ def build_run_bundle(
         for j in config.journeys
     ]
 
+    readiness_score = _readiness_score(band, analysis)
+    prev_score = _previous_run_score(output_dir, evidence.run_id)
+    score_delta = (readiness_score - prev_score) if prev_score is not None else None
+    launch_gate = _compute_launch_gate(issues, readiness_score)
+
     return {
         "summary": {
             "id": evidence.run_id,
@@ -1004,9 +1053,12 @@ def build_run_bundle(
             "startedAt": evidence.started_at,
             "finishedAt": evidence.finished_at,
             "durationSec": evidence.duration_ms // 1000,
-            "readiness": _readiness_score(band, analysis),
+            "readiness": readiness_score,
             "readinessBand": band,
             "status": status,
+            "launchGate": launch_gate,
+            "scoreDelta": score_delta,
+            "previousScore": prev_score,
             "blockers": _blockers(issues),
             "issues": len(issues),
             "delights": len(delights),

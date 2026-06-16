@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, type ElementType, type ReactNode } from "react";
-import { HardHat } from "lucide-react";
-import type { Status, Severity } from "@/lib/mock-data";
+import { HardHat, CheckCircle2, AlertTriangle, XCircle, Eye } from "lucide-react";
+import type { Status, Severity, LaunchGate } from "@/lib/mock-data";
 import { formatRel } from "@/lib/mock-data";
 
 /** Format ISO timestamp into user's local timezone. */
@@ -96,6 +96,63 @@ export function SeverityChip({ s }: { s: Severity }) {
   );
 }
 
+const GATE_CONFIG: Record<
+  LaunchGate,
+  { label: string; tone: string; icon: typeof CheckCircle2; title: string }
+> = {
+  PASS: {
+    label: "Launch Gate: PASS",
+    tone: "text-ready border-ready/30 bg-ready/10",
+    icon: CheckCircle2,
+    title: "No P0 or P1 blockers found and readiness score ≥ 70",
+  },
+  REVIEW: {
+    label: "Launch Gate: REVIEW",
+    tone: "text-info border-info/30 bg-info/10",
+    icon: Eye,
+    title: "Score 55–69 with no P0/P1 issues — review before shipping",
+  },
+  CAUTION: {
+    label: "Launch Gate: CAUTION",
+    tone: "text-warn border-warn/30 bg-warn/10",
+    icon: AlertTriangle,
+    title: "P1 issues found or readiness score below 55",
+  },
+  BLOCKED: {
+    label: "Launch Gate: BLOCKED",
+    tone: "text-danger border-danger/30 bg-danger/10",
+    icon: XCircle,
+    title: "P0 critical issue found — do not ship",
+  },
+};
+
+export function LaunchGateBadge({ gate }: { gate: LaunchGate }) {
+  const cfg = GATE_CONFIG[gate];
+  const Icon = cfg.icon;
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold border tracking-wide ${cfg.tone}`}
+      title={cfg.title}
+    >
+      <Icon className="size-3.5 shrink-0" />
+      {cfg.label}
+    </span>
+  );
+}
+
+export function ScoreDeltaBadge({ delta }: { delta: number }) {
+  if (delta === 0) return null;
+  const positive = delta > 0;
+  return (
+    <span
+      className={`inline-flex items-center text-[11px] font-mono font-semibold ${positive ? "text-ready" : "text-danger"}`}
+      title={`${positive ? "+" : ""}${delta} vs previous run`}
+    >
+      {positive ? "▲" : "▼"} {Math.abs(delta)}
+    </span>
+  );
+}
+
 export function Panel({
   children,
   className = "",
@@ -180,12 +237,14 @@ export function Stat({
   hint,
   tone,
   title,
+  children,
 }: {
   label: string;
   value: ReactNode;
   hint?: string;
   tone?: Status;
   title?: string;
+  children?: ReactNode;
 }) {
   return (
     <div className="panel-glass p-4" title={title}>
@@ -195,6 +254,7 @@ export function Stat({
         {tone && <StatusDot status={tone} />}
       </div>
       {hint && <div className="text-[11px] text-muted-foreground mt-1">{hint}</div>}
+      {children}
     </div>
   );
 }

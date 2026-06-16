@@ -10,6 +10,8 @@ import {
   Stat,
   ClientTime,
   SEVERITY_LABEL,
+  LaunchGateBadge,
+  ScoreDeltaBadge,
 } from "@/components/ui-bits";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DimensionRollupGrid, DimensionBreakdownBanner } from "@/components/dimension-rollup";
@@ -337,11 +339,24 @@ export function RunDetail() {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           <Stat
             label="Readiness"
-            value={run.readiness}
+            value={
+              <span className="flex items-baseline gap-2">
+                {run.readiness}
+                {run.scoreDelta != null && run.scoreDelta !== 0 && (
+                  <ScoreDeltaBadge delta={run.scoreDelta} />
+                )}
+              </span>
+            }
             tone={band}
-            hint={`Band: ${run.readinessBand}`}
+            hint={run.launchGate ? undefined : `Band: ${run.readinessBand}`}
             title={READINESS_BAND_HELP}
-          />
+          >
+            {run.launchGate && (
+              <div className="mt-2">
+                <LaunchGateBadge gate={run.launchGate} />
+              </div>
+            )}
+          </Stat>
           <Stat label="Blockers" value={blockerCount} hint="Critical + High" tone="danger" />
           <Stat label="Highlights" value={run.delights} tone="ready" />
           <Stat

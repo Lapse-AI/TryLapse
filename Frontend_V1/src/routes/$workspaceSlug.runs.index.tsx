@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useParams, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { PageHeader, Panel, Chip, StatusDot, ClientTime } from "@/components/ui-bits";
+import { PageHeader, Panel, Chip, StatusDot, ClientTime, LaunchGateBadge, ScoreDeltaBadge } from "@/components/ui-bits";
 import { formatDuration } from "@/lib/mock-data";
 import { useScopedRunSummaries, useScopedActiveJobs } from "@/lib/api/hooks";
 import { RunHistoryLiveRows } from "@/components/run-history-live-rows";
@@ -179,7 +179,15 @@ function RunsList() {
                         <StatusDot status={r.status} />
                         <span className="font-mono tabular-nums">{r.readiness}</span>
                         <span className="text-[11px] text-muted-foreground">{r.readinessBand}</span>
+                        {r.scoreDelta != null && r.scoreDelta !== 0 && (
+                          <ScoreDeltaBadge delta={r.scoreDelta} />
+                        )}
                       </div>
+                      {r.launchGate && (
+                        <div className="mt-1">
+                          <LaunchGateBadge gate={r.launchGate} />
+                        </div>
+                      )}
                     </td>
                     <td className="px-5 py-3 font-mono tabular-nums text-danger">{r.blockers}</td>
                     <td className="px-5 py-3 font-mono tabular-nums text-ready">{r.delights}</td>

@@ -77,6 +77,8 @@ export type Delight = {
   confidence?: "high" | "hypothesis";
 };
 
+export type LaunchGate = "PASS" | "REVIEW" | "CAUTION" | "BLOCKED";
+
 export type RunSummary = {
   id: string;
   productName: string;
@@ -90,6 +92,9 @@ export type RunSummary = {
   readiness: number;
   readinessBand: ReadinessBand;
   status: Status;
+  launchGate?: LaunchGate | null;
+  scoreDelta?: number | null;
+  previousScore?: number | null;
   blockers: number;
   issues: number;
   delights: number;
