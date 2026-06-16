@@ -19,7 +19,15 @@ export default tseslint.config(
       "react-refresh": reactRefresh,
     },
     rules: {
+      // Spread v7 recommended, then pin to v5 behavior by disabling
+      // the new strict rules that didn't exist in eslint-plugin-react-hooks@5.x.
+      // The patterns they flag (setState in effects, refs in render) are valid
+      // in this codebase and fixing them all is out of scope for this bump.
       ...reactHooks.configs.recommended.rules,
+      "react-hooks/set-state-in-effect": "off",
+      "react-hooks/purity": "off",
+      "react-hooks/refs": "off",
+      "react-hooks/static-components": "off",
       "no-restricted-imports": [
         "error",
         {
@@ -34,6 +42,15 @@ export default tseslint.config(
       ],
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
       "@typescript-eslint/no-unused-vars": "off",
+    },
+  },
+  // TanStack Router route files intentionally export a non-component Route
+  // constant alongside their component. react-refresh 0.5.x no longer considers
+  // function-call results as "constant exports", so we exempt the routes dir.
+  {
+    files: ["src/routes/**/*.{ts,tsx}"],
+    rules: {
+      "react-refresh/only-export-components": "off",
     },
   },
   eslintPluginPrettier,
