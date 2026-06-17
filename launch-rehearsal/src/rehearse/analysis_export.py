@@ -853,6 +853,33 @@ def _blockers(issues: list[dict[str, Any]]) -> int:
     return sum(1 for i in issues if i["severity"] in ("P0", "P1"))
 
 
+_GATE_VERDICTS: dict[str, str] = {
+    "PASS":    "Ready to launch. No blockers found.",
+    "REVIEW":  "Review required before launch. Meaningful friction detected.",
+    "CAUTION": "Do not launch yet. Critical issues need resolution.",
+    "BLOCKED": "Launch blocked. Hard blockers present.",
+}
+
+
+def _gate_verdict(gate: str, score: int, flake_count: int) -> str:
+    base = _GATE_VERDICTS.get(gate, gate)
+    if flake_count > 0 and gate in ("PASS", "REVIEW"):
+        base += f" ({flake_count} flaky step{'s' if flake_count != 1 else ''} — re-run to confirm.)"
+    return base
+
+
+def _follow_up_at(iso_ts: str | None, days: int = 7) -> str | None:
+    """Return an ISO timestamp 7 days after the run finished — the outcome follow-up prompt date."""
+    if not iso_ts:
+        return None
+    try:
+        from datetime import datetime, timedelta, timezone
+        dt = datetime.fromisoformat(iso_ts.replace("Z", "+00:00"))
+        return (dt + timedelta(days=days)).isoformat()
+    except Exception:
+        return None
+
+
 _BENCHMARKS: dict[str, dict[str, Any]] = {
     "b2b_saas":        {"label": "B2B SaaS",        "p25": 54, "median": 67, "p75": 78},
     "b2c_saas":        {"label": "B2C SaaS",        "p25": 58, "median": 71, "p75": 81},
@@ -893,21 +920,25 @@ def _industry_benchmark(product_type: str, readiness_score: int) -> dict[str, An
     }
 
 
-def _compute_launch_gate(issues: list[dict[str, Any]], readiness_score: int) -> str:
+def _compute_launch_gate(
+    issues: list[dict[str, Any]],
+    readiness_score: int,
+    flake_rate: float = 0.0,
+) -> str:
     """Named pass/fail verdict above the readiness score — designed to be citable in meetings.
 
     BLOCKED  → any P0 issue found (auth wall, budget exceeded, critical failure)
-    CAUTION  → any P1 issue found (no P0), or score < 55
-    PASS     → no P0/P1 issues and score ≥ 70
-    REVIEW   → everything else (score 55-69, or P2/P3 only issues)
+    CAUTION  → any P1 issue found (no P0), score < 55, or flake_rate ≥ 0.30
+    REVIEW   → score 55-69, or P2/P3 only issues, or flake_rate ≥ 0.10
+    PASS     → no P0/P1 issues, score ≥ 70, flake_rate < 0.10
     """
     has_p0 = any(i.get("severity") == "P0" for i in issues)
     has_p1 = any(i.get("severity") == "P1" for i in issues)
     if has_p0:
         return "BLOCKED"
-    if has_p1 or readiness_score < 55:
+    if has_p1 or readiness_score < 55 or flake_rate >= 0.30:
         return "CAUTION"
-    if readiness_score >= 70:
+    if readiness_score >= 70 and flake_rate < 0.10:
         return "PASS"
     return "REVIEW"
 
@@ -935,6 +966,49 @@ def _previous_run_score(output_dir: Path, current_run_id: str) -> int | None:
         return int(score) if score is not None else None
     except Exception:
         return None
+
+
+def _run_history(
+    output_dir: Path,
+    current_run_id: str,
+    limit: int = 10,
+) -> list[dict[str, Any]]:
+    """Return the last `limit` completed runs (including current) for the same config prefix.
+
+    Each entry: { id, startedAt, launchGate, readiness, flakeRate, blockerCount }
+    Ordered oldest → newest so a sparkline can iterate left-to-right.
+    """
+    import re as _re
+    m = _re.match(r"^(.*)-\d{8}-\d{6}$", current_run_id)
+    config_prefix = m.group(1) if m else current_run_id
+
+    analysis_dir = output_dir / "analysis"
+    if not analysis_dir.is_dir():
+        return []
+
+    files = sorted(
+        analysis_dir.glob(f"{config_prefix}-*.json"),
+        key=lambda f: f.stat().st_mtime,
+    )[-limit:]
+
+    history: list[dict[str, Any]] = []
+    for f in files:
+        try:
+            data = json.loads(f.read_text())
+            s = data.get("summary", {})
+            history.append({
+                "id": s.get("id", f.stem),
+                "startedAt": s.get("startedAt"),
+                "launchGate": s.get("launchGate"),
+                "verdict": s.get("verdict"),
+                "readiness": s.get("readiness"),
+                "flakeRate": s.get("flakeRate", 0),
+                "blockerCount": s.get("blockers", 0),
+                "durationSec": s.get("durationSec"),
+            })
+        except Exception:
+            continue
+    return history
 
 
 def _issue_fingerprint(issue: dict[str, Any]) -> str:
@@ -1080,11 +1154,17 @@ def build_run_bundle(
     readiness_score = _readiness_score(band, analysis)
     prev_score = _previous_run_score(output_dir, evidence.run_id)
     score_delta = (readiness_score - prev_score) if prev_score is not None else None
-    launch_gate = _compute_launch_gate(issues, readiness_score)
+    flake_rate = round(flaky_step_count / max(len(steps), 1), 3)
+    launch_gate = _compute_launch_gate(issues, readiness_score, flake_rate=flake_rate)
     industry_benchmark = _industry_benchmark(config.product_type, readiness_score)
 
     return {
         "summary": {
+            # Gate leads — Jobs: "the score is a consequence of the gate, not the headline"
+            "launchGate": launch_gate,
+            "verdict": _gate_verdict(launch_gate, readiness_score, flaky_step_count),
+            "readiness": readiness_score,
+            "readinessBand": band,
             "id": evidence.run_id,
             "productName": evidence.product_name,
             "target": _host(evidence.target_url),
@@ -1099,10 +1179,7 @@ def build_run_bundle(
                 "journeySec": evidence.phase_timings.get("journey_ms", 0) // 1000,
                 "analysisSec": evidence.phase_timings.get("analysis_ms", 0) // 1000,
             },
-            "readiness": readiness_score,
-            "readinessBand": band,
             "status": status,
-            "launchGate": launch_gate,
             "scoreDelta": score_delta,
             "previousScore": prev_score,
             "industryBenchmark": industry_benchmark,
@@ -1112,6 +1189,8 @@ def build_run_bundle(
             "pages": pages_crawled,
             "pagesCrawled": pages_crawled,
             "stepCount": len(steps),
+            "flakeCount": flaky_step_count,
+            "flakeRate": flake_rate,
             "agentCost": cost_estimate["usd"],
             "costEstimate": cost_estimate,
             "outcome": evidence.outcome,
@@ -1127,7 +1206,9 @@ def build_run_bundle(
             or (ctx.metadata.get("network_log_path") if ctx else None),
             "webVitalsPath": (ctx.metadata.get("web_vitals_path") if ctx else None),
             "experiment": _serialize_experiment(config.experiment),
+            "followUpAt": _follow_up_at(evidence.finished_at or evidence.started_at),
         },
+        "runHistory": _run_history(output_dir, evidence.run_id),
         "steps": steps,
         "issues": issues,
         "delights": delights,

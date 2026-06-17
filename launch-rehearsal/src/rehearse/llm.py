@@ -150,6 +150,27 @@ def _max_retries() -> int:
     return int(os.environ.get("REHEARSE_LLM_RETRIES", "2"))
 
 
+_PII_PATTERNS: list[tuple[re.Pattern[str], str]] = [
+    # Email addresses
+    (re.compile(r"[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"), "[email]"),
+    # JWT — must come before generic token to prevent partial match (eyJ... prefix)
+    (re.compile(r"eyJ[A-Za-z0-9_\-]+\.[A-Za-z0-9_\-]+\.[A-Za-z0-9_\-]+"), "[jwt]"),
+    # Bearer / API tokens in headers or query params (≥20 char alphanum/dash/underscore/dot)
+    (re.compile(r"(?i)(?:bearer|token|api[_\-]?key|apikey|secret|access[_\-]?token)[=:\s\"']+([A-Za-z0-9\-_.~+/]{20,})"), r"[token]"),
+    # Generic long opaque strings: 32+ base64/hex chars on a word boundary
+    (re.compile(r"\b([A-Za-z0-9+/]{32,}={0,2})\b"), "[token]"),
+    # Numeric phone-like patterns (loose)
+    (re.compile(r"\b(?:\+?1[\s\-.]?)?\(?\d{3}\)?[\s\-.]?\d{3}[\s\-.]?\d{4}\b"), "[phone]"),
+]
+
+
+def _scrub_pii(text: str) -> str:
+    """Remove emails, tokens, JWTs and phone numbers from a text excerpt."""
+    for pattern, replacement in _PII_PATTERNS:
+        text = pattern.sub(replacement, text)
+    return text
+
+
 def _build_evidence_bundle(ctx: RunContext, persona: Persona) -> dict[str, Any]:
     steps = []
     for s in ctx.evidence.steps[:40]:
@@ -159,12 +180,12 @@ def _build_evidence_bundle(ctx: RunContext, persona: Persona) -> dict[str, Any]:
                 "journey_id": s.journey_id,
                 "action": s.action,
                 "outcome": s.outcome,
-                "url": s.final_url or s.requested_url,
+                "url": _scrub_pii(s.final_url or s.requested_url or ""),
                 "title": s.page_title,
                 "duration_ms": s.duration_ms,
-                "excerpt": s.body_text_excerpt[:400],
+                "excerpt": _scrub_pii(s.body_text_excerpt[:400]),
                 "unlabeled_buttons": s.unlabeled_button_count,
-                "errors": s.error_phrases_found,
+                "errors": [_scrub_pii(e) for e in s.error_phrases_found],
             }
         )
     sitemap_summary = None

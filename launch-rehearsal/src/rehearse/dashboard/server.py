@@ -359,6 +359,27 @@ class _Handler(BaseHTTPRequestHandler):
             self._send_json(bundle)
             return
 
+        # ── Outcome feedback loop ─────────────────────────────────────────────
+        if path == "/api/outcomes/due":
+            from rehearse.dashboard.outcome_store import follow_up_due
+            self._send_json({"due": follow_up_due(root)})
+            return
+
+        if path == "/api/outcomes":
+            from rehearse.dashboard.outcome_store import list_outcomes
+            self._send_json(list_outcomes(root))
+            return
+
+        if path.startswith("/api/outcomes/"):
+            run_id = path.split("/")[-1]
+            from rehearse.dashboard.outcome_store import get_outcome
+            record = get_outcome(root, run_id)
+            if not record:
+                self._send_json({"error": "not found"}, status=404)
+                return
+            self._send_json(record)
+            return
+
         if path == "/api/summaries":
             payload = self._require_jwt()
             config_prefix = None
@@ -1719,6 +1740,19 @@ class _Handler(BaseHTTPRequestHandler):
             body = self._read_json_body()
             self._send_json(save_workspace(root, body))
             return
+
+        # ── Outcome feedback loop ─────────────────────────────────────────────
+        if path == "/api/outcomes":
+            body = self._read_json_body()
+            from rehearse.dashboard.outcome_store import record_outcome
+            try:
+                saved = record_outcome(root, body)
+            except ValueError as exc:
+                self._send_json({"error": str(exc)}, status=400)
+                return
+            self._send_json(saved, status=201)
+            return
+
         self.send_error(404)
 
 
