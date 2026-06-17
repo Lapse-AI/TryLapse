@@ -1094,6 +1094,11 @@ def build_run_bundle(
             "startedAt": evidence.started_at,
             "finishedAt": evidence.finished_at,
             "durationSec": evidence.duration_ms // 1000,
+            "phaseTimings": {
+                "crawlSec": evidence.phase_timings.get("crawl_ms", 0) // 1000,
+                "journeySec": evidence.phase_timings.get("journey_ms", 0) // 1000,
+                "analysisSec": evidence.phase_timings.get("analysis_ms", 0) // 1000,
+            },
             "readiness": readiness_score,
             "readinessBand": band,
             "status": status,

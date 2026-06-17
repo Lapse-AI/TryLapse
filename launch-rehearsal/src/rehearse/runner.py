@@ -96,9 +96,14 @@ def run_rehearsal(
                     pass
 
         orchestrator = AgentOrchestrator(ctx, session, artifacts_root, use_llm=use_llm)
+        _t0 = time.perf_counter()
         orchestrator.run_crawl_phase()
+        evidence.phase_timings["crawl_ms"] = int((time.perf_counter() - _t0) * 1000)
+
         tracker.set_phase("executing")
+        _t0 = time.perf_counter()
         orchestrator.run_journey_phase()
+        evidence.phase_timings["journey_ms"] = int((time.perf_counter() - _t0) * 1000)
 
         # Save steps immediately after execution — before analysis can crash.
         # This ensures rebuild_bundle_from_artifacts always has real step data.
@@ -112,7 +117,9 @@ def run_rehearsal(
         if net_path:
             evidence.network_log_path = net_path
             ctx.metadata["network_log_path"] = net_path
+        _t0 = time.perf_counter()
         analysis = orchestrator.run_analysis_phase()
+        evidence.phase_timings["analysis_ms"] = int((time.perf_counter() - _t0) * 1000)
 
         from rehearse.narrative import build_run_narrative
 

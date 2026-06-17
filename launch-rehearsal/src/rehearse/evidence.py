@@ -65,6 +65,7 @@ class RunEvidence:
     steps: list[StepSnapshot] = field(default_factory=list)
     outcome: str = "running"
     network_log_path: str | None = None
+    phase_timings: dict[str, int] = field(default_factory=dict)
 
     def add_step(self, record: StepSnapshot) -> None:
         self.steps.append(record)

@@ -88,14 +88,47 @@ def assert_url_allowed(url: str, *, allow_localhost: bool = False) -> urlparse:
     return parsed
 
 
+def _follow_redirect_safe(
+    client: httpx.Client,
+    url: str,
+    *,
+    method: str = "HEAD",
+    allow_localhost: bool = False,
+    max_hops: int = 5,
+) -> httpx.Response:
+    """Manually follow redirects, re-running SSRF checks on every hop destination."""
+    current = url
+    for _ in range(max_hops):
+        req = client.build_request(method, current)
+        resp = client.send(req, follow_redirects=False)
+        if resp.is_redirect:
+            location = resp.headers.get("location", "")
+            if not location:
+                break
+            # Resolve relative redirects against the current URL
+            next_url = str(httpx.URL(current).copy_with()).rstrip("/")
+            try:
+                next_url = str(httpx.URL(location)) if location.startswith(("http://", "https://")) else str(httpx.URL(current).copy_with(path=location))
+            except Exception:
+                next_url = location
+            assert_url_allowed(next_url, allow_localhost=allow_localhost)
+            current = next_url
+            continue
+        return resp
+    # Last hop — return as-is
+    return resp
+
+
 def preflight_head(url: str, timeout: float = 15.0, *, allow_localhost: bool = False) -> dict:
-    """HEAD/GET probe after SSRF checks. Returns status metadata."""
+    """HEAD/GET probe after SSRF checks. Re-validates every redirect hop."""
     assert_url_allowed(url, allow_localhost=allow_localhost)
-    with httpx.Client(follow_redirects=True, timeout=timeout) as client:
+    with httpx.Client(follow_redirects=False, timeout=timeout) as client:
         try:
-            resp = client.head(url)
+            resp = _follow_redirect_safe(client, url, method="HEAD", allow_localhost=allow_localhost)
             if resp.status_code >= 400:
-                resp = client.get(url)
+                resp = _follow_redirect_safe(client, url, method="GET", allow_localhost=allow_localhost)
+        except (SSRFBlockedError, PreflightError):
+            raise
         except httpx.HTTPError as e:
             raise PreflightError(f"HTTP probe failed for {url}: {e}") from e
         return {
