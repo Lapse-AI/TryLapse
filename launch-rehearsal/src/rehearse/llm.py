@@ -532,6 +532,37 @@ Respond with JSON only:
 }
 """
 
+SHARE_MESSAGE_SYSTEM_PROMPT = """You write a short, shareable Slack/email message announcing Launch Rehearsal results.
+Use only the P0 findings and readiness score provided. Never invent issues or URLs.
+Keep it under 4 sentences, friendly but direct, written for a founder sharing results with their team.
+
+Respond with JSON only:
+{
+  "message": "the shareable message, plain text, no markdown"
+}
+"""
+
+
+def generate_share_message_llm(
+    product_name: str,
+    readiness: int | None,
+    p0_titles: list[str],
+    *,
+    target_url: str = "",
+) -> dict[str, Any] | None:
+    blob = {
+        "product_name": product_name,
+        "target_url": target_url,
+        "readiness_score": readiness,
+        "p0_findings": p0_titles[:10],
+    }
+    return _llm_json_call(
+        SHARE_MESSAGE_SYSTEM_PROMPT,
+        f"Write a share message for this rehearsal:\n{json.dumps(blob, indent=2)}",
+        max_tokens=300,
+    )
+
+
 CHAT_SYSTEM_PROMPT = """You answer questions about a single Launch Rehearsal run.
 Use ONLY the run context provided. If unsure, say what evidence is missing.
 Never suggest modifying code. Cite issue titles or journey names when relevant.

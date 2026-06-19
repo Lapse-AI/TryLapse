@@ -367,6 +367,26 @@ class _Handler(BaseHTTPRequestHandler):
             self._send_json(bundle)
             return
 
+        if path.startswith("/api/runs/") and path.endswith("/share"):
+            parts = path.strip("/").split("/")
+            run_id = parts[2] if len(parts) >= 4 else ""
+            try:
+                run_id = _safe_id(run_id, "runId")
+            except ValueError as exc:
+                self._send_json({"error": str(exc)}, status=400)
+                return
+            bundle = load_bundle(root, run_id)
+            if not bundle:
+                self._send_json({"error": "not found"}, status=404)
+                return
+            from rehearse.llm import llm_enabled
+            from rehearse.share import build_share_payload
+
+            # Relative URLs — the frontend prefixes its own API base when rendering the link.
+            payload = build_share_payload(bundle, root, run_id, use_llm=llm_enabled())
+            self._send_json(payload)
+            return
+
         # ── Per-finding outcomes (A5: severity calibration data) ─────────────
         # GET /api/finding-outcomes/:run_id → {findingId: outcome} map
         if path.startswith("/api/finding-outcomes/"):
@@ -735,6 +755,20 @@ class _Handler(BaseHTTPRequestHandler):
                 self.send_header("Content-Length", "0")
                 self.end_headers()
                 return
+            # If a signature is present (shared link), it must be valid and unexpired.
+            # Unsigned requests fall through unchanged — the dashboard's own UI keeps working.
+            sig = (qs.get("sig") or [None])[0]
+            if sig is not None:
+                from rehearse.signing import verify_signature
+
+                exp = (qs.get("exp") or [None])[0]
+                if not verify_signature(root, rel, sig, exp):
+                    self.send_response(403)
+                    for k, v in _cors_headers(self._origin).items():
+                        self.send_header(k, v)
+                    self.send_header("Content-Length", "0")
+                    self.end_headers()
+                    return
             ctype = mimetypes.guess_type(str(file_path))[0] or "application/octet-stream"
             data = file_path.read_bytes()
             self.send_response(200)
