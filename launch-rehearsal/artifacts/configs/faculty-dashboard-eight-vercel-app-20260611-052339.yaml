@@ -1,5 +1,5 @@
 run:
-  target_url: https://faculty-dashboard-eight.vercel.app/database
+  target_url: https://faculty-dashboard-eight.vercel.app
   run_id_prefix: faculty-dashboard-eight-vercel-app
   product_name: Argyle Faculty Dashboard
   viewports:

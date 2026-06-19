@@ -80,6 +80,27 @@ export function ProductIntelligencePanel({
   const [creds, setCreds] = useState<CrawlCredentials>(EMPTY_CREDS);
   const [showPassword, setShowPassword] = useState(false);
   const [showLlmKey, setShowLlmKey] = useState(false);
+  const [landingUrl, setLandingUrl] = useState(targetUrl || "");
+  const [savingSettings, setSavingSettings] = useState(false);
+  const [settingsSaved, setSettingsSaved] = useState(false);
+
+  // Pre-fill landing/login page + "configured" state from the saved config,
+  // so settings persist across sessions instead of resetting every visit.
+  useEffect(() => {
+    if (!configId) return;
+    api
+      .getConfigSettings(configId)
+      .then((s) => {
+        if (s.targetUrl) setLandingUrl(s.targetUrl);
+        if (s.loginPath) {
+          setCreds((prev) => ({
+            ...prev,
+            loginUrl: prev.loginUrl || new URL(s.loginPath!, s.targetUrl || targetUrl || "https://x").toString(),
+          }));
+        }
+      })
+      .catch(() => {});
+  }, [configId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Use ref so onModelReady is never a useEffect dependency (avoids re-render loop)
   const onModelReadyRef = useRef(onModelReady);
@@ -101,7 +122,8 @@ export function ProductIntelligencePanel({
   }, [live, configId]); // onModelReady intentionally excluded — ref handles it
 
   const analyze = async () => {
-    if (!live || !targetUrl) {
+    const effectiveUrl = landingUrl || targetUrl;
+    if (!live || !effectiveUrl) {
       toast.error("Start rehearse serve and set a target URL first");
       return;
     }
@@ -109,19 +131,19 @@ export function ProductIntelligencePanel({
     const hasLogin = !!creds.loginEmail && !!creds.loginPassword;
     toast.info(
       hasLogin
-        ? "Crawling with login credentials… takes 60–90 seconds"
-        : "Crawling product… takes 30–60 seconds",
+        ? "Crawling with login credentials… takes a few minutes for a thorough crawl"
+        : "Crawling product… takes 30–90 seconds",
       { duration: 12000 },
     );
     try {
       const m = await api.analyzeProduct({
-        targetUrl,
+        targetUrl: effectiveUrl,
         productName,
         configId: configId || undefined,
         ...(hasLogin
           ? {
               auth: {
-                loginUrl: creds.loginUrl || targetUrl,
+                loginUrl: creds.loginUrl || effectiveUrl,
                 email: creds.loginEmail,
                 password: creds.loginPassword,
                 emailSelector: creds.emailSelector,
@@ -157,6 +179,37 @@ export function ProductIntelligencePanel({
       setModel({ ...model, [field]: value });
     }
     setEditingField(null);
+  };
+
+  const saveSettings = async () => {
+    if (!configId) {
+      toast.error("Save the config first before saving settings");
+      return;
+    }
+    setSavingSettings(true);
+    try {
+      let loginPath: string | undefined;
+      if (creds.loginUrl) {
+        try {
+          loginPath = new URL(creds.loginUrl).pathname;
+        } catch {
+          loginPath = creds.loginUrl.startsWith("/") ? creds.loginUrl : undefined;
+        }
+      }
+      await api.saveConfigSettings(configId, {
+        targetUrl: landingUrl || undefined,
+        loginPath,
+        email: creds.loginEmail || undefined,
+        password: creds.loginPassword || undefined,
+      });
+      setSettingsSaved(true);
+      toast.success("Settings saved — landing page, login page, and credentials will be reused next time");
+      setTimeout(() => setSettingsSaved(false), 2500);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Failed to save settings");
+    } finally {
+      setSavingSettings(false);
+    }
   };
 
   const updateCred = (key: keyof CrawlCredentials, value: string) => {
@@ -307,6 +360,25 @@ export function ProductIntelligencePanel({
 
             {showCreds && (
               <div className="px-4 pb-4 pt-1 space-y-4 bg-surface/30">
+                {/* Landing page — the entry point for crawls, journeys, and analysis */}
+                <div className="space-y-2">
+                  <div className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">
+                    Landing page
+                  </div>
+                  <div>
+                    <label className="text-[11px] text-muted-foreground">
+                      Landing page URL (entry point — not a deep page like /database)
+                    </label>
+                    <input
+                      type="url"
+                      placeholder="https://example.com"
+                      value={landingUrl}
+                      onChange={(e) => setLandingUrl(e.target.value)}
+                      className="w-full mt-0.5 text-xs bg-surface border border-border rounded px-2 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary/30"
+                    />
+                  </div>
+                </div>
+
                 {/* Login credentials */}
                 <div className="space-y-2">
                   <div className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">
@@ -434,6 +506,20 @@ export function ProductIntelligencePanel({
                     />
                   </div>
                 </div>
+
+                <button
+                  type="button"
+                  onClick={() => void saveSettings()}
+                  disabled={savingSettings || !configId}
+                  className="flex items-center justify-center gap-1.5 w-full text-xs font-medium rounded-md border border-border bg-surface-2 hover:bg-surface-2/70 disabled:opacity-50 px-3 py-2"
+                >
+                  {savingSettings ? (
+                    <Loader2 className="size-3.5 animate-spin" />
+                  ) : settingsSaved ? (
+                    <Check className="size-3.5 text-emerald-500" />
+                  ) : null}
+                  {settingsSaved ? "Saved" : "Save landing page, login page & credentials"}
+                </button>
               </div>
             )}
           </div>

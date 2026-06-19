@@ -240,13 +240,36 @@ export const api = {
     apiFetch<Record<string, unknown>>("/api/product/analyze", {
       method: "POST",
       body: JSON.stringify(body),
-      timeoutMs: 180000, // 3 min — crawl + vision + LLM
+      timeoutMs: 360000, // 6 min — max_pages=40 with vision can take a few minutes
     }),
   updateProductModel: (updates: Record<string, unknown>, configId?: string | null) =>
     apiFetch<Record<string, unknown>>("/api/product/update", {
       method: "POST",
       body: JSON.stringify({ ...updates, configId: configId || "" }),
     }),
+  getConfigSettings: (configId: string) =>
+    apiFetch<{
+      targetUrl?: string;
+      productName?: string;
+      loginPath?: string;
+      hasAuth?: boolean;
+      hasEmail?: boolean;
+      hasPassword?: boolean;
+    }>(`/api/configs/${encodeURIComponent(configId)}/settings`),
+  saveConfigSettings: (
+    configId: string,
+    settings: {
+      targetUrl?: string;
+      productName?: string;
+      loginPath?: string;
+      email?: string;
+      password?: string;
+    },
+  ) =>
+    apiFetch<{ targetUrl?: string; productName?: string; loginPath?: string }>(
+      `/api/configs/${encodeURIComponent(configId)}/settings`,
+      { method: "POST", body: JSON.stringify(settings) },
+    ),
   discoverJourneys: (personas: unknown[], configId?: string | null, productModel?: unknown) =>
     apiFetch<{ personaJourneys: unknown[]; count: number }>("/api/journeys/discover", {
       method: "POST",

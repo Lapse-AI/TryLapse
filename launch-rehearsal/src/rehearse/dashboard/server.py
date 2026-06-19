@@ -642,6 +642,32 @@ class _Handler(BaseHTTPRequestHandler):
             self._send_json(list_configs(root, owner_id=owner_id))
             return
 
+        if path.startswith("/api/configs/") and path.endswith("/settings"):
+            config_id = path.strip("/").split("/")[2]
+            try:
+                config_id = _safe_id(config_id, "configId")
+            except ValueError as exc:
+                self._send_json({"error": str(exc)}, status=400)
+                return
+            cfg_path = root / "configs" / f"{config_id}.yaml"
+            if not cfg_path.is_file():
+                self._send_json({"error": f"config {config_id!r} not found"}, status=404)
+                return
+            import yaml as _yaml
+            cfg = _yaml.safe_load(cfg_path.read_text()) or {}
+            run_block = cfg.get("run") or {}
+            auth_block = cfg.get("auth") or {}
+            import os as _os
+            self._send_json({
+                "targetUrl": run_block.get("target_url"),
+                "productName": run_block.get("product_name"),
+                "loginPath": auth_block.get("login_path"),
+                "hasAuth": bool(cfg.get("auth")),
+                "hasEmail": bool(_os.environ.get("REHEARSE_EMAIL")),
+                "hasPassword": bool(_os.environ.get("REHEARSE_PASSWORD")),
+            })
+            return
+
         if path == "/api/library":
             self._send_json(get_journey_library(root))
             return
@@ -1561,6 +1587,52 @@ class _Handler(BaseHTTPRequestHandler):
                 self._send_json({"error": str(exc)}, status=400)
                 return
             self._send_json(result, status=201)
+            return
+
+        if path.startswith("/api/configs/") and path.endswith("/settings"):
+            config_id = path.strip("/").split("/")[2]
+            try:
+                config_id = _safe_id(config_id, "configId")
+            except ValueError as exc:
+                self._send_json({"error": str(exc)}, status=400)
+                return
+            cfg_path = root / "configs" / f"{config_id}.yaml"
+            if not cfg_path.is_file():
+                self._send_json({"error": f"config {config_id!r} not found"}, status=404)
+                return
+            body = self._read_json_body()
+            import yaml as _yaml
+            cfg = _yaml.safe_load(cfg_path.read_text()) or {}
+            cfg.setdefault("run", {})
+            cfg.setdefault("auth", {})
+
+            target_url = str(body.get("targetUrl") or "").strip()
+            if target_url:
+                cfg["run"]["target_url"] = target_url
+            product_name = str(body.get("productName") or "").strip()
+            if product_name:
+                cfg["run"]["product_name"] = product_name
+            login_path = str(body.get("loginPath") or "").strip()
+            if login_path:
+                cfg["auth"]["login_path"] = login_path
+                cfg["auth"].setdefault("email_env", "REHEARSE_EMAIL")
+                cfg["auth"].setdefault("password_env", "REHEARSE_PASSWORD")
+            # An empty auth block means "no auth configured" — drop it rather
+            # than writing a YAML block with nothing in it.
+            if not cfg["auth"]:
+                cfg.pop("auth", None)
+
+            email = str(body.get("email") or "").strip()
+            password = str(body.get("password") or "").strip()
+            if email and password:
+                _write_cred_env(root, email, password)
+
+            cfg_path.write_text(_yaml.dump(cfg, default_flow_style=False, sort_keys=False, allow_unicode=True))
+            self._send_json({
+                "targetUrl": cfg["run"].get("target_url"),
+                "productName": cfg["run"].get("product_name"),
+                "loginPath": cfg.get("auth", {}).get("login_path"),
+            })
             return
 
         if path == "/api/preflight":
