@@ -12,6 +12,7 @@ from rehearse.context import RunContext
 from rehearse.dsl import RunConfig
 from rehearse.evidence import RunEvidence, StepSnapshot, new_run_id
 from rehearse.heuristics import analyze_run
+from rehearse.run_manager import RunStateMachine
 from rehearse.scorecard import write_scorecard
 
 
@@ -27,6 +28,10 @@ def run_rehearsal(
     run_id = run_id or new_run_id(config.run_id_prefix)
     started = time.perf_counter()
     deadline = started + config.budgets.max_run_seconds
+
+    runs_dir = output_dir / "runs"
+    runs_dir.mkdir(parents=True, exist_ok=True)
+    sm = RunStateMachine(run_id, runs_dir)
 
     evidence = RunEvidence(
         run_id=run_id,
@@ -81,14 +86,22 @@ def run_rehearsal(
     tracker.set_phase("crawling")
     ctx.metadata["progress_tracker"] = tracker
 
+    # B4: reset LLM call counter at the start of each run so the per-run count
+    # reflects only calls made during this execution (not prior runs in the same process).
+    from rehearse.llm import reset_llm_call_count, get_llm_call_count
+    reset_llm_call_count()
+
+    # start() writes QUEUED state.json here — after all setup that could raise,
+    # so recover_stale() on restart never sees a QUEUED run that died during setup.
+    sm.start()
+
     # Enable video recording for journey execution
-    with BrowserSession(config, artifacts_root, record_video=True) as session:
+    with sm, BrowserSession(config, artifacts_root, record_video=True) as session:
         ctx.metadata["page"] = session.page
 
         if config.auth:
             evidence.auth_attempted = True
             evidence.auth_outcome = session.perform_auth(config.auth)
-            # Capture auth cookies so parallel journey workers can reuse the session
             if evidence.auth_outcome and "success" in (evidence.auth_outcome or ""):
                 try:
                     ctx.metadata["auth_storage_state"] = session.page.context.storage_state()
@@ -96,22 +109,26 @@ def run_rehearsal(
                     pass
 
         orchestrator = AgentOrchestrator(ctx, session, artifacts_root, use_llm=use_llm)
+
+        sm.transition("CRAWLING", reason="crawl phase starting")
         _t0 = time.perf_counter()
         orchestrator.run_crawl_phase()
         evidence.phase_timings["crawl_ms"] = int((time.perf_counter() - _t0) * 1000)
 
+        sm.transition("RUNNING", reason="journey execution starting")
         tracker.set_phase("executing")
         _t0 = time.perf_counter()
         orchestrator.run_journey_phase()
         evidence.phase_timings["journey_ms"] = int((time.perf_counter() - _t0) * 1000)
 
-        # Save steps immediately after execution — before analysis can crash.
-        # This ensures rebuild_bundle_from_artifacts always has real step data.
+        # Save steps before analysis — ensures rebuild_bundle_from_artifacts has real data
+        # if the analysis phase crashes.
         evidence.finished_at = datetime.now(timezone.utc).isoformat()
         evidence.duration_ms = int((time.perf_counter() - started) * 1000)
         evidence.outcome = "partial"
         evidence.save(output_dir / "runs")
 
+        sm.transition("SYNTHESIZING", reason="analysis and scorecard starting")
         tracker.set_phase("analysing")
         net_path = session.flush_network_log()
         if net_path:
@@ -127,11 +144,17 @@ def run_rehearsal(
             config, evidence, analysis, ctx=ctx, use_llm=use_llm
         )
 
+    # Capture main-session video (sequential mode / auth+crawl phase recording)
+    if getattr(session, "video_path", None):
+        evidence.video_paths.append(session.video_path)
+
     # Update with final timing and mark complete
     evidence.finished_at = datetime.now(timezone.utc).isoformat()
     evidence.duration_ms = int((time.perf_counter() - started) * 1000)
     evidence.outcome = "complete"
+    evidence.phase_timings["llm_calls"] = get_llm_call_count()
     evidence.save(output_dir / "runs")
+    sm.transition("COMPLETE", reason="run finished successfully")
     tracker.finish()
 
     scorecard_path = write_scorecard(config, evidence, analysis, output_dir, ctx=ctx)

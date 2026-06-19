@@ -94,6 +94,8 @@ class InteractionMap:
     link_graph: dict[str, list[str]] = field(default_factory=dict)
     # Per-node status: url → "queued" | "visiting" | "visited" | "skipped" | "error"
     node_status: dict[str, str] = field(default_factory=dict)
+    # Route coverage: % of discovered URL templates that were actually visited
+    graph_coverage_pct: float = 0.0
 
 
 # ── URL helpers ───────────────────────────────────────────────────────────────
@@ -362,13 +364,15 @@ def _take_screenshot(page: Any, full_page: bool = True) -> str:
 
 
 def _wait_for_settle(page: Any, ms: int = 5000) -> None:
-    """Wait for networkidle + extra SPA hydration time."""
+    """Wait for networkidle + minimal SPA hydration buffer."""
     try:
         page.wait_for_load_state("networkidle", timeout=ms)
     except Exception:
         pass
     try:
-        page.wait_for_timeout(1500)
+        # 300ms buffer for SPA frameworks that fire one final render after networkidle.
+        # Was 1500ms — reduced to cut 48-page crawl time by ~58s.
+        page.wait_for_timeout(300)
     except Exception:
         pass
 
@@ -1385,6 +1389,10 @@ def run_deep_crawl(
     imap.features_seen = sorted(all_features)
     imap.visual_summary = " | ".join(visual_summaries[:8])
     imap.crawl_duration_ms = int((time.perf_counter() - start) * 1000)
+    # Route coverage: visited templates / (visited + skipped templates)
+    total_templates = len(imap.url_patterns) + len(imap.skipped_patterns)
+    if total_templates > 0:
+        imap.graph_coverage_pct = round(len(imap.url_patterns) / total_templates * 100, 1)
     return imap
 
 
@@ -1421,6 +1429,7 @@ def interaction_map_to_dict(imap: InteractionMap) -> dict[str, Any]:
         "urlPatterns": imap.url_patterns,
         "skippedPatterns": imap.skipped_patterns,
         "skippedPatternCount": sum(imap.skipped_patterns.values()),
+        "graphCoveragePct": imap.graph_coverage_pct,
     }
 
 

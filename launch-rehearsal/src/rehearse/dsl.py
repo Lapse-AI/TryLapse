@@ -74,6 +74,12 @@ class Persona:
     trust_level: str = "neutral"         # "skeptical" | "neutral" | "trusting"
     character: str = ""                  # free-text psychological texture
     usage_context: str = ""              # "first-time user", "switching from X", etc.
+    # Accessibility / environment modifiers
+    keyboard_only: bool = False          # navigate via Tab/Enter — no mouse
+    locale: str | None = None           # e.g. "ar-SA" for RTL, "ja-JP" for CJK
+    network_throttle: str | None = None  # "slow3g" | "offline_intermittent" | None
+    rage_mode: bool = False              # after step failure: retry click 3x rapidly to surface duplicate-submit bugs
+    screen_reader: bool = False          # navigate via ARIA tree only — no CSS selectors, no coordinates
 
 
 @dataclass
@@ -196,6 +202,11 @@ def load_config(path: Path) -> RunConfig:
             trust_level=str(p.get("trust_level") or "neutral"),
             character=str(p.get("character") or ""),
             usage_context=str(p.get("usage_context") or ""),
+            keyboard_only=bool(p.get("keyboard_only", False)),
+            locale=str(p["locale"]) if p.get("locale") else None,
+            network_throttle=str(p["network_throttle"]) if p.get("network_throttle") else None,
+            rage_mode=bool(p.get("rage_mode", False)),
+            screen_reader=bool(p.get("screen_reader", False)),
         )
         for p in personas_raw
     ]

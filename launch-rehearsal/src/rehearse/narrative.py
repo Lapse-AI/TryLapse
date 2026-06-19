@@ -101,6 +101,124 @@ def build_template_narrative(
     if fail_journeys:
         questions[1] = f"Why did {journey_names.get(fail_journeys[0], fail_journeys[0])} fail?"
 
+    # ── Layer 1: The Verdict ─────────────────────────────────────────────────
+    # Single go/no-go signal with a plain-language reason. The only thing a
+    # non-technical founder needs to read to make the ship/hold decision.
+    p0 = [i for i in analysis.issues if i.severity == "P0"]
+    if band == "Red" or p0 or (band == "Amber" and len(p1) >= 3):
+        decision = "no_ship"
+        verdict_headline = "Do not ship this build."
+        verdict_reason = (
+            f"{len(p0) + len(p1)} blocker(s) will break user journeys in production. "
+            + (f"Worst: {p0[0].title}." if p0 else f"Worst: {p1[0].title}." if p1 else "")
+        )
+    elif band == "Amber":
+        decision = "caution"
+        verdict_headline = "Ship with caution — fix blockers first."
+        verdict_reason = (
+            f"{len(p1)} issue(s) will affect some users. Resolve before wide launch. "
+            + (f"Priority fix: {p1[0].title}." if p1 else "")
+        )
+    else:
+        decision = "ship"
+        verdict_headline = "Ready to ship."
+        verdict_reason = (
+            f"{pass_pct}% of canonical steps passed with no journey-breaking failures. "
+            + (f"Polish opportunity: {p2[0].title}." if p2 else "No critical gaps found.")
+        )
+
+    layer1 = {
+        "decision": decision,
+        "headline": verdict_headline,
+        "reason": verdict_reason,
+        "band": band,
+    }
+
+    # ── Layer 2: The Story ────────────────────────────────────────────────────
+    # 2–3 sentences a product manager or investor can read cold.
+    journey_count = len(matrix)
+    fail_count = len(fail_journeys)
+    story_parts = [
+        f"TryLapse sent {len(config.personas)} AI personas through "
+        f"{journey_count} product journey{'s' if journey_count > 1 else ''} "
+        f"and scored **{passed}/{total}** steps as passing."
+    ]
+    if fail_count:
+        names = ", ".join(journey_names.get(j, j) for j in fail_journeys[:2])
+        story_parts.append(
+            f"{fail_count} journey{'s' if fail_count > 1 else ''} — {names} — "
+            "failed completely, meaning users would be blocked before completing their goal."
+        )
+    elif partial_journeys:
+        names = ", ".join(journey_names.get(j, j) for j in partial_journeys[:2])
+        story_parts.append(
+            f"No journeys broke outright, but {len(partial_journeys)} — {names} — "
+            "had significant friction that could drive users to abandon."
+        )
+    else:
+        story_parts.append(
+            "All journeys completed successfully across all tested personas."
+        )
+    if analysis.delights:
+        story_parts.append(
+            f"{len(analysis.delights)} genuine product strength(s) found: {analysis.delights[0].title}."
+        )
+
+    layer2_story = " ".join(story_parts)
+
+    # ── Layer 3: The Fix Hierarchy ────────────────────────────────────────────
+    # Actionable sorted list with effort tags so an engineer can start immediately.
+    _effort_map = {
+        "P0": "large",
+        "P1": "medium",
+        "P2": "small",
+        "P3": "tiny",
+    }
+    _what_map = {
+        "P0": "Fix immediately — journey is blocked.",
+        "P1": "Fix before launch — significant user impact.",
+        "P2": "Fix before GA — noticeable but not blocking.",
+        "P3": "Track in backlog — polish item.",
+    }
+    layer3_fixes = [
+        {
+            "priority": i.severity,
+            "title": i.title,
+            "detail": i.detail,
+            "effort": _effort_map.get(i.severity, "medium"),
+            "action": _what_map.get(i.severity, "Review and prioritize."),
+            "step_id": i.step_id,
+            "confidence": i.confidence,
+        }
+        for i in sorted(
+            analysis.issues,
+            key=lambda x: {"P0": 0, "P1": 1, "P2": 2, "P3": 3}.get(x.severity, 4),
+        )
+    ]
+
+    # ── Layer 4: The Forward ──────────────────────────────────────────────────
+    # 3 concrete next-sprint actions, not generic advice.
+    forward_actions: list[str] = []
+    if p0:
+        forward_actions.append(f"Fix P0: {p0[0].title} — blocks the {fail_journeys[0] if fail_journeys else 'primary'} journey.")
+    if p1:
+        forward_actions.append(f"Fix P1 before launch: {p1[0].title}.")
+    if not fail_journeys and not p1:
+        forward_actions.append("Expand coverage: add edge-case journeys for error states and empty states.")
+    if analysis.delights:
+        forward_actions.append(f"Double down on strength: {analysis.delights[0].title} — amplify in onboarding.")
+    if len(forward_actions) < 3:
+        forward_actions.append("Run again after fixes to confirm the score moved — track trend across builds.")
+
+    layer4_forward = forward_actions[:4]
+
+    # ── Layer 5: Trend ────────────────────────────────────────────────────────
+    # Populated externally when compare data is available; placeholder here.
+    layer5_trend: dict = {
+        "available": False,
+        "note": "Run a second build to see score trajectory.",
+    }
+
     return {
         "executiveSummary": executive,
         "forFounders": "\n".join(founder_lines),
@@ -110,6 +228,12 @@ def build_template_narrative(
         "readinessBand": band,
         "issueCount": len(analysis.issues),
         "delightCount": len(analysis.delights),
+        # 5-layer non-technical UX output
+        "layer1Verdict": layer1,
+        "layer2Story": layer2_story,
+        "layer3FixHierarchy": layer3_fixes,
+        "layer4Forward": layer4_forward,
+        "layer5Trend": layer5_trend,
     }
 
 

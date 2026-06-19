@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import time
@@ -18,6 +19,100 @@ from rehearse.viewports import VIEWPORT_PROFILES, normalize_viewports
 from rehearse.web_vitals import collect_web_vitals
 
 NETWORK_LOG_MAX = 500
+
+# ── Flake-rate mitigations ────────────────────────────────────────────────────
+# Injected as CSS on every page after navigation to eliminate timing-based
+# flakes caused by click targets moving during CSS transitions.
+_ANIMATION_FREEZE_CSS = (
+    "*, *::before, *::after {"
+    "  animation-duration: 0s !important;"
+    "  transition-duration: 0s !important;"
+    "  animation-delay: 0s !important;"
+    "  scroll-behavior: auto !important;"
+    "}"
+)
+
+# Pure analytics / telemetry origins that have no functional role in the app
+# under test. Blocking these removes a major source of non-deterministic timing.
+# Intentionally excludes: reCAPTCHA, Stripe.js, Auth0, LaunchDarkly — things
+# that can affect app behaviour and must not be silently dropped.
+_ANALYTICS_BLOCK_PATTERNS = [
+    "**/analytics.js",
+    "**/analytics.min.js",
+    "**segment.io/**",
+    "**segment.com/**",
+    "**intercom.io/**",
+    "**intercomcdn.com/**",
+    "**hotjar.com/**",
+    "**fullstory.com/**",
+    "**googletagmanager.com/**",
+    "**google-analytics.com/**",
+    "**mixpanel.com/**",
+    "**amplitude.com/**",
+    "**heap.io/**",
+    "**clarity.ms/**",
+    "**sentry.io/**",
+    "**datadoghq.com/**",
+    "**logrocket.io/**",
+    "**logrocket.com/**",
+]
+
+
+def _abort_route(route: Any) -> None:
+    try:
+        route.abort()
+    except Exception:
+        pass
+
+
+def _inject_animation_freeze(page: Page) -> None:
+    """Inject CSS that disables all animations and transitions on the current page.
+
+    Called after every navigate to remove the primary source of click-timing
+    flakes. Safe to call multiple times — CSS rules are idempotent.
+    """
+    try:
+        page.add_style_tag(content=_ANIMATION_FREEZE_CSS)
+    except Exception:
+        pass  # never block execution; this is a reliability aid, not a feature
+
+
+def _block_analytics_routes(context: Any) -> None:
+    """Register abort handlers for known analytics/telemetry origins.
+
+    Must be called once after context creation, before any page navigation.
+    Handlers persist for the lifetime of the context.
+    """
+    for pattern in _ANALYTICS_BLOCK_PATTERNS:
+        try:
+            context.route(pattern, _abort_route)
+        except Exception:
+            pass
+
+
+_ANIMATION_FREEZE_INIT_SCRIPT = (
+    "document.addEventListener('DOMContentLoaded', function() {"
+    "  var s = document.createElement('style');"
+    "  s.id = '__trylapse_freeze';"
+    "  s.textContent = '"
+    + _ANIMATION_FREEZE_CSS.replace("'", "\\'")
+    + "';"
+    "  (document.head || document.documentElement).appendChild(s);"
+    "}, {once: false, capture: true});"
+)
+
+
+def setup_page_for_run(page: Any) -> None:
+    """Apply all per-page flake mitigations to a freshly created Playwright page.
+
+    Call once after page creation — before any navigation. Idempotent (safe to
+    call on an already-configured page; duplicate style tags are benign).
+    """
+    try:
+        page.add_init_script(script=_ANIMATION_FREEZE_INIT_SCRIPT)
+    except Exception:
+        pass
+# ─────────────────────────────────────────────────────────────────────────────
 
 ERROR_PHRASES = (
     "error",
@@ -150,6 +245,25 @@ _ERROR_BENIGN_CONTEXT = (
 )
 
 
+def _dom_fingerprint(page: Page) -> str | None:
+    """Lightweight DOM fingerprint — 12-char hex hash of element counts + title.
+
+    Used by C4 regression check: if the fingerprint is unchanged between two
+    consecutive interaction steps in the same journey, the action likely had no
+    visible DOM effect, which is a UX signal.
+    """
+    try:
+        counts = page.evaluate("""() => {
+            const tags = ['a','button','input','select','form','h1','h2','h3','p','li','img','svg'];
+            return tags.map(t => document.querySelectorAll(t).length).join(',')
+                + '|' + (document.title || '')
+                + '|' + document.querySelectorAll('[role]').length;
+        }""")
+        return hashlib.md5(counts.encode()).hexdigest()[:12]  # noqa: S324
+    except Exception:
+        return None
+
+
 def _find_error_phrases(text: str) -> list[str]:
     lower = text.lower()
     found: list[str] = []
@@ -225,7 +339,10 @@ def _perform_open_link(
                 loc.click(timeout=timeout)
         except Exception:
             loc.click(timeout=timeout, no_wait_after=True)
-            page.wait_for_timeout(800)
+            try:
+                page.wait_for_load_state("domcontentloaded", timeout=min(timeout, 3000))
+            except Exception:
+                pass
 
     if fallback_path not in (page.url or ""):
         href = loc.get_attribute("href")
@@ -277,10 +394,118 @@ def _compact_aria_tree(page: Page, *, max_nodes: int = 120) -> dict[str, Any]:
         return {"error": str(exc)[:200]}
 
 
+def _collect_resource_timing(page: Page, *, top_n: int = 10) -> list[dict[str, Any]]:
+    """Return the top-N slowest resources from the Navigation Timing API."""
+    try:
+        entries: list[dict] = page.evaluate(
+            "() => performance.getEntriesByType('resource').map(e => ({"
+            "  name: e.name.split('?')[0].slice(-80),"
+            "  type: e.initiatorType,"
+            "  durationMs: Math.round(e.duration),"
+            "  transferSize: e.transferSize || 0"
+            "}))"
+        )
+        return sorted(entries, key=lambda e: -e.get("durationMs", 0))[:top_n]
+    except Exception:
+        return []
+
+
+def _capture_storage_keys(page: Page) -> list[str]:
+    """Return localStorage + sessionStorage keys, auth-pattern keys first to survive the cap."""
+    try:
+        keys: list[str] = page.evaluate(
+            "() => {"
+            "  const AUTH = /token|session|auth|jwt|user_id|access|refresh|credential|bearer|sid/i;"
+            "  const lsAuth = Object.keys(localStorage).filter(k => AUTH.test(k)).map(k => 'ls:' + k);"
+            "  const lsRest = Object.keys(localStorage).filter(k => !AUTH.test(k)).map(k => 'ls:' + k);"
+            "  const ss = Object.keys(sessionStorage).map(k => 'ss:' + k);"
+            "  return [...lsAuth, ...lsRest, ...ss];"
+            "}"
+        )
+        return keys[:100]  # cap to avoid huge evidence blobs; auth keys are always first
+    except Exception:
+        return []
+
+
 def _save_aria_artifact(artifacts_dir: Path, step_id: str, tree: dict[str, Any]) -> str:
     path = artifacts_dir / f"{_safe_filename(step_id)}-aria.json"
     path.write_text(json.dumps(tree, indent=2)[:80000])
     return str(path)
+
+
+_ARIA_INTERACTIVE_ROLES = {"button", "link", "textbox", "combobox", "checkbox", "radio", "menuitem"}
+
+
+def _find_aria_node_by_name(tree: dict[str, Any] | None, intent: str) -> str | None:
+    """Walk the ARIA snapshot tree to find a node whose name fuzzy-matches intent.
+
+    Returns the node's role string, or None if not found.
+    Tree-first lookup lets us skip the 6-role sequential timeout scan.
+    """
+    if not tree or not intent:
+        return None
+    intent_lower = intent.lower()
+    role = (tree.get("role") or "").lower()
+    name = (tree.get("name") or "").lower()
+    if role in _ARIA_INTERACTIVE_ROLES and (intent_lower in name or name in intent_lower):
+        return role
+    for child in tree.get("children") or []:
+        found = _find_aria_node_by_name(child, intent)
+        if found:
+            return found
+    return None
+
+
+def _resolve_locator_by_aria(page: Page, step: Step, timeout: int = 30000) -> tuple[Locator, str]:
+    """Resolve element via ARIA role/label for screen-reader persona.
+
+    Uses ARIA snapshot tree to pick the exact role first (avoids 6-role sequential scan).
+    Fallback chain: get_by_label → tree-guided get_by_role → get_by_text → standard locator.
+    """
+    intent = step.intent or step.selector or ""
+    tried: list[str] = []
+
+    # 1. Try label — covers <label for=...> and aria-label
+    if intent:
+        try:
+            loc = page.get_by_label(intent, exact=False).first
+            loc.wait_for(state="visible", timeout=min(timeout, 5000))
+            return loc, f"aria:label={intent!r}"
+        except Exception as e:
+            tried.append(f"label({e!s:.40})")
+
+    # 2. Use ARIA snapshot tree to identify the correct role, then try only that role.
+    #    Falls back to full sequential scan only when tree lookup fails.
+    tree_role: str | None = None
+    try:
+        tree = page.accessibility.snapshot()
+        tree_role = _find_aria_node_by_name(tree, intent)
+    except Exception:
+        pass
+
+    roles_to_try = [tree_role] if tree_role else list(_ARIA_INTERACTIVE_ROLES)
+    for role in roles_to_try:
+        if intent:
+            try:
+                loc = page.get_by_role(role, name=intent).first  # type: ignore[arg-type]
+                loc.wait_for(state="visible", timeout=min(timeout, 3000))
+                suffix = "" if tree_role else " [tree-miss: sequential scan]"
+                return loc, f"aria:role={role},name={intent!r}{suffix}"
+            except Exception as e:
+                tried.append(f"role:{role}({e!s:.30})")
+
+    # 3. Try visible text match
+    if intent:
+        try:
+            loc = page.get_by_text(intent, exact=False).first
+            loc.wait_for(state="visible", timeout=min(timeout, 3000))
+            return loc, f"aria:text={intent!r} [no accessible name — unlabelled]"
+        except Exception as e:
+            tried.append(f"text({e!s:.40})")
+
+    # 4. Fallback — standard selector path; note the a11y gap
+    loc, note = _resolve_locator(page, step)
+    return loc, f"[screen-reader-fallback: ARIA resolution failed ({'; '.join(tried[:3])})] {note}"
 
 
 def _resolve_locator(page: Page, step: Step) -> tuple[Locator, str]:
@@ -315,11 +540,13 @@ class BrowserSession:
         self.console_warnings: list[str] = []
         self.network_failures: list[str] = []
         self.network_log: list[dict[str, Any]] = []
+        self.silent_api_failures: list[str] = []
         self._pw = None
         self._browser = None
         self._context = None
         self.page: Page | None = None
         self._viewport = "desktop"
+        self.video_path: str | None = None
 
     def __enter__(self) -> BrowserSession:
         self.artifacts_dir.mkdir(parents=True, exist_ok=True)
@@ -327,16 +554,24 @@ class BrowserSession:
         self._browser = self._pw.chromium.launch(headless=True)
         first = normalize_viewports(self.config.viewports)[0]
 
-        context_opts = {"viewport": VIEWPORT_PROFILES[first]}
+        context_opts: dict[str, Any] = {
+            "viewport": VIEWPORT_PROFILES[first],
+            # B2: block service workers so cached responses from prior runs can't
+            # bleed into this context and produce non-deterministic step outcomes.
+            "service_workers": "block",
+        }
         if self.record_video:
             video_dir = self.artifacts_dir / "videos"
             video_dir.mkdir(parents=True, exist_ok=True)
             context_opts["record_video_dir"] = str(video_dir)
 
         self._context = self._browser.new_context(**context_opts)
+        _block_analytics_routes(self._context)
         self.page = self._context.new_page()
+        setup_page_for_run(self.page)
         self._viewport = first
         self.page.on("console", self._on_console)
+        self.page.on("pageerror", self._on_pageerror)
         self.page.on("response", self._on_response)
         return self
 
@@ -350,6 +585,13 @@ class BrowserSession:
         page.set_viewport_size(VIEWPORT_PROFILES[key])
 
     def __exit__(self, *args: object) -> None:
+        if self.record_video and self.page:
+            try:
+                self.page.close()  # finalize webm before context.close()
+                if self.page.video:
+                    self.video_path = self.page.video.path()
+            except Exception:
+                pass
         if self._context:
             self._context.close()
         if self._browser:
@@ -357,12 +599,59 @@ class BrowserSession:
         if self._pw:
             self._pw.stop()
 
+    def reset_context_for_persona(
+        self, auth_state: dict | None = None, persona_locale: str | None = None
+    ) -> None:
+        """Destroy and recreate the browser context to eliminate cross-persona state bleed.
+
+        Called in sequential mode between personas so cookies, localStorage, and
+        service-worker caches from one persona can never leak into the next.
+        """
+        # Close existing page
+        try:
+            if self.page:
+                self.page.close()
+        except Exception:
+            pass
+        # Close existing context (removes all cookies / storage / SW registrations)
+        try:
+            if self._context:
+                self._context.close()
+        except Exception:
+            pass
+        # Reset accumulated run errors so per-persona signals are clean
+        self.console_errors = []
+        self.console_warnings = []
+        self.network_failures = []
+        self.network_log = []
+        self.silent_api_failures = []
+        # Rebuild context with same base options, optionally restoring auth state
+        context_opts: dict[str, Any] = {
+            "viewport": VIEWPORT_PROFILES[self._viewport],
+            "service_workers": "block",
+        }
+        if auth_state:
+            context_opts["storage_state"] = auth_state
+        if persona_locale:
+            context_opts["locale"] = persona_locale
+            context_opts["extra_http_headers"] = {"Accept-Language": persona_locale.replace("_", "-")}
+        self._context = self._browser.new_context(**context_opts)
+        _block_analytics_routes(self._context)
+        self.page = self._context.new_page()
+        setup_page_for_run(self.page)
+        self.page.on("console", self._on_console)
+        self.page.on("pageerror", self._on_pageerror)
+        self.page.on("response", self._on_response)
+
     def _on_console(self, msg: Any) -> None:
         text = (msg.text or "")[:300]
         if msg.type == "error":
             self.console_errors.append(text)
         elif msg.type == "warning":
             self.console_warnings.append(text)
+
+    def _on_pageerror(self, exc: Any) -> None:
+        self.console_errors.append(f"[uncaught] {str(exc)[:280]}")
 
     def _on_response(self, response: Response) -> None:
         try:
@@ -380,11 +669,35 @@ class BrowserSession:
             pass
         if response.status >= 400:
             self.network_failures.append(f"{response.status} {response.url}"[:300])
+        # C8: detect silent API failures — 2xx POST/XHR with error body
+        try:
+            req = response.request
+            if (
+                req.method in ("POST", "PUT", "PATCH")
+                and 200 <= response.status < 300
+                and req.resource_type in ("xhr", "fetch")
+                and len(self.silent_api_failures) < 20
+            ):
+                body = response.body()
+                if len(body) < 10_000:
+                    text = body.decode("utf-8", errors="replace")
+                    if re.search(
+                        r'"success"\s*:\s*false|"ok"\s*:\s*false|"status"\s*:\s*"error"|"error"\s*:\s*true',
+                        text,
+                        re.IGNORECASE,
+                    ):
+                        snippet = text[:300].replace("\n", " ")
+                        self.silent_api_failures.append(
+                            f"{req.method} {response.url[:200]} → {response.status}: {snippet}"
+                        )
+        except Exception:
+            pass
 
     def reset_run_errors(self) -> None:
         self.console_errors = []
         self.console_warnings = []
         self.network_failures = []
+        self.silent_api_failures = []
 
     def flush_network_log(self) -> str | None:
         if not self.network_log:
@@ -461,7 +774,7 @@ class BrowserSession:
                     page.wait_for_load_state("networkidle", timeout=15000)
                 except Exception:
                     pass
-                page.wait_for_timeout(500)
+                _inject_animation_freeze(page)
 
                 self._fill_auth_input(auth, "email", email, timeout_ms=12000)
                 self._fill_auth_input(auth, "password", password, timeout_ms=12000)
@@ -482,7 +795,7 @@ class BrowserSession:
                     page.wait_for_load_state("networkidle", timeout=15000)
                 except Exception:
                     pass
-                page.wait_for_timeout(1000)
+                _inject_animation_freeze(page)
 
                 if self._auth_session_ok():
                     return "success"
@@ -490,7 +803,10 @@ class BrowserSession:
             except Exception as exc:
                 last_outcome = f"failed_attempt_{attempt + 1}"
                 if attempt < 2:
-                    page.wait_for_timeout(1500)
+                    try:
+                        page.wait_for_load_state("domcontentloaded", timeout=3000)
+                    except Exception:
+                        pass
                     continue
                 return last_outcome
 
@@ -568,22 +884,54 @@ class BrowserSession:
                 nav_url = _absolute_url(self.config.target_url, step.url)
                 response = page.goto(nav_url, wait_until="domcontentloaded", timeout=timeout)
                 page.wait_for_load_state("networkidle", timeout=min(timeout, 15000))
+                _inject_animation_freeze(page)
             elif step.action == "wait":
                 ms = int(step.value or step.url or "1000")
                 page.wait_for_timeout(ms)
             elif step.action == "fill":
                 value = step.resolve_value() if step.value else ""
-                loc, resolution_note = _resolve_locator(page, step)
+                _fill_persona = next(
+                    (p for p in self.config.personas if p.id == persona_id), None
+                )
+                if _fill_persona and getattr(_fill_persona, "screen_reader", False):
+                    loc, resolution_note = _resolve_locator_by_aria(page, step, timeout)
+                else:
+                    loc, resolution_note = _resolve_locator(page, step)
                 focus_locator = loc
                 loc.fill(value or "", timeout=timeout)
             elif step.action == "click":
-                loc, resolution_note = _resolve_locator(page, step)
+                _click_persona = next(
+                    (p for p in self.config.personas if p.id == persona_id), None
+                )
+                if _click_persona and getattr(_click_persona, "screen_reader", False):
+                    loc, resolution_note = _resolve_locator_by_aria(page, step, timeout)
+                else:
+                    loc, resolution_note = _resolve_locator(page, step)
                 focus_locator = loc
                 if loc.is_disabled(timeout=3000):
                     snap.outcome = "partial"
                     snap.note = "Target control is disabled"
                 else:
-                    loc.click(timeout=timeout)
+                    # reuse _click_persona resolved above
+                    persona_obj = _click_persona
+                    if persona_obj is None:
+                        persona_obj = next(
+                            (p for p in self.config.personas if p.id == persona_id), None
+                        )
+                    if persona_obj and getattr(persona_obj, "keyboard_only", False):
+                        loc.focus(timeout=timeout)
+                        # Check focus-visible before activation
+                        _focus_visible = page.evaluate(
+                            "() => { const el = document.activeElement; if (!el) return false; "
+                            "const s = window.getComputedStyle(el); "
+                            "return s.outlineWidth !== '0px' || s.boxShadow !== 'none'; }"
+                        )
+                        if not _focus_visible:
+                            snap.note = (snap.note or "") + "[keyboard-only: focus not visible]"
+                        loc.press("Enter", timeout=timeout)
+                        snap.note = (snap.note or "") + "[keyboard-only: Enter activation]"
+                    else:
+                        loc.click(timeout=timeout)
                     page.wait_for_load_state("domcontentloaded", timeout=timeout)
             elif step.action == "hover":
                 loc, resolution_note = _resolve_locator(page, step)
@@ -683,8 +1031,18 @@ class BrowserSession:
             snap.console_errors = list(self.console_errors)
             snap.console_warnings = list(self.console_warnings)
             snap.network_failures = list(self.network_failures)
+            snap.silent_api_failures = list(self.silent_api_failures)
+            snap.dom_hash = _dom_fingerprint(page)
             if step.action == "navigate":
+                # Wait for load event so all subresource timing entries are complete.
+                # networkidle already fired above; this short wait is a safety margin
+                # for resources that finished between domcontentloaded and networkidle.
+                try:
+                    page.wait_for_load_state("load", timeout=min(timeout, 5000))
+                except Exception:
+                    pass  # page may never reach "load" (SPA, SSE) — proceed with what we have
                 snap.web_vitals = collect_web_vitals(page)
+                snap.resource_timing = _collect_resource_timing(page)
             if resolution_note:
                 snap.resolved_selector = resolution_note
                 snap.note = resolution_note if not snap.note else f"{snap.note}; {resolution_note}"
@@ -697,12 +1055,11 @@ class BrowserSession:
                 )
 
             if step.action in ("navigate", "click", "fill", "select"):
-                aria_path = _save_aria_artifact(
-                    self.artifacts_dir,
-                    step_id,
-                    _compact_aria_tree(page),
-                )
+                _aria = _compact_aria_tree(page)
+                aria_path = _save_aria_artifact(self.artifacts_dir, step_id, _aria)
                 snap.artifact_paths.append(aria_path)
+                snap.aria_snapshot = _aria
+                snap.storage_keys = _capture_storage_keys(page)
 
             shot = self.artifacts_dir / f"{_safe_filename(step_id)}.png"
             page.screenshot(path=str(shot), full_page=True)
@@ -714,10 +1071,47 @@ class BrowserSession:
 
             if snap.outcome != "fail":
                 snap.outcome = _grade_step(snap, step)
+
+            # offline_intermittent: after a fill step, briefly go offline then reconnect to
+            # test whether the app preserves form state and surfaces an offline indicator.
+            if step.action == "fill":
+                _persona_obj = next(
+                    (p for p in self.config.personas if p.id == persona_id), None
+                )
+                if _persona_obj and getattr(_persona_obj, "network_throttle", None) == "offline_intermittent":
+                    _offline_note = _offline_blip(self._context, page, timeout=min(timeout, 8000))
+                    snap.note = (snap.note or "") + _offline_note
+
+            # rage_mode: after a visible failure (error phrases in DOM), retry the same
+            # click 3× rapidly to surface duplicate-submission and race-condition bugs.
+            if (
+                snap.outcome == "fail"
+                and step.action == "click"
+                and snap.error_phrases_found
+            ):
+                _persona_obj = next(
+                    (p for p in self.config.personas if p.id == persona_id), None
+                )
+                if _persona_obj and getattr(_persona_obj, "rage_mode", False):
+                    _rage_note = _rage_retry(page, loc, timeout=min(timeout, 5000))
+                    snap.note = (snap.note or "") + _rage_note
         except Exception as exc:
             snap.outcome = "fail"
             snap.error_type = classify_step_error(exc)
             snap.note = str(exc)[:500]
+
+            # rage_mode: also retry after exception (e.g. button click raised timeout)
+            if step.action == "click" and focus_locator is not None:
+                _persona_obj = next(
+                    (p for p in self.config.personas if p.id == persona_id), None
+                )
+                if _persona_obj and getattr(_persona_obj, "rage_mode", False):
+                    try:
+                        _rage_note = _rage_retry(page, focus_locator, timeout=min(timeout, 5000))
+                        snap.note = (snap.note or "") + _rage_note
+                    except Exception:
+                        pass
+
             try:
                 shot = self.artifacts_dir / f"{_safe_filename(step_id)}-error.png"
                 page.screenshot(path=str(shot), full_page=True)
@@ -727,6 +1121,61 @@ class BrowserSession:
 
         snap.duration_ms = int((time.perf_counter() - started) * 1000)
         return snap
+
+
+def _offline_blip(context: "BrowserContext", page: "Page", *, timeout: int = 8000) -> str:
+    """Go offline for 1.5s then reconnect; observe whether the UI shows an offline indicator."""
+    try:
+        context.set_offline(True)
+        page.wait_for_timeout(1500)
+        body_offline = _body_excerpt(page)
+        context.set_offline(False)
+        page.wait_for_load_state("domcontentloaded", timeout=timeout)
+        body_online = _body_excerpt(page)
+        offline_indicator = any(
+            kw in body_offline.lower()
+            for kw in ("offline", "no internet", "connection lost", "reconnecting")
+        )
+        form_preserved = any(
+            kw in body_online.lower() for kw in ("your changes", "draft saved", "auto-save")
+        )
+        parts: list[str] = []
+        if offline_indicator:
+            parts.append("offline indicator shown")
+        else:
+            parts.append("no offline indicator")
+        if form_preserved:
+            parts.append("draft/auto-save detected")
+        return f" [offline-blip: {', '.join(parts)}]"
+    except Exception as exc:
+        try:
+            context.set_offline(False)
+        except Exception:
+            pass
+        return f" [offline-blip: failed ({exc!s:.80})]"
+
+
+def _rage_retry(page: "Page", locator: "Locator", *, timeout: int = 5000) -> str:
+    """Click the same target 3× with 100ms gaps to surface duplicate-submit bugs."""
+    from playwright.sync_api import Error as PlaywrightError
+
+    duplicates_detected: list[str] = []
+    for _ in range(3):
+        try:
+            page.wait_for_timeout(100)
+            locator.click(timeout=timeout)
+            page.wait_for_load_state("domcontentloaded", timeout=timeout)
+            body = _body_excerpt(page)
+            if any(p in body.lower() for p in ("order confirmed", "submitted", "success", "thank you")):
+                duplicates_detected.append("possible duplicate submission")
+        except PlaywrightError:
+            break
+    tag = (
+        f" [rage: {', '.join(set(duplicates_detected))}]"
+        if duplicates_detected
+        else " [rage: 3× retry, no duplicate detected]"
+    )
+    return tag
 
 
 def _grade_step(snap: StepSnapshot, step: Step) -> str:

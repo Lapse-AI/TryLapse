@@ -80,7 +80,15 @@ export function RunHistoryLiveRows({
                 ) : (
                   <span className="font-mono text-xs text-muted-foreground">pending…</span>
                 )}
-                {workspaceSlug ? (
+                {j.mode === "cohort" ? (
+                  <Link
+                    to="/cohort/$jobId"
+                    params={{ jobId: j.id }}
+                    className="font-mono text-[11px] text-info hover:underline"
+                  >
+                    cohort {j.id}
+                  </Link>
+                ) : workspaceSlug ? (
                   <Link
                     to="/$workspaceSlug/runner"
                     params={{ workspaceSlug }}
@@ -92,6 +100,9 @@ export function RunHistoryLiveRows({
                   <Link to="/runner" className="font-mono text-[11px] text-info hover:underline">
                     job {j.id}
                   </Link>
+                )}
+                {j.mode === "cohort" && (
+                  <Chip tone="warn" className="text-[10px] py-0 px-1.5 self-start">cohort</Chip>
                 )}
               </div>
             </td>

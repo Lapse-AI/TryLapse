@@ -13,6 +13,19 @@ from rehearse.sitemap import SiteMap
 JOURNEY_STATUS = {"pass": 3, "partial": 2, "fail": 1}
 
 
+def _aria_has_live_region(node: dict, *, _depth: int = 0) -> bool:
+    """Recursively check if an ARIA tree node or its descendants is a live region."""
+    if _depth > 12:
+        return False
+    role = (node.get("role") or "").lower()
+    if role in ("alert", "status", "log", "marquee", "timer", "alertdialog"):
+        return True
+    for child in node.get("children") or []:
+        if _aria_has_live_region(child, _depth=_depth + 1):
+            return True
+    return False
+
+
 @dataclass
 class Finding:
     id: str
@@ -118,6 +131,8 @@ def analyze_run(
         delight_counter = len(result.delights)
 
     _analyze_console_spike(config, canonical_steps, result, seen_titles)
+    _analyze_dom_stagnation(config, canonical_steps, result, seen_titles)
+    _analyze_storage_continuity(config, canonical_steps, result, seen_titles)
 
     flaky_seen: set[str] = set()
     for step in canonical_steps:
@@ -165,6 +180,9 @@ def analyze_run(
     return result
 
 
+_SEVERITY_DOWNGRADE = {"P0": "P1", "P1": "P2", "P2": "P3", "P3": "P3"}
+
+
 def _analyze_step(
     config: RunConfig,
     step: StepSnapshot,
@@ -173,25 +191,43 @@ def _analyze_step(
     _ic: int,
     _dc: int,
 ) -> None:
+    # Three-run confirmation gate:
+    #  - fail_rate ≥ 2/3 across seeds → downgrade severity + hypothesis confidence (filed)
+    #  - fail_rate < 2/3 → skip filing entirely (non-reproducible noise)
+    #  - Structural findings (a11y, HTTP status) are exempt — valid regardless of timing.
+    _flaky = getattr(step, "flaky", False)
+    _flake_rate: float = getattr(step, "flake_rate", 1.0)
+
     def add_issue(
         severity: str,
         title: str,
         detail: str,
         personas: list[str],
         confidence: str = "high",
+        *,
+        structural: bool = False,  # structural=True exempts from flaky gate
     ) -> None:
         if title in seen:
             return
         seen.add(title)
+        eff_severity = severity
+        eff_confidence = confidence
+        if _flaky and not structural:
+            if _flake_rate < 2 / 3:
+                # Non-reproducible: appeared in fewer than 2/3 seeds — skip filing
+                return
+            # Reproducible flake (≥2/3 seeds): downgrade and mark hypothesis
+            eff_severity = _SEVERITY_DOWNGRADE.get(severity, severity)
+            eff_confidence = "hypothesis"
         result.issues.append(
             Finding(
                 id=f"I{len(result.issues)+1}",
-                severity=severity,
+                severity=eff_severity,
                 title=title,
-                detail=detail,
+                detail=detail + (" [confirmed: ≥2/3 seeds]" if _flaky and not structural else ""),
                 persona_ids=personas,
                 step_id=step.step_id,
-                confidence=confidence,
+                confidence=eff_confidence,
             )
         )
 
@@ -226,6 +262,7 @@ def _analyze_step(
             f"HTTP {step.http_status} on navigation",
             f"Requested {step.requested_url or step.final_url} returned status {step.http_status}.",
             p_admin,
+            structural=True,  # HTTP error is real regardless of timing
         )
 
     if step.outcome == "partial" and step.requested_url and step.final_url:
@@ -237,6 +274,7 @@ def _analyze_step(
                 "Auth wall on deep link",
                 f"Navigated to {req_path} but landed on {final_path} — workflow blocked without session.",
                 p_first + p_admin,
+                structural=True,
             )
 
     if step.unlabeled_button_count > 0:
@@ -245,6 +283,7 @@ def _analyze_step(
             "Icon-only or unlabeled buttons",
             f"{step.unlabeled_button_count} button(s) lack accessible name on page.",
             p_power + p_admin,
+            structural=True,  # a11y structure doesn't change between runs
         )
 
     if step.input_count > 0 and step.labeled_input_count < step.input_count:
@@ -254,6 +293,7 @@ def _analyze_step(
             "Form inputs missing labels",
             f"{missing} of {step.input_count} inputs lack label, aria-label, or placeholder.",
             p_first + p_admin,
+            structural=True,
         )
 
     if step.duration_ms > 8000:
@@ -264,6 +304,19 @@ def _analyze_step(
             p_power,
             confidence="high",
         )
+
+    if step.resource_timing:
+        slow = [r for r in step.resource_timing if r.get("durationMs", 0) > 2000]
+        if slow:
+            worst = slow[0]
+            add_issue(
+                "P2",
+                "Single asset causing page slowdown",
+                f"Resource '{worst.get('name', '?')}' (type: {worst.get('type', '?')}) "
+                f"took {worst['durationMs']}ms to load — this is the likely cause of slow "
+                f"LCP. {len(slow)} resource(s) over 2s threshold.",
+                p_power + p_first,
+            )
 
     body_lower = step.body_text_excerpt.lower()
     if step.action == "navigate" and len(body_lower) < 80:
@@ -297,6 +350,106 @@ def _analyze_step(
             "Visible error feedback after action",
             f"User-visible error language detected: {', '.join(step.error_phrases_found)}.",
             p_first,
+        )
+
+    if step.note and "offline-blip:" in step.note and "no offline indicator" in step.note:
+        add_issue(
+            "p2",
+            "No offline indicator during connectivity loss",
+            "After a form fill, the intermittent-connection persona lost connectivity for 1.5s. "
+            "No offline banner or indicator was detected. Users on flaky connections won't know "
+            "their submission is pending.",
+            [step.persona_id],
+        )
+
+    if step.note and "offline-blip:" in step.note and "no offline indicator" not in step.note:
+        add_delight(
+            "Offline state communicated to user",
+            "App displayed an offline indicator during a simulated connectivity blip — "
+            "users on flaky connections will know what's happening.",
+            [step.persona_id],
+        )
+
+    if step.resolved_selector and "screen-reader-fallback: ARIA resolution failed" in step.resolved_selector:
+        add_issue(
+            "p1",
+            "Interactive element unreachable via ARIA tree",
+            "The screen-reader persona could not locate this element by label, role, or "
+            "accessible name — it fell back to CSS selector. Screen reader users cannot "
+            "reach this element. Ensure the element has an aria-label, aria-labelledby, "
+            "or a visible <label> association.",
+            [step.persona_id],
+            structural=True,
+        )
+    elif step.resolved_selector and "no accessible name" in step.resolved_selector:
+        add_issue(
+            "p2",
+            "Interactive element has no accessible name",
+            "The screen-reader persona matched this element by visible text only — it has "
+            "no aria-label or <label> association. Screen readers may not describe it correctly.",
+            [step.persona_id],
+            structural=True,
+        )
+
+    # Check aria_snapshot for missing live regions when error phrases are present
+    if step.error_phrases_found and step.aria_snapshot:
+        has_live = _aria_has_live_region(step.aria_snapshot)
+        if not has_live:
+            add_issue(
+                "p2",
+                "Error state not announced to screen readers",
+                f"Error language was detected ({', '.join(step.error_phrases_found[:2])}) "
+                "but the ARIA tree has no live region (role=alert, aria-live=polite/assertive). "
+                "Screen reader users won't hear the error.",
+                [step.persona_id],
+                structural=True,
+            )
+
+    if step.note and "keyboard-only: focus not visible" in step.note:
+        add_issue(
+            "p1",
+            "Keyboard focus indicator missing",
+            "A keyboard-only persona focused an interactive element and no visible focus outline "
+            "or box-shadow was detected. Keyboard users cannot see where they are on the page. "
+            "This is a WCAG 2.4.7 failure (Focus Visible, Level AA).",
+            [step.persona_id],
+            structural=True,
+        )
+
+    _RTL_LOCALES = {"ar", "ar-SA", "ar-EG", "he", "he-IL", "fa", "ur"}
+    _step_persona = next((p for p in config.personas if p.id == step.persona_id), None)
+    _step_locale = getattr(_step_persona, "locale", None) if _step_persona else None
+    if _step_locale and _step_locale.split("-")[0] in {l.split("-")[0] for l in _RTL_LOCALES}:
+        body_lower = step.body_text_excerpt.lower()
+        if step.action == "navigate" and step.outcome == "pass":
+            if any(kw in body_lower for kw in ("ltr", "text-align: left", "direction: ltr")):
+                add_issue(
+                    "p2",
+                    "RTL locale served LTR layout",
+                    f"Persona using locale '{_step_locale}' (RTL language) was served a page "
+                    "with LTR direction hints. Layout may be broken for Arabic/Hebrew users.",
+                    [step.persona_id],
+                    confidence="hypothesis",
+                )
+
+    if step.note and "rage:" in step.note and "possible duplicate submission" in step.note:
+        add_issue(
+            "p0",
+            "Duplicate submission on rage-retry",
+            "After a visible error, the frustrated-user persona retried the same action "
+            "and triggered what appears to be a duplicate form submission. Duplicate orders, "
+            "double-charges, or double-sends are likely.",
+            [step.persona_id],
+            confidence="hypothesis",
+            structural=True,
+        )
+    elif step.note and "rage:" in step.note and "3× retry" in step.note:
+        add_issue(
+            "p2",
+            "No feedback prevents frustrated re-submission",
+            "After a failed action the UI did not disable the submit button or show a "
+            "loading state, allowing repeated clicks. A frustrated user will keep retrying.",
+            [step.persona_id],
         )
 
     if step.link_count >= 4 and step.heading_count >= 1:
@@ -336,6 +489,129 @@ def _analyze_step(
             f"{len(warnings)} warning(s): {warnings[0][:120]}",
             p_power,
         )
+
+    net_fails = getattr(step, "network_failures", None) or []
+    if net_fails and step.action in ("click", "fill", "select", "press"):
+        # Network failures during user-action steps indicate API errors on
+        # form submission / data mutation — high severity because the user saw
+        # no error feedback but the backend request failed.
+        sev = "P1" if len(net_fails) >= 2 else "P2"
+        add_issue(
+            sev,
+            "Network request failure during user action",
+            f"{len(net_fails)} request(s) failed during '{step.action}': {net_fails[0][:200]}",
+            p_power + p_first,
+            confidence="high",
+        )
+
+    # C8: silent API failure — 200 OK but error body
+    silent = getattr(step, "silent_api_failures", None) or []
+    if silent and step.action in ("click", "fill", "select", "submit"):
+        add_issue(
+            "P1",
+            "Silent API failure (200 OK but error body)",
+            f"{len(silent)} API response(s) returned HTTP 200 but an error body: {silent[0][:200]}. "
+            "Users see no error but their action did not succeed.",
+            p_power + p_first,
+            confidence="high",
+        )
+
+
+def _analyze_dom_stagnation(
+    config: RunConfig,
+    steps: list[StepSnapshot],
+    result: AnalysisResult,
+    seen: set[str],
+) -> None:
+    """C4: Flag steps where DOM fingerprint didn't change after an interaction.
+
+    If the user clicked or submitted a form but the DOM structure is identical
+    to the previous step, the action likely had no visible effect — a UX hole
+    where feedback is missing.
+    """
+    INTERACTION_ACTIONS = {"click", "fill", "select", "press", "submit"}
+    by_journey: dict[str, list[StepSnapshot]] = {}
+    for s in steps:
+        by_journey.setdefault(s.journey_id, []).append(s)
+
+    for journey_id, jsteps in by_journey.items():
+        sorted_steps = sorted(jsteps, key=lambda s: s.step_id)
+        for i in range(1, len(sorted_steps)):
+            prev, curr = sorted_steps[i - 1], sorted_steps[i]
+            prev_hash = getattr(prev, "dom_hash", None)
+            curr_hash = getattr(curr, "dom_hash", None)
+            if (
+                prev_hash
+                and curr_hash
+                and prev_hash == curr_hash
+                and prev.action in INTERACTION_ACTIONS
+                and prev.final_url == curr.final_url  # same page — not a navigation
+                and prev.outcome != "fail"
+            ):
+                title = f"No visible DOM change after '{prev.action}'"
+                if title not in seen:
+                    seen.add(title)
+                    result.issues.append(
+                        Finding(
+                            id=f"I{len(result.issues)+1}",
+                            severity="P2",
+                            title=title,
+                            detail=(
+                                f"DOM fingerprint unchanged between step '{prev.action}' and "
+                                f"'{curr.action}' in journey '{prev.journey_name}'. "
+                                "The interaction may have had no effect — check for missing "
+                                "feedback, broken event handlers, or silent failures."
+                            ),
+                            persona_ids=_pick_personas(config, "power", "operator", "first"),
+                            step_id=prev.step_id,
+                            confidence="hypothesis",
+                        )
+                    )
+
+
+def _analyze_storage_continuity(
+    config: RunConfig,
+    steps: list[StepSnapshot],
+    result: AnalysisResult,
+    seen: set[str],
+) -> None:
+    """Detect auth token / session key disappearing mid-journey (session expiry bug)."""
+    _AUTH_PATTERNS = ("token", "session", "auth", "jwt", "user_id", "access", "refresh")
+    by_journey: dict[str, list[StepSnapshot]] = {}
+    for s in steps:
+        if s.storage_keys is not None:
+            by_journey.setdefault(s.journey_id, []).append(s)
+
+    for journey_id, jsteps in by_journey.items():
+        if len(jsteps) < 2:
+            continue
+        # Find auth keys present at step 0
+        first_auth = {k for k in jsteps[0].storage_keys or [] if any(p in k.lower() for p in _AUTH_PATTERNS)}
+        if not first_auth:
+            continue
+        for s in jsteps[1:]:
+            current_auth = {k for k in s.storage_keys or [] if any(p in k.lower() for p in _AUTH_PATTERNS)}
+            vanished = first_auth - current_auth
+            if vanished:
+                title = "Auth session lost mid-journey"
+                if title not in seen:
+                    seen.add(title)
+                    result.issues.append(
+                        Finding(
+                            id=f"I{len(result.issues)+1}",
+                            severity="P0",
+                            title=title,
+                            detail=(
+                                f"Storage keys {sorted(vanished)} were present at journey "
+                                f"start but missing at step '{s.step_id}'. Session may have "
+                                "expired or been cleared mid-flow — user gets silently logged out."
+                            ),
+                            persona_ids=[s.persona_id],
+                            step_id=s.step_id,
+                            confidence="hypothesis",
+                        )
+                    )
+                break  # one finding per journey
 
 
 def _analyze_console_spike(

@@ -113,7 +113,7 @@ function ComparePage() {
           </Chip>
         </Panel>
 
-        {runA && runB && runA !== runB && scoreA > 0 && scoreB > 0 && (
+        {runA && runB && runA !== runB && (summaryA ?? summaryB) && (
           <LiftCard
             readinessA={scoreA}
             readinessB={scoreB}
@@ -122,7 +122,7 @@ function ComparePage() {
             newIssues={newIssueCount}
             resolvedIssues={resolvedIssueCount}
             verdict={verdict}
-            label="Retrospective"
+            label="Readiness delta"
           />
         )}
 

@@ -160,32 +160,25 @@ def _replay_journey_from_start(
             except Exception:
                 pass
 
-        # Behavioral judge: LLM evaluates each step from persona's perspective
-        if use_behavioral_judge and seed == 1 and loop == 1 and viewport == "desktop":
-            try:
-                from rehearse.behavioral_judge import judge_step
-                step_dict = {
-                    "action": step.action,
-                    "finalUrl": snap.final_url,
-                    "requestedUrl": snap.requested_url,
-                    "outcome": snap.outcome,
-                    "bodyTextExcerpt": snap.body_text_excerpt,
-                    "durationMs": snap.duration_ms,
-                    "consoleErrors": snap.console_errors,
-                    "networkFailures": snap.network_failures,
-                    "headingCount": snap.heading_count,
-                    "linkCount": snap.link_count,
-                    "unlabeledButtonCount": snap.unlabeled_button_count,
-                    "expected_outcome": getattr(step, "expected_outcome", ""),
-                }
-                verdict = judge_step(step_dict, persona=persona_obj, journey=journey_meta)
-                snap.behavioral_verdict = verdict.get("behavioral_verdict")
-                snap.behavioral_friction = verdict.get("friction_signals") or []
-                snap.behavioral_ux_concerns = verdict.get("ux_concerns") or []
-                snap.chatbot_quality = verdict.get("chatbot_quality")
-                step_dicts.append({**step_dict, **verdict})
-            except Exception:
-                step_dicts.append({"action": step.action, "outcome": snap.outcome})
+        # Collect step observation for journey-level synthesis.
+        # Per-step judge_step calls are eliminated: all behavioral synthesis happens
+        # in one judge_journey call at journey end, reducing LLM calls from O(n_steps)
+        # to O(1) per journey.
+        if seed == 1 and loop == 1 and viewport == "desktop":
+            step_dicts.append({
+                "action": step.action,
+                "finalUrl": snap.final_url,
+                "requestedUrl": snap.requested_url,
+                "outcome": snap.outcome,
+                "bodyTextExcerpt": snap.body_text_excerpt,
+                "durationMs": snap.duration_ms,
+                "consoleErrors": snap.console_errors,
+                "networkFailures": snap.network_failures,
+                "headingCount": snap.heading_count,
+                "linkCount": snap.link_count,
+                "unlabeledButtonCount": snap.unlabeled_button_count,
+                "expected_outcome": getattr(step, "expected_outcome", ""),
+            })
         else:
             step_dicts.append({"action": step.action, "outcome": snap.outcome})
 
@@ -211,6 +204,7 @@ def _replay_journey_from_start(
 
 def _navigate_journey_entry(session: BrowserSession, journey: Journey) -> None:
     """Reset to first navigate URL between seeds."""
+    from rehearse.browser import _inject_animation_freeze
     first_nav = next((s for s in journey.steps if s.action == "navigate" and s.url), None)
     if first_nav and first_nav.url:
         session.page.goto(
@@ -218,20 +212,32 @@ def _navigate_journey_entry(session: BrowserSession, journey: Journey) -> None:
             wait_until="domcontentloaded",
             timeout=session.config.budgets.step_timeout_ms,
         )
-        session.page.wait_for_timeout(500)
+        try:
+            session.page.wait_for_load_state("networkidle", timeout=8000)
+        except Exception:
+            pass
+        _inject_animation_freeze(session.page)
 
 
 def _mark_flaky_steps(seed_runs: list[list[StepSnapshot]]) -> None:
     if len(seed_runs) < 2:
         return
+    n_seeds = len(seed_runs)
     step_count = len(seed_runs[0])
     for idx in range(step_count):
-        outcomes = {seed_runs[s][idx].outcome for s in range(len(seed_runs))}
-        if len(outcomes) > 1:
+        all_outcomes = [seed_runs[s][idx].outcome for s in range(n_seeds)]
+        outcome_set = set(all_outcomes)
+        if len(outcome_set) > 1:
+            fail_count = sum(1 for o in all_outcomes if o == "fail")
+            rate = fail_count / n_seeds  # fraction of seeds that produced a failing outcome
             for run in seed_runs:
                 run[idx].flaky = True
+                run[idx].flake_rate = rate
                 note = run[idx].note or ""
-                run[idx].note = f"FLAKY: outcomes differ across seeds ({', '.join(sorted(outcomes))}). {note}".strip()
+                run[idx].note = (
+                    f"FLAKY: outcomes differ across seeds ({', '.join(sorted(outcome_set))})"
+                    f" [{fail_count}/{n_seeds} seeds failed]. {note}"
+                ).strip()
 
 
 def _journey_status_from_snaps(snaps: list[StepSnapshot]) -> str:
@@ -257,6 +263,7 @@ class _ThreadSession:
         self.console_warnings: list[str] = []
         self.network_failures: list[str] = []
         self.network_log: list[dict] = []
+        self.silent_api_failures: list[str] = []
         self.record_video = False
         self._viewport = "desktop"  # execute_step reads this
         self.artifacts_dir = Path(".")   # execute_step writes screenshots here; overridden by caller
@@ -274,7 +281,9 @@ class _ThreadSession:
 
     def reset_run_errors(self) -> None:
         self.console_errors = []
+        self.console_warnings = []
         self.network_failures = []
+        self.silent_api_failures = []
 
     def execute_step(self, step, **kwargs):
         """Delegate to BrowserSession.execute_step bound to this thread's page."""
@@ -353,7 +362,10 @@ class JourneyAgent(BaseAgent):
                             from playwright.sync_api import sync_playwright
                             with sync_playwright() as pw:
                                 browser = pw.chromium.launch(headless=True)
-                                context_opts: dict = {"viewport": {"width": 1280, "height": 800}}
+                                context_opts: dict = {
+                                    "viewport": {"width": 1280, "height": 800},
+                                    "service_workers": "block",  # B2: prevent cross-run cache bleed
+                                }
                                 run_id = getattr(ctx.evidence, "run_id", None)
                                 record = getattr(self.session, "record_video", False)
                                 video_dir: "Path | None" = None
@@ -363,14 +375,34 @@ class JourneyAgent(BaseAgent):
                                     video_dir = self.artifacts_root / "artifacts" / run_id / "videos"
                                     video_dir.mkdir(parents=True, exist_ok=True)
                                     context_opts["record_video_dir"] = str(video_dir)
+                                # Apply persona-specific browser modifiers (locale, a11y)
+                                persona_obj = next(
+                                    (p for p in ctx.config.personas if p.id == persona_id), None
+                                )
+                                if persona_obj and persona_obj.locale:
+                                    context_opts["locale"] = persona_obj.locale
                                 # Restore auth cookies so worker starts authenticated
                                 auth_state = ctx.metadata.get("auth_storage_state")
                                 if auth_state:
                                     context_opts["storage_state"] = auth_state
                                 context = browser.new_context(**context_opts)
+                                from rehearse.browser import _block_analytics_routes, setup_page_for_run
+                                _block_analytics_routes(context)
                                 page = context.new_page()
+                                setup_page_for_run(page)
                                 tmp_session = _ThreadSession(page, self.session.config)
                                 tmp_session.artifacts_dir = self.artifacts_root
+                                # Wire console + pageerror listeners so execute_step sees them
+                                page.on("console", lambda msg: (
+                                    tmp_session.console_errors.append(msg.text[:300])
+                                    if msg.type == "error"
+                                    else tmp_session.console_warnings.append(msg.text[:300])
+                                    if msg.type == "warning"
+                                    else None
+                                ))
+                                page.on("pageerror", lambda exc: tmp_session.console_errors.append(
+                                    f"[uncaught] {str(exc)[:280]}"
+                                ))
                                 snaps = _replay_journey_from_start(
                                     tmp_session, journey,
                                     primary=persona_id, seed=seed, loop=loop,
@@ -390,7 +422,9 @@ class JourneyAgent(BaseAgent):
                                     )
                                     if newest:
                                         try:
-                                            newest[0].rename(video_dir / f"{journey.id}.webm")
+                                            target = video_dir / f"{journey.id}.webm"
+                                            newest[0].rename(target)
+                                            ctx.evidence.video_paths.append(str(target))
                                         except OSError:
                                             pass
                         except Exception as e:
@@ -485,12 +519,35 @@ class JourneyAgent(BaseAgent):
                         pass
             self._browser = False
         else:
-            # Sequential mode (original behaviour)
+            # Sequential mode — reset browser context between personas to prevent
+            # cookies/localStorage/service-worker state from bleeding across personas.
             _artifacts_root = Path(ctx.metadata.get("output_dir", "."))
             _tracker = ctx.metadata.get("progress_tracker")
+            _prev_persona: str | None = None
+            _prev_locale: str | None = None
             for journey, persona in work_units:
                 if check_and_handle_signals(_artifacts_root, ctx.evidence.run_id, _tracker) == "stop":
                     break
+                _persona_locale = getattr(persona, "locale", None)
+                needs_reset = (
+                    _prev_persona is not None and _prev_persona != persona.id
+                ) or (
+                    # First persona: reset if it has a non-default locale
+                    _prev_persona is None and _persona_locale is not None
+                ) or (
+                    _persona_locale != _prev_locale
+                )
+                if needs_reset:
+                    try:
+                        auth_state = ctx.metadata.get("auth_storage_state")
+                        self.session.reset_context_for_persona(
+                            auth_state,
+                            persona_locale=_persona_locale,
+                        )
+                    except Exception:
+                        pass
+                _prev_persona = persona.id
+                _prev_locale = _persona_locale
                 _, _, persona_runs = self._run_journey_worker(
                     ctx, journey, persona.id, seeds, loops, viewports,
                 )

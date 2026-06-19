@@ -1158,6 +1158,17 @@ def build_run_bundle(
     launch_gate = _compute_launch_gate(issues, readiness_score, flake_rate=flake_rate)
     industry_benchmark = _industry_benchmark(config.product_type, readiness_score)
 
+    # Per-dimension flake breakdown: how many flaky steps belong to each finding category
+    _flake_by_dim: dict[str, int] = {}
+    for s in steps:
+        if s.get("flaky"):
+            dim = _dimension_for_finding(s.get("errorType") or "", s.get("note") or "")
+            _flake_by_dim[dim] = _flake_by_dim.get(dim, 0) + 1
+    flake_breakdown = {
+        dim: {"count": cnt, "rate": round(cnt / max(flaky_step_count, 1), 2)}
+        for dim, cnt in sorted(_flake_by_dim.items(), key=lambda kv: -kv[1])
+    }
+
     return {
         "summary": {
             # Gate leads — Jobs: "the score is a consequence of the gate, not the headline"
@@ -1191,6 +1202,7 @@ def build_run_bundle(
             "stepCount": len(steps),
             "flakeCount": flaky_step_count,
             "flakeRate": flake_rate,
+            "flakeBreakdown": flake_breakdown,
             "agentCost": cost_estimate["usd"],
             "costEstimate": cost_estimate,
             "outcome": evidence.outcome,

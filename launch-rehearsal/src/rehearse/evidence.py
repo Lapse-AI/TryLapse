@@ -39,6 +39,7 @@ class StepSnapshot:
     note: str | None = None
     error_type: str | None = None
     flaky: bool = False
+    flake_rate: float = 1.0   # fraction of seeds that produced a failing outcome (1.0 = always fails)
     seed_index: int = 1
     viewport: str = "desktop"
     resolved_selector: str | None = None
@@ -50,6 +51,16 @@ class StepSnapshot:
     behavioral_friction: list[str] = field(default_factory=list)
     behavioral_ux_concerns: list[str] = field(default_factory=list)
     chatbot_quality: dict[str, Any] | None = None
+    # C8: silent API failures — POST/XHR responses with 2xx status but error body
+    silent_api_failures: list[str] = field(default_factory=list)
+    # C4: lightweight DOM fingerprint (element counts hash) for step-to-step diff
+    dom_hash: str | None = None
+    # A4: accessibility tree snapshot — compact ARIA tree captured after each step
+    aria_snapshot: dict[str, Any] | None = None
+    # A4: storage state snapshot — localStorage + sessionStorage keys captured after step
+    storage_keys: list[str] | None = None
+    # A4: top slow resources from performance.getEntriesByType("resource") after navigate
+    resource_timing: list[dict[str, Any]] | None = None
 
 
 @dataclass
@@ -66,6 +77,7 @@ class RunEvidence:
     outcome: str = "running"
     network_log_path: str | None = None
     phase_timings: dict[str, int] = field(default_factory=dict)
+    video_paths: list[str] = field(default_factory=list)
 
     def add_step(self, record: StepSnapshot) -> None:
         self.steps.append(record)
@@ -73,7 +85,9 @@ class RunEvidence:
     def save(self, root: Path) -> Path:
         root.mkdir(parents=True, exist_ok=True)
         out = root / f"{self.run_id}.json"
-        out.write_text(json.dumps(asdict(self), indent=2))
+        tmp = root / f"{self.run_id}.tmp.json"
+        tmp.write_text(json.dumps(asdict(self), indent=2))
+        tmp.replace(out)  # atomic rename — reader never sees a partial write
         return out
 
     def to_dict(self) -> dict[str, Any]:

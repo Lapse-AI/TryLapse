@@ -650,11 +650,21 @@ class _Handler(BaseHTTPRequestHandler):
 
             jobs = list_jobs(root, config_prefix=config_prefix_q)
 
-            # For running jobs without a runId, discover it from the progress file
+            # For running jobs: discover runId from progress file if missing,
+            # and enrich with current phase (crawling / executing / analysing).
             runs_dir = root / "runs"
             for job in jobs:
-                if job.get("status") == "running" and not job.get("runId"):
-                    try:
+                if job.get("status") != "running":
+                    continue
+                try:
+                    run_id = job.get("runId")
+                    prog_data: dict | None = None
+                    if run_id:
+                        pf = runs_dir / f"{run_id}-progress.json"
+                        if pf.is_file():
+                            prog_data = json.loads(pf.read_text())
+                    if prog_data is None:
+                        # No runId yet — scan for the most recently modified progress file
                         candidates = sorted(
                             runs_dir.glob("*-progress.json"),
                             key=lambda p: p.stat().st_mtime,
@@ -662,11 +672,19 @@ class _Handler(BaseHTTPRequestHandler):
                         )
                         if candidates:
                             prog_data = json.loads(candidates[0].read_text())
-                            run_id = prog_data.get("run_id")
-                            if run_id:
-                                job["runId"] = run_id
-                    except Exception:
-                        pass
+                            discovered = prog_data.get("run_id") if prog_data else None
+                            if discovered and not run_id:
+                                job["runId"] = discovered
+                    if prog_data:
+                        phase = prog_data.get("phase")
+                        if phase and phase not in ("done", "failed", "complete"):
+                            job["phase"] = phase
+                        # Surface journey progress counts for the live table
+                        for key in ("completed_journeys", "total_journeys", "total_personas"):
+                            if prog_data.get(key) is not None:
+                                job[key] = prog_data[key]
+                except Exception:
+                    pass
             self._send_json(jobs)
             return
 
@@ -1771,6 +1789,10 @@ def serve_dashboard(artifacts_root: Path, host: str = "127.0.0.1", port: int = 8
     stale = mark_stale_running_jobs(artifacts_root)
     if stale:
         print(f"Marked {stale} stale running job(s) as failed (prior serve restart).")
+    from rehearse.run_manager import RunStateMachine
+    recovered_states = RunStateMachine.recover_stale(artifacts_root / "runs")
+    if recovered_states:
+        print(f"Recovered {len(recovered_states)} stale run state(s): {recovered_states}")
     rebuilt = backfill_all(artifacts_root)
     if rebuilt:
         print(f"Backfilled analysis.json for {len(rebuilt)} run(s).")

@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import threading
 import time
 from typing import Any
 
@@ -13,6 +14,26 @@ import httpx
 from rehearse.context import RunContext
 from rehearse.dsl import Persona
 from rehearse.heuristics import Delight, Finding
+
+# ── B4: per-run LLM call budget tracking ─────────────────────────────────────
+_llm_lock = threading.Lock()
+_llm_call_count: int = 0
+
+
+def reset_llm_call_count() -> None:
+    global _llm_call_count
+    with _llm_lock:
+        _llm_call_count = 0
+
+
+def get_llm_call_count() -> int:
+    return _llm_call_count
+
+
+def _record_llm_call() -> None:
+    global _llm_call_count
+    with _llm_lock:
+        _llm_call_count += 1
 
 _NIM_DEFAULT_BASE = "https://integrate.api.nvidia.com/v1"
 _DEEPSEEK_DEFAULT_BASE = "https://api.deepseek.com"
@@ -397,6 +418,7 @@ def analyze_persona_llm(ctx: RunContext, persona: Persona) -> dict[str, Any] | N
     if use_json_mode:
         payload["response_format"] = {"type": "json_object"}
 
+    _record_llm_call()  # B4: track LLM calls per run
     timeout = _http_timeout()
     last_exc: Exception | None = None
     content: str | None = None
@@ -532,6 +554,7 @@ def _llm_json_call(system: str, user: str, *, max_tokens: int = 2048) -> dict[st
     }
     if os.environ.get("REHEARSE_LLM_JSON_MODE", "1") not in ("0", "false", "no"):
         payload["response_format"] = {"type": "json_object"}
+    _record_llm_call()  # B4: track LLM calls per run
     try:
         with httpx.Client(timeout=_http_timeout()) as client:
             resp = _post_chat(client, payload)

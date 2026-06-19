@@ -9,7 +9,6 @@ import {
   SeverityChip,
   Stat,
   ClientTime,
-  SEVERITY_LABEL,
   LaunchGateBadge,
   ScoreDeltaBadge,
   BenchmarkContext,
@@ -17,7 +16,6 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DimensionRollupGrid, DimensionBreakdownBanner } from "@/components/dimension-rollup";
 import {
-  EvidenceDialog,
   StepsTable,
   ScorecardPanel,
   SitemapPanel,
@@ -25,9 +23,13 @@ import {
   DiffPanel,
   RunObservabilityPanel,
   AnnotationsPanel,
-  IssueAnnotationActions,
   ExportMenu,
   RunNarrativePanel,
+  VerdictBanner,
+  FunnelPanel,
+  FixHierarchyPanel,
+  ShareReportDialog,
+  TrendSparkline,
 } from "@/components/run-detail";
 import { ManualAnnotationPanel } from "@/components/manual-annotation-panel";
 import { CrawlLiveGraph } from "@/components/crawl-live-graph";
@@ -41,7 +43,6 @@ import {
   bundleJourneys,
   cellGrade,
   matrixGrade,
-  type Severity,
   type Issue,
 } from "@/lib/mock-data";
 import {
@@ -50,7 +51,7 @@ import {
   READINESS_BAND_HELP,
   displayAgentSummary,
 } from "@/lib/run-metrics";
-import { countIssuesForDimension, issueMatchesDimension } from "@/lib/dimension-match";
+import { countIssuesForDimension } from "@/lib/dimension-match";
 import { useRunBundle, useRunSummaries, useTriggerJob } from "@/lib/api/hooks";
 import { getWorkspace } from "@/lib/workspace";
 import {
@@ -63,8 +64,6 @@ import {
 } from "@/components/ui/dialog";
 import {
   GitCompare,
-  Image as ImageIcon,
-  Filter,
   ExternalLink,
   ListTree,
   FileText,
@@ -92,8 +91,6 @@ export const Route = createFileRoute("/runs/$runId")({
     <div className="p-12 text-center text-muted-foreground">Run not found.</div>
   ),
 });
-
-const ALL_SEVERITIES: Severity[] = ["P0", "P1", "P2", "P3"];
 
 function formatRunId(id: string): string {
   const m = id.match(/(\d{8})-(\d{6})$/);
@@ -204,7 +201,6 @@ export function RunDetail() {
   const navigate = useNavigate();
   const { data: bundle, isLoading } = useRunBundle(runId);
   const { data: runSummaries = [] } = useRunSummaries();
-  const [active, setActive] = useState<Set<Severity>>(new Set(ALL_SEVERITIES));
   const [compareRunId, setCompareRunId] = useState(runSummaries[1]?.id ?? "");
   const trigger = useTriggerJob();
   const wsSlug = getWorkspace()?.slug;
@@ -246,24 +242,8 @@ export function RunDetail() {
   const run = bundle.summary;
   const runPersonas = bundlePersonas(bundle);
   const runJourneys = bundleJourneys(bundle);
-  const filtered = bundle.issues.filter((i) => {
-    if (!active.has(i.severity)) return false;
-    if (dimensionFilter && !issueMatchesDimension(i, dimensionFilter)) return false;
-    return true;
-  });
   const band = bandFromIssues(bundle.issues);
   const blockerCount = countBlockers(bundle.issues);
-
-  const toggle = (s: Severity) => {
-    const next = new Set(active);
-    if (next.has(s)) {
-      next.delete(s);
-    } else {
-      next.add(s);
-    }
-    if (next.size === 0) ALL_SEVERITIES.forEach((x) => next.add(x));
-    setActive(next);
-  };
 
   return (
     <div>
@@ -438,6 +418,16 @@ export function RunDetail() {
           </TabsList>
 
           <TabsContent value="overview" className="space-y-8 mt-0">
+            {bundle.narrative?.layer1Verdict && (
+              <div className="flex items-start gap-3">
+                <div className="flex-1">
+                  <VerdictBanner verdict={bundle.narrative.layer1Verdict} />
+                </div>
+                <div className="pt-1 shrink-0">
+                  <ShareReportDialog bundle={bundle} />
+                </div>
+              </div>
+            )}
             <ExperimentRunBanner experiment={run.experiment} />
             {run.outcome === "partial" && bundle.steps.length > 0 && (
               <Panel className="p-4 border border-warn/30 bg-warn/5 flex items-start gap-3">
@@ -490,6 +480,7 @@ export function RunDetail() {
               )}
             <RunNarrativePanel runId={run.id} bundle={bundle} />
             <RunObservabilityPanel bundle={bundle} />
+            <TrendSparkline currentSummary={run} allSummaries={runSummaries} />
             <Panel className="p-4 md:p-6 overflow-x-auto">
               <div className="flex items-end justify-between mb-5 gap-3 flex-wrap">
                 <div>
@@ -585,101 +576,9 @@ export function RunDetail() {
               />
             )}
 
-            <Panel className="overflow-hidden" id="findings">
-              <div className="p-5 border-b border-border flex items-center justify-between flex-wrap gap-3">
-                <div>
-                  <div className="text-xs text-muted-foreground inline-flex items-center gap-1.5">
-                    <Filter className="size-3" /> Filter
-                  </div>
-                  <h2 className="font-display text-lg font-semibold mt-0.5">
-                    {filtered.length} of {bundle.issues.length} findings
-                  </h2>
-                </div>
-                <div className="flex items-center gap-1 flex-wrap">
-                  {ALL_SEVERITIES.map((s) => {
-                    const on = active.has(s);
-                    const count = bundle.issues.filter((i) => i.severity === s).length;
-                    const tone =
-                      s === "P0" ? "danger" : s === "P1" ? "warn" : s === "P2" ? "info" : "neutral";
-                    return (
-                      <button
-                        key={s}
-                        type="button"
-                        onClick={() => toggle(s)}
-                        aria-pressed={on}
-                        className={`px-2.5 py-1 rounded-md border text-[11px] font-mono inline-flex items-center gap-1.5 transition-colors ${on ? "" : "text-muted-foreground border-border bg-surface hover:bg-surface-2"}`}
-                        style={
-                          on
-                            ? {
-                                color: `var(--${tone})`,
-                                borderColor: `color-mix(in oklab, var(--${tone}) 40%, var(--border))`,
-                                background: `color-mix(in oklab, var(--${tone}) 10%, transparent)`,
-                              }
-                            : undefined
-                        }
-                      >
-                        {SEVERITY_LABEL[s]} · {count}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-              <div className="divide-y divide-border">
-                {filtered.length === 0 ? (
-                  <div className="p-10 text-center text-sm text-muted-foreground">
-                    No findings match the active filters.
-                  </div>
-                ) : (
-                  filtered.map((i) => {
-                    const issueAnnotation = bundle.annotations.find(
-                      (a) => a.targetType === "issue" && a.targetId === i.id,
-                    );
-                    return (
-                      <div key={i.id} className="p-5 hover:bg-surface-2/30">
-                        <div className="flex items-start gap-3">
-                          <SeverityChip s={i.severity} />
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <h3 className="font-medium">{i.title}</h3>
-                              <Chip>{i.dimension}</Chip>
-                              <Chip tone={i.confidence === "high" ? "info" : "warn"}>
-                                {i.confidence}
-                              </Chip>
-                              <Chip>owner · {i.owner}</Chip>
-                              {i.recurring > 1 && (
-                                <Chip tone="danger">recurring ×{i.recurring}</Chip>
-                              )}
-                            </div>
-                            <p className="text-sm text-muted-foreground mt-2 font-mono">
-                              {i.evidence}
-                            </p>
-                            <div className="text-xs text-muted-foreground mt-2">
-                              {i.persona} · {i.journey} ·{" "}
-                              <span className="font-mono">{i.stepId}</span>
-                            </div>
-                          </div>
-                          <div className="flex flex-col items-end gap-2 shrink-0">
-                            <IssueAnnotationActions
-                              runId={run.id}
-                              issue={i}
-                              existing={issueAnnotation}
-                            />
-                            <EvidenceDialog issue={i} runId={run.id}>
-                              <button
-                                type="button"
-                                className="text-[11px] text-muted-foreground hover:text-foreground inline-flex items-center gap-1 px-2 py-1 rounded-md border border-border hover:bg-surface-2"
-                              >
-                                <ImageIcon className="size-3" /> Evidence
-                              </button>
-                            </EvidenceDialog>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-            </Panel>
+            <FunnelPanel bundle={bundle} />
+
+            <FixHierarchyPanel bundle={bundle} />
 
             {bundle.delights.length > 0 && (
               <Panel className="p-6">

@@ -51,6 +51,9 @@ class AgentOrchestrator:
         # Deep interactive crawl — buttons, forms, APIs, modals (runs after standard BFS)
         self._run_deep_crawl()
 
+        # Passive security surface scan (non-blocking)
+        self._run_security_scan()
+
     def _run_deep_crawl(self) -> None:
         """Run exhaustive interactive discovery and feed into product intelligence."""
         try:
@@ -119,6 +122,30 @@ class AgentOrchestrator:
                 self.ctx.metadata["discovered_journeys"] = discovered
         except Exception:
             pass  # deep crawl is non-blocking — standard execution continues
+
+    def _run_security_scan(self) -> None:
+        """Passive one-time security surface scan — uses the current page state."""
+        try:
+            from rehearse.security import scan_security_surface
+            from rehearse.context import AgentReport
+
+            page = self.ctx.metadata.get("page")
+            if page is None:
+                return
+
+            findings = scan_security_surface(page, self.ctx.config)
+            if findings:
+                report = AgentReport(
+                    agent_id="security-scanner",
+                    agent_role="Security surface scan",
+                    summary=f"Security scan found {len(findings)} issue(s)",
+                    findings=findings,
+                    delights=[],
+                    metadata={"scan_type": "passive"},
+                )
+                self.ctx.agent_reports.append(report)
+        except Exception:
+            pass  # non-blocking
 
     def run_journey_phase(self) -> None:
         self.ctx.agent_reports.append(self._journey_agent.execute(self.ctx))

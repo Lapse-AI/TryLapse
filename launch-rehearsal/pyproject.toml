@@ -13,6 +13,7 @@ dependencies = [
 
 [project.scripts]
 rehearse = "rehearse.cli:main"
+rehearse-mcp = "rehearse.mcp_server:main"
 
 [build-system]
 requires = ["hatchling"]

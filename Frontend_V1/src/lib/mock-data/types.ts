@@ -308,6 +308,25 @@ export type RunDiff = {
   newIssues: string[];
 };
 
+export type VerdictDecision = "ship" | "caution" | "no_ship";
+
+export type Layer1Verdict = {
+  decision: VerdictDecision;
+  headline: string;
+  reason: string;
+  band: string;
+};
+
+export type Layer3Fix = {
+  priority: string;
+  title: string;
+  detail: string;
+  effort: string;
+  action: string;
+  step_id?: string;
+  confidence: string;
+};
+
 export type RunNarrative = {
   executiveSummary: string;
   forFounders: string;
@@ -319,6 +338,12 @@ export type RunNarrative = {
   delightCount?: number;
   chatReadySummary?: string;
   llmNote?: string;
+  // 5-layer UX fields
+  layer1Verdict?: Layer1Verdict;
+  layer2Story?: string;
+  layer3FixHierarchy?: Layer3Fix[];
+  layer4Forward?: string[];
+  layer5Trend?: { available: boolean; note: string };
 };
 
 export type RunBundle = {
