@@ -170,6 +170,8 @@ def analyze_run(
     if sitemap:
         _analyze_sitemap(config, sitemap, result, seen_titles)
 
+    _analyze_seo_signals(config, canonical_steps, result, seen_titles)
+
     result.dimensions = _score_dimensions(evidence, result, sitemap)
     result.readiness = _overall_readiness(result)
     if result.issues:
@@ -643,6 +645,129 @@ def _analyze_console_spike(
             confidence="high",
         )
     )
+
+
+def _analyze_seo_signals(
+    config: RunConfig,
+    steps: list[StepSnapshot],
+    result: AnalysisResult,
+    seen: set[str],
+) -> None:
+    """A5: SEO health signals — filed as P2 findings for navigate steps with seo_meta."""
+    navigate_steps = [s for s in steps if s.action == "navigate" and s.seo_meta]
+    if not navigate_steps:
+        return
+
+    missing_desc = [s for s in navigate_steps if not (s.seo_meta or {}).get("metaDescription")]
+    noindex_steps = [
+        s for s in navigate_steps
+        if "noindex" in ((s.seo_meta or {}).get("robots") or "").lower()
+    ]
+    no_h1 = [s for s in navigate_steps if (s.seo_meta or {}).get("h1Count", 1) == 0]
+
+    # Duplicate page titles across navigate steps — skip SPA hash-route navigation
+    # where URLs share hostname+path and differ only in fragment (same page by design).
+    from urllib.parse import urlparse as _urlparse
+
+    def _base_url(url: str) -> str:
+        try:
+            p = _urlparse(url)
+            return f"{p.scheme}://{p.netloc}{p.path}"
+        except Exception:
+            return url
+
+    title_map: dict[str, list[str]] = {}
+    _seen_title_base: set[tuple[str, str]] = set()
+    for s in navigate_steps:
+        if s.page_title:
+            url = s.final_url or s.requested_url or s.step_id
+            base = _base_url(url) if isinstance(url, str) and url.startswith("http") else url
+            key = (s.page_title.strip(), base)
+            if key in _seen_title_base:
+                continue
+            _seen_title_base.add(key)
+            title_map.setdefault(s.page_title.strip(), []).append(url)
+    dup_titles = {t: urls for t, urls in title_map.items() if len(urls) > 1}
+
+    personas = _pick_personas(config, "operator", "power", "daily", "admin")
+    step_id = navigate_steps[0].step_id
+
+    if missing_desc:
+        title = "Missing meta description on key pages"
+        if title not in seen:
+            seen.add(title)
+            urls = [s.final_url or s.requested_url or "" for s in missing_desc[:4]]
+            result.issues.append(Finding(
+                id=f"I{len(result.issues)+1}",
+                severity="P2",
+                title=title,
+                detail=(
+                    f"{len(missing_desc)} page(s) have no <meta name=\"description\"> tag. "
+                    f"Search engines display the meta description in results — its absence harms CTR. "
+                    f"Affected: {', '.join(u for u in urls if u)[:200]}"
+                ),
+                persona_ids=personas,
+                step_id=step_id,
+                confidence="high",
+            ))
+
+    if noindex_steps:
+        title = "Pages marked noindex may block search visibility"
+        if title not in seen:
+            seen.add(title)
+            urls = [s.final_url or s.requested_url or "" for s in noindex_steps[:4]]
+            result.issues.append(Finding(
+                id=f"I{len(result.issues)+1}",
+                severity="P2",
+                title=title,
+                detail=(
+                    f"{len(noindex_steps)} page(s) have robots noindex directive. "
+                    f"Verify these pages should not be indexed. "
+                    f"Affected: {', '.join(u for u in urls if u)[:200]}"
+                ),
+                persona_ids=personas,
+                step_id=step_id,
+                confidence="hypothesis",
+            ))
+
+    if dup_titles:
+        title = "Duplicate page titles detected"
+        if title not in seen:
+            seen.add(title)
+            examples = list(dup_titles.items())[:3]
+            detail_parts = [f'"{t}" → {", ".join(urls[:2])}' for t, urls in examples]
+            result.issues.append(Finding(
+                id=f"I{len(result.issues)+1}",
+                severity="P2",
+                title=title,
+                detail=(
+                    "Multiple pages share the same <title> tag — search engines may collapse "
+                    "or de-rank duplicate-title pages. "
+                    + "; ".join(detail_parts)
+                ),
+                persona_ids=personas,
+                step_id=step_id,
+                confidence="high",
+            ))
+
+    if no_h1:
+        title = "Pages missing H1 heading"
+        if title not in seen:
+            seen.add(title)
+            urls = [s.final_url or s.requested_url or "" for s in no_h1[:4]]
+            result.issues.append(Finding(
+                id=f"I{len(result.issues)+1}",
+                severity="P2",
+                title=title,
+                detail=(
+                    f"{len(no_h1)} page(s) have no <h1> element. "
+                    "A missing H1 weakens page topic signals for both search engines and screen readers. "
+                    f"Affected: {', '.join(u for u in urls if u)[:200]}"
+                ),
+                persona_ids=personas,
+                step_id=step_id,
+                confidence="high",
+            ))
 
 
 def _analyze_sitemap(

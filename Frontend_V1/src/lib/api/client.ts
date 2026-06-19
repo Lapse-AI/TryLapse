@@ -623,4 +623,15 @@ export const api = {
     apiFetch<{ deleted: string }>(`/api/persona-library/${encodeURIComponent(id)}`, {
       method: "DELETE",
     }),
+
+  /** A5: Get per-finding outcomes for a run (severity calibration data). */
+  findingOutcomes: (runId: string) =>
+    apiFetch<Record<string, string>>(`/api/finding-outcomes/${encodeURIComponent(runId)}`),
+
+  /** A5: Record a developer's judgment on a finding. */
+  setFindingOutcome: (runId: string, findingId: string, outcome: string) =>
+    apiFetch<{ runId: string; findingId: string; outcome: string; labeledAt: string }>(
+      "/api/finding-outcomes",
+      { method: "POST", body: JSON.stringify({ runId, findingId, outcome }) },
+    ),
 };

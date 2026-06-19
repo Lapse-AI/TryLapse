@@ -427,6 +427,23 @@ def _capture_storage_keys(page: Page) -> list[str]:
         return []
 
 
+def _capture_seo_meta(page: Page) -> dict[str, Any]:
+    """Capture SEO signals after a navigate step — meta description, canonical, robots."""
+    try:
+        return page.evaluate(
+            "() => ({"
+            "  metaDescription: document.querySelector('meta[name=\"description\"]')?.content || null,"
+            "  canonical: document.querySelector('link[rel=\"canonical\"]')?.href || null,"
+            "  robots: document.querySelector('meta[name=\"robots\"]')?.content || null,"
+            "  h1Count: document.querySelectorAll('h1').length,"
+            "  h1Text: (document.querySelector('h1')?.textContent || '').trim().slice(0, 120) || null,"
+            "  hasOgTitle: !!document.querySelector('meta[property=\"og:title\"]'),"
+            "})"
+        )
+    except Exception:
+        return {}
+
+
 def _save_aria_artifact(artifacts_dir: Path, step_id: str, tree: dict[str, Any]) -> str:
     path = artifacts_dir / f"{_safe_filename(step_id)}-aria.json"
     path.write_text(json.dumps(tree, indent=2)[:80000])
@@ -1043,6 +1060,7 @@ class BrowserSession:
                     pass  # page may never reach "load" (SPA, SSE) — proceed with what we have
                 snap.web_vitals = collect_web_vitals(page)
                 snap.resource_timing = _collect_resource_timing(page)
+                snap.seo_meta = _capture_seo_meta(page)
             if resolution_note:
                 snap.resolved_selector = resolution_note
                 snap.note = resolution_note if not snap.note else f"{snap.note}; {resolution_note}"

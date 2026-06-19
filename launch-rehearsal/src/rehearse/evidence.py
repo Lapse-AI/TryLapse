@@ -61,6 +61,8 @@ class StepSnapshot:
     storage_keys: list[str] | None = None
     # A4: top slow resources from performance.getEntriesByType("resource") after navigate
     resource_timing: list[dict[str, Any]] | None = None
+    # A5: SEO signals captured after navigate — meta description, canonical, robots
+    seo_meta: dict[str, Any] | None = None
 
 
 @dataclass

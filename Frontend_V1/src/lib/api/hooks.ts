@@ -60,6 +60,7 @@ export const queryKeys = {
   configs: ["rehearse", "configs"] as const,
   personaLibrary: ["rehearse", "persona-library"] as const,
   personaLibraryItem: (id: string) => ["rehearse", "persona-library", id] as const,
+  findingOutcomes: (runId: string) => ["rehearse", "finding-outcomes", runId] as const,
 };
 
 export function useApiHealth() {
@@ -555,6 +556,28 @@ export function useDeletePersonaLibrary() {
     onSuccess: (_, id) => {
       void qc.invalidateQueries({ queryKey: queryKeys.personaLibrary });
       void qc.invalidateQueries({ queryKey: queryKeys.personaLibraryItem(id) });
+    },
+  });
+}
+
+/** A5: Per-finding outcomes for severity calibration. */
+export function useFindingOutcomes(runId: string) {
+  const health = useApiHealth();
+  return useQuery({
+    queryKey: queryKeys.findingOutcomes(runId),
+    queryFn: () => api.findingOutcomes(runId),
+    enabled: !!runId && health.data === true,
+    staleTime: 60_000,
+  });
+}
+
+export function useSetFindingOutcome(runId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ findingId, outcome }: { findingId: string; outcome: string }) =>
+      api.setFindingOutcome(runId, findingId, outcome),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: queryKeys.findingOutcomes(runId) });
     },
   });
 }

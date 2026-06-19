@@ -18,16 +18,20 @@ def _normalize_title(title: str) -> str:
 def _is_duplicate(candidate: str, existing: list[str], embedder: object | None = None) -> bool:
     """Return True if candidate is semantically similar to any title in existing.
 
-    Primary path: sentence-transformer cosine similarity (requires optional dep).
-    Fallback path: token-Jaccard + prefix match — no extra dependencies needed.
-
-    Upgrade path: install sentence-transformers and call with a loaded model to
-    get embedding-quality dedup. Until then, the stdlib fallback catches rephrases
-    with >60% word overlap and common truncation variants.
+    Deduplication priority:
+    1. TFIDFEmbedder.is_duplicate() — deterministic TF-IDF cosine (always available)
+    2. sentence-transformers cosine via numpy — semantic embeddings (optional)
+    3. Token-Jaccard + prefix match — final stdlib fallback
     """
-    norm_cand = _normalize_title(candidate)
-    cand_tokens = set(norm_cand.split())
+    if not existing:
+        return False
 
+    # Path 1: TFIDFEmbedder (our default) — deterministic, no deps
+    from rehearse.embeddings import TFIDFEmbedder
+    if isinstance(embedder, TFIDFEmbedder):
+        return embedder.is_duplicate(candidate, existing)
+
+    # Path 2: sentence-transformers via numpy cosine
     if embedder is not None:
         try:
             import numpy as np  # type: ignore[import]
@@ -38,16 +42,17 @@ def _is_duplicate(candidate: str, existing: list[str], embedder: object | None =
             if float(sims.max()) > 0.85:
                 return True
         except Exception:
-            pass  # fall through to stdlib path
+            pass
 
+    # Path 3: stdlib fallback — token Jaccard + prefix match
+    norm_cand = _normalize_title(candidate)
+    cand_tokens = set(norm_cand.split())
     for title in existing:
         norm_ex = _normalize_title(title)
         if norm_ex == norm_cand:
             return True
-        # One is a prefix of the other (same bug, slightly different qualifier)
         if len(norm_cand) > 15 and (norm_ex.startswith(norm_cand) or norm_cand.startswith(norm_ex)):
             return True
-        # High token overlap — same word cloud, different phrasing
         ex_tokens = set(norm_ex.split())
         if cand_tokens and ex_tokens:
             union = len(cand_tokens | ex_tokens)
@@ -56,13 +61,23 @@ def _is_duplicate(candidate: str, existing: list[str], embedder: object | None =
     return False
 
 
-def _load_embedder() -> object | None:
-    """Try to load the sentence-transformer model; return None if unavailable."""
+def _load_embedder() -> object:
+    """Return the best available embedder for finding deduplication.
+
+    Preference order:
+    1. sentence-transformers all-MiniLM-L6-v2 (semantic, best quality, optional dep)
+    2. TFIDFEmbedder (TF-IDF cosine, stdlib-only, deterministic, good quality)
+
+    The TFIDFEmbedder is always available — it's the baseline that makes
+    deduplication deterministic even without sentence-transformers installed.
+    """
     try:
         from sentence_transformers import SentenceTransformer  # type: ignore[import]
         return SentenceTransformer("all-MiniLM-L6-v2")
     except Exception:
-        return None
+        pass
+    from rehearse.embeddings import TFIDFEmbedder
+    return TFIDFEmbedder()
 
 
 class SynthesizerAgent(BaseAgent):

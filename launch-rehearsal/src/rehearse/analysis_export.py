@@ -968,6 +968,95 @@ def _previous_run_score(output_dir: Path, current_run_id: str) -> int | None:
         return None
 
 
+def _cross_run_delta(
+    output_dir: Path,
+    current_run_id: str,
+    current_issues: list[dict[str, Any]],
+    current_dimensions: dict[str, Any] | None,
+) -> dict[str, Any] | None:
+    """A5: Compute structured delta between current run and most recent prior run.
+
+    Returns dict with:
+      newFindings     — issues present now, absent in prior run (titles)
+      resolvedFindings — issues in prior run, absent now (titles)
+      newP0s          — count of new P0 findings
+      axisDeltas      — per-dimension score delta {axis: delta_int}
+    Returns None on first run or when prior bundle is unavailable.
+    """
+    import re as _re
+    m = _re.match(r"^(.*)-\d{8}-\d{6}$", current_run_id)
+    config_prefix = m.group(1) if m else current_run_id
+
+    analysis_dir = output_dir / "analysis"
+    if not analysis_dir.is_dir():
+        return None
+
+    prior_files = sorted(
+        [f for f in analysis_dir.glob(f"{config_prefix}-*.json") if f.stem != current_run_id],
+        key=lambda f: f.stat().st_mtime,
+        reverse=True,
+    )
+    if not prior_files:
+        return None
+
+    try:
+        from rehearse.embeddings import TFIDFEmbedder
+
+        prev_data = json.loads(prior_files[0].read_text())
+        prev_issues = prev_data.get("issues", [])
+        prev_titles = [i["title"].strip() for i in prev_issues if i.get("title")]
+        curr_titles = [i["title"].strip() for i in current_issues if i.get("title")]
+
+        embedder = TFIDFEmbedder()
+
+        new_findings = [
+            i["title"]
+            for i in current_issues
+            if i.get("title") and not embedder.is_duplicate(i["title"].strip(), prev_titles)
+        ]
+        resolved_findings = [
+            i["title"]
+            for i in prev_issues
+            if i.get("title") and not embedder.is_duplicate(i["title"].strip(), curr_titles)
+        ]
+        new_p0s = sum(
+            1 for i in current_issues
+            if i.get("severity") == "P0"
+            and i.get("title")
+            and not embedder.is_duplicate(i["title"].strip(), prev_titles)
+        )
+
+        # Per-axis score delta: current - prior for each dimension in both bundles
+        prev_dims = prev_data.get("dimensions", {})
+        axis_deltas: dict[str, int] = {}
+        if current_dimensions and prev_dims:
+            for axis, curr_val in current_dimensions.items():
+                prev_val = prev_dims.get(axis)
+                if isinstance(curr_val, dict):
+                    curr_score = curr_val.get("score")
+                else:
+                    curr_score = curr_val
+                if isinstance(prev_val, dict):
+                    prev_score = prev_val.get("score")
+                else:
+                    prev_score = prev_val
+                if curr_score is not None and prev_score is not None:
+                    try:
+                        axis_deltas[axis] = int(curr_score) - int(prev_score)
+                    except (ValueError, TypeError):
+                        pass
+
+        return {
+            "newFindings": new_findings[:20],
+            "resolvedFindings": resolved_findings[:20],
+            "newP0s": new_p0s,
+            "axisDeltas": axis_deltas,
+            "comparedTo": prior_files[0].stem,
+        }
+    except Exception:
+        return None
+
+
 def _run_history(
     output_dir: Path,
     current_run_id: str,
@@ -1169,6 +1258,14 @@ def build_run_bundle(
         for dim, cnt in sorted(_flake_by_dim.items(), key=lambda kv: -kv[1])
     }
 
+    # A5: cross-run delta — new/resolved findings, per-axis deltas, new P0s
+    run_delta = _cross_run_delta(
+        output_dir,
+        evidence.run_id,
+        issues,
+        {k: {"score": v[0]} for k, v in (analysis.dimensions or {}).items()},
+    )
+
     return {
         "summary": {
             # Gate leads — Jobs: "the score is a consequence of the gate, not the headline"
@@ -1193,6 +1290,7 @@ def build_run_bundle(
             "status": status,
             "scoreDelta": score_delta,
             "previousScore": prev_score,
+            "runDelta": run_delta,
             "industryBenchmark": industry_benchmark,
             "blockers": _blockers(issues),
             "issues": len(issues),

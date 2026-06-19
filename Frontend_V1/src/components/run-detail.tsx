@@ -4,7 +4,7 @@ import { Panel, Chip, SeverityChip, SEVERITY_LABEL } from "@/components/ui-bits"
 import type { Annotation, Issue, Layer1Verdict, RunBundle, RunSummary, StepSnapshot } from "@/lib/mock-data";
 import { formatDurationMs } from "@/lib/mock-data";
 import { artifactUrl } from "@/lib/api/client";
-import { useAddAnnotation, useRunDiff } from "@/lib/api/hooks";
+import { useAddAnnotation, useRunDiff, useFindingOutcomes, useSetFindingOutcome } from "@/lib/api/hooks";
 import {
   copyReproToClipboard,
   downloadArtifact,
@@ -77,7 +77,7 @@ export function EvidenceDialog({
         <div className="space-y-4">
           {/* D2: Story format for P0/P1 — user perspective, not technical language */}
           {(issue.severity === "P0" || issue.severity === "P1") ? (
-            <FindingStoryCard issue={issue} videoUrl={null} />
+            <FindingStoryCard issue={issue} videoUrl={null} runId={runId} />
           ) : (
             <>
               <div className="aspect-video rounded-md border border-border bg-surface-2 overflow-hidden">
@@ -1198,12 +1198,48 @@ function personaLabel(persona: string): string {
   return `a ${persona.toLowerCase()} user`;
 }
 
+const FINDING_OUTCOME_LABELS: Record<string, { label: string; color: string }> = {
+  acted_on: { label: "Fixed it", color: "text-green-600" },
+  dismissed: { label: "Not worth it", color: "text-muted-foreground" },
+  false_positive: { label: "Not real", color: "text-orange-500" },
+  deferred: { label: "Later", color: "text-blue-500" },
+};
+
+function FindingOutcomeButtons({ runId, findingId }: { runId: string; findingId: string }) {
+  const { data: outcomes } = useFindingOutcomes(runId);
+  const { mutate, isPending } = useSetFindingOutcome(runId);
+  const currentOutcome = outcomes?.[findingId];
+
+  return (
+    <div className="flex items-center gap-1 flex-wrap">
+      <span className="text-[10px] text-muted-foreground mr-1 shrink-0">What happened?</span>
+      {Object.entries(FINDING_OUTCOME_LABELS).map(([outcome, { label, color }]) => (
+        <button
+          key={outcome}
+          disabled={isPending}
+          onClick={() => mutate({ findingId, outcome })}
+          className={[
+            "text-[11px] px-2 py-0.5 rounded-full border transition-colors",
+            currentOutcome === outcome
+              ? `${color} border-current bg-current/5 font-medium`
+              : "border-border text-muted-foreground hover:border-foreground/40 hover:text-foreground",
+          ].join(" ")}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export function FindingStoryCard({
   issue,
   videoUrl,
+  runId,
 }: {
   issue: Issue;
   videoUrl?: string | null;
+  runId?: string;
 }) {
   const story = [
     `We sent ${personaLabel(issue.persona)} through the ${issue.journey} flow.`,
@@ -1250,6 +1286,11 @@ export function FindingStoryCard({
           {issue.evidence}
         </p>
       </details>
+
+      {/* A5: Severity calibration — developer labels this finding's outcome */}
+      {runId && (
+        <FindingOutcomeButtons runId={runId} findingId={issue.id} />
+      )}
     </div>
   );
 }
@@ -1493,7 +1534,7 @@ function FixIssueRow({
         <div className="flex items-start gap-3">
           <div className="flex-1 min-w-0">
             <h3 className="font-medium mb-3">{issue.title}</h3>
-            <FindingStoryCard issue={issue} videoUrl={null} />
+            <FindingStoryCard issue={issue} videoUrl={null} runId={bundle.summary.id} />
           </div>
           <div className="flex flex-col items-end gap-2 shrink-0">
             <IssueAnnotationActions

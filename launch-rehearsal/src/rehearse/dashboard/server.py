@@ -347,6 +347,14 @@ class _Handler(BaseHTTPRequestHandler):
             if not detail:
                 self._send_json({"error": "not found"}, status=404)
                 return
+            # Attach per-finding outcomes (A5: severity calibration) if any exist
+            try:
+                from rehearse.dashboard.finding_outcome_store import get_finding_outcomes_for_run
+                finding_outcomes = get_finding_outcomes_for_run(root, run_id)
+                if finding_outcomes:
+                    detail["findingOutcomes"] = finding_outcomes
+            except Exception:
+                pass
             self._send_json(detail)
             return
 
@@ -357,6 +365,14 @@ class _Handler(BaseHTTPRequestHandler):
                 self._send_json({"error": "not found"}, status=404)
                 return
             self._send_json(bundle)
+            return
+
+        # ── Per-finding outcomes (A5: severity calibration data) ─────────────
+        # GET /api/finding-outcomes/:run_id → {findingId: outcome} map
+        if path.startswith("/api/finding-outcomes/"):
+            run_id = path.split("/")[-1]
+            from rehearse.dashboard.finding_outcome_store import get_finding_outcomes_for_run
+            self._send_json(get_finding_outcomes_for_run(root, run_id))
             return
 
         # ── Outcome feedback loop ─────────────────────────────────────────────
@@ -1765,6 +1781,24 @@ class _Handler(BaseHTTPRequestHandler):
             from rehearse.dashboard.outcome_store import record_outcome
             try:
                 saved = record_outcome(root, body)
+            except ValueError as exc:
+                self._send_json({"error": str(exc)}, status=400)
+                return
+            self._send_json(saved, status=201)
+            return
+
+        # ── Per-finding outcome (A5: severity calibration training data) ──────
+        # POST /api/finding-outcomes  body: {runId, findingId, outcome}
+        if path == "/api/finding-outcomes":
+            body = self._read_json_body()
+            from rehearse.dashboard.finding_outcome_store import record_finding_outcome
+            try:
+                saved = record_finding_outcome(
+                    root,
+                    run_id=str(body.get("runId") or ""),
+                    finding_id=str(body.get("findingId") or ""),
+                    outcome=str(body.get("outcome") or ""),
+                )
             except ValueError as exc:
                 self._send_json({"error": str(exc)}, status=400)
                 return
