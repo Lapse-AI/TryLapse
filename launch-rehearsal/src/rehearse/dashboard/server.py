@@ -330,6 +330,20 @@ class _Handler(BaseHTTPRequestHandler):
                 self._send_json({"nodes": [], "edges": [], "visitedCount": 0})
             return
 
+        if path.startswith("/api/product/") and path.endswith("/crawl-graph"):
+            config_id = path.strip("/").split("/")[2]
+            try:
+                config_id = _safe_id(config_id, "configId")
+            except ValueError as exc:
+                self._send_json({"error": str(exc)}, status=400)
+                return
+            graph_path = root / "crawl_graphs" / f"{config_id}-crawl-graph.json"
+            if graph_path.is_file():
+                self._send_json(json.loads(graph_path.read_text()))
+            else:
+                self._send_json({"error": "not found"}, status=404)
+            return
+
         if path.startswith("/api/runs/") and path.endswith("/chat"):
             parts = path.strip("/").split("/")
             if len(parts) >= 4:
@@ -1006,18 +1020,21 @@ class _Handler(BaseHTTPRequestHandler):
                         _os.environ["REHEARSE_VISION_API_KEY"] = vision_api_key
 
                     # If no crawl data, run a fresh deep crawl right now
+                    login_attempted = bool(auth_config.get("email") and auth_config.get("password"))
+                    login_succeeded: bool | None = None
                     if not interaction_map_data:
                         try:
                             from playwright.sync_api import sync_playwright
                             from rehearse.deep_crawler import run_deep_crawl, interaction_map_to_dict
                             screenshots_dir = root / "discovery_screenshots" / (config_id or "default")
+                            graph_path = root / "crawl_graphs" / f"{config_id or 'default'}-crawl-graph.json"
                             with sync_playwright() as pw:
                                 browser = pw.chromium.launch(headless=True)
                                 context = browser.new_context(viewport={"width": 1280, "height": 800})
                                 page_obj = context.new_page()
 
                                 # Perform login if credentials provided
-                                if auth_config.get("email") and auth_config.get("password"):
+                                if login_attempted:
                                     try:
                                         login_url = str(auth_config.get("loginUrl") or target_url)
                                         page_obj.goto(login_url, wait_until="domcontentloaded", timeout=20000)
@@ -1034,16 +1051,23 @@ class _Handler(BaseHTTPRequestHandler):
                                         page_obj.locator(submit_sel).first.click()
                                         page_obj.wait_for_timeout(5000)  # wait for redirect + dashboard load
                                         page_obj.wait_for_load_state("networkidle", timeout=12000)
+                                        # A login that didn't move us off a login-ish path likely failed
+                                        post_login_path = urllib.parse.urlparse(page_obj.url).path.lower()
+                                        login_succeeded = not any(
+                                            seg in post_login_path.split("/")
+                                            for seg in ("login", "signin", "sign-in", "auth")
+                                        )
                                     except Exception:
-                                        pass  # Continue even if login fails
+                                        login_succeeded = False  # Continue even if login fails
 
                                 imap = run_deep_crawl(
                                     page_obj, target_url,
                                     product_name=product_name,
-                                    max_pages=15,
+                                    max_pages=40,
                                     max_buttons_per_page=12,
                                     use_vision=True,
                                     screenshots_dir=screenshots_dir,
+                                    graph_output_path=graph_path,
                                 )
                                 interaction_map_data = interaction_map_to_dict(imap)
                                 api_calls = imap.api_calls
@@ -1078,6 +1102,14 @@ class _Handler(BaseHTTPRequestHandler):
                 interaction_map=interaction_map_data,
                 api_calls=api_calls,
             )
+            # Surface crawl diagnostics so a near-empty crawl is debuggable in the UI
+            # instead of silently looking like a low-quality product analysis.
+            model["crawlDiagnostics"] = {
+                "authWallDetected": bool(interaction_map_data.get("authWallDetected")),
+                "loginAttempted": login_attempted,
+                "loginSucceeded": login_succeeded,
+                "pagesVisited": len(interaction_map_data.get("pagesVisited") or []),
+            }
             save_product_model(root, model, config_id or None)
             if interaction_map_data:
                 from rehearse.product_intelligence import save_interaction_map

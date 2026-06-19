@@ -23,6 +23,7 @@ import time
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 
 # ── Safe test values ──────────────────────────────────────────────────────────
 
@@ -473,14 +474,33 @@ def _extract_forms(page: Any, current_url: str) -> list[dict[str, Any]]:
 
 
 def _detect_auth_wall(page: Any) -> bool:
+    """Detect a real login gate, not incidental "sign in" copy on an authenticated page.
+
+    A visible password field pre-rendered-but-hidden in the DOM (settings modals,
+    account menus) or boilerplate body text ("sign in to comment") can match a single
+    weak signal on a perfectly normal page. Require either a strong signal alone
+    (URL path segment, visible password input) or two weak signals together
+    (body-text phrase + sparse page content) so authenticated pages don't false-positive.
+    """
     try:
-        url = page.url.lower()
-        if any(p in url for p in ["/login", "/signin", "/auth", "/sign-in"]):
+        path = (urlparse(page.url).path or "").lower().strip("/")
+        segments = path.split("/")
+        if any(seg in ("login", "signin", "sign-in", "auth") for seg in segments):
             return True
-        if page.query_selector("input[type='password']"):
-            return True
+        pw_input = page.query_selector("input[type='password']")
+        if pw_input is not None:
+            try:
+                if pw_input.is_visible():
+                    return True
+            except Exception:
+                return True  # can't confirm visibility — treat as a real signal
         text = (page.inner_text("body") or "")[:600].lower()
-        if any(w in text for w in ["sign in to", "log in to", "please login", "unauthorized access"]):
+        has_login_phrase = any(
+            w in text for w in ["sign in to", "log in to", "please login", "unauthorized access"]
+        )
+        # Weak signal alone isn't enough — require the page to also be content-sparse,
+        # the hallmark of an actual interstitial gate rather than a rich authenticated page.
+        if has_login_phrase and len(text.strip()) < 400:
             return True
     except Exception:
         pass

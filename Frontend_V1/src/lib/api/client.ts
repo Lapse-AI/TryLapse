@@ -518,6 +518,16 @@ export const api = {
     }
     return apiFetch<CrawlGraphData>(`/files/runs/${encodeURIComponent(runId)}-crawl-graph.json`);
   },
+  productCrawlGraph: (configId: string) => {
+    type CrawlGraphData = {
+      targetUrl?: string;
+      nodes: { id: string; status: "queued" | "visiting" | "visited" | "skipped" | "error" }[];
+      edges: { source: string; target: string }[];
+      visitedCount: number;
+      maxPages: number;
+    };
+    return apiFetch<CrawlGraphData>(`/api/product/${encodeURIComponent(configId)}/crawl-graph`);
+  },
   getCredentials: () => apiFetch<{ hasEmail: boolean; hasPassword: boolean }>("/api/credentials"),
   saveCredentials: (
     email: string,

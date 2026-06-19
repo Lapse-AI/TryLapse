@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Panel, Chip } from "@/components/ui-bits";
+import { CrawlTreeGraph } from "@/components/crawl-tree-graph";
 import { api } from "@/lib/api/client";
 import { toast } from "sonner";
 import {
@@ -451,6 +452,37 @@ export function ProductIntelligencePanel({
             </div>
           ) : (
             <div className="p-5 space-y-5">
+              {(() => {
+                const diag = model.crawlDiagnostics as
+                  | { authWallDetected?: boolean; loginAttempted?: boolean; loginSucceeded?: boolean | null; pagesVisited?: number }
+                  | undefined;
+                if (!diag) return null;
+                if (diag.loginAttempted && diag.loginSucceeded === false) {
+                  return (
+                    <div className="flex items-start gap-2 text-sm rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2">
+                      <AlertTriangle className="size-4 text-amber-500 shrink-0 mt-0.5" />
+                      <span>
+                        Login may have failed — the crawl ended up back on a login-like page.
+                        Check your credentials/selectors in "Crawl credentials" above.
+                        {diag.pagesVisited != null && ` Only ${diag.pagesVisited} page(s) were visited.`}
+                      </span>
+                    </div>
+                  );
+                }
+                if (diag.authWallDetected) {
+                  return (
+                    <div className="flex items-start gap-2 text-sm rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2">
+                      <AlertTriangle className="size-4 text-amber-500 shrink-0 mt-0.5" />
+                      <span>
+                        The crawler hit a login wall partway through and stopped exploring further.
+                        {diag.pagesVisited != null && ` ${diag.pagesVisited} page(s) were visited before that.`}
+                      </span>
+                    </div>
+                  );
+                }
+                return null;
+              })()}
+
               <EditableText field="purpose" label="Purpose" />
 
               <div className="grid grid-cols-2 gap-4">
@@ -525,6 +557,8 @@ export function ProductIntelligencePanel({
                   </div>
                 </div>
               )}
+
+              {configId && <CrawlTreeGraph configId={configId} />}
 
               {Array.isArray(model.user_types_observed) && model.user_types_observed.length > 0 && (
                 <div>

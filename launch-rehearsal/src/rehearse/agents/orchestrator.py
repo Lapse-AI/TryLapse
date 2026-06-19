@@ -75,7 +75,7 @@ class AgentOrchestrator:
             imap = run_deep_crawl(
                 page, target_url,
                 product_name=self.ctx.config.product_name or "",
-                max_pages=15,
+                max_pages=40,
                 max_buttons_per_page=12,
                 use_vision=True,
                 screenshots_dir=screenshots_dir,
