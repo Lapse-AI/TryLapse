@@ -1628,8 +1628,15 @@ class _Handler(BaseHTTPRequestHandler):
                 _write_cred_env(root, email, password)
 
             cfg_path.write_text(_yaml.dump(cfg, default_flow_style=False, sort_keys=False, allow_unicode=True))
+            final_target_url = cfg["run"].get("target_url")
+            if final_target_url:
+                try:
+                    from rehearse.dashboard.workspace_store import sync_target_url_for_config_path
+                    sync_target_url_for_config_path(root, cfg_path, final_target_url)
+                except Exception:
+                    pass  # workspaces table may not exist yet — config YAML is still the source of truth
             self._send_json({
-                "targetUrl": cfg["run"].get("target_url"),
+                "targetUrl": final_target_url,
                 "productName": cfg["run"].get("product_name"),
                 "loginPath": cfg.get("auth", {}).get("login_path"),
             })

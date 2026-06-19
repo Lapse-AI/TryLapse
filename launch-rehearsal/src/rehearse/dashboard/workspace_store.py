@@ -195,6 +195,24 @@ def get_workspaces_for_user(artifacts_root: Path, owner_id: str) -> list[dict]:
     return [_row_to_dict(r) for r in rows]
 
 
+def sync_target_url_for_config_path(artifacts_root: Path, config_path: Path, target_url: str) -> None:
+    """Keep workspaces.target_url in sync with the config YAML it points to.
+
+    The workspace table caches target_url separately from the config YAML's
+    own run.target_url — editing the YAML alone (e.g. via the settings
+    endpoint) leaves the cached column stale, so the UI keeps showing the old
+    URL even after the underlying config is fixed. Call this any time a
+    config's target_url is written so the two can't drift apart.
+    """
+    conn = _connect(artifacts_root)
+    with _write_lock:
+        conn.execute(
+            "UPDATE workspaces SET target_url = ? WHERE config_path = ?",
+            (target_url, str(config_path)),
+        )
+        conn.commit()
+
+
 def backfill_config_paths(artifacts_root: Path, workspaces: list[dict]) -> list[dict]:
     """For workspaces missing a configPath, generate their config YAML now."""
     conn = _connect(artifacts_root)
