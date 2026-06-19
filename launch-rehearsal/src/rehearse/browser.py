@@ -549,10 +549,17 @@ def _resolve_locator(page: Page, step: Step) -> tuple[Locator, str]:
 
 
 class BrowserSession:
-    def __init__(self, config: RunConfig, artifacts_dir: Path, record_video: bool = False) -> None:
+    def __init__(
+        self,
+        config: RunConfig,
+        artifacts_dir: Path,
+        record_video: bool = False,
+        record_traces: bool = False,
+    ) -> None:
         self.config = config
         self.artifacts_dir = artifacts_dir
         self.record_video = record_video
+        self.record_traces = record_traces
         self.console_errors: list[str] = []
         self.console_warnings: list[str] = []
         self.network_failures: list[str] = []
@@ -564,6 +571,8 @@ class BrowserSession:
         self.page: Page | None = None
         self._viewport = "desktop"
         self.video_path: str | None = None
+        self.trace_path: str | None = None
+        self._persona_reset_count: int = 0
 
     def __enter__(self) -> BrowserSession:
         self.artifacts_dir.mkdir(parents=True, exist_ok=True)
@@ -590,6 +599,11 @@ class BrowserSession:
         self.page.on("console", self._on_console)
         self.page.on("pageerror", self._on_pageerror)
         self.page.on("response", self._on_response)
+        if self.record_traces:
+            try:
+                self._context.tracing.start(screenshots=True, snapshots=True, sources=False)
+            except Exception:
+                pass
         return self
 
     def set_viewport(self, profile: str) -> None:
@@ -602,6 +616,13 @@ class BrowserSession:
         page.set_viewport_size(VIEWPORT_PROFILES[key])
 
     def __exit__(self, *args: object) -> None:
+        if self.record_traces and self._context:
+            try:
+                trace_path = self.artifacts_dir / "trace.zip"
+                self._context.tracing.stop(path=str(trace_path))
+                self.trace_path = str(trace_path)
+            except Exception:
+                pass
         if self.record_video and self.page:
             try:
                 self.page.close()  # finalize webm before context.close()
@@ -624,6 +645,20 @@ class BrowserSession:
         Called in sequential mode between personas so cookies, localStorage, and
         service-worker caches from one persona can never leak into the next.
         """
+        # Drain pending XHR before tearing down so in-flight requests don't corrupt the next context
+        try:
+            if self.page:
+                self.page.wait_for_load_state("networkidle", timeout=3000)
+        except Exception:
+            pass
+        # Stop tracing for this persona before destroying its context
+        if self.record_traces and self._context:
+            try:
+                trace_path = self.artifacts_dir / f"trace-persona{self._persona_reset_count}.zip"
+                self._context.tracing.stop(path=str(trace_path))
+                self._persona_reset_count += 1
+            except Exception:
+                pass
         # Close existing page
         try:
             if self.page:
@@ -634,6 +669,14 @@ class BrowserSession:
         try:
             if self._context:
                 self._context.close()
+        except Exception:
+            pass
+        # Restart the browser process to release accumulated V8 heap between personas
+        try:
+            if self._browser:
+                self._browser.close()
+            if self._pw:
+                self._browser = self._pw.chromium.launch(headless=True)
         except Exception:
             pass
         # Reset accumulated run errors so per-persona signals are clean
@@ -1079,8 +1122,8 @@ class BrowserSession:
                 snap.aria_snapshot = _aria
                 snap.storage_keys = _capture_storage_keys(page)
 
-            shot = self.artifacts_dir / f"{_safe_filename(step_id)}.png"
-            page.screenshot(path=str(shot), full_page=True)
+            shot = self.artifacts_dir / f"{_safe_filename(step_id)}.webp"
+            page.screenshot(path=str(shot), full_page=True, type="webp")
             snap.artifact_paths.append(str(shot))
 
             text_path = self.artifacts_dir / f"{_safe_filename(step_id)}.txt"
@@ -1131,8 +1174,8 @@ class BrowserSession:
                         pass
 
             try:
-                shot = self.artifacts_dir / f"{_safe_filename(step_id)}-error.png"
-                page.screenshot(path=str(shot), full_page=True)
+                shot = self.artifacts_dir / f"{_safe_filename(step_id)}-error.webp"
+                page.screenshot(path=str(shot), full_page=True, type="webp")
                 snap.artifact_paths.append(str(shot))
             except Exception:
                 pass

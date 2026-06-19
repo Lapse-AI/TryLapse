@@ -117,14 +117,14 @@ def crawl_cmd(config: Path, output: Path) -> None:
         with BrowserSession(cfg, artifacts, record_video=True) as session:
             if cfg.auth:
                 session.perform_auth(cfg.auth)
-            pages = crawl_site(
+            result = crawl_site(
                 session.page,
                 cfg.target_url,
                 cfg.crawl,
                 timeout_ms=cfg.budgets.step_timeout_ms,
             )
 
-        sitemap = SiteMap.from_pages(cfg.target_url, pages)
+        sitemap = SiteMap.from_pages(cfg.target_url, result.pages)
         sitemap.save_json(output / "sitemaps" / f"{run_id}-sitemap.json")
         sitemap.save_markdown(output / "sitemaps" / f"{run_id}-sitemap.md")
         workflows = detect_workflows(sitemap)

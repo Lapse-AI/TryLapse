@@ -31,12 +31,13 @@ class CrawlAgent(BaseAgent):
             report.summary = "No browser page available for crawl"
             return report
 
-        pages = crawl_site(
+        crawl_result = crawl_site(
             page,
             ctx.config.target_url,
             crawl_cfg,
             timeout_ms=ctx.config.budgets.step_timeout_ms,
         )
+        pages = crawl_result.pages
         ctx.sitemap = SiteMap.from_pages(ctx.config.target_url, pages)
         run_id = ctx.evidence.run_id
         out_base = Path(ctx.metadata.get("output_dir", "artifacts"))  # type: ignore[attr-defined]
@@ -45,13 +46,18 @@ class CrawlAgent(BaseAgent):
 
         report.summary = (
             f"Crawled {len(pages)} pages; "
+            f"coverage {crawl_result.coverage_pct}%; "
             f"{len(ctx.sitemap.auth_gated_paths)} auth-gated; "
             f"{len(ctx.sitemap.orphan_paths)} orphans"
         )
         report.metadata = {
             "page_count": len(pages),
+            "coverage_pct": crawl_result.coverage_pct,
+            "xhr_paths": crawl_result.xhr_paths,
             "hub_paths": ctx.sitemap.hub_paths[:5],
         }
+        if crawl_result.xhr_paths:
+            ctx.metadata["xhr_paths"] = crawl_result.xhr_paths
 
         if ctx.sitemap.orphan_paths:
             report.findings.append(

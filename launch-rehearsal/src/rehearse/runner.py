@@ -95,8 +95,10 @@ def run_rehearsal(
     # so recover_stale() on restart never sees a QUEUED run that died during setup.
     sm.start()
 
-    # Enable video recording for journey execution
-    with sm, BrowserSession(config, artifacts_root, record_video=True) as session:
+    _cleanup_stale_artifacts(output_dir)
+
+    # Enable video recording and Playwright tracing for journey execution
+    with sm, BrowserSession(config, artifacts_root, record_video=True, record_traces=True) as session:
         ctx.metadata["page"] = session.page
 
         if config.auth:
@@ -177,3 +179,30 @@ def run_rehearsal(
     config_yaml = config_path.read_text() if config_path and config_path.is_file() else None
     write_analysis_bundle(bundle, output_dir, config_yaml=config_yaml)
     return evidence, scorecard_path, ctx
+
+
+def _cleanup_stale_artifacts(output_dir: Path) -> None:
+    """Remove artifact directories for runs whose state file is missing.
+
+    A run whose state file is absent died during setup before sm.start() wrote
+    QUEUED — those artifact dirs are orphans that will never be reconciled.
+    """
+    import shutil
+    runs_dir = output_dir / "runs"
+    artifacts_dir = output_dir / "artifacts"
+    if not artifacts_dir.is_dir():
+        return
+    known_run_ids: set[str] = set()
+    if runs_dir.is_dir():
+        known_run_ids = {
+            p.stem for p in runs_dir.glob("*.json")
+            if not p.stem.endswith("-progress") and not p.stem.endswith("-crawl-graph")
+        }
+    for artifact_subdir in artifacts_dir.iterdir():
+        if not artifact_subdir.is_dir():
+            continue
+        if artifact_subdir.name not in known_run_ids:
+            try:
+                shutil.rmtree(artifact_subdir)
+            except Exception:
+                pass

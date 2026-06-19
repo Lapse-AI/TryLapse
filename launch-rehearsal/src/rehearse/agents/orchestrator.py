@@ -40,6 +40,7 @@ class AgentOrchestrator:
             ctx.metadata["force_llm"] = use_llm
             self._llm_agents = [LLMPersonaAgent(p) for p in lens_personas]
         self._synthesizer = SynthesizerAgent()
+        self._analyzed_personas: set[str] = set()  # personas already processed in streaming mode
 
     def run_crawl_phase(self) -> None:
         crawl_on = self.ctx.config.crawl and self.ctx.config.crawl.enabled
@@ -148,16 +149,89 @@ class AgentOrchestrator:
             pass  # non-blocking
 
     def run_journey_phase(self) -> None:
-        self.ctx.agent_reports.append(self._journey_agent.execute(self.ctx))
+        run_all = self.ctx.config.execute_all_personas_in_browser
+        personas = (
+            self.ctx.config.personas if (run_all is None or run_all)
+            else [self.ctx.config.personas[0]]
+        )
+        workers = self.ctx.config.budgets.parallel_journeys
+
+        # Streaming only helps in multi-persona sequential mode. Parallel mode
+        # has no ordering guarantee so all personas must finish before synthesis.
+        if len(personas) <= 1 or workers > 1:
+            self.ctx.agent_reports.append(self._journey_agent.execute(self.ctx))
+            return
+
+        output_dir = Path(self.ctx.metadata.get("output_dir", "."))
+        total = len(personas)
+        for i, persona in enumerate(personas):
+            report = self._journey_agent.execute_for_persona(self.ctx, persona.id)
+            self.ctx.agent_reports.append(report)
+
+            # Immediately analyze this persona's evidence while the next persona runs
+            for agent in self._persona_agents:
+                if agent.persona.id == persona.id:
+                    self.ctx.agent_reports.append(agent.execute(self.ctx))
+                    self._analyzed_personas.add(persona.id)
+            for agent in self._llm_agents:
+                if agent.persona.id == persona.id:
+                    self.ctx.agent_reports.append(agent.execute(self.ctx))
+
+            # Write partial bundle so the dashboard shows early findings
+            if i < total - 1:
+                self._write_partial_bundle(output_dir, personas_complete=i + 1, total=total)
 
     def run_analysis_phase(self) -> AnalysisResult:
         self.ctx.agent_reports.append(
             PerformanceAgent(self.artifacts_root).execute(self.ctx)
         )
+        # Skip persona/LLM agents already fired in streaming journey phase
         for agent in self._persona_agents:
-            self.ctx.agent_reports.append(agent.execute(self.ctx))
+            if agent.persona.id not in self._analyzed_personas:
+                self.ctx.agent_reports.append(agent.execute(self.ctx))
         for agent in self._llm_agents:
-            self.ctx.agent_reports.append(agent.execute(self.ctx))
+            if agent.persona.id not in self._analyzed_personas:
+                self.ctx.agent_reports.append(agent.execute(self.ctx))
         self.ctx.agent_reports.append(self._synthesizer.execute(self.ctx))
         assert self.ctx.synthesis is not None
         return self.ctx.synthesis
+
+    def _write_partial_bundle(self, output_dir: Path, personas_complete: int, total: int) -> None:
+        """Write a partial analysis bundle after each persona completes in streaming mode.
+
+        The dashboard polls the analysis/{run_id}.json file — this gives users
+        early signal on P0/P1 findings from persona 1 before persona 2 finishes.
+        The final bundle always overwrites this file when synthesis completes.
+        """
+        import json
+        from rehearse.analysis_export import build_run_bundle
+        from rehearse.heuristics import analyze_run
+        from rehearse.agents.synthesizer import _is_duplicate, _load_embedder
+
+        try:
+            partial_analysis = analyze_run(
+                self.ctx.config, self.ctx.evidence, sitemap=self.ctx.sitemap
+            )
+            embedder = _load_embedder()
+            existing_titles = [f.title for f in partial_analysis.issues]
+            for rep in self.ctx.agent_reports:
+                for f in rep.findings:
+                    if not _is_duplicate(f.title, existing_titles, embedder):
+                        partial_analysis.issues.append(f)
+                        existing_titles.append(f.title)
+            for idx, issue in enumerate(partial_analysis.issues, 1):
+                issue.id = f"I{idx}"
+
+            bundle = build_run_bundle(
+                self.ctx.config, self.ctx.evidence, partial_analysis, output_dir, ctx=self.ctx
+            )
+            bundle["summary"]["partial"] = True
+            bundle["summary"]["personasComplete"] = personas_complete
+            bundle["summary"]["personasTotal"] = total
+
+            analysis_dir = output_dir / "analysis"
+            analysis_dir.mkdir(parents=True, exist_ok=True)
+            run_id = self.ctx.evidence.run_id
+            (analysis_dir / f"{run_id}.json").write_text(json.dumps(bundle, indent=2))
+        except Exception:
+            pass  # non-blocking; final bundle always overwrites

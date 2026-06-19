@@ -306,6 +306,7 @@ class JourneyAgent(BaseAgent):
         self.artifacts_root = artifacts_root
         self._deadline: float = 0
         self._browser: bool = False  # True when parallel mode active
+        self._last_streaming_persona: str | None = None  # tracks context resets in streaming mode
 
     def _run_journey_once(
         self,
@@ -595,5 +596,93 @@ class JourneyAgent(BaseAgent):
             "viewports": viewports,
             "personas_executed": len(personas_to_run),
             "execute_all_personas_in_browser": ctx.config.execute_all_personas_in_browser,
+        }
+        return report
+
+    def execute_for_persona(self, ctx: RunContext, persona_id: str) -> AgentReport:
+        """Run journeys for a single persona — used by streaming synthesis.
+
+        Called once per persona in sequence. Resets the browser context when
+        persona changes so cookies/localStorage can't bleed across personas.
+        """
+        seeds = ctx.config.budgets.parallel_seeds
+        loops = ctx.config.budgets.repeat_micro_loop
+        viewports = normalize_viewports(ctx.config.viewports)
+        self._deadline = ctx.metadata.get("deadline", time.perf_counter() + 9999)
+
+        run_all = ctx.config.execute_all_personas_in_browser
+        if run_all is None:
+            run_all = True
+        personas_to_run = ctx.config.personas if run_all else [ctx.config.personas[0]]
+
+        persona_obj = next((p for p in personas_to_run if p.id == persona_id), None)
+        if persona_obj is None:
+            return AgentReport(
+                agent_id=f"journey-runner-{persona_id}",
+                agent_role="E2E journey execution",
+                summary="persona not in active set — skipped",
+            )
+
+        persona_locale = getattr(persona_obj, "locale", None)
+        needs_reset = (
+            self._last_streaming_persona is not None
+            and self._last_streaming_persona != persona_id
+        ) or (
+            self._last_streaming_persona is None and persona_locale is not None
+        )
+        if needs_reset:
+            try:
+                auth_state = ctx.metadata.get("auth_storage_state")
+                self.session.reset_context_for_persona(auth_state, persona_locale=persona_locale)
+            except Exception:
+                pass
+        self._last_streaming_persona = persona_id
+
+        work_journeys = [
+            j for j in ctx.config.journeys
+            if not j.persona_ids or persona_id in j.persona_ids
+        ]
+        report = AgentReport(
+            agent_id=f"journey-runner-{persona_id}",
+            agent_role="E2E journey execution",
+            summary=f"Journey execution for persona {persona_id}",
+        )
+
+        _artifacts_root = Path(ctx.metadata.get("output_dir", "."))
+        _tracker = ctx.metadata.get("progress_tracker")
+        all_results: dict[str, list[list[StepSnapshot]]] = {}
+        executed = failed = flaky_count = 0
+
+        for journey in work_journeys:
+            if check_and_handle_signals(_artifacts_root, ctx.evidence.run_id, _tracker) == "stop":
+                break
+            _, _, persona_runs = self._run_journey_worker(
+                ctx, journey, persona_id, seeds, loops, viewports,
+            )
+            all_results[journey.id] = persona_runs
+            executed += sum(len(r) for r in persona_runs)
+            failed += sum(1 for r in persona_runs for s in r if s.outcome == "fail")
+
+        for journey in work_journeys:
+            persona_runs = all_results.get(journey.id, [])
+            _mark_flaky_steps(persona_runs)
+            flaky_count += sum(1 for run in persona_runs for s in run if s.flaky)
+            canonical = next(
+                (run for run in persona_runs if run and run[0].viewport == "desktop"),
+                persona_runs[0] if persona_runs else [],
+            )
+            grade = _journey_status_from_snaps(canonical)
+            report.journey_grades.setdefault(journey.id, {})[persona_id] = grade
+
+        ctx.metadata["flaky_steps"] = ctx.metadata.get("flaky_steps", 0) + flaky_count
+        report.summary = (
+            f"Executed {executed} steps for persona {persona_id} "
+            f"({failed} failures, {flaky_count} flaky, seeds={seeds})"
+        )
+        report.metadata = {
+            "steps_executed": executed,
+            "step_failures": failed,
+            "flaky_steps": flaky_count,
+            "persona_id": persona_id,
         }
         return report
