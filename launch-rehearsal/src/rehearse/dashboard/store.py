@@ -743,6 +743,18 @@ def save_config(artifacts_root: Path, body: dict[str, Any]) -> dict[str, Any]:
                     j for j in all_journeys
                     if j.get("id") not in _DEFAULT_J_IDS or j.get("persona_ids")
                 ]
+
+            # build_config() always creates p1-evaluator/p2-operator/p3-admin enabled by
+            # default. Once the user has imported their own discovered personas (signaled
+            # by persona-specific journeys existing), those generic templates are dead
+            # weight that silently runs alongside whatever the user actually selected —
+            # disable them unless the request explicitly re-enables one via personaEnabled.
+            _GENERIC_PERSONA_IDS = {"p1-evaluator", "p2-operator", "p3-admin"}
+            if has_persona_specific:
+                explicit_enabled = body.get("personaEnabled") or {}
+                for p in config.get("personas") or []:
+                    if p.get("id") in _GENERIC_PERSONA_IDS and p.get("id") not in explicit_enabled:
+                        p["enabled"] = False
         except Exception:
             pass
 

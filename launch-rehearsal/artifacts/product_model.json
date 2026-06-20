@@ -98,7 +98,7 @@
     }
   ],
   "source": "llm",
-  "targetUrl": "https://faculty-dashboard-eight.vercel.app/database",
+  "targetUrl": "https://faculty-dashboard-eight.vercel.app",
   "productName": "Argyle Faculty Dashboard",
   "pageCount": 14
 }

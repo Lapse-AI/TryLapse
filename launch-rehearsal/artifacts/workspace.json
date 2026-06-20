@@ -2,7 +2,7 @@
   "id": "ws_default",
   "name": "Faculty-Dashboard-Eight Workspace",
   "slug": "faculty-dashboard-eight-vercel-app",
-  "targetUrl": "http://127.0.0.1:8081",
+  "targetUrl": "https://faculty-dashboard-eight.vercel.app",
   "members": 1,
   "products": 1,
   "configVersion": "1.0",
@@ -10,5 +10,6 @@
   "strictEnterpriseMode": true,
   "retentionDays": 90,
   "piiRedaction": false,
-  "env": "staging"
+  "env": "staging",
+  "config_path": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/configs/faculty-dashboard-eight-vercel-app-20260619-190437.yaml"
 }

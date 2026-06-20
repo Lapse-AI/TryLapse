@@ -51,3 +51,57 @@ def test_save_config_execute_all_personas_in_browser(tmp_path: Path) -> None:
     )
     data = _load_yaml_config(Path(result["path"]))
     assert data["run"]["execute_all_personas_in_browser"] is True
+
+
+def test_save_config_disables_generic_personas_when_curated_journeys_exist(tmp_path: Path) -> None:
+    """Once a config has its own persona-scoped journeys, the generic
+    p1-evaluator/p2-operator/p3-admin templates must not silently stay enabled
+    and run alongside personas the user actually selected."""
+    first = save_config(tmp_path, {"targetUrl": "https://app.example.com"})
+
+    # Simulate importing a discovered persona with its own persona-scoped journey
+    first_path = Path(first["path"])
+    data = _load_yaml_config(first_path)
+    data["personas"].append({"id": "model-0-discovered", "name": "Discovered User", "role": "user", "goals": []})
+    data["journeys"] = [
+        {"id": "j-discovered-1", "name": "Discovered journey", "steps": [{"action": "navigate", "url": "/x"}],
+         "persona_ids": ["model-0-discovered"]}
+    ]
+    first_path.write_text(yaml.dump(data, default_flow_style=False, sort_keys=False))
+
+    second = save_config(
+        tmp_path,
+        {"targetUrl": "https://app.example.com", "existingConfigId": first["id"]},
+    )
+    merged = _load_yaml_config(Path(second["path"]))
+    by_id = {p["id"]: p for p in merged["personas"]}
+    assert by_id["p1-evaluator"]["enabled"] is False
+    assert by_id["p2-operator"]["enabled"] is False
+    assert by_id["p3-admin"]["enabled"] is False
+    assert by_id["model-0-discovered"]["id"] == "model-0-discovered"
+
+
+def test_save_config_respects_explicit_persona_enabled_override(tmp_path: Path) -> None:
+    """personaEnabled in the request body must win over the auto-disable heuristic."""
+    first = save_config(tmp_path, {"targetUrl": "https://app.example.com"})
+    first_path = Path(first["path"])
+    data = _load_yaml_config(first_path)
+    data["personas"].append({"id": "model-0-discovered", "name": "Discovered User", "role": "user", "goals": []})
+    data["journeys"] = [
+        {"id": "j-discovered-1", "name": "Discovered journey", "steps": [{"action": "navigate", "url": "/x"}],
+         "persona_ids": ["model-0-discovered"]}
+    ]
+    first_path.write_text(yaml.dump(data, default_flow_style=False, sort_keys=False))
+
+    second = save_config(
+        tmp_path,
+        {
+            "targetUrl": "https://app.example.com",
+            "existingConfigId": first["id"],
+            "personaEnabled": {"p1-evaluator": True},
+        },
+    )
+    merged = _load_yaml_config(Path(second["path"]))
+    by_id = {p["id"]: p for p in merged["personas"]}
+    assert by_id["p1-evaluator"]["enabled"] is True
+    assert by_id["p2-operator"]["enabled"] is False
