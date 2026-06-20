@@ -386,7 +386,7 @@ def handle_explain_finding(args: dict, artifacts_root: Path) -> dict:
     artifacts_dir = artifacts_root / "artifacts" / run_id
     screenshot = None
     if step_id and artifacts_dir.is_dir():
-        candidates = list(artifacts_dir.glob(f"*{step_id}*.png")) + list(artifacts_dir.glob(f"*{step_id}*.webp"))
+        candidates = list(artifacts_dir.glob(f"*{step_id}*.png")) + list(artifacts_dir.glob(f"*{step_id}*.jpg")) + list(artifacts_dir.glob(f"*{step_id}*.webp"))
         if candidates:
             screenshot = str(candidates[0])
 

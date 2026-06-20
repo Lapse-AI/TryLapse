@@ -1122,8 +1122,11 @@ class BrowserSession:
                 snap.aria_snapshot = _aria
                 snap.storage_keys = _capture_storage_keys(page)
 
-            shot = self.artifacts_dir / f"{_safe_filename(step_id)}.webp"
-            page.screenshot(path=str(shot), full_page=True, type="webp")
+            # Playwright's screenshot() only supports png/jpeg — webp is not a valid
+            # `type` value (confirmed by Playwright raising on it). jpeg+quality still
+            # gets the smaller-file-size goal this was added for.
+            shot = self.artifacts_dir / f"{_safe_filename(step_id)}.jpg"
+            page.screenshot(path=str(shot), full_page=True, type="jpeg", quality=80)
             snap.artifact_paths.append(str(shot))
 
             text_path = self.artifacts_dir / f"{_safe_filename(step_id)}.txt"
@@ -1174,8 +1177,8 @@ class BrowserSession:
                         pass
 
             try:
-                shot = self.artifacts_dir / f"{_safe_filename(step_id)}-error.webp"
-                page.screenshot(path=str(shot), full_page=True, type="webp")
+                shot = self.artifacts_dir / f"{_safe_filename(step_id)}-error.jpg"
+                page.screenshot(path=str(shot), full_page=True, type="jpeg", quality=80)
                 snap.artifact_paths.append(str(shot))
             except Exception:
                 pass

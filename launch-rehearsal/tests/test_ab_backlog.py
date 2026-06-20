@@ -138,12 +138,12 @@ def test_cleanup_stale_artifacts_removes_orphans(tmp_path):
     (runs_dir / "run-001.json").write_text('{"status": "COMPLETE"}')
     known_art = artifacts_dir / "run-001"
     known_art.mkdir()
-    (known_art / "screenshot.webp").write_text("fake")
+    (known_art / "screenshot.jpg").write_text("fake")
 
     # Orphan run — no matching state file
     orphan_art = artifacts_dir / "run-999"
     orphan_art.mkdir()
-    (orphan_art / "screenshot.webp").write_text("fake")
+    (orphan_art / "screenshot.jpg").write_text("fake")
 
     _cleanup_stale_artifacts(tmp_path)
 
@@ -223,22 +223,28 @@ def test_browser_session_persona_reset_count_initialises_to_zero():
     assert session._persona_reset_count == 0
 
 
-# ── B4: WebP screenshot paths ─────────────────────────────────────────────────
+# ── B4: screenshot format ──────────────────────────────────────────────────────
+# "webp" is NOT a valid Playwright screenshot `type` (only png/jpeg are) — using it
+# made every single page.screenshot() call raise, which failed every step in every
+# journey of a real run. This test asserts against Playwright's actual accepted
+# values instead of just grepping for a string, so a typo'd format can't slip
+# through again without a real failure surfacing here first.
 
-def test_webp_extension_in_screenshot_path():
-    """Screenshot helper must produce .webp paths, not .png."""
+import re as _re
+
+
+def test_screenshot_type_is_a_value_playwright_actually_accepts():
     import inspect
     import rehearse.browser as browser_mod
     src = inspect.getsource(browser_mod)
-    # Should not have .png screenshot calls; all should be .webp
-    assert ".webp" in src
-    # Original .png screenshot lines should be replaced
-    lines_with_png_screenshot = [
-        l for l in src.splitlines()
-        if ".png" in l and "screenshot" in l and not l.strip().startswith("#")
-    ]
-    assert lines_with_png_screenshot == [], (
-        f"Found .png screenshot lines that should be .webp: {lines_with_png_screenshot}"
+    types_used = {
+        m.group(1)
+        for line in src.splitlines() if "screenshot(" in line
+        for m in [_re.search(r'type="(\w+)"', line)] if m
+    }
+    assert types_used, "expected at least one page.screenshot(..., type=...) call"
+    assert types_used <= {"png", "jpeg"}, (
+        f"Found screenshot type(s) not supported by Playwright: {types_used - {'png', 'jpeg'}}"
     )
 
 
