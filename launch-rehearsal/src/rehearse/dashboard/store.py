@@ -78,7 +78,7 @@ def _is_run_evidence(path: Path) -> str | None:
     """Return run_id if path is a run evidence JSON; None for progress/graph/other files."""
     # Skip non-evidence files by name pattern
     name = path.stem
-    if name.endswith("-progress") or name.endswith("-crawl-graph") or name.endswith("-control"):
+    if name.endswith("-progress") or name.endswith("-crawl-graph") or name.endswith("-control") or name.endswith("-state"):
         return None
     try:
         data = json.loads(path.read_text())

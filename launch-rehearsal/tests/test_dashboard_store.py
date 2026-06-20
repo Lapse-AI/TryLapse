@@ -5,7 +5,9 @@ from pathlib import Path
 import pytest
 import yaml
 
-from rehearse.dashboard.store import save_config
+import json
+
+from rehearse.dashboard.store import list_run_summaries, save_config
 
 
 def _load_yaml_config(path: Path) -> dict:
@@ -51,6 +53,36 @@ def test_save_config_execute_all_personas_in_browser(tmp_path: Path) -> None:
     )
     data = _load_yaml_config(Path(result["path"]))
     assert data["run"]["execute_all_personas_in_browser"] is True
+
+
+def test_run_state_json_does_not_duplicate_run_summary(tmp_path: Path) -> None:
+    """RunStateMachine writes {run_id}-state.json with its own top-level run_id field.
+    list_run_summaries() must not treat that as a second evidence file for the same
+    run — it was producing duplicate rows in the run list UI for every single run."""
+    runs_dir = tmp_path / "runs"
+    runs_dir.mkdir()
+    run_id = "myproduct-20260619-230616"
+
+    (runs_dir / f"{run_id}.json").write_text(json.dumps({
+        "run_id": run_id,
+        "product_name": "My Product",
+        "target_url": "https://example.com",
+        "started_at": "2026-06-19T23:06:16+00:00",
+        "finished_at": "2026-06-19T23:10:00+00:00",
+        "duration_ms": 224000,
+        "outcome": "complete",
+        "steps": [],
+    }))
+    # RunStateMachine's own file — also has a top-level run_id, must be excluded
+    (runs_dir / f"{run_id}-state.json").write_text(json.dumps({
+        "run_id": run_id,
+        "state": "COMPLETE",
+        "log": [],
+    }))
+
+    summaries = list_run_summaries(tmp_path)
+    matching = [s for s in summaries if s.get("id") == run_id]
+    assert len(matching) == 1, f"expected exactly one summary for {run_id}, got {len(matching)}"
 
 
 def test_save_config_disables_generic_personas_when_curated_journeys_exist(tmp_path: Path) -> None:
