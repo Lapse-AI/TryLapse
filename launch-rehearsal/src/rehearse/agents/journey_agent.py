@@ -10,7 +10,7 @@ from pathlib import Path
 from rehearse.agents.base import BaseAgent
 from rehearse.browser import BrowserSession
 from rehearse.context import AgentReport, RunContext
-from rehearse.dsl import Journey, Step
+from rehearse.dsl import Journey, Step, active_personas
 from rehearse.errors import RunBudgetExceeded
 from rehearse.evidence import StepSnapshot
 from rehearse.progress import check_and_handle_signals
@@ -471,7 +471,8 @@ class JourneyAgent(BaseAgent):
         run_all = ctx.config.execute_all_personas_in_browser
         if run_all is None:
             run_all = True
-        personas_to_run = ctx.config.personas if run_all else [ctx.config.personas[0]]
+        enabled = active_personas(ctx.config)
+        personas_to_run = enabled if run_all else enabled[:1]
         executed = 0
         failed = 0
         flaky_count = 0
@@ -613,7 +614,8 @@ class JourneyAgent(BaseAgent):
         run_all = ctx.config.execute_all_personas_in_browser
         if run_all is None:
             run_all = True
-        personas_to_run = ctx.config.personas if run_all else [ctx.config.personas[0]]
+        enabled = active_personas(ctx.config)
+        personas_to_run = enabled if run_all else enabled[:1]
 
         persona_obj = next((p for p in personas_to_run if p.id == persona_id), None)
         if persona_obj is None:

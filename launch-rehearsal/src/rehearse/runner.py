@@ -9,7 +9,7 @@ from pathlib import Path
 from rehearse.agents.orchestrator import AgentOrchestrator
 from rehearse.browser import BrowserSession
 from rehearse.context import RunContext
-from rehearse.dsl import RunConfig
+from rehearse.dsl import RunConfig, active_personas
 from rehearse.evidence import RunEvidence, StepSnapshot, new_run_id
 from rehearse.heuristics import analyze_run
 from rehearse.run_manager import RunStateMachine
@@ -41,7 +41,7 @@ def run_rehearsal(
     )
 
     if dry_run:
-        primary_persona = config.personas[0].id
+        primary_persona = (active_personas(config) or config.personas)[0].id
         for journey in config.journeys:
             for i, step in enumerate(journey.steps):
                 evidence.add_step(
@@ -73,14 +73,15 @@ def run_rehearsal(
         product_name=config.product_name,
         target_url=config.target_url,
     )
-    personas_data = [{"id": p.id, "name": p.name} for p in config.personas]
+    enabled_personas = active_personas(config)
+    personas_data = [{"id": p.id, "name": p.name} for p in enabled_personas]
     journeys_per_persona = {
         p.id: [
             {"id": j.id, "name": j.name, "steps": [{"action": s.action, "intent": s.intent or s.url or ""} for s in j.steps]}
             for j in config.journeys
             if not j.persona_ids or p.id in j.persona_ids
         ]
-        for p in config.personas
+        for p in enabled_personas
     }
     tracker.set_personas(personas_data, journeys_per_persona)
     tracker.set_phase("crawling")

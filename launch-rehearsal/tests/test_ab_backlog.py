@@ -276,6 +276,43 @@ def test_analyzed_personas_initialised_empty():
     assert orch._analyzed_personas == set()
 
 
+def test_screenshot_path_finds_jpg_on_disk(tmp_path):
+    """analysis_export._screenshot_path must locate the actual .jpg file the
+    runner saves — a prior hardcoded '.png' here made every finding's
+    screenshot in the dashboard's Action Plan / Overview modal 404."""
+    from rehearse.analysis_export import _screenshot_path
+
+    run_dir = tmp_path / "artifacts" / "run-1"
+    run_dir.mkdir(parents=True)
+    (run_dir / "step-1.jpg").write_bytes(b"fake")
+
+    result = _screenshot_path(tmp_path, "run-1", "step-1")
+    assert result == "artifacts/run-1/step-1.jpg"
+
+
+def test_screenshot_path_falls_back_to_error_jpg(tmp_path):
+    from rehearse.analysis_export import _screenshot_path
+
+    run_dir = tmp_path / "artifacts" / "run-1"
+    run_dir.mkdir(parents=True)
+    (run_dir / "step-1-error.jpg").write_bytes(b"fake")
+
+    result = _screenshot_path(tmp_path, "run-1", "step-1")
+    assert result == "artifacts/run-1/step-1-error.jpg"
+
+
+def test_screenshot_path_still_finds_legacy_png(tmp_path):
+    """Older runs captured before the jpeg switch saved .png — must still resolve."""
+    from rehearse.analysis_export import _screenshot_path
+
+    run_dir = tmp_path / "artifacts" / "run-1"
+    run_dir.mkdir(parents=True)
+    (run_dir / "step-1.png").write_bytes(b"fake")
+
+    result = _screenshot_path(tmp_path, "run-1", "step-1")
+    assert result == "artifacts/run-1/step-1.png"
+
+
 def test_write_partial_bundle_is_non_blocking(tmp_path):
     """_write_partial_bundle must not raise even when analysis helpers fail."""
     from rehearse.agents.orchestrator import AgentOrchestrator

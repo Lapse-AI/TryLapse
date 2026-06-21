@@ -149,10 +149,13 @@ class AgentOrchestrator:
             pass  # non-blocking
 
     def run_journey_phase(self) -> None:
+        from rehearse.dsl import active_personas
+
         run_all = self.ctx.config.execute_all_personas_in_browser
+        enabled = active_personas(self.ctx.config)
         personas = (
-            self.ctx.config.personas if (run_all is None or run_all)
-            else [self.ctx.config.personas[0]]
+            enabled if (run_all is None or run_all)
+            else enabled[:1]
         )
         workers = self.ctx.config.budgets.parallel_journeys
 

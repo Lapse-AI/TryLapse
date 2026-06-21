@@ -19,22 +19,31 @@ STATUS_MAP = {"Green": "ready", "Amber": "warn", "Red": "danger"}
 EXTRA_DIMENSIONS = ["Performance", "Accessibility", "Trust", "Onboarding", "Recovery"]
 
 
+_SCREENSHOT_EXTENSIONS = (".jpg", ".png", ".webp")
+
+
 def _screenshot_path(artifacts_root: Path | None, run_id: str, step_id: str) -> str:
     """Return the relative artifact path for a step screenshot.
 
-    Prefers the plain .png; falls back to -error.png when a step timed out or
-    failed (the runner saves those with an -error suffix). Returns the plain
-    path when artifacts_root is unknown (frontend will get a 404 rather than
-    a wrong filename).
+    browser.py currently saves screenshots as .jpg, but older runs may have
+    .png or .webp files on disk — check all three rather than hardcoding one,
+    so a format change here never silently breaks every screenshot link again.
+    Prefers the plain screenshot; falls back to -error when a step timed out
+    or failed (the runner saves those with an -error suffix). Returns a plain
+    .jpg path when artifacts_root is unknown (frontend will get a 404 rather
+    than a wrong filename).
     """
-    rel_plain = f"artifacts/{run_id}/{step_id}.png"
-    rel_error = f"artifacts/{run_id}/{step_id}-error.png"
-    if artifacts_root is not None:
-        plain = artifacts_root / "artifacts" / run_id / f"{step_id}.png"
-        error = artifacts_root / "artifacts" / run_id / f"{step_id}-error.png"
-        if not plain.is_file() and error.is_file():
-            return rel_error
-    return rel_plain
+    default = f"artifacts/{run_id}/{step_id}.jpg"
+    if artifacts_root is None:
+        return default
+
+    base_dir = artifacts_root / "artifacts" / run_id
+    for suffix in ("", "-error"):
+        for ext in _SCREENSHOT_EXTENSIONS:
+            candidate = base_dir / f"{step_id}{suffix}{ext}"
+            if candidate.is_file():
+                return f"artifacts/{run_id}/{step_id}{suffix}{ext}"
+    return default
 # Heuristic run cost when LLM token usage is unavailable (USD)
 _HEURISTIC_BASE_USD = 0.05
 _HEURISTIC_PER_AGENT_USD = 0.02
