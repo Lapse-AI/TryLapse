@@ -423,6 +423,8 @@ export type Workspace = {
   retentionDays: 30 | 90 | 365;
   piiRedaction: boolean;
   env?: EnvId;
+  slackWebhookUrl?: string | null;
+  webhookUrl?: string | null;
 };
 
 export type AlertChannel = {

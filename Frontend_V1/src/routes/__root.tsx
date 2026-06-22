@@ -144,14 +144,14 @@ function RootComponent() {
             <Outlet />
           </div>
         ) : (
-          <div className="flex min-h-screen w-full bg-background text-foreground">
-            <div className="hidden md:flex">
+          <div className="flex h-screen w-full overflow-hidden bg-background text-foreground">
+            <div className="hidden md:flex h-full">
               <AppSidebar />
             </div>
-            <div className="flex-1 flex flex-col min-w-0">
+            <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
               <RehearseTopBar />
               <ApiRequiredBanner />
-              <main className="flex-1 min-w-0 overflow-x-hidden">
+              <main className="flex-1 min-w-0 overflow-x-hidden overflow-y-auto">
                 <Outlet />
               </main>
             </div>

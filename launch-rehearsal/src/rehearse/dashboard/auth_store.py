@@ -202,6 +202,56 @@ def authenticate_user(
     return {"id": row["id"], "email": row["email"], "name": row["name"]}
 
 
+def get_user(artifacts_root: Path, user_id: str) -> dict | None:
+    """Look up a user by id. Returns ``{"id", "email", "name"}`` or ``None``."""
+    conn = _connect(artifacts_root)
+    row = conn.execute(
+        "SELECT id, email, name FROM users WHERE id = ?", (user_id,)
+    ).fetchone()
+    if not row:
+        return None
+    return {"id": row[0], "email": row[1], "name": row[2]}
+
+
+def update_user(
+    artifacts_root: Path,
+    user_id: str,
+    *,
+    name: str | None = None,
+    password: str | None = None,
+    current_password: str | None = None,
+) -> dict | None:
+    """Update a user's name and/or password.
+
+    A password change requires ``current_password`` to verify against the
+    stored hash — name-only changes do not. Returns the updated
+    ``{"id", "email", "name"}`` record, or ``None`` if the user doesn't exist
+    or the current password check fails.
+    """
+    conn = _connect(artifacts_root)
+    row = conn.execute(
+        "SELECT id, email, name, pw_hash FROM users WHERE id = ?", (user_id,)
+    ).fetchone()
+    if not row:
+        return None
+    _, email, existing_name, pw_hash = row
+
+    if password:
+        if not current_password or not _verify_password(current_password, pw_hash):
+            return None
+        pw_hash = _hash_password(password)
+
+    new_name = name.strip() if name and name.strip() else existing_name
+
+    with _write_lock:
+        conn.execute(
+            "UPDATE users SET name = ?, pw_hash = ? WHERE id = ?",
+            (new_name, pw_hash, user_id),
+        )
+        conn.commit()
+    return {"id": user_id, "email": email, "name": new_name}
+
+
 def issue_token(user: dict) -> str:
     """Return a signed 30-day JWT for *user* (dict with id/email/name)."""
     now = int(time.time())

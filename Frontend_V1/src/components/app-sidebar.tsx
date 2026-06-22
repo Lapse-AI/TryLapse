@@ -95,7 +95,10 @@ const workspaceNav = [
   },
   {
     group: "Platform",
-    items: [{ to: "/integrations", label: "Integrations", icon: Plug, wip: true }],
+    items: [
+      { to: "/integrations", label: "Integrations", icon: Plug, wip: true },
+      { to: "/settings", label: "Settings", icon: Settings },
+    ],
   },
   {
     group: "Coming soon",
@@ -143,7 +146,7 @@ export function AppSidebar() {
 
   return (
     <aside
-      className="w-60 shrink-0 border-r border-sidebar-border text-sidebar-foreground flex flex-col"
+      className="w-60 h-full shrink-0 border-r border-sidebar-border text-sidebar-foreground flex flex-col overflow-hidden"
       style={{ background: "var(--sidebar)" }}
     >
       <div className="px-4 h-14 flex items-center gap-2.5 border-b border-sidebar-border/70">

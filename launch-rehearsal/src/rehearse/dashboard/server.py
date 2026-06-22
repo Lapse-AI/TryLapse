@@ -276,14 +276,18 @@ class _Handler(BaseHTTPRequestHandler):
 
         if path == "/auth/me":
             payload = self._require_jwt()
-            if payload:
-                self._send_json({
-                    "id": payload["sub"],
-                    "email": payload["email"],
-                    "name": payload["name"],
-                })
+            if not payload:
+                self._send_json({"error": "Not authenticated"}, status=401)
                 return
-            self._send_json({"error": "Not authenticated"}, status=401)
+            # Look up the live row rather than trusting the JWT's embedded name —
+            # the JWT is valid for 30 days, so a profile update wouldn't be
+            # reflected here until the token's claims were re-read otherwise.
+            from rehearse.dashboard.auth_store import get_user
+            user = get_user(root, payload["sub"])
+            if not user:
+                self._send_json({"error": "Not authenticated"}, status=401)
+                return
+            self._send_json(user)
             return
 
         if path == "/api/workspaces/me":
@@ -1914,6 +1918,28 @@ class _Handler(BaseHTTPRequestHandler):
         root = self.server.artifacts_root
 
         if not self._check_auth(path):
+            return
+
+        if path == "/auth/me":
+            payload = self._require_jwt()
+            if not payload:
+                self._send_json({"error": "Not authenticated"}, status=401)
+                return
+            body = self._read_json_body()
+            from rehearse.dashboard.auth_store import update_user
+            updated = update_user(
+                root,
+                payload["sub"],
+                name=body.get("name"),
+                password=body.get("newPassword"),
+                current_password=body.get("currentPassword"),
+            )
+            if not updated:
+                self._send_json(
+                    {"error": "Update failed — check current password"}, status=400
+                )
+                return
+            self._send_json(updated)
             return
 
         if path == "/api/workspace":

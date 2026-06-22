@@ -61,6 +61,7 @@ export const queryKeys = {
   personaLibrary: ["rehearse", "persona-library"] as const,
   personaLibraryItem: (id: string) => ["rehearse", "persona-library", id] as const,
   findingOutcomes: (runId: string) => ["rehearse", "finding-outcomes", runId] as const,
+  authMe: ["rehearse", "auth-me"] as const,
 };
 
 export function useApiHealth() {
@@ -280,6 +281,25 @@ export function useSaveWorkspace() {
   return useMutation({
     mutationFn: (ws: Partial<Workspace>) => api.saveWorkspace(ws),
     onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.workspace }),
+  });
+}
+
+export function useAuthMe() {
+  const health = useApiHealth();
+  return useQuery({
+    queryKey: queryKeys.authMe,
+    queryFn: () => api.authMe(),
+    enabled: health.isSuccess && !!health.data,
+    retry: false,
+  });
+}
+
+export function useUpdateProfile() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (body: { name?: string; currentPassword?: string; newPassword?: string }) =>
+      api.updateProfile(body),
+    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.authMe }),
   });
 }
 

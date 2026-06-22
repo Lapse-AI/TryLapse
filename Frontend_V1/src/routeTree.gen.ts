@@ -31,6 +31,7 @@ import { Route as RunsRunIdRouteImport } from './routes/runs.$runId'
 import { Route as ExperimentJobIdRouteImport } from './routes/experiment.$jobId'
 import { Route as CohortJobIdRouteImport } from './routes/cohort.$jobId'
 import { Route as WorkspaceSlugTrendsRouteImport } from './routes/$workspaceSlug.trends'
+import { Route as WorkspaceSlugSettingsRouteImport } from './routes/$workspaceSlug.settings'
 import { Route as WorkspaceSlugRunsRouteImport } from './routes/$workspaceSlug.runs'
 import { Route as WorkspaceSlugRunnerRouteImport } from './routes/$workspaceSlug.runner'
 import { Route as WorkspaceSlugPersonasRouteImport } from './routes/$workspaceSlug.personas'
@@ -150,6 +151,11 @@ const WorkspaceSlugTrendsRoute = WorkspaceSlugTrendsRouteImport.update({
   path: '/trends',
   getParentRoute: () => WorkspaceSlugRoute,
 } as any)
+const WorkspaceSlugSettingsRoute = WorkspaceSlugSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => WorkspaceSlugRoute,
+} as any)
 const WorkspaceSlugRunsRoute = WorkspaceSlugRunsRouteImport.update({
   id: '/runs',
   path: '/runs',
@@ -215,6 +221,7 @@ export interface FileRoutesByFullPath {
   '/$workspaceSlug/personas': typeof WorkspaceSlugPersonasRoute
   '/$workspaceSlug/runner': typeof WorkspaceSlugRunnerRoute
   '/$workspaceSlug/runs': typeof WorkspaceSlugRunsRouteWithChildren
+  '/$workspaceSlug/settings': typeof WorkspaceSlugSettingsRoute
   '/$workspaceSlug/trends': typeof WorkspaceSlugTrendsRoute
   '/cohort/$jobId': typeof CohortJobIdRoute
   '/experiment/$jobId': typeof ExperimentJobIdRoute
@@ -246,6 +253,7 @@ export interface FileRoutesByTo {
   '/$workspaceSlug/dashboard': typeof WorkspaceSlugDashboardRoute
   '/$workspaceSlug/personas': typeof WorkspaceSlugPersonasRoute
   '/$workspaceSlug/runner': typeof WorkspaceSlugRunnerRoute
+  '/$workspaceSlug/settings': typeof WorkspaceSlugSettingsRoute
   '/$workspaceSlug/trends': typeof WorkspaceSlugTrendsRoute
   '/cohort/$jobId': typeof CohortJobIdRoute
   '/experiment/$jobId': typeof ExperimentJobIdRoute
@@ -279,6 +287,7 @@ export interface FileRoutesById {
   '/$workspaceSlug/personas': typeof WorkspaceSlugPersonasRoute
   '/$workspaceSlug/runner': typeof WorkspaceSlugRunnerRoute
   '/$workspaceSlug/runs': typeof WorkspaceSlugRunsRouteWithChildren
+  '/$workspaceSlug/settings': typeof WorkspaceSlugSettingsRoute
   '/$workspaceSlug/trends': typeof WorkspaceSlugTrendsRoute
   '/cohort/$jobId': typeof CohortJobIdRoute
   '/experiment/$jobId': typeof ExperimentJobIdRoute
@@ -313,6 +322,7 @@ export interface FileRouteTypes {
     | '/$workspaceSlug/personas'
     | '/$workspaceSlug/runner'
     | '/$workspaceSlug/runs'
+    | '/$workspaceSlug/settings'
     | '/$workspaceSlug/trends'
     | '/cohort/$jobId'
     | '/experiment/$jobId'
@@ -344,6 +354,7 @@ export interface FileRouteTypes {
     | '/$workspaceSlug/dashboard'
     | '/$workspaceSlug/personas'
     | '/$workspaceSlug/runner'
+    | '/$workspaceSlug/settings'
     | '/$workspaceSlug/trends'
     | '/cohort/$jobId'
     | '/experiment/$jobId'
@@ -376,6 +387,7 @@ export interface FileRouteTypes {
     | '/$workspaceSlug/personas'
     | '/$workspaceSlug/runner'
     | '/$workspaceSlug/runs'
+    | '/$workspaceSlug/settings'
     | '/$workspaceSlug/trends'
     | '/cohort/$jobId'
     | '/experiment/$jobId'
@@ -565,6 +577,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkspaceSlugTrendsRouteImport
       parentRoute: typeof WorkspaceSlugRoute
     }
+    '/$workspaceSlug/settings': {
+      id: '/$workspaceSlug/settings'
+      path: '/settings'
+      fullPath: '/$workspaceSlug/settings'
+      preLoaderRoute: typeof WorkspaceSlugSettingsRouteImport
+      parentRoute: typeof WorkspaceSlugRoute
+    }
     '/$workspaceSlug/runs': {
       id: '/$workspaceSlug/runs'
       path: '/runs'
@@ -644,6 +663,7 @@ interface WorkspaceSlugRouteChildren {
   WorkspaceSlugPersonasRoute: typeof WorkspaceSlugPersonasRoute
   WorkspaceSlugRunnerRoute: typeof WorkspaceSlugRunnerRoute
   WorkspaceSlugRunsRoute: typeof WorkspaceSlugRunsRouteWithChildren
+  WorkspaceSlugSettingsRoute: typeof WorkspaceSlugSettingsRoute
   WorkspaceSlugTrendsRoute: typeof WorkspaceSlugTrendsRoute
 }
 
@@ -654,6 +674,7 @@ const WorkspaceSlugRouteChildren: WorkspaceSlugRouteChildren = {
   WorkspaceSlugPersonasRoute: WorkspaceSlugPersonasRoute,
   WorkspaceSlugRunnerRoute: WorkspaceSlugRunnerRoute,
   WorkspaceSlugRunsRoute: WorkspaceSlugRunsRouteWithChildren,
+  WorkspaceSlugSettingsRoute: WorkspaceSlugSettingsRoute,
   WorkspaceSlugTrendsRoute: WorkspaceSlugTrendsRoute,
 }
 

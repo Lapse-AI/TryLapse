@@ -580,6 +580,11 @@ export const api = {
       body: JSON.stringify({ email, password }),
     }),
   authMe: () => apiFetch<{ id: string; email: string; name: string }>("/auth/me"),
+  updateProfile: (body: { name?: string; currentPassword?: string; newPassword?: string }) =>
+    apiFetch<{ id: string; email: string; name: string }>("/auth/me", {
+      method: "PUT",
+      body: JSON.stringify(body),
+    }),
 
   // Workspaces
   myWorkspaces: () =>
