@@ -1,5 +1,5 @@
-import { createFileRoute, Link, useParams, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link, useParams, useNavigate, useSearch } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import {
   PageHeader,
   Panel,
@@ -9,15 +9,30 @@ import {
   LaunchGateBadge,
   ScoreDeltaBadge,
 } from "@/components/ui-bits";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationPrevious,
+  PaginationNext,
+  PaginationEllipsis,
+} from "@/components/ui/pagination";
 import { formatDuration } from "@/lib/mock-data";
+import { getPageNumbers } from "@/lib/pagination";
 import { useScopedRunSummaries, useScopedActiveJobs } from "@/lib/api/hooks";
 import { RunHistoryLiveRows } from "@/components/run-history-live-rows";
 import { GitCompare, Play, Loader2, Rocket } from "lucide-react";
 import { getWorkspace } from "@/lib/workspace";
 import { useTriggerJob, useApiHealth } from "@/lib/api/hooks";
 
+const PAGE_SIZE = 25;
+
 export const Route = createFileRoute("/$workspaceSlug/runs/")({
   head: () => ({ meta: [{ title: "Runs — TryLapse" }] }),
+  validateSearch: (search: Record<string, unknown>) => ({
+    page: Math.max(1, Number(search.page) || 1),
+  }),
   component: RunsList,
 });
 
@@ -42,6 +57,7 @@ function formatRunId(id: string): string {
 
 function RunsList() {
   const { workspaceSlug } = useParams({ from: "/$workspaceSlug/runs/" });
+  const { page } = useSearch({ from: "/$workspaceSlug/runs/" });
   const { data: runSummaries = [], allRuns } = useScopedRunSummaries();
   const { data: activeJobs = [] } = useScopedActiveJobs();
   const trigger = useTriggerJob();
@@ -51,6 +67,26 @@ function RunsList() {
   const latest = runSummaries[0];
   const previous = runSummaries[1];
   const [selected, setSelected] = useState<string[]>([]);
+
+  const totalPages = Math.max(1, Math.ceil(runSummaries.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+
+  function goToPage(p: number) {
+    void navigate({
+      to: "/$workspaceSlug/runs",
+      params: { workspaceSlug },
+      search: { page: Math.min(Math.max(1, p), totalPages) },
+    });
+  }
+
+  // Clamp back to the last valid page if the underlying data shrinks
+  // (e.g. switching workspace) and the requested page no longer exists.
+  useEffect(() => {
+    if (page > totalPages) goToPage(totalPages);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [totalPages]);
+
+  const pagedRuns = runSummaries.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   function toggleSelect(id: string) {
     setSelected((prev) => {
@@ -141,7 +177,7 @@ function RunsList() {
                 group={{ label: productLabel, targetUrl: targetLabel }}
                 workspaceSlug={workspaceSlug}
               />
-              {runSummaries.map((r) => {
+              {pagedRuns.map((r) => {
                 const isChecked = selected.includes(r.id);
                 return (
                   <tr
@@ -217,6 +253,61 @@ function RunsList() {
             </tbody>
           </table>
         </Panel>
+
+        {runSummaries.length > PAGE_SIZE && (
+          <div className="flex items-center justify-between mt-4">
+            <div className="text-xs text-muted-foreground">
+              Showing {(currentPage - 1) * PAGE_SIZE + 1}–
+              {Math.min(currentPage * PAGE_SIZE, runSummaries.length)} of {runSummaries.length} runs
+            </div>
+            <Pagination className="mx-0 w-auto justify-end">
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    href="#"
+                    aria-disabled={currentPage === 1}
+                    className={currentPage === 1 ? "pointer-events-none opacity-40" : ""}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      goToPage(currentPage - 1);
+                    }}
+                  />
+                </PaginationItem>
+                {getPageNumbers(currentPage, totalPages).map((p, i) =>
+                  p === "ellipsis" ? (
+                    <PaginationItem key={`ellipsis-${i}`}>
+                      <PaginationEllipsis />
+                    </PaginationItem>
+                  ) : (
+                    <PaginationItem key={p}>
+                      <PaginationLink
+                        href="#"
+                        isActive={p === currentPage}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          goToPage(p);
+                        }}
+                      >
+                        {p}
+                      </PaginationLink>
+                    </PaginationItem>
+                  ),
+                )}
+                <PaginationItem>
+                  <PaginationNext
+                    href="#"
+                    aria-disabled={currentPage === totalPages}
+                    className={currentPage === totalPages ? "pointer-events-none opacity-40" : ""}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      goToPage(currentPage + 1);
+                    }}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+        )}
       </div>
 
       {/* Floating compare bar — appears when 2 runs are selected */}
