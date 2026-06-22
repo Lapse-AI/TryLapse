@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, useParams } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { LogOut, UserPlus, X, Copy } from "lucide-react";
+import { LogOut, UserPlus, X, Copy, Eye, EyeOff } from "lucide-react";
 import { PageHeader, Panel, SectionTitle, Chip } from "@/components/ui-bits";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { api } from "@/lib/api/client";
 import {
   useAuthMe,
   useUpdateProfile,
@@ -17,7 +18,7 @@ import {
   useRemoveWorkspaceMember,
 } from "@/lib/api/hooks";
 import { signOut } from "@/lib/test-auth";
-import { clearWorkspace } from "@/lib/workspace";
+import { clearWorkspace, getWorkspace } from "@/lib/workspace";
 
 export const Route = createFileRoute("/$workspaceSlug/settings")({
   head: () => ({ meta: [{ title: "Settings — Launch Rehearsal" }] }),
@@ -289,6 +290,151 @@ function TeamSection({ workspaceSlug }: { workspaceSlug: string }) {
   );
 }
 
+function GuardrailsSection() {
+  const { data: workspace } = useWorkspace();
+  const saveWorkspace = useSaveWorkspace();
+  const [keywords, setKeywords] = useState("");
+
+  useEffect(() => {
+    setKeywords((workspace?.guardrails?.extraBlockedKeywords ?? []).join(", "));
+  }, [workspace?.guardrails?.extraBlockedKeywords]);
+
+  async function save() {
+    const list = keywords
+      .split(",")
+      .map((k) => k.trim())
+      .filter(Boolean);
+    try {
+      await saveWorkspace.mutateAsync({
+        ...workspace,
+        guardrails: { extraBlockedKeywords: list },
+      });
+      toast.success("Guardrails saved");
+    } catch {
+      toast.error("Failed to save guardrails");
+    }
+  }
+
+  return (
+    <Panel className="p-6 space-y-4">
+      <SectionTitle eyebrow="safety" title="Guardrails" />
+      <p className="text-sm text-muted-foreground -mt-2">
+        The agent already skips obviously destructive actions (delete, cancel, unsubscribe, logout,
+        etc.) during discovery. Add product-specific terms here if there's anything else it should
+        never click — these are <span className="font-medium">opt-in only</span>, not applied
+        automatically, since many products' real journeys legitimately test checkout or account
+        changes.
+      </p>
+      <div className="space-y-1.5 max-w-md">
+        <Label htmlFor="guardrail-keywords">Extra blocked keywords (comma-separated)</Label>
+        <Input
+          id="guardrail-keywords"
+          value={keywords}
+          onChange={(e) => setKeywords(e.target.value)}
+          placeholder="downgrade plan, terminate account, place order"
+        />
+      </div>
+      <Button onClick={save} disabled={saveWorkspace.isPending} size="sm" className="w-fit">
+        {saveWorkspace.isPending ? "Saving…" : "Save guardrails"}
+      </Button>
+    </Panel>
+  );
+}
+
+function TestCredentialsSection() {
+  const userWorkspace = getWorkspace();
+  const configId = userWorkspace?.configPath
+    ?.split("/")
+    .pop()
+    ?.replace(/\.yaml$/, "");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loginPath, setLoginPath] = useState("/login");
+  const [showPw, setShowPw] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  async function save() {
+    if (!email && !password) return;
+    setSaving(true);
+    try {
+      const result = await api.saveCredentials(email, password, {
+        configId,
+        loginPath: loginPath.trim() || undefined,
+      });
+      toast.success(
+        result.yamlUpdated
+          ? "Credentials saved + auth block added to config"
+          : "Credentials saved — used on next run",
+      );
+    } catch {
+      toast.error("Failed to save credentials");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <Panel className="p-6 space-y-4">
+      <SectionTitle eyebrow="auth" title="Test login credentials" />
+      <p className="text-sm text-muted-foreground -mt-2">
+        Used by the runner to log in as a test user before rehearsing authenticated journeys, for{" "}
+        <span className="font-mono text-xs">{configId ?? "this workspace's"}</span> config. Stored
+        in <code className="font-mono">.env</code>, never written into the config YAML.
+      </p>
+      <div className="grid gap-4 max-w-sm">
+        <div className="space-y-1.5">
+          <Label htmlFor="cred-email">Email / username</Label>
+          <Input
+            id="cred-email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@example.com"
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="cred-password">Password</Label>
+          <div className="relative">
+            <Input
+              id="cred-password"
+              type={showPw ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              className="pr-9"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPw(!showPw)}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground"
+            >
+              {showPw ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
+            </button>
+          </div>
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="cred-login-path">Login page path</Label>
+          <Input
+            id="cred-login-path"
+            value={loginPath}
+            onChange={(e) => setLoginPath(e.target.value)}
+            placeholder="/login"
+            className="font-mono"
+          />
+        </div>
+        <Button
+          onClick={save}
+          disabled={saving || (!email && !password)}
+          size="sm"
+          className="w-fit"
+        >
+          {saving ? "Saving…" : "Save credentials"}
+        </Button>
+      </div>
+    </Panel>
+  );
+}
+
 function NotificationsSection() {
   const { data: workspace } = useWorkspace();
   const saveWorkspace = useSaveWorkspace();
@@ -383,6 +529,8 @@ function SettingsPage() {
         <ProfileSection />
         <PasswordSection />
         <TeamSection workspaceSlug={workspaceSlug} />
+        <TestCredentialsSection />
+        <GuardrailsSection />
         <NotificationsSection />
         <DangerZoneSection />
       </div>

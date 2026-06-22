@@ -43,6 +43,19 @@ _SAFE_FILL: dict[str, str] = {
 _DESTRUCTIVE = {"delete", "remove", "cancel", "unsubscribe", "deactivate",
                 "disable", "logout", "sign out", "reset", "clear all", "archive"}
 
+
+def extend_destructive_keywords(extra: list[str]) -> None:
+    """Add workspace-configured guardrail keywords to the destructive-action
+    blocklist for this process.
+
+    Deliberately not pre-loaded with payment terms ("pay now", "place
+    order") — many products' real happy-path journeys include checkout
+    testing against a staging payment provider, and blocking that globally
+    would break exactly the thing customers want tested. Guardrails are
+    opt-in per workspace via Settings, not a blanket default.
+    """
+    _DESTRUCTIVE.update(k.strip().lower() for k in extra if k.strip())
+
 _SKIP_EXTENSIONS = {".png", ".jpg", ".jpeg", ".gif", ".svg", ".ico",
                     ".woff", ".woff2", ".ttf", ".css", ".map"}
 

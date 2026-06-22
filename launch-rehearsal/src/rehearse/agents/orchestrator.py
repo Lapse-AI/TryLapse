@@ -58,13 +58,32 @@ class AgentOrchestrator:
     def _run_deep_crawl(self) -> None:
         """Run exhaustive interactive discovery and feed into product intelligence."""
         try:
-            from rehearse.deep_crawler import run_deep_crawl, interaction_map_to_dict, save_interaction_map
+            from rehearse.deep_crawler import (
+                run_deep_crawl, interaction_map_to_dict, save_interaction_map,
+                extend_destructive_keywords,
+            )
             from rehearse.product_intelligence import analyze_product, load_product_model, save_product_model
 
             page = self.ctx.metadata.get("page")
             if page is None:
                 return
             target_url = self.ctx.config.target_url
+
+            # Workspace-level guardrails — extra keywords a customer wants
+            # blocked beyond the built-in destructive-action list (e.g. their
+            # own product's "downgrade", "terminate account" labels). Opt-in
+            # only; never pre-loaded with payment terms since many products'
+            # real journeys legitimately test checkout.
+            try:
+                import json as _json
+                workspace_path = self.artifacts_root.parent.parent / "workspace.json"
+                if workspace_path.is_file():
+                    ws = _json.loads(workspace_path.read_text())
+                    extra = (ws.get("guardrails") or {}).get("extraBlockedKeywords") or []
+                    if extra:
+                        extend_destructive_keywords(extra)
+            except Exception:
+                pass
 
             screenshots_dir = self.artifacts_root / "screenshots" / "discovery"
             run_id = self.ctx.evidence.run_id
