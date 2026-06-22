@@ -1,0 +1,32 @@
+name: Launch Rehearsal Gate (example — manual trigger)
+
+# Manual-trigger only. This demonstrates how a consuming repo would use
+# .github/actions/launch-rehearsal-gate against its own staging config — it
+# does not run on push/PR here because this repo has no staging deployment
+# of its own to rehearse against.
+
+on:
+  workflow_dispatch:
+    inputs:
+      config:
+        description: "Path to a rehearsal YAML config in this repo"
+        required: true
+        default: "launch-rehearsal/examples/enterprise-authenticated.yaml"
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: ./.github/actions/launch-rehearsal-gate
+        id: rehearsal
+        with:
+          config: ${{ inputs.config }}
+          fail-on-gate: "false"
+
+      - name: Show result
+        run: |
+          echo "Gate: ${{ steps.rehearsal.outputs.launch-gate }}"
+          echo "Verdict: ${{ steps.rehearsal.outputs.verdict }}"
+          echo "Readiness: ${{ steps.rehearsal.outputs.readiness }}"

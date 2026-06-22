@@ -490,6 +490,12 @@ def enqueue_run(
                             "error": None,
                         },
                     )
+                    if run_id and mode == "run":
+                        try:
+                            from rehearse.dashboard.notifications import notify_run_complete
+                            notify_run_complete(artifacts_root, run_id)
+                        except Exception:
+                            pass
                 else:
                     # Non-zero exit — try to salvage a partial bundle before marking failed
                     _try_salvage_partial_run(artifacts_root, pre_run_id or run_prefix, output_dir)

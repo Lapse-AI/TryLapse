@@ -1,0 +1,124 @@
+name: "Launch Rehearsal Gate"
+description: "Run a Launch Rehearsal staging rehearsal and fail the workflow if the launch gate is CAUTION or BLOCKED."
+author: "TryLapse"
+
+inputs:
+  config:
+    description: "Path to the rehearsal YAML config (relative to the consuming repo root)"
+    required: true
+  repo:
+    description: "GitHub repo to install the rehearse package from (owner/name)"
+    required: false
+    default: "Lapse-AI/TryLapse"
+  ref:
+    description: "Git ref of the rehearse package to install"
+    required: false
+    default: "main"
+  python-version:
+    description: "Python version to run rehearse with"
+    required: false
+    default: "3.12"
+  output-dir:
+    description: "Artifacts output directory"
+    required: false
+    default: "artifacts"
+  use-llm:
+    description: "Pass --llm to enable persona LLM analysis (requires an LLM API key env var)"
+    required: false
+    default: "false"
+  fail-on-gate:
+    description: "Fail this step when the launch gate is CAUTION or BLOCKED"
+    required: false
+    default: "true"
+
+outputs:
+  launch-gate:
+    description: "PASS | REVIEW | CAUTION | BLOCKED"
+    value: ${{ steps.run.outputs.launch-gate }}
+  verdict:
+    description: "One-sentence human verdict"
+    value: ${{ steps.run.outputs.verdict }}
+  readiness:
+    description: "Numeric readiness score (0-100)"
+    value: ${{ steps.run.outputs.readiness }}
+  run-id:
+    description: "The rehearsal run ID"
+    value: ${{ steps.run.outputs.run-id }}
+  bundle-path:
+    description: "Path to the full analysis bundle JSON"
+    value: ${{ steps.run.outputs.bundle-path }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Install launch-rehearsal
+      shell: bash
+      run: |
+        pip install --upgrade pip
+        pip install "rehearse @ git+https://github.com/${{ inputs.repo }}.git@${{ inputs.ref }}#subdirectory=launch-rehearsal"
+
+    - name: Install Playwright browser
+      shell: bash
+      run: playwright install --with-deps chromium
+
+    - name: Run rehearsal
+      id: run
+      shell: bash
+      run: |
+        set +e
+        LLM_FLAG=""
+        if [ "${{ inputs.use-llm }}" = "true" ]; then
+          LLM_FLAG="--llm"
+        fi
+
+        rehearse run \
+          --config "${{ inputs.config }}" \
+          --output "${{ inputs.output-dir }}" \
+          $LLM_FLAG
+        CLI_EXIT=$?
+
+        # Read the machine-readable result file, not stdout — stdout has log
+        # lines (preflight, LLM provider, the human Gate echo) mixed in with
+        # the JSON, so it isn't safe to parse directly.
+        RESULT_FILE="${{ inputs.output-dir }}/last-run-result.json"
+
+        if [ $CLI_EXIT -ne 0 ] && [ ! -f "$RESULT_FILE" ]; then
+          echo "rehearse run crashed (exit $CLI_EXIT) before producing a result — tool error, not a gate failure" >> "$GITHUB_STEP_SUMMARY"
+          exit $CLI_EXIT
+        fi
+
+        RUN_ID=$(python -c "import json; print(json.load(open('$RESULT_FILE')).get('run_id',''))" 2>/dev/null || echo "")
+        GATE=$(python -c "import json; print(json.load(open('$RESULT_FILE')).get('launch_gate','UNKNOWN'))" 2>/dev/null || echo "UNKNOWN")
+        VERDICT=$(python -c "import json; print(json.load(open('$RESULT_FILE')).get('verdict',''))" 2>/dev/null || echo "")
+        READINESS=$(python -c "import json; print(json.load(open('$RESULT_FILE')).get('readiness_score',''))" 2>/dev/null || echo "")
+        BUNDLE=$(python -c "import json; print(json.load(open('$RESULT_FILE')).get('bundle',''))" 2>/dev/null || echo "")
+
+        echo "launch-gate=$GATE" >> "$GITHUB_OUTPUT"
+        echo "verdict=$VERDICT" >> "$GITHUB_OUTPUT"
+        echo "readiness=$READINESS" >> "$GITHUB_OUTPUT"
+        echo "run-id=$RUN_ID" >> "$GITHUB_OUTPUT"
+        echo "bundle-path=$BUNDLE" >> "$GITHUB_OUTPUT"
+
+        {
+          echo "### Launch Rehearsal — Gate: $GATE"
+          echo ""
+          echo "$VERDICT"
+          echo ""
+          echo "| Field | Value |"
+          echo "|---|---|"
+          echo "| Run ID | \`$RUN_ID\` |"
+          echo "| Readiness | $READINESS |"
+        } >> "$GITHUB_STEP_SUMMARY"
+
+        cat "$RESULT_FILE"
+
+        if [ "${{ inputs.fail-on-gate }}" = "true" ] && { [ "$GATE" = "BLOCKED" ] || [ "$GATE" = "CAUTION" ]; }; then
+          echo "::error::Launch gate is $GATE — failing the workflow (fail-on-gate=true)"
+          exit 1
+        fi
+        exit 0

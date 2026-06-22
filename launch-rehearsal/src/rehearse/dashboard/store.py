@@ -62,6 +62,8 @@ def _default_workspace(artifacts_root: Path) -> dict[str, Any]:
         "retentionDays": 90,
         "piiRedaction": False,
         "env": "staging",
+        "slackWebhookUrl": None,
+        "webhookUrl": None,
     }
 
 
@@ -925,14 +927,42 @@ def get_integrations() -> list[dict[str, Any]]:
     ]
 
 
+_ALERT_DEFAULTS: list[dict[str, Any]] = [
+    {"id": "al_red", "name": "Red readiness", "kind": "slack", "trigger": "readiness == Red", "enabled": True},
+    {"id": "al_p0", "name": "New P0 issue", "kind": "email", "trigger": "issue.severity == P0", "enabled": True},
+    {"id": "al_flake", "name": "Flake rate spike", "kind": "webhook", "trigger": "flake_rate > 5%", "enabled": False},
+    {"id": "al_ws", "name": "Run complete", "kind": "slack", "trigger": "run.complete", "enabled": True},
+]
+
+
 def get_alerts(artifacts_root: Path) -> list[dict[str, Any]]:
+    """Alert definitions merged with persisted enabled/disabled state from workspace.json.
+
+    The id/kind/trigger/name are fixed; only `enabled` is user-editable today.
+    """
     ws = get_workspace(artifacts_root)
-    return [
-        {"id": "al_red", "name": "Red readiness", "kind": "slack", "trigger": "readiness == Red", "enabled": True},
-        {"id": "al_p0", "name": "New P0 issue", "kind": "email", "trigger": "issue.severity == P0", "enabled": True},
-        {"id": "al_flake", "name": "Flake rate spike", "kind": "webhook", "trigger": "flake_rate > 5%", "enabled": False},
-        {"id": "al_ws", "name": f"Workspace {ws.get('slug', 'default')}", "kind": "slack", "trigger": "run.complete", "enabled": True},
-    ]
+    overrides: dict[str, bool] = ws.get("alerts") or {}
+    alerts = []
+    for a in _ALERT_DEFAULTS:
+        entry = dict(a)
+        if a["id"] in overrides:
+            entry["enabled"] = bool(overrides[a["id"]])
+        if a["id"] == "al_ws":
+            entry["name"] = f"Workspace {ws.get('slug', 'default')}"
+        alerts.append(entry)
+    return alerts
+
+
+def update_alert(artifacts_root: Path, alert_id: str, enabled: bool) -> list[dict[str, Any]]:
+    """Toggle an alert's enabled state, persisted on the workspace record."""
+    if alert_id not in {a["id"] for a in _ALERT_DEFAULTS}:
+        raise ValueError(f"Unknown alert id: {alert_id}")
+    ws = get_workspace(artifacts_root)
+    alerts_state: dict[str, bool] = dict(ws.get("alerts") or {})
+    alerts_state[alert_id] = enabled
+    ws["alerts"] = alerts_state
+    save_workspace(artifacts_root, ws)
+    return get_alerts(artifacts_root)
 
 
 def run_preflight(url: str, *, allow_localhost: bool = False) -> dict[str, Any]:

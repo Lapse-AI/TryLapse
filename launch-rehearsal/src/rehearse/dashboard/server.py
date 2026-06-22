@@ -17,6 +17,7 @@ from rehearse.dashboard.store import (
     backfill_all,
     diff_runs,
     get_alerts,
+    update_alert,
     get_annotations,
     get_backlog,
     get_init_wizard,
@@ -1918,6 +1919,17 @@ class _Handler(BaseHTTPRequestHandler):
         if path == "/api/workspace":
             body = self._read_json_body()
             self._send_json(save_workspace(root, body))
+            return
+
+        if path.startswith("/api/alerts/"):
+            alert_id = path.split("/")[-1]
+            body = self._read_json_body()
+            try:
+                updated = update_alert(root, alert_id, bool(body.get("enabled", False)))
+            except ValueError as exc:
+                self._send_json({"error": str(exc)}, status=400)
+                return
+            self._send_json(updated)
             return
 
         # ── Outcome feedback loop ─────────────────────────────────────────────

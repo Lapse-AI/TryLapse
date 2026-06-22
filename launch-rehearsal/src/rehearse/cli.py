@@ -42,7 +42,20 @@ def main() -> None:
     is_flag=True,
     help="LLM persona analysis (NVIDIA NIM or OpenAI-compatible API via env)",
 )
-def run_cmd(config: Path, output: Path, dry_run: bool, no_crawl: bool, run_id: str | None, llm: bool) -> None:
+@click.option(
+    "--fail-on-gate",
+    is_flag=True,
+    help="Exit non-zero if the launch gate is CAUTION or BLOCKED (for CI/CD use)",
+)
+def run_cmd(
+    config: Path,
+    output: Path,
+    dry_run: bool,
+    no_crawl: bool,
+    run_id: str | None,
+    llm: bool,
+    fail_on_gate: bool,
+) -> None:
     """Crawl (optional), execute journeys, multi-agent analysis, scorecard."""
     try:
         from rehearse.env_loader import load_dotenv_files
@@ -73,28 +86,64 @@ def run_cmd(config: Path, output: Path, dry_run: bool, no_crawl: bool, run_id: s
 
         evidence, scorecard_path, ctx = run_rehearsal(cfg, output_dir=output, dry_run=False, use_llm=llm, config_path=config, run_id=run_id)
         analysis = ctx.synthesis if ctx else analyze_run(cfg, evidence)
-        click.echo(
-            json.dumps(
-                {
-                    "run_id": evidence.run_id,
-                    "outcome": evidence.outcome,
-                    "readiness": analysis.readiness,
-                    "issues": len(analysis.issues),
-                    "delights": len(analysis.delights),
-                    "pages_crawled": len(ctx.sitemap.pages) if ctx and ctx.sitemap else 0,
-                    "agents": len(ctx.agent_reports) if ctx else 0,
-                    "llm_enabled": llm,
-                    "scorecard": str(scorecard_path) if scorecard_path else None,
-                    "sitemap": (
-                        str(output / "sitemaps" / f"{evidence.run_id}-sitemap.md")
-                        if ctx and ctx.sitemap
-                        else None
-                    ),
-                    "evidence": str(output / "runs" / f"{evidence.run_id}.json"),
-                },
-                indent=2,
-            )
-        )
+
+        # The Gate (PASS/REVIEW/CAUTION/BLOCKED) lives in the analysis bundle,
+        # written by run_rehearsal() to output/analysis/{run_id}.json — read it
+        # back so the CLI surfaces the actual verdict, not just the legacy
+        # Green/Amber/Red band computed before the bundle exists.
+        bundle_path = output / "analysis" / f"{evidence.run_id}.json"
+        launch_gate: str | None = None
+        verdict: str | None = None
+        readiness_score: int | None = None
+        flake_rate: float | None = None
+        if bundle_path.is_file():
+            try:
+                bundle_summary = json.loads(bundle_path.read_text()).get("summary", {})
+                launch_gate = bundle_summary.get("launchGate")
+                verdict = bundle_summary.get("verdict")
+                readiness_score = bundle_summary.get("readiness")
+                flake_rate = bundle_summary.get("flakeRate")
+            except Exception:
+                pass
+
+        result = {
+            "run_id": evidence.run_id,
+            "outcome": evidence.outcome,
+            "launch_gate": launch_gate,
+            "verdict": verdict,
+            "readiness_score": readiness_score,
+            "readiness_band": analysis.readiness,
+            "flake_rate": flake_rate,
+            "issues": len(analysis.issues),
+            "delights": len(analysis.delights),
+            "pages_crawled": len(ctx.sitemap.pages) if ctx and ctx.sitemap else 0,
+            "agents": len(ctx.agent_reports) if ctx else 0,
+            "llm_enabled": llm,
+            "scorecard": str(scorecard_path) if scorecard_path else None,
+            "sitemap": (
+                str(output / "sitemaps" / f"{evidence.run_id}-sitemap.md")
+                if ctx and ctx.sitemap
+                else None
+            ),
+            "evidence": str(output / "runs" / f"{evidence.run_id}.json"),
+            "bundle": str(bundle_path) if bundle_path.is_file() else None,
+        }
+        click.echo(json.dumps(result, indent=2))
+        if launch_gate:
+            click.echo(f"\nLaunch Gate: {launch_gate} — {verdict or ''}", err=False)
+
+        # Machine-readable result, written separately from stdout — log lines
+        # (preflight, LLM provider, the human Gate echo above) make stdout
+        # unsafe to parse as pure JSON. CI tooling should read this file, not
+        # scrape stdout.
+        try:
+            (output / "last-run-result.json").write_text(json.dumps(result, indent=2))
+        except Exception:
+            pass
+
+        if fail_on_gate and launch_gate in ("CAUTION", "BLOCKED"):
+            click.echo(f"\n--fail-on-gate: exiting non-zero (gate={launch_gate})", err=True)
+            sys.exit(2)
     except RehearseError as e:
         click.echo(f"Error [{type(e).__name__}]: {e}", err=True)
         sys.exit(1)
