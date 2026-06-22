@@ -548,6 +548,69 @@ def _resolve_locator(page: Page, step: Step) -> tuple[Locator, str]:
     raise PreflightError(f"Step requires selector or intent: {step.action}")
 
 
+# ── Behavioral-profile-driven execution ───────────────────────────────────────
+# tech_literacy / patience / trust_level previously only biased LLM severity
+# grading after the fact. These three functions make the same traits change
+# what actually happens in the browser, so a "low patience" persona produces a
+# genuinely different StepSnapshot (timeout, abandon) rather than the same
+# snapshot with a harsher label glued on afterward.
+
+_LOW_PATIENCE_TIMEOUT_FACTOR = 0.6
+_HIGH_PATIENCE_TIMEOUT_FACTOR = 1.3
+
+_SENSITIVE_ACTION_KEYWORDS = (
+    "pay", "purchase", "buy", "subscribe", "checkout", "delete", "remove",
+    "confirm", "submit", "upgrade", "billing", "card", "cancel",
+)
+
+
+def _resolve_persona(config, persona_id: str):
+    return next((p for p in config.personas if p.id == persona_id), None)
+
+
+def _behavioral_timeout(base_timeout_ms: int, persona) -> int:
+    """Scale the step timeout by patience.
+
+    Low-patience personas give up sooner on a slow step — the timeout fires
+    earlier, producing a real "abandoned" outcome instead of a relabeled pass.
+    High-patience personas tolerate more latency before failing.
+    """
+    patience = getattr(persona, "patience", "medium") if persona else "medium"
+    if patience == "low":
+        return int(base_timeout_ms * _LOW_PATIENCE_TIMEOUT_FACTOR)
+    if patience == "high":
+        return int(base_timeout_ms * _HIGH_PATIENCE_TIMEOUT_FACTOR)
+    return base_timeout_ms
+
+
+def _behavioral_pre_action_pause_ms(persona, step: Step) -> int:
+    """Hesitation before a sensitive click/fill.
+
+    Skeptical personas pause to re-read pricing, payment, or destructive
+    actions before committing; trusting personas act immediately.
+    """
+    if persona is None:
+        return 0
+    if step.action not in ("click", "fill"):
+        return 0
+    trust_level = getattr(persona, "trust_level", "neutral")
+    if trust_level != "skeptical":
+        return 0
+    blob = f"{step.intent or ''} {step.selector or ''} {step.value or ''}".lower()
+    if any(k in blob for k in _SENSITIVE_ACTION_KEYWORDS):
+        return 1200
+    return 0
+
+
+def _behavioral_settle_pause_ms(persona) -> int:
+    """Post-navigate read pause for novice users — they scan a new page before acting."""
+    if persona is None:
+        return 0
+    if getattr(persona, "tech_literacy", "intermediate") == "novice":
+        return 800
+    return 0
+
+
 class BrowserSession:
     def __init__(
         self,
@@ -920,7 +983,8 @@ class BrowserSession:
     ) -> StepSnapshot:
         page = self.page
         assert page is not None
-        timeout = self.config.budgets.step_timeout_ms
+        persona_obj = _resolve_persona(self.config, persona_id)
+        timeout = _behavioral_timeout(self.config.budgets.step_timeout_ms, persona_obj)
         self.reset_run_errors()
         started = time.perf_counter()
         vp = viewport or self._viewport
@@ -945,25 +1009,25 @@ class BrowserSession:
                 response = page.goto(nav_url, wait_until="domcontentloaded", timeout=timeout)
                 page.wait_for_load_state("networkidle", timeout=min(timeout, 15000))
                 _inject_animation_freeze(page)
+                _settle_ms = _behavioral_settle_pause_ms(persona_obj)
+                if _settle_ms:
+                    page.wait_for_timeout(_settle_ms)
             elif step.action == "wait":
                 ms = int(step.value or step.url or "1000")
                 page.wait_for_timeout(ms)
             elif step.action == "fill":
                 value = step.resolve_value() if step.value else ""
-                _fill_persona = next(
-                    (p for p in self.config.personas if p.id == persona_id), None
-                )
-                if _fill_persona and getattr(_fill_persona, "screen_reader", False):
+                if persona_obj and getattr(persona_obj, "screen_reader", False):
                     loc, resolution_note = _resolve_locator_by_aria(page, step, timeout)
                 else:
                     loc, resolution_note = _resolve_locator(page, step)
                 focus_locator = loc
+                _pause_ms = _behavioral_pre_action_pause_ms(persona_obj, step)
+                if _pause_ms:
+                    page.wait_for_timeout(_pause_ms)
                 loc.fill(value or "", timeout=timeout)
             elif step.action == "click":
-                _click_persona = next(
-                    (p for p in self.config.personas if p.id == persona_id), None
-                )
-                if _click_persona and getattr(_click_persona, "screen_reader", False):
+                if persona_obj and getattr(persona_obj, "screen_reader", False):
                     loc, resolution_note = _resolve_locator_by_aria(page, step, timeout)
                 else:
                     loc, resolution_note = _resolve_locator(page, step)
@@ -972,12 +1036,9 @@ class BrowserSession:
                     snap.outcome = "partial"
                     snap.note = "Target control is disabled"
                 else:
-                    # reuse _click_persona resolved above
-                    persona_obj = _click_persona
-                    if persona_obj is None:
-                        persona_obj = next(
-                            (p for p in self.config.personas if p.id == persona_id), None
-                        )
+                    _pause_ms = _behavioral_pre_action_pause_ms(persona_obj, step)
+                    if _pause_ms:
+                        page.wait_for_timeout(_pause_ms)
                     if persona_obj and getattr(persona_obj, "keyboard_only", False):
                         loc.focus(timeout=timeout)
                         # Check focus-visible before activation
