@@ -476,6 +476,55 @@ def analyze_persona_llm(ctx: RunContext, persona: Persona) -> dict[str, Any] | N
     return parsed
 
 
+def template_persona_analysis(ctx: RunContext, persona: Persona) -> dict[str, Any]:
+    """Heuristic floor for the persona LLM hop — Carmack's board finding.
+
+    When analyze_persona_llm() fails outright (timeout, network, invalid JSON),
+    the persona agent previously returned an empty report: no findings, no
+    delights, no journey_grades for that persona, with the failure only visible
+    in agent metadata. That's a silent degrade — exactly the kind of failure
+    point a 5-stage LLM pipeline accumulates one of per hop.
+
+    This computes journey_grades and a one-line summary from evidence alone
+    (pass/fail/flaky step outcomes), so a total LLM outage still produces a
+    coherent, non-empty result — mirroring the template fallback judge_step()
+    and judge_journey() already use in behavioral_judge.py.
+    """
+    steps_by_journey: dict[str, list] = {}
+    for s in ctx.evidence.steps:
+        if s.persona_id != persona.id:
+            continue
+        steps_by_journey.setdefault(s.journey_id, []).append(s)
+
+    grades: dict[str, str] = {}
+    fail_journeys: list[str] = []
+    for journey_id, steps in steps_by_journey.items():
+        if any(s.outcome == "fail" for s in steps):
+            grades[journey_id] = "fail"
+            fail_journeys.append(journey_id)
+        elif any(s.flaky or s.outcome == "partial" for s in steps):
+            grades[journey_id] = "partial"
+        else:
+            grades[journey_id] = "pass"
+
+    total = len(grades) or 1
+    passed = sum(1 for g in grades.values() if g == "pass")
+    if fail_journeys:
+        summary = f"{persona.name}: {len(fail_journeys)}/{total} journeys failed (heuristic fallback — LLM unavailable)."
+    elif passed < total:
+        summary = f"{persona.name}: {passed}/{total} journeys passed cleanly (heuristic fallback — LLM unavailable)."
+    else:
+        summary = f"{persona.name}: all {total} journeys passed (heuristic fallback — LLM unavailable)."
+
+    return {
+        "summary": summary,
+        "journey_grades": grades,
+        "issues": [],
+        "delights": [],
+        "source": "template",
+    }
+
+
 def llm_to_findings(data: dict[str, Any], persona_id: str) -> tuple[list[Finding], list[Delight], dict[str, str]]:
     findings: list[Finding] = []
     delights: list[Delight] = []

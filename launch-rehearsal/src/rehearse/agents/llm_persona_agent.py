@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from rehearse.agents.base import BaseAgent
 from rehearse.context import AgentReport, RunContext
-from rehearse.llm import analyze_persona_llm, llm_enabled, llm_to_findings
+from rehearse.llm import analyze_persona_llm, llm_enabled, llm_to_findings, template_persona_analysis
 
 
 class LLMPersonaAgent(BaseAgent):
@@ -25,13 +25,16 @@ class LLMPersonaAgent(BaseAgent):
             return report
 
         data = analyze_persona_llm(ctx, self.persona)
+        degraded = False
+        llm_error: str | None = None
         if not data:
-            report.summary = "LLM analysis unavailable"
-            return report
-        if data.get("error"):
-            report.summary = data.get("summary", "LLM error")
-            report.metadata = {"error": data.get("error")}
-            return report
+            data = template_persona_analysis(ctx, self.persona)
+            degraded = True
+            llm_error = "no_response"
+        elif data.get("error"):
+            llm_error = data.get("error")
+            data = template_persona_analysis(ctx, self.persona)
+            degraded = True
 
         findings, delights, grades = llm_to_findings(data, self.persona.id)
         report.findings = findings
@@ -47,8 +50,10 @@ class LLMPersonaAgent(BaseAgent):
         # Rough USD estimate (DeepSeek-class pricing ~$0.14/$0.28 per 1M tokens)
         cost_usd = (input_tokens * 0.14 + output_tokens * 0.28) / 1_000_000 if total_tokens else 0.0
         report.metadata = {
-            "provider": llm_provider(),
-            "model": _model(),
+            "provider": "heuristic_fallback" if degraded else llm_provider(),
+            "model": None if degraded else _model(),
+            "degraded": degraded,
+            "llmError": llm_error,
             "issues": len(findings),
             "delights": len(delights),
             "input_tokens": input_tokens,
