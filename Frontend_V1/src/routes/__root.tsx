@@ -80,7 +80,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   beforeLoad: ({ location }) => {
     if (typeof window === "undefined") return;
     const isPublic =
-      PUBLIC_PATHS.has(location.pathname) || location.pathname.startsWith("/onboarding");
+      PUBLIC_PATHS.has(location.pathname) ||
+      location.pathname.startsWith("/onboarding") ||
+      location.pathname.startsWith("/join/");
     if (isPublic) return;
     if (!getTestUser()) throw redirect({ to: "/signin" });
     if (location.pathname === "/") {
@@ -133,7 +135,10 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const isAuthPage = PUBLIC_PATHS.has(pathname) || pathname.startsWith("/onboarding");
+  const isAuthPage =
+    PUBLIC_PATHS.has(pathname) ||
+    pathname.startsWith("/onboarding") ||
+    pathname.startsWith("/join/");
   const recordingRef = useRef(null);
 
   return (

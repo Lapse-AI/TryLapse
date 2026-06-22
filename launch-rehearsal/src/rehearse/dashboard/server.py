@@ -302,6 +302,58 @@ class _Handler(BaseHTTPRequestHandler):
             self._send_json(workspaces)
             return
 
+        # ── Workspace membership ────────────────────────────────────────────
+        if path.startswith("/api/workspaces/") and path.endswith("/members"):
+            payload = self._require_jwt()
+            if not payload:
+                self._send_json({"error": "Authentication required"}, status=401)
+                return
+            slug = path.split("/")[3]
+            from rehearse.dashboard.workspace_store import get_workspace_by_slug, get_members
+            ws = get_workspace_by_slug(root, slug)
+            if not ws:
+                self._send_json({"error": "Workspace not found"}, status=404)
+                return
+            self._send_json(get_members(root, ws["id"]))
+            return
+
+        # GET /api/invites/{token} — public lookup so an invitee can see what
+        # they're accepting before signing in/up. No auth required: the
+        # token itself is the secret, same as any email-invite link.
+        if path.startswith("/api/invites/"):
+            token = path.split("/")[3]
+            from rehearse.dashboard.workspace_store import get_invite, get_workspace_by_id
+            invite = get_invite(root, token)
+            if not invite:
+                self._send_json({"error": "Invite not found"}, status=404)
+                return
+            ws = get_workspace_by_id(root, invite["workspaceId"])
+            self._send_json({
+                **invite,
+                "workspaceName": ws["name"] if ws else None,
+                "workspaceSlug": ws["slug"] if ws else None,
+            })
+            return
+
+        if path.startswith("/api/workspaces/") and path.endswith("/invites"):
+            payload = self._require_jwt()
+            if not payload:
+                self._send_json({"error": "Authentication required"}, status=401)
+                return
+            slug = path.split("/")[3]
+            from rehearse.dashboard.workspace_store import (
+                get_workspace_by_slug, get_member_role, list_invites,
+            )
+            ws = get_workspace_by_slug(root, slug)
+            if not ws:
+                self._send_json({"error": "Workspace not found"}, status=404)
+                return
+            if get_member_role(root, ws["id"], payload["sub"]) is None:
+                self._send_json({"error": "Not a member of this workspace"}, status=403)
+                return
+            self._send_json(list_invites(root, ws["id"]))
+            return
+
         if not self._check_auth(path):
             return
 
@@ -896,6 +948,59 @@ class _Handler(BaseHTTPRequestHandler):
                 self._send_json({"error": str(exc)}, status=400)
                 return
             self._send_json(ws, status=201)
+            return
+
+        # ── Workspace membership: invite + accept ───────────────────────────
+        if path.startswith("/api/workspaces/") and path.endswith("/invite"):
+            payload = self._require_jwt()
+            if not payload:
+                self._send_json({"error": "Authentication required"}, status=401)
+                return
+            slug = path.split("/")[3]
+            from rehearse.dashboard.workspace_store import (
+                get_workspace_by_slug, get_member_role, create_invite,
+            )
+            ws = get_workspace_by_slug(root, slug)
+            if not ws:
+                self._send_json({"error": "Workspace not found"}, status=404)
+                return
+            if get_member_role(root, ws["id"], payload["sub"]) != "owner":
+                self._send_json({"error": "Only the workspace owner can invite teammates"}, status=403)
+                return
+            body = self._read_json_body()
+            email = str(body.get("email") or "").strip()
+            if not email:
+                self._send_json({"error": "email is required"}, status=400)
+                return
+            role = str(body.get("role") or "member")
+            if role not in ("owner", "member"):
+                self._send_json({"error": "role must be 'owner' or 'member'"}, status=400)
+                return
+            invite = create_invite(root, ws["id"], email, role, payload["sub"])
+            self._send_json(invite, status=201)
+            return
+
+        if path.startswith("/api/invites/") and path.endswith("/accept"):
+            payload = self._require_jwt()
+            if not payload:
+                self._send_json({"error": "Authentication required"}, status=401)
+                return
+            token = path.split("/")[3]
+            from rehearse.dashboard.workspace_store import accept_invite, get_invite
+            invite = get_invite(root, token)
+            if not invite:
+                self._send_json({"error": "Invite not found"}, status=404)
+                return
+            if invite["email"] != payload["email"].strip().lower():
+                self._send_json(
+                    {"error": "This invite was sent to a different email address"}, status=403
+                )
+                return
+            result = accept_invite(root, token, payload["sub"])
+            if not result:
+                self._send_json({"error": "Invite already used"}, status=409)
+                return
+            self._send_json(result, status=201)
             return
 
         if not self._check_auth(path):
@@ -1894,6 +1999,34 @@ class _Handler(BaseHTTPRequestHandler):
         if not self._check_auth(path):
             return
 
+        # DELETE /api/workspaces/{slug}/members/{userId}
+        if path.startswith("/api/workspaces/") and "/members/" in path:
+            payload = self._require_jwt()
+            if not payload:
+                self._send_json({"error": "Authentication required"}, status=401)
+                return
+            parts = path.split("/")
+            slug, target_user_id = parts[3], parts[5]
+            from rehearse.dashboard.workspace_store import (
+                get_workspace_by_slug, get_member_role, remove_member,
+            )
+            ws = get_workspace_by_slug(root, slug)
+            if not ws:
+                self._send_json({"error": "Workspace not found"}, status=404)
+                return
+            requester_role = get_member_role(root, ws["id"], payload["sub"])
+            if requester_role != "owner" and target_user_id != payload["sub"]:
+                self._send_json(
+                    {"error": "Only the workspace owner can remove other members"}, status=403
+                )
+                return
+            if target_user_id == payload["sub"] and requester_role == "owner":
+                self._send_json({"error": "The owner cannot remove themselves"}, status=400)
+                return
+            remove_member(root, ws["id"], target_user_id)
+            self._send_json({"removed": target_user_id})
+            return
+
         # DELETE /api/persona-library/{id}
         if path.startswith("/api/persona-library/"):
             pid = path.split("/")[-1]
@@ -1995,9 +2128,10 @@ def serve_dashboard(artifacts_root: Path, host: str = "127.0.0.1", port: int = 8
     artifacts_root = artifacts_root.resolve()
     # Ensure auth + workspace tables exist (idempotent)
     from rehearse.dashboard.auth_store import ensure_users_table
-    from rehearse.dashboard.workspace_store import ensure_workspaces_table
+    from rehearse.dashboard.workspace_store import ensure_workspaces_table, ensure_membership_tables
     ensure_users_table(artifacts_root)
     ensure_workspaces_table(artifacts_root)
+    ensure_membership_tables(artifacts_root)
     # Migrate legacy jobs.json → SQLite on first boot
     from rehearse.dashboard.job_store import migrate_from_json
     migrated = migrate_from_json(artifacts_root)

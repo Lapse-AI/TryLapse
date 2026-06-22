@@ -22,7 +22,7 @@ import {
   User,
 } from "lucide-react";
 import { formatRel } from "@/lib/mock-data";
-import { useLatestRun, useWorkspace, useScopedActiveJobs } from "@/lib/api/hooks";
+import { useLatestRun, useWorkspace, useScopedActiveJobs, useAuthMe } from "@/lib/api/hooks";
 import { useTestGroup, displayTargetForGroup } from "@/hooks/use-test-group";
 import { Chip } from "@/components/ui-bits";
 import { getWorkspace } from "@/lib/workspace";
@@ -117,6 +117,7 @@ export function AppSidebar() {
   const { data: activeJobs = [] } = useScopedActiveJobs();
   const liveJob = activeJobs[0];
   const { data: workspace } = useWorkspace();
+  const { data: me } = useAuthMe();
   const { group, resolvedConfigId } = useTestGroup();
   const targetLabel = displayTargetForGroup(group);
   // Start null to match server render, then populate from localStorage after mount
@@ -178,7 +179,10 @@ export function AppSidebar() {
             </div>
             {userWorkspace && (
               <div className="mt-1">
-                <Chip tone="violet">{userWorkspace.teamRole}</Chip>
+                {/* Signed-in user's identity, not the frozen onboarding role —
+                    a teammate who joins later must see their own name here,
+                    not whatever the workspace creator picked once. */}
+                <Chip tone="violet">{me?.name ?? userWorkspace.teamRole}</Chip>
               </div>
             )}
             {!userWorkspace && (
@@ -250,6 +254,7 @@ export function AppSidebar() {
                       key={it.to}
                       to="/$workspaceSlug/runs"
                       params={{ workspaceSlug: userWorkspace.slug }}
+                      search={{ page: 1 }}
                       aria-current={active ? "page" : undefined}
                       className={linkClassName(active)}
                     >

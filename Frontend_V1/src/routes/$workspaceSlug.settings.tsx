@@ -1,12 +1,21 @@
 import { useEffect, useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useParams } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { LogOut } from "lucide-react";
-import { PageHeader, Panel, SectionTitle } from "@/components/ui-bits";
+import { LogOut, UserPlus, X, Copy } from "lucide-react";
+import { PageHeader, Panel, SectionTitle, Chip } from "@/components/ui-bits";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useAuthMe, useUpdateProfile, useWorkspace, useSaveWorkspace } from "@/lib/api/hooks";
+import {
+  useAuthMe,
+  useUpdateProfile,
+  useWorkspace,
+  useSaveWorkspace,
+  useWorkspaceMembers,
+  useWorkspaceInvites,
+  useInviteToWorkspace,
+  useRemoveWorkspaceMember,
+} from "@/lib/api/hooks";
 import { signOut } from "@/lib/test-auth";
 import { clearWorkspace } from "@/lib/workspace";
 
@@ -138,6 +147,148 @@ function PasswordSection() {
   );
 }
 
+function TeamSection({ workspaceSlug }: { workspaceSlug: string }) {
+  const { data: me } = useAuthMe();
+  const { data: members = [], isLoading: membersLoading } = useWorkspaceMembers(workspaceSlug);
+  const { data: invites = [] } = useWorkspaceInvites(workspaceSlug);
+  const invite = useInviteToWorkspace(workspaceSlug);
+  const removeMember = useRemoveWorkspaceMember(workspaceSlug);
+
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState<"owner" | "member">("member");
+
+  const myMembership = members.find((m) => m.userId === me?.id);
+  const isOwner = myMembership?.role === "owner";
+
+  async function sendInvite() {
+    const trimmed = email.trim();
+    if (!trimmed) return;
+    try {
+      const result = await invite.mutateAsync({ email: trimmed, role });
+      const link = `${window.location.origin}/join/${result.token}`;
+      await navigator.clipboard.writeText(link).catch(() => {});
+      toast.success(`Invite link copied — share it with ${trimmed}`);
+      setEmail("");
+    } catch {
+      toast.error("Failed to create invite");
+    }
+  }
+
+  async function copyInviteLink(token: string) {
+    const link = `${window.location.origin}/join/${token}`;
+    await navigator.clipboard.writeText(link).catch(() => {});
+    toast.success("Invite link copied");
+  }
+
+  async function handleRemove(userId: string) {
+    try {
+      await removeMember.mutateAsync(userId);
+      toast.success("Removed from workspace");
+    } catch {
+      toast.error("Failed to remove member");
+    }
+  }
+
+  return (
+    <Panel className="p-6 space-y-4">
+      <SectionTitle eyebrow="team" title="Members" />
+      <div className="space-y-2">
+        {membersLoading && <div className="text-sm text-muted-foreground">Loading…</div>}
+        {members.map((m) => (
+          <div
+            key={m.userId}
+            className="flex items-center justify-between px-3 py-2 rounded-md border border-border bg-surface-2/40"
+          >
+            <div className="min-w-0">
+              <div className="text-sm font-medium truncate">
+                {m.name}
+                {m.userId === me?.id && (
+                  <span className="text-xs text-muted-foreground"> (you)</span>
+                )}
+              </div>
+              <div className="text-xs text-muted-foreground truncate">{m.email}</div>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <Chip tone={m.role === "owner" ? "violet" : "neutral"}>{m.role}</Chip>
+              {isOwner && m.userId !== me?.id && (
+                <button
+                  type="button"
+                  onClick={() => handleRemove(m.userId)}
+                  disabled={removeMember.isPending}
+                  className="text-muted-foreground hover:text-danger"
+                  title="Remove from workspace"
+                >
+                  <X className="size-4" />
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {isOwner && invites.length > 0 && (
+        <div className="space-y-2 pt-2">
+          <div className="text-xs text-muted-foreground font-medium">Pending invites</div>
+          {invites.map((inv) => (
+            <div
+              key={inv.token}
+              className="flex items-center justify-between px-3 py-2 rounded-md border border-dashed border-border"
+            >
+              <div className="text-sm text-muted-foreground">
+                {inv.email} <span className="text-xs">· {inv.role}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => copyInviteLink(inv.token)}
+                className="text-muted-foreground hover:text-foreground"
+                title="Copy invite link"
+              >
+                <Copy className="size-4" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {isOwner ? (
+        <div className="flex items-end gap-2 pt-2 max-w-md">
+          <div className="space-y-1.5 flex-1">
+            <Label htmlFor="invite-email">Invite a teammate</Label>
+            <Input
+              id="invite-email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="teammate@company.com"
+            />
+          </div>
+          <select
+            value={role}
+            onChange={(e) => setRole(e.target.value as "owner" | "member")}
+            className="h-9 rounded-md border border-border bg-background px-2 text-sm"
+          >
+            <option value="member">Member</option>
+            <option value="owner">Owner</option>
+          </select>
+          <Button
+            onClick={sendInvite}
+            disabled={!email.trim() || invite.isPending}
+            size="sm"
+            className="gap-1.5"
+          >
+            <UserPlus className="size-4" />
+            Invite
+          </Button>
+        </div>
+      ) : (
+        <p className="text-xs text-muted-foreground">
+          Only the workspace owner can invite or remove teammates.
+        </p>
+      )}
+    </Panel>
+  );
+}
+
 function NotificationsSection() {
   const { data: workspace } = useWorkspace();
   const saveWorkspace = useSaveWorkspace();
@@ -220,16 +371,18 @@ function DangerZoneSection() {
 }
 
 function SettingsPage() {
+  const { workspaceSlug } = useParams({ from: "/$workspaceSlug/settings" });
   return (
     <div>
       <PageHeader
         eyebrow="account"
         title="Settings"
-        description="Profile, security, and notification preferences."
+        description="Profile, security, team, and notification preferences."
       />
       <div className="p-8 max-w-[700px] space-y-6">
         <ProfileSection />
         <PasswordSection />
+        <TeamSection workspaceSlug={workspaceSlug} />
         <NotificationsSection />
         <DangerZoneSection />
       </div>

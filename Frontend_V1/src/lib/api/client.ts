@@ -619,6 +619,49 @@ export const api = {
       createdAt: string;
     }>("/api/workspaces", { method: "POST", body: JSON.stringify(body) }),
 
+  // Workspace membership
+  workspaceMembers: (slug: string) =>
+    apiFetch<
+      { userId: string; role: "owner" | "member"; joinedAt: string; email: string; name: string }[]
+    >(`/api/workspaces/${encodeURIComponent(slug)}/members`),
+  workspaceInvites: (slug: string) =>
+    apiFetch<{ token: string; email: string; role: "owner" | "member"; createdAt: string }[]>(
+      `/api/workspaces/${encodeURIComponent(slug)}/invites`,
+    ),
+  inviteToWorkspace: (slug: string, email: string, role: "owner" | "member" = "member") =>
+    apiFetch<{
+      token: string;
+      workspaceId: string;
+      email: string;
+      role: string;
+      createdAt: string;
+    }>(`/api/workspaces/${encodeURIComponent(slug)}/invite`, {
+      method: "POST",
+      body: JSON.stringify({ email, role }),
+    }),
+  removeWorkspaceMember: (slug: string, userId: string) =>
+    apiFetch<{ removed: string }>(
+      `/api/workspaces/${encodeURIComponent(slug)}/members/${encodeURIComponent(userId)}`,
+      { method: "DELETE" },
+    ),
+  acceptInvite: (token: string) =>
+    apiFetch<{ workspaceId: string; userId: string; role: string; joinedAt: string }>(
+      `/api/invites/${encodeURIComponent(token)}/accept`,
+      { method: "POST" },
+    ),
+  getInvite: (token: string) =>
+    apiFetch<{
+      token: string;
+      workspaceId: string;
+      email: string;
+      role: string;
+      invitedBy: string;
+      createdAt: string;
+      acceptedAt: string | null;
+      workspaceName: string | null;
+      workspaceSlug: string | null;
+    }>(`/api/invites/${encodeURIComponent(token)}`),
+
   // ── Persona Library ─────────────────────────────────────────────────────
   // The library is workspace-global: personas can be reused across products.
 

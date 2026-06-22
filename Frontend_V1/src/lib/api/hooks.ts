@@ -62,6 +62,8 @@ export const queryKeys = {
   personaLibraryItem: (id: string) => ["rehearse", "persona-library", id] as const,
   findingOutcomes: (runId: string) => ["rehearse", "finding-outcomes", runId] as const,
   authMe: ["rehearse", "auth-me"] as const,
+  workspaceMembers: (slug: string) => ["rehearse", "workspace-members", slug] as const,
+  workspaceInvites: (slug: string) => ["rehearse", "workspace-invites", slug] as const,
 };
 
 export function useApiHealth() {
@@ -300,6 +302,41 @@ export function useUpdateProfile() {
     mutationFn: (body: { name?: string; currentPassword?: string; newPassword?: string }) =>
       api.updateProfile(body),
     onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.authMe }),
+  });
+}
+
+export function useWorkspaceMembers(slug: string) {
+  const health = useApiHealth();
+  return useQuery({
+    queryKey: queryKeys.workspaceMembers(slug),
+    queryFn: () => api.workspaceMembers(slug),
+    enabled: !!slug && health.isSuccess && !!health.data,
+  });
+}
+
+export function useWorkspaceInvites(slug: string) {
+  const health = useApiHealth();
+  return useQuery({
+    queryKey: queryKeys.workspaceInvites(slug),
+    queryFn: () => api.workspaceInvites(slug),
+    enabled: !!slug && health.isSuccess && !!health.data,
+  });
+}
+
+export function useInviteToWorkspace(slug: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ email, role }: { email: string; role: "owner" | "member" }) =>
+      api.inviteToWorkspace(slug, email, role),
+    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.workspaceInvites(slug) }),
+  });
+}
+
+export function useRemoveWorkspaceMember(slug: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (userId: string) => api.removeWorkspaceMember(slug, userId),
+    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.workspaceMembers(slug) }),
   });
 }
 

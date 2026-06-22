@@ -178,6 +178,7 @@ function Index() {
             <Link
               to="/$workspaceSlug/runs"
               params={{ workspaceSlug }}
+              search={{ page: 1 }}
               className="text-xs px-3 py-1.5 rounded-md border border-border hover:bg-surface-2"
             >
               All runs →
@@ -535,6 +536,7 @@ function Index() {
             <Link
               to="/$workspaceSlug/runs"
               params={{ workspaceSlug }}
+              search={{ page: 1 }}
               className="text-xs text-muted-foreground hover:text-foreground"
             >
               View all →

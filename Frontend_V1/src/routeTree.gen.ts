@@ -28,6 +28,7 @@ import { Route as WorkspaceSlugRouteImport } from './routes/$workspaceSlug'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RunsIndexRouteImport } from './routes/runs.index'
 import { Route as RunsRunIdRouteImport } from './routes/runs.$runId'
+import { Route as JoinTokenRouteImport } from './routes/join.$token'
 import { Route as ExperimentJobIdRouteImport } from './routes/experiment.$jobId'
 import { Route as CohortJobIdRouteImport } from './routes/cohort.$jobId'
 import { Route as WorkspaceSlugTrendsRouteImport } from './routes/$workspaceSlug.trends'
@@ -136,6 +137,11 @@ const RunsRunIdRoute = RunsRunIdRouteImport.update({
   path: '/runs/$runId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const JoinTokenRoute = JoinTokenRouteImport.update({
+  id: '/join/$token',
+  path: '/join/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExperimentJobIdRoute = ExperimentJobIdRouteImport.update({
   id: '/experiment/$jobId',
   path: '/experiment/$jobId',
@@ -225,6 +231,7 @@ export interface FileRoutesByFullPath {
   '/$workspaceSlug/trends': typeof WorkspaceSlugTrendsRoute
   '/cohort/$jobId': typeof CohortJobIdRoute
   '/experiment/$jobId': typeof ExperimentJobIdRoute
+  '/join/$token': typeof JoinTokenRoute
   '/runs/$runId': typeof RunsRunIdRoute
   '/runs/': typeof RunsIndexRoute
   '/$workspaceSlug/runs/$runId': typeof WorkspaceSlugRunsRunIdRoute
@@ -257,6 +264,7 @@ export interface FileRoutesByTo {
   '/$workspaceSlug/trends': typeof WorkspaceSlugTrendsRoute
   '/cohort/$jobId': typeof CohortJobIdRoute
   '/experiment/$jobId': typeof ExperimentJobIdRoute
+  '/join/$token': typeof JoinTokenRoute
   '/runs/$runId': typeof RunsRunIdRoute
   '/runs': typeof RunsIndexRoute
   '/$workspaceSlug/runs/$runId': typeof WorkspaceSlugRunsRunIdRoute
@@ -291,6 +299,7 @@ export interface FileRoutesById {
   '/$workspaceSlug/trends': typeof WorkspaceSlugTrendsRoute
   '/cohort/$jobId': typeof CohortJobIdRoute
   '/experiment/$jobId': typeof ExperimentJobIdRoute
+  '/join/$token': typeof JoinTokenRoute
   '/runs/$runId': typeof RunsRunIdRoute
   '/runs/': typeof RunsIndexRoute
   '/$workspaceSlug/runs/$runId': typeof WorkspaceSlugRunsRunIdRoute
@@ -326,6 +335,7 @@ export interface FileRouteTypes {
     | '/$workspaceSlug/trends'
     | '/cohort/$jobId'
     | '/experiment/$jobId'
+    | '/join/$token'
     | '/runs/$runId'
     | '/runs/'
     | '/$workspaceSlug/runs/$runId'
@@ -358,6 +368,7 @@ export interface FileRouteTypes {
     | '/$workspaceSlug/trends'
     | '/cohort/$jobId'
     | '/experiment/$jobId'
+    | '/join/$token'
     | '/runs/$runId'
     | '/runs'
     | '/$workspaceSlug/runs/$runId'
@@ -391,6 +402,7 @@ export interface FileRouteTypes {
     | '/$workspaceSlug/trends'
     | '/cohort/$jobId'
     | '/experiment/$jobId'
+    | '/join/$token'
     | '/runs/$runId'
     | '/runs/'
     | '/$workspaceSlug/runs/$runId'
@@ -417,6 +429,7 @@ export interface RootRouteChildren {
   WorkflowsRoute: typeof WorkflowsRoute
   CohortJobIdRoute: typeof CohortJobIdRoute
   ExperimentJobIdRoute: typeof ExperimentJobIdRoute
+  JoinTokenRoute: typeof JoinTokenRoute
   RunsRunIdRoute: typeof RunsRunIdRoute
   RunsIndexRoute: typeof RunsIndexRoute
 }
@@ -554,6 +567,13 @@ declare module '@tanstack/react-router' {
       path: '/runs/$runId'
       fullPath: '/runs/$runId'
       preLoaderRoute: typeof RunsRunIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/join/$token': {
+      id: '/join/$token'
+      path: '/join/$token'
+      fullPath: '/join/$token'
+      preLoaderRoute: typeof JoinTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/experiment/$jobId': {
@@ -702,6 +722,7 @@ const rootRouteChildren: RootRouteChildren = {
   WorkflowsRoute: WorkflowsRoute,
   CohortJobIdRoute: CohortJobIdRoute,
   ExperimentJobIdRoute: ExperimentJobIdRoute,
+  JoinTokenRoute: JoinTokenRoute,
   RunsRunIdRoute: RunsRunIdRoute,
   RunsIndexRoute: RunsIndexRoute,
 }

@@ -134,6 +134,190 @@ def ensure_workspaces_table(artifacts_root: Path) -> None:
     conn.commit()
 
 
+def ensure_membership_tables(artifacts_root: Path) -> None:
+    """Create workspace_members / workspace_invites tables and backfill owners.
+
+    Single-owner workspaces predate this — every existing workspace's
+    owner_id had no corresponding membership row. Backfill them as role
+    'owner' so get_workspaces_for_user() (now membership-based) doesn't lose
+    access for anyone already using the product.
+    """
+    conn = _connect(artifacts_root)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS workspace_members (
+            workspace_id TEXT NOT NULL,
+            user_id      TEXT NOT NULL,
+            role         TEXT NOT NULL DEFAULT 'member',
+            joined_at    TEXT NOT NULL,
+            PRIMARY KEY (workspace_id, user_id)
+        )
+    """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS workspace_invites (
+            token        TEXT PRIMARY KEY,
+            workspace_id TEXT NOT NULL,
+            email        TEXT NOT NULL,
+            role         TEXT NOT NULL DEFAULT 'member',
+            invited_by   TEXT NOT NULL,
+            created_at   TEXT NOT NULL,
+            accepted_at  TEXT
+        )
+    """)
+    conn.execute(
+        "CREATE INDEX IF NOT EXISTS idx_members_user ON workspace_members(user_id)"
+    )
+    conn.execute(
+        "CREATE INDEX IF NOT EXISTS idx_invites_email ON workspace_invites(email)"
+    )
+    with _write_lock:
+        rows = conn.execute("SELECT id, owner_id, created_at FROM workspaces").fetchall()
+        for row in rows:
+            conn.execute(
+                """INSERT OR IGNORE INTO workspace_members (workspace_id, user_id, role, joined_at)
+                   VALUES (?, ?, 'owner', ?)""",
+                (row["id"], row["owner_id"], row["created_at"]),
+            )
+        conn.commit()
+
+
+def get_members(artifacts_root: Path, workspace_id: str) -> list[dict]:
+    """Active members of a workspace, joined with their user record."""
+    conn = _connect(artifacts_root)
+    rows = conn.execute(
+        """SELECT m.user_id, m.role, m.joined_at, u.email, u.name
+           FROM workspace_members m
+           JOIN users u ON u.id = m.user_id
+           WHERE m.workspace_id = ?
+           ORDER BY m.joined_at ASC""",
+        (workspace_id,),
+    ).fetchall()
+    return [
+        {
+            "userId": r["user_id"],
+            "role": r["role"],
+            "joinedAt": r["joined_at"],
+            "email": r["email"],
+            "name": r["name"],
+        }
+        for r in rows
+    ]
+
+
+def get_member_role(artifacts_root: Path, workspace_id: str, user_id: str) -> str | None:
+    conn = _connect(artifacts_root)
+    row = conn.execute(
+        "SELECT role FROM workspace_members WHERE workspace_id = ? AND user_id = ?",
+        (workspace_id, user_id),
+    ).fetchone()
+    return row["role"] if row else None
+
+
+def add_member(
+    artifacts_root: Path, workspace_id: str, user_id: str, role: str = "member"
+) -> dict:
+    conn = _connect(artifacts_root)
+    now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    with _write_lock:
+        conn.execute(
+            """INSERT INTO workspace_members (workspace_id, user_id, role, joined_at)
+               VALUES (?, ?, ?, ?)
+               ON CONFLICT(workspace_id, user_id) DO UPDATE SET role = excluded.role""",
+            (workspace_id, user_id, role, now),
+        )
+        conn.commit()
+    return {"workspaceId": workspace_id, "userId": user_id, "role": role, "joinedAt": now}
+
+
+def remove_member(artifacts_root: Path, workspace_id: str, user_id: str) -> None:
+    conn = _connect(artifacts_root)
+    with _write_lock:
+        conn.execute(
+            "DELETE FROM workspace_members WHERE workspace_id = ? AND user_id = ?",
+            (workspace_id, user_id),
+        )
+        conn.commit()
+
+
+def create_invite(
+    artifacts_root: Path,
+    workspace_id: str,
+    email: str,
+    role: str,
+    invited_by: str,
+) -> dict:
+    conn = _connect(artifacts_root)
+    token = uuid.uuid4().hex
+    now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    with _write_lock:
+        conn.execute(
+            """INSERT INTO workspace_invites (token, workspace_id, email, role, invited_by, created_at)
+               VALUES (?, ?, ?, ?, ?, ?)""",
+            (token, workspace_id, email.strip().lower(), role, invited_by, now),
+        )
+        conn.commit()
+    return {
+        "token": token,
+        "workspaceId": workspace_id,
+        "email": email.strip().lower(),
+        "role": role,
+        "createdAt": now,
+    }
+
+
+def get_invite(artifacts_root: Path, token: str) -> dict | None:
+    conn = _connect(artifacts_root)
+    row = conn.execute(
+        "SELECT * FROM workspace_invites WHERE token = ?", (token,)
+    ).fetchone()
+    if not row:
+        return None
+    return {
+        "token": row["token"],
+        "workspaceId": row["workspace_id"],
+        "email": row["email"],
+        "role": row["role"],
+        "invitedBy": row["invited_by"],
+        "createdAt": row["created_at"],
+        "acceptedAt": row["accepted_at"],
+    }
+
+
+def list_invites(artifacts_root: Path, workspace_id: str) -> list[dict]:
+    conn = _connect(artifacts_root)
+    rows = conn.execute(
+        "SELECT * FROM workspace_invites WHERE workspace_id = ? AND accepted_at IS NULL ORDER BY created_at ASC",
+        (workspace_id,),
+    ).fetchall()
+    return [
+        {
+            "token": r["token"],
+            "email": r["email"],
+            "role": r["role"],
+            "createdAt": r["created_at"],
+        }
+        for r in rows
+    ]
+
+
+def accept_invite(artifacts_root: Path, token: str, user_id: str) -> dict | None:
+    """Mark an invite accepted and add the accepting user as a member.
+
+    Returns the workspace_members row, or None if the token is invalid or
+    already accepted.
+    """
+    invite = get_invite(artifacts_root, token)
+    if not invite or invite["acceptedAt"]:
+        return None
+    conn = _connect(artifacts_root)
+    now = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    with _write_lock:
+        conn.execute(
+            "UPDATE workspace_invites SET accepted_at = ? WHERE token = ?", (now, token)
+        )
+        conn.commit()
+    return add_member(artifacts_root, invite["workspaceId"], user_id, invite["role"])
+
+
 def _slugify(name: str) -> str:
     slug = name.lower().strip()
     slug = re.sub(r"[^a-z0-9\s-]", "", slug)
@@ -180,17 +364,43 @@ def create_workspace(
             (uid, slug, name.strip(), owner_id, target_url.strip(),
              product_name.strip(), team_role.strip(), str(config_path), now),
         )
+        conn.execute(
+            """INSERT INTO workspace_members (workspace_id, user_id, role, joined_at)
+               VALUES (?, ?, 'owner', ?)""",
+            (uid, owner_id, now),
+        )
         conn.commit()
     return _row_to_dict(conn.execute(
         "SELECT * FROM workspaces WHERE id = ?", (uid,)
     ).fetchone())
 
 
-def get_workspaces_for_user(artifacts_root: Path, owner_id: str) -> list[dict]:
+def get_workspace_by_slug(artifacts_root: Path, slug: str) -> dict | None:
+    conn = _connect(artifacts_root)
+    row = conn.execute("SELECT * FROM workspaces WHERE slug = ?", (slug,)).fetchone()
+    return _row_to_dict(row) if row else None
+
+
+def get_workspace_by_id(artifacts_root: Path, workspace_id: str) -> dict | None:
+    conn = _connect(artifacts_root)
+    row = conn.execute("SELECT * FROM workspaces WHERE id = ?", (workspace_id,)).fetchone()
+    return _row_to_dict(row) if row else None
+
+
+def get_workspaces_for_user(artifacts_root: Path, user_id: str) -> list[dict]:
+    """Workspaces this user can access — owned or invited-and-joined.
+
+    Membership-based rather than owner_id-only, so an invited teammate sees
+    the same workspace under their own login instead of needing the owner's
+    shared credentials.
+    """
     conn = _connect(artifacts_root)
     rows = conn.execute(
-        "SELECT * FROM workspaces WHERE owner_id = ? ORDER BY created_at ASC",
-        (owner_id,),
+        """SELECT w.* FROM workspaces w
+           JOIN workspace_members m ON m.workspace_id = w.id
+           WHERE m.user_id = ?
+           ORDER BY w.created_at ASC""",
+        (user_id,),
     ).fetchall()
     return [_row_to_dict(r) for r in rows]
 
