@@ -95,7 +95,9 @@ export function ProductIntelligencePanel({
         if (s.loginPath) {
           setCreds((prev) => ({
             ...prev,
-            loginUrl: prev.loginUrl || new URL(s.loginPath!, s.targetUrl || targetUrl || "https://x").toString(),
+            loginUrl:
+              prev.loginUrl ||
+              new URL(s.loginPath!, s.targetUrl || targetUrl || "https://x").toString(),
           }));
         }
       })
@@ -203,7 +205,9 @@ export function ProductIntelligencePanel({
         password: creds.loginPassword || undefined,
       });
       setSettingsSaved(true);
-      toast.success("Settings saved — landing page, login page, and credentials will be reused next time");
+      toast.success(
+        "Settings saved — landing page, login page, and credentials will be reused next time",
+      );
       setTimeout(() => setSettingsSaved(false), 2500);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed to save settings");
@@ -540,7 +544,12 @@ export function ProductIntelligencePanel({
             <div className="p-5 space-y-5">
               {(() => {
                 const diag = model.crawlDiagnostics as
-                  | { authWallDetected?: boolean; loginAttempted?: boolean; loginSucceeded?: boolean | null; pagesVisited?: number }
+                  | {
+                      authWallDetected?: boolean;
+                      loginAttempted?: boolean;
+                      loginSucceeded?: boolean | null;
+                      pagesVisited?: number;
+                    }
                   | undefined;
                 if (!diag) return null;
                 if (diag.loginAttempted && diag.loginSucceeded === false) {
@@ -548,9 +557,10 @@ export function ProductIntelligencePanel({
                     <div className="flex items-start gap-2 text-sm rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2">
                       <AlertTriangle className="size-4 text-amber-500 shrink-0 mt-0.5" />
                       <span>
-                        Login may have failed — the crawl ended up back on a login-like page.
-                        Check your credentials/selectors in "Crawl credentials" above.
-                        {diag.pagesVisited != null && ` Only ${diag.pagesVisited} page(s) were visited.`}
+                        Login may have failed — the crawl ended up back on a login-like page. Check
+                        your credentials/selectors in "Crawl credentials" above.
+                        {diag.pagesVisited != null &&
+                          ` Only ${diag.pagesVisited} page(s) were visited.`}
                       </span>
                     </div>
                   );
@@ -561,7 +571,8 @@ export function ProductIntelligencePanel({
                       <AlertTriangle className="size-4 text-amber-500 shrink-0 mt-0.5" />
                       <span>
                         The crawler hit a login wall partway through and stopped exploring further.
-                        {diag.pagesVisited != null && ` ${diag.pagesVisited} page(s) were visited before that.`}
+                        {diag.pagesVisited != null &&
+                          ` ${diag.pagesVisited} page(s) were visited before that.`}
                       </span>
                     </div>
                   );

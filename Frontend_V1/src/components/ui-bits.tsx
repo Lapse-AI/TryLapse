@@ -156,10 +156,13 @@ export function ScoreDeltaBadge({ delta }: { delta: number }) {
 export function BenchmarkContext({ bench }: { bench: IndustryBenchmark }) {
   const positive = bench.delta >= 0;
   const ordinal =
-    bench.percentile >= 90 ? "top 10%" :
-    bench.percentile >= 75 ? `top ${100 - bench.percentile}%` :
-    bench.percentile >= 50 ? `top ${100 - bench.percentile}%` :
-    `bottom ${bench.percentile}%`;
+    bench.percentile >= 90
+      ? "top 10%"
+      : bench.percentile >= 75
+        ? `top ${100 - bench.percentile}%`
+        : bench.percentile >= 50
+          ? `top ${100 - bench.percentile}%`
+          : `bottom ${bench.percentile}%`;
   return (
     <div
       className="mt-2 flex items-center gap-1.5 text-[11px] text-muted-foreground"
@@ -168,11 +171,14 @@ export function BenchmarkContext({ bench }: { bench: IndustryBenchmark }) {
       <span className="font-medium text-foreground/60">vs. {bench.categoryLabel} median:</span>
       <span className="font-mono font-semibold">{bench.median}</span>
       <span className={`font-mono font-semibold ${positive ? "text-ready" : "text-danger"}`}>
-        ({positive ? "+" : ""}{bench.delta})
+        ({positive ? "+" : ""}
+        {bench.delta})
       </span>
       <span className="text-border">·</span>
       <span>{ordinal}</span>
-      <span className="text-border" title="Beta — calibration data still accruing">β</span>
+      <span className="text-border" title="Beta — calibration data still accruing">
+        β
+      </span>
     </div>
   );
 }

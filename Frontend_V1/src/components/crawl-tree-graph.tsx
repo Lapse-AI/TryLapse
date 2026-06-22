@@ -56,7 +56,7 @@ function layoutTree(rawNodes: RawNode[], rawEdges: RawEdge[], rootId: string | n
     childrenBySource.get(e.source)!.push(e.target);
   }
 
-  const root = rootId && nodeById.has(rootId) ? rootId : rawNodes[0]?.id ?? null;
+  const root = rootId && nodeById.has(rootId) ? rootId : (rawNodes[0]?.id ?? null);
   if (!root) return { tree: [] as LayoutNode[], orphans: [] as RawNode[], width: 0, height: 0 };
 
   const depthOf = new Map<string, number>([[root, 0]]);
@@ -124,7 +124,9 @@ interface Props {
 }
 
 export function CrawlTreeGraph({ configId, runId }: Props) {
-  const queryKey = runId ? ["crawlGraphTree", "run", runId] : ["crawlGraphTree", "product", configId];
+  const queryKey = runId
+    ? ["crawlGraphTree", "run", runId]
+    : ["crawlGraphTree", "product", configId];
   const { data, isLoading, error } = useQuery({
     queryKey,
     queryFn: () => (runId ? api.crawlGraph(runId) : api.productCrawlGraph(configId!)),

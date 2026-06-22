@@ -337,9 +337,7 @@ export function RunDetail() {
                 <LaunchGateBadge gate={run.launchGate} />
               </div>
             )}
-            {run.industryBenchmark && (
-              <BenchmarkContext bench={run.industryBenchmark} />
-            )}
+            {run.industryBenchmark && <BenchmarkContext bench={run.industryBenchmark} />}
           </Stat>
           <Stat label="Blockers" value={blockerCount} hint="Critical + High" tone="danger" />
           <Stat label="Highlights" value={run.delights} tone="ready" />

@@ -1,10 +1,22 @@
 import { Fragment, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Panel, Chip, SeverityChip, SEVERITY_LABEL } from "@/components/ui-bits";
-import type { Annotation, Issue, Layer1Verdict, RunBundle, RunSummary, StepSnapshot } from "@/lib/mock-data";
+import type {
+  Annotation,
+  Issue,
+  Layer1Verdict,
+  RunBundle,
+  RunSummary,
+  StepSnapshot,
+} from "@/lib/mock-data";
 import { formatDurationMs } from "@/lib/mock-data";
 import { artifactUrl } from "@/lib/api/client";
-import { useAddAnnotation, useRunDiff, useFindingOutcomes, useSetFindingOutcome } from "@/lib/api/hooks";
+import {
+  useAddAnnotation,
+  useRunDiff,
+  useFindingOutcomes,
+  useSetFindingOutcome,
+} from "@/lib/api/hooks";
 import {
   copyReproToClipboard,
   downloadArtifact,
@@ -76,7 +88,7 @@ export function EvidenceDialog({
         </DialogHeader>
         <div className="space-y-4">
           {/* D2: Story format for P0/P1 — user perspective, not technical language */}
-          {(issue.severity === "P0" || issue.severity === "P1") ? (
+          {issue.severity === "P0" || issue.severity === "P1" ? (
             <FindingStoryCard issue={issue} videoUrl={null} runId={runId} />
           ) : (
             <>
@@ -92,7 +104,9 @@ export function EvidenceDialog({
                   <div className="h-full grid-bg flex items-center justify-center text-muted-foreground">
                     <div className="text-center">
                       <Camera className="size-6 mx-auto mb-2 opacity-60" />
-                      <div className="text-xs font-mono">screenshot · {issue.stepId} · 1280×720</div>
+                      <div className="text-xs font-mono">
+                        screenshot · {issue.stepId} · 1280×720
+                      </div>
                     </div>
                   </div>
                 )}
@@ -1288,9 +1302,7 @@ export function FindingStoryCard({
       </details>
 
       {/* A5: Severity calibration — developer labels this finding's outcome */}
-      {runId && (
-        <FindingOutcomeButtons runId={runId} findingId={issue.id} />
-      )}
+      {runId && <FindingOutcomeButtons runId={runId} findingId={issue.id} />}
     </div>
   );
 }
@@ -1442,9 +1454,7 @@ function JourneyFunnelCard({ funnel }: { funnel: JourneyFunnel }) {
   const totalSteps = funnel.steps.reduce((sum, s) => sum + s.total, 0);
   const overallPassRate =
     totalSteps > 0
-      ? Math.round(
-          (funnel.steps.reduce((sum, s) => sum + s.pass, 0) / totalSteps) * 100,
-        )
+      ? Math.round((funnel.steps.reduce((sum, s) => sum + s.pass, 0) / totalSteps) * 100)
       : 0;
 
   return (
@@ -1463,7 +1473,9 @@ function JourneyFunnelCard({ funnel }: { funnel: JourneyFunnel }) {
           {overallPassRate}% overall
         </span>
         {totalFails > 0 && (
-          <Chip tone="danger">{totalFails} fail{totalFails !== 1 ? "s" : ""}</Chip>
+          <Chip tone="danger">
+            {totalFails} fail{totalFails !== 1 ? "s" : ""}
+          </Chip>
         )}
       </div>
       <div className="px-4 py-2 divide-y divide-border/40">
@@ -1570,8 +1582,7 @@ function FixIssueRow({
           </div>
           <p className="text-sm text-muted-foreground mt-2 font-mono">{issue.evidence}</p>
           <div className="text-xs text-muted-foreground mt-2">
-            {issue.persona} · {issue.journey} ·{" "}
-            <span className="font-mono">{issue.stepId}</span>
+            {issue.persona} · {issue.journey} · <span className="font-mono">{issue.stepId}</span>
           </div>
         </div>
         <div className="flex flex-col items-end gap-2 shrink-0">
@@ -1613,8 +1624,7 @@ function FixSection({
 }) {
   const headerBorder =
     tone === "danger" ? "border-danger/30" : tone === "warn" ? "border-warn/20" : "border-border";
-  const bg =
-    tone === "danger" ? "bg-danger/5" : tone === "warn" ? "bg-warn/5" : "";
+  const bg = tone === "danger" ? "bg-danger/5" : tone === "warn" ? "bg-warn/5" : "";
   const titleColor =
     tone === "danger" ? "text-danger" : tone === "warn" ? "text-warn" : "text-foreground";
 
@@ -1649,7 +1659,9 @@ export function FixHierarchyPanel({ bundle }: { bundle: RunBundle }) {
     setFounderMode(!dev);
     try {
       localStorage.setItem("trylapse-view-mode", dev ? "dev" : "founder");
-    } catch {}
+    } catch {
+      // localStorage unavailable (e.g. private browsing) — view mode just won't persist
+    }
   };
 
   const p0 = bundle.issues.filter((i) => i.severity === "P0");
@@ -1727,12 +1739,7 @@ export function FixHierarchyPanel({ bundle }: { bundle: RunBundle }) {
             <span className="text-xs text-muted-foreground">{radarOpen ? "▲ hide" : "▼ show"}</span>
           </button>
           {radarOpen && (
-            <FixSection
-              tone="neutral"
-              issues={radar}
-              bundle={bundle}
-              founderMode={founderMode}
-            />
+            <FixSection tone="neutral" issues={radar} bundle={bundle} founderMode={founderMode} />
           )}
         </div>
       )}
@@ -1807,7 +1814,9 @@ export function ShareReportDialog({ bundle }: { bundle: RunBundle }) {
       await navigator.clipboard.writeText(message);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch {}
+    } catch {
+      // Clipboard write denied/unavailable — the share dialog stays open, nothing to recover
+    }
   };
 
   return (
@@ -1904,8 +1913,7 @@ export function TrendSparkline({
       ? Math.max(0, prev.blockers - currentSummary.blockers)
       : 0;
 
-  const allGreen =
-    dots.length >= 5 && dots.slice(-5).every((d) => d.readinessBand === "green");
+  const allGreen = dots.length >= 5 && dots.slice(-5).every((d) => d.readinessBand === "green");
 
   return (
     <Panel className="p-5">
@@ -1916,9 +1924,7 @@ export function TrendSparkline({
           </div>
           <div className="flex items-center gap-3 flex-wrap">
             {delta !== 0 && (
-              <span
-                className={`text-sm font-semibold ${delta > 0 ? "text-ready" : "text-danger"}`}
-              >
+              <span className={`text-sm font-semibold ${delta > 0 ? "text-ready" : "text-danger"}`}>
                 {delta > 0 ? "+" : ""}
                 {delta} pts from last run
               </span>

@@ -102,7 +102,9 @@ export function RunHistoryLiveRows({
                   </Link>
                 )}
                 {j.mode === "cohort" && (
-                  <Chip tone="warn" className="text-[10px] py-0 px-1.5 self-start">cohort</Chip>
+                  <Chip tone="warn" className="text-[10px] py-0 px-1.5 self-start">
+                    cohort
+                  </Chip>
                 )}
               </div>
             </td>
