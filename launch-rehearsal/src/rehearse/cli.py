@@ -233,6 +233,24 @@ def backfill_cmd(output: Path) -> None:
     click.echo(json.dumps({"rebuilt": rebuilt, "count": len(rebuilt)}, indent=2))
 
 
+@main.command("recalibrate-benchmarks")
+@click.option("--output", "-o", default="artifacts", type=click.Path(path_type=Path))
+@click.option("--min-samples", default=5, show_default=True, type=int)
+def recalibrate_benchmarks_cmd(output: Path, min_samples: int) -> None:
+    """Recompute industry-benchmark percentiles from recorded launch outcomes.
+
+    No-ops per category until it clears --min-samples real outcomes — safe
+    to run on a cron with zero customers; it just won't change anything yet.
+    """
+    from rehearse.dashboard.benchmark_recalibration import recalibrate_benchmarks
+
+    result = recalibrate_benchmarks(output.resolve(), min_samples=min_samples)
+    if not result:
+        click.echo(json.dumps({"calibrated": {}, "note": "No category has cleared min-samples yet"}, indent=2))
+        return
+    click.echo(json.dumps({"calibrated": result}, indent=2))
+
+
 @main.command("serve")
 @click.option("--output", "-o", default="artifacts", type=click.Path(path_type=Path))
 @click.option("--host", default="127.0.0.1", show_default=True)

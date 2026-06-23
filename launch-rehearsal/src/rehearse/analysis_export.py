@@ -899,14 +899,31 @@ _BENCHMARKS: dict[str, dict[str, Any]] = {
 }
 
 
-def _industry_benchmark(product_type: str, readiness_score: int) -> dict[str, Any]:
+def _industry_benchmark(
+    product_type: str, readiness_score: int, output_dir: Path | None = None
+) -> dict[str, Any]:
     """Compute benchmark context: category median, delta, estimated percentile.
 
-    Percentiles are estimated from a 3-point distribution (p25/p50/p75) using
-    linear interpolation. Labeled 'beta' because calibration data is still
-    accruing — do not present these as empirically validated.
+    Prefers an empirically-calibrated benchmark for this category (computed
+    from real launch outcomes — see benchmark_recalibration.py) when one
+    exists and falls back to the hand-estimated lr-beta-v1 defaults
+    otherwise. Percentiles within a category are still estimated from a
+    3-point distribution (p25/p50/p75) via linear interpolation either way.
     """
-    bench = _BENCHMARKS.get(product_type) or _BENCHMARKS["b2b_saas"]
+    default = _BENCHMARKS.get(product_type) or _BENCHMARKS["b2b_saas"]
+    bench = dict(default)
+    source = "lr-beta-v1"
+
+    if output_dir is not None:
+        try:
+            from rehearse.dashboard.benchmark_recalibration import load_calibrated_benchmarks
+            calibrated = load_calibrated_benchmarks(output_dir).get(product_type)
+            if calibrated:
+                bench = {**bench, **calibrated}
+                source = calibrated.get("source", "empirical-v1")
+        except Exception:
+            pass
+
     p25, median, p75 = bench["p25"], bench["median"], bench["p75"]
     delta = readiness_score - median
 
@@ -925,7 +942,8 @@ def _industry_benchmark(product_type: str, readiness_score: int) -> dict[str, An
         "median": median,
         "delta": delta,
         "percentile": pct,
-        "source": "lr-beta-v1",
+        "source": source,
+        "sampleSize": bench.get("sampleSize"),
     }
 
 
@@ -1254,7 +1272,7 @@ def build_run_bundle(
     score_delta = (readiness_score - prev_score) if prev_score is not None else None
     flake_rate = round(flaky_step_count / max(len(steps), 1), 3)
     launch_gate = _compute_launch_gate(issues, readiness_score, flake_rate=flake_rate)
-    industry_benchmark = _industry_benchmark(config.product_type, readiness_score)
+    industry_benchmark = _industry_benchmark(config.product_type, readiness_score, output_dir)
 
     # Per-dimension flake breakdown: how many flaky steps belong to each finding category
     _flake_by_dim: dict[str, int] = {}

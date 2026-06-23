@@ -2185,6 +2185,13 @@ class _Handler(BaseHTTPRequestHandler):
             except ValueError as exc:
                 self._send_json({"error": str(exc)}, status=400)
                 return
+            # Every new outcome is a chance to clear MIN_SAMPLES for some
+            # category — cheap to attempt, no-ops until there's enough data.
+            try:
+                from rehearse.dashboard.benchmark_recalibration import recalibrate_benchmarks
+                recalibrate_benchmarks(root)
+            except Exception:
+                pass
             self._send_json(saved, status=201)
             return
 
