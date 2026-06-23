@@ -129,6 +129,13 @@ def ensure_workspaces_table(artifacts_root: Path) -> None:
         conn.execute("ALTER TABLE workspaces ADD COLUMN config_path TEXT NOT NULL DEFAULT ''")
     except Exception:
         pass
+    # Migrate: add plan column — defaults every workspace to the design-partner
+    # tier (unlimited runs during the 90-day design-partner phase) rather than
+    # silently capping existing workspaces the moment this column appears.
+    try:
+        conn.execute("ALTER TABLE workspaces ADD COLUMN plan TEXT NOT NULL DEFAULT 'design_partner'")
+    except Exception:
+        pass
     conn.execute("CREATE INDEX IF NOT EXISTS idx_ws_owner ON workspaces(owner_id)")
     conn.execute("CREATE INDEX IF NOT EXISTS idx_ws_slug  ON workspaces(slug)")
     conn.commit()
@@ -387,6 +394,15 @@ def get_workspace_by_id(artifacts_root: Path, workspace_id: str) -> dict | None:
     return _row_to_dict(row) if row else None
 
 
+def set_workspace_plan(artifacts_root: Path, slug: str, plan: str) -> dict | None:
+    """Update a workspace's billing plan (called from the Stripe webhook handler)."""
+    conn = _connect(artifacts_root)
+    with _write_lock:
+        conn.execute("UPDATE workspaces SET plan = ? WHERE slug = ?", (plan, slug))
+        conn.commit()
+    return get_workspace_by_slug(artifacts_root, slug)
+
+
 def get_workspaces_for_user(artifacts_root: Path, user_id: str) -> list[dict]:
     """Workspaces this user can access — owned or invited-and-joined.
 
@@ -464,4 +480,5 @@ def _row_to_dict(row: sqlite3.Row) -> dict:
         "teamRole": row["team_role"],
         "configPath": row["config_path"],
         "createdAt": row["created_at"],
+        "plan": row["plan"] if "plan" in row.keys() else "design_partner",
     }

@@ -16,6 +16,9 @@ import {
   useWorkspaceInvites,
   useInviteToWorkspace,
   useRemoveWorkspaceMember,
+  useWorkspaceUsage,
+  useCreateCheckoutSession,
+  useMyWorkspaces,
 } from "@/lib/api/hooks";
 import { signOut } from "@/lib/test-auth";
 import { clearWorkspace, getWorkspace } from "@/lib/workspace";
@@ -290,6 +293,88 @@ function TeamSection({ workspaceSlug }: { workspaceSlug: string }) {
   );
 }
 
+const PLAN_LABELS: Record<string, string> = {
+  design_partner: "Design Partner (90-day trial)",
+  starter: "Starter — $299/mo",
+  growth: "Growth — $799/mo",
+  scale: "Scale — custom",
+};
+
+const PLAN_LIMITS: Record<string, number | null> = {
+  design_partner: null,
+  starter: 8,
+  growth: 30,
+  scale: null,
+};
+
+function PlanSection({ workspaceSlug }: { workspaceSlug: string }) {
+  const { data: workspaces } = useMyWorkspaces();
+  const { data: usage } = useWorkspaceUsage(workspaceSlug);
+  const checkout = useCreateCheckoutSession();
+
+  const current = workspaces?.find((w) => w.slug === workspaceSlug);
+  const plan = current?.plan ?? "design_partner";
+  const limit = PLAN_LIMITS[plan] ?? null;
+  const used = usage?.runsThisMonth ?? 0;
+  const pct = limit ? Math.min(100, Math.round((used / limit) * 100)) : 0;
+
+  async function upgrade(targetPlan: "starter" | "growth") {
+    const result = await checkout.mutateAsync({ plan: targetPlan, workspaceSlug });
+    if ("url" in result && result.url) {
+      window.location.href = result.url;
+    } else if ("error" in result) {
+      toast.error(result.error || "Checkout is not available yet");
+    }
+  }
+
+  return (
+    <Panel className="p-6 space-y-4">
+      <SectionTitle eyebrow="billing" title="Plan & usage" />
+      <div className="flex items-center justify-between max-w-md">
+        <div>
+          <div className="text-sm font-medium">{PLAN_LABELS[plan] ?? plan}</div>
+          <div className="text-xs text-muted-foreground mt-0.5">
+            {limit == null
+              ? `${used} run${used === 1 ? "" : "s"} this month — unlimited`
+              : `${used} / ${limit} runs this month`}
+          </div>
+        </div>
+        <Chip tone={limit != null && used >= limit ? "danger" : "neutral"}>{plan}</Chip>
+      </div>
+      {limit != null && (
+        <div className="h-1.5 rounded-full bg-surface-2 max-w-md overflow-hidden">
+          <div
+            className={`h-full rounded-full ${pct >= 100 ? "bg-danger" : "bg-primary"}`}
+            style={{ width: `${pct}%` }}
+          />
+        </div>
+      )}
+      {plan !== "growth" && plan !== "scale" && (
+        <div className="flex gap-2">
+          <Button
+            onClick={() => upgrade("starter")}
+            disabled={checkout.isPending || plan === "starter"}
+            size="sm"
+            variant="outline"
+          >
+            {plan === "starter" ? "Current: Starter" : "Upgrade to Starter — $299/mo"}
+          </Button>
+          <Button onClick={() => upgrade("growth")} disabled={checkout.isPending} size="sm">
+            Upgrade to Growth — $799/mo
+          </Button>
+        </div>
+      )}
+      <p className="text-xs text-muted-foreground">
+        Need unlimited runs and CI/CD gate integration? Scale is sales-assisted —{" "}
+        <a href="mailto:hello@trylapse.com" className="text-primary underline">
+          contact us
+        </a>
+        .
+      </p>
+    </Panel>
+  );
+}
+
 function GuardrailsSection() {
   const { data: workspace } = useWorkspace();
   const saveWorkspace = useSaveWorkspace();
@@ -528,6 +613,7 @@ function SettingsPage() {
       <div className="p-8 max-w-[700px] space-y-6">
         <ProfileSection />
         <PasswordSection />
+        <PlanSection workspaceSlug={workspaceSlug} />
         <TeamSection workspaceSlug={workspaceSlug} />
         <TestCredentialsSection />
         <GuardrailsSection />

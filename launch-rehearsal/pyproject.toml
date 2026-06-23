@@ -36,6 +36,9 @@ dev = [
 postgres = [
   "psycopg2-binary>=2.9",
 ]
+billing = [
+  "stripe>=10.0",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

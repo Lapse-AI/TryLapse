@@ -62,6 +62,7 @@ export const queryKeys = {
   personaLibraryItem: (id: string) => ["rehearse", "persona-library", id] as const,
   findingOutcomes: (runId: string) => ["rehearse", "finding-outcomes", runId] as const,
   authMe: ["rehearse", "auth-me"] as const,
+  myWorkspaces: ["rehearse", "my-workspaces"] as const,
   workspaceMembers: (slug: string) => ["rehearse", "workspace-members", slug] as const,
   workspaceInvites: (slug: string) => ["rehearse", "workspace-invites", slug] as const,
 };
@@ -337,6 +338,31 @@ export function useRemoveWorkspaceMember(slug: string) {
   return useMutation({
     mutationFn: (userId: string) => api.removeWorkspaceMember(slug, userId),
     onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.workspaceMembers(slug) }),
+  });
+}
+
+export function useMyWorkspaces() {
+  const health = useApiHealth();
+  return useQuery({
+    queryKey: queryKeys.myWorkspaces,
+    queryFn: () => api.myWorkspaces(),
+    enabled: health.isSuccess && !!health.data,
+  });
+}
+
+export function useWorkspaceUsage(slug: string) {
+  const health = useApiHealth();
+  return useQuery({
+    queryKey: ["rehearse", "workspace-usage", slug] as const,
+    queryFn: () => api.workspaceUsage(slug),
+    enabled: !!slug && health.isSuccess && !!health.data,
+  });
+}
+
+export function useCreateCheckoutSession() {
+  return useMutation({
+    mutationFn: ({ plan, workspaceSlug }: { plan: string; workspaceSlug: string }) =>
+      api.createCheckoutSession(plan, workspaceSlug),
   });
 }
 

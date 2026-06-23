@@ -63,7 +63,10 @@ _CORS_ORIGINS: set[str] = set(
 )
 
 # Paths that bypass auth (always public)
-_PUBLIC_PATHS = {"/api/health", "/", "/auth/login", "/auth/signup", "/auth/me"}
+_PUBLIC_PATHS = {
+    "/api/health", "/", "/auth/login", "/auth/signup", "/auth/me",
+    "/api/billing/webhook",
+}
 
 # Only allow alphanumerics, hyphens, and underscores in user-supplied ids.
 # This prevents directory traversal via run_id / journey_id / config_id.
@@ -226,6 +229,14 @@ class _Handler(BaseHTTPRequestHandler):
         except (json.JSONDecodeError, UnicodeDecodeError):
             return {}
 
+    def _read_raw_body(self) -> bytes:
+        """Exact request bytes, unparsed — Stripe webhook signatures are
+        computed over the raw body; re-serialized JSON won't verify."""
+        length = int(self.headers.get("Content-Length", 0))
+        if not length or length > 10_000_000:
+            return b""
+        return self.rfile.read(length)
+
     def _require_jwt(self) -> dict | None:
         """Return JWT payload dict if a valid token is present, else None."""
         auth_header = self.headers.get("Authorization", "")
@@ -315,6 +326,24 @@ class _Handler(BaseHTTPRequestHandler):
                 self._send_json({"error": "Workspace not found"}, status=404)
                 return
             self._send_json(get_members(root, ws["id"]))
+            return
+
+        if path.startswith("/api/workspaces/") and path.endswith("/usage"):
+            payload = self._require_jwt()
+            if not payload:
+                self._send_json({"error": "Authentication required"}, status=401)
+                return
+            slug = path.split("/")[3]
+            from rehearse.dashboard.workspace_store import get_workspace_by_slug, get_member_role
+            from rehearse.dashboard.usage_store import usage_for_workspace
+            ws = get_workspace_by_slug(root, slug)
+            if not ws:
+                self._send_json({"error": "Workspace not found"}, status=404)
+                return
+            if get_member_role(root, ws["id"], payload["sub"]) is None:
+                self._send_json({"error": "Not a member of this workspace"}, status=403)
+                return
+            self._send_json(usage_for_workspace(root, slug))
             return
 
         # GET /api/invites/{token} — public lookup so an invitee can see what
@@ -1001,6 +1030,38 @@ class _Handler(BaseHTTPRequestHandler):
                 self._send_json({"error": "Invite already used"}, status=409)
                 return
             self._send_json(result, status=201)
+            return
+
+        # ── Billing ──────────────────────────────────────────────────────────
+        if path == "/api/billing/checkout":
+            payload = self._require_jwt()
+            if not payload:
+                self._send_json({"error": "Authentication required"}, status=401)
+                return
+            body = self._read_json_body()
+            from rehearse.dashboard.billing import create_checkout_session
+            result = create_checkout_session(
+                str(body.get("plan") or ""),
+                str(body.get("workspaceSlug") or ""),
+                str(body.get("successUrl") or ""),
+                str(body.get("cancelUrl") or ""),
+            )
+            if "error" in result:
+                self._send_json(result, status=400)
+                return
+            self._send_json(result)
+            return
+
+        # Stripe calls this directly — no JWT, verified by signature instead.
+        if path == "/api/billing/webhook":
+            raw_body = self._read_raw_body()
+            sig_header = self.headers.get("Stripe-Signature", "")
+            from rehearse.dashboard.billing import handle_webhook_event
+            result = handle_webhook_event(root, raw_body, sig_header)
+            if result.get("error") and not result.get("handled"):
+                self._send_json(result, status=400)
+                return
+            self._send_json(result)
             return
 
         if not self._check_auth(path):
@@ -1914,6 +1975,30 @@ class _Handler(BaseHTTPRequestHandler):
                 else:
                     self._send_json({"error": "configPath required"}, status=400)
                     return
+
+            # Plan-tier quota check — only enforced when the config maps to a
+            # known workspace (config filename stem == workspace slug, the
+            # auto-generated convention). Configs with no matching workspace
+            # (dogfood/demo/internal configs) are never quota-limited.
+            from rehearse.dashboard.workspace_store import get_workspace_by_slug
+            from rehearse.dashboard.billing import check_quota
+            ws_guess = get_workspace_by_slug(root, config_path.stem)
+            if ws_guess:
+                quota = check_quota(root, config_path.stem, ws_guess.get("plan"))
+                if not quota["allowed"]:
+                    self._send_json(
+                        {
+                            "error": (
+                                f"Monthly run quota reached for the {quota['plan']} plan "
+                                f"({quota['runsThisMonth']}/{quota['limit']} runs used). "
+                                "Upgrade to run more this month."
+                            ),
+                            "quota": quota,
+                        },
+                        status=402,
+                    )
+                    return
+
             job = enqueue_run(
                 root,
                 config_path=config_path,

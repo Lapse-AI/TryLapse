@@ -599,6 +599,7 @@ export const api = {
         teamRole: string;
         configPath: string;
         createdAt: string;
+        plan: string;
       }[]
     >("/api/workspaces/me"),
   createWorkspace: (body: {
@@ -644,6 +645,23 @@ export const api = {
       `/api/workspaces/${encodeURIComponent(slug)}/members/${encodeURIComponent(userId)}`,
       { method: "DELETE" },
     ),
+  workspaceUsage: (slug: string) =>
+    apiFetch<{
+      workspaceSlug: string;
+      runsThisMonth: number;
+      periodStart: string;
+      periodEnd: string;
+    }>(`/api/workspaces/${encodeURIComponent(slug)}/usage`),
+  createCheckoutSession: (plan: string, workspaceSlug: string) =>
+    apiFetch<{ url: string; sessionId: string } | { error: string }>("/api/billing/checkout", {
+      method: "POST",
+      body: JSON.stringify({
+        plan,
+        workspaceSlug,
+        successUrl: `${typeof window !== "undefined" ? window.location.origin : ""}/${workspaceSlug}/settings?upgraded=1`,
+        cancelUrl: `${typeof window !== "undefined" ? window.location.origin : ""}/${workspaceSlug}/settings`,
+      }),
+    }),
   acceptInvite: (token: string) =>
     apiFetch<{ workspaceId: string; userId: string; role: string; joinedAt: string }>(
       `/api/invites/${encodeURIComponent(token)}/accept`,
