@@ -652,6 +652,31 @@ export const api = {
       periodStart: string;
       periodEnd: string;
     }>(`/api/workspaces/${encodeURIComponent(slug)}/usage`),
+  caseStudy: (slug: string) =>
+    apiFetch<{
+      workspaceSlug: string;
+      productName: string | null;
+      before: {
+        runId: string;
+        readiness: number;
+        launchGate: string;
+        blockers: number;
+        delights: number;
+        startedAt: string;
+      };
+      after: {
+        runId: string;
+        readiness: number;
+        launchGate: string;
+        blockers: number;
+        delights: number;
+        startedAt: string;
+      };
+      readinessDelta: number;
+      blockersResolved: number;
+      totalRuns: number;
+      outcome: { launchSucceeded: boolean | null; notes?: string } | null;
+    }>(`/api/workspaces/${encodeURIComponent(slug)}/case-study`),
   createCheckoutSession: (plan: string, workspaceSlug: string) =>
     apiFetch<{ url: string; sessionId: string } | { error: string }>("/api/billing/checkout", {
       method: "POST",

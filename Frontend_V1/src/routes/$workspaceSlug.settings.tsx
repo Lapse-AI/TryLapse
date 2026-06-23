@@ -19,6 +19,7 @@ import {
   useWorkspaceUsage,
   useCreateCheckoutSession,
   useMyWorkspaces,
+  useCaseStudy,
 } from "@/lib/api/hooks";
 import { signOut } from "@/lib/test-auth";
 import { clearWorkspace, getWorkspace } from "@/lib/workspace";
@@ -582,6 +583,66 @@ function NotificationsSection() {
   );
 }
 
+function CaseStudySection({ workspaceSlug }: { workspaceSlug: string }) {
+  const { data: caseStudy, isError } = useCaseStudy(workspaceSlug);
+
+  async function copyMarkdown() {
+    if (!caseStudy) return;
+    const delta = caseStudy.readinessDelta;
+    const deltaStr = delta > 0 ? `+${delta}` : String(delta);
+    const lines = [
+      `# ${caseStudy.productName ?? "This product"} — Launch Readiness, Before & After`,
+      "",
+      `Across ${caseStudy.totalRuns} rehearsals, readiness moved from ${caseStudy.before.readiness} (${caseStudy.before.launchGate}) to ${caseStudy.after.readiness} (${caseStudy.after.launchGate}) — a ${deltaStr} point change.`,
+      caseStudy.blockersResolved > 0 ? `${caseStudy.blockersResolved} blocker(s) resolved.` : "",
+      caseStudy.outcome?.notes ? `Outcome: ${caseStudy.outcome.notes}` : "",
+    ].filter(Boolean);
+    await navigator.clipboard.writeText(lines.join("\n")).catch(() => {});
+    toast.success("Case study copied");
+  }
+
+  return (
+    <Panel className="p-6 space-y-4">
+      <SectionTitle eyebrow="share" title="Case study" />
+      {isError || !caseStudy ? (
+        <p className="text-sm text-muted-foreground">
+          Need at least 2 rehearsals to generate a before/after comparison — run a few more and
+          check back.
+        </p>
+      ) : (
+        <>
+          <div className="grid grid-cols-2 gap-4 max-w-md text-sm">
+            <div className="space-y-1">
+              <div className="text-xs text-muted-foreground">Before</div>
+              <div className="font-medium">
+                {caseStudy.before.readiness} · {caseStudy.before.launchGate}
+              </div>
+            </div>
+            <div className="space-y-1">
+              <div className="text-xs text-muted-foreground">After</div>
+              <div className="font-medium">
+                {caseStudy.after.readiness} · {caseStudy.after.launchGate}
+              </div>
+            </div>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            {caseStudy.blockersResolved > 0 &&
+              `${caseStudy.blockersResolved} blocker${caseStudy.blockersResolved !== 1 ? "s" : ""} resolved. `}
+            {caseStudy.outcome
+              ? caseStudy.outcome.launchSucceeded
+                ? "Launch succeeded."
+                : "Launch did not go as planned."
+              : "Launch outcome not yet recorded."}
+          </p>
+          <Button onClick={copyMarkdown} size="sm" variant="outline" className="w-fit">
+            Copy as markdown
+          </Button>
+        </>
+      )}
+    </Panel>
+  );
+}
+
 function DangerZoneSection() {
   function handleSignOut() {
     signOut();
@@ -618,6 +679,7 @@ function SettingsPage() {
         <TestCredentialsSection />
         <GuardrailsSection />
         <NotificationsSection />
+        <CaseStudySection workspaceSlug={workspaceSlug} />
         <DangerZoneSection />
       </div>
     </div>

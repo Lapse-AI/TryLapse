@@ -359,6 +359,16 @@ export function useWorkspaceUsage(slug: string) {
   });
 }
 
+export function useCaseStudy(slug: string) {
+  const health = useApiHealth();
+  return useQuery({
+    queryKey: ["rehearse", "case-study", slug] as const,
+    queryFn: () => api.caseStudy(slug),
+    enabled: !!slug && health.isSuccess && !!health.data,
+    retry: false,
+  });
+}
+
 export function useCreateCheckoutSession() {
   return useMutation({
     mutationFn: ({ plan, workspaceSlug }: { plan: string; workspaceSlug: string }) =>

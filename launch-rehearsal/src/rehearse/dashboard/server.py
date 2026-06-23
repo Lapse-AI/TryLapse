@@ -346,6 +346,35 @@ class _Handler(BaseHTTPRequestHandler):
             self._send_json(usage_for_workspace(root, slug))
             return
 
+        if path.startswith("/api/workspaces/") and path.endswith("/case-study"):
+            payload = self._require_jwt()
+            if not payload:
+                self._send_json({"error": "Authentication required"}, status=401)
+                return
+            slug = path.split("/")[3]
+            from rehearse.dashboard.workspace_store import get_workspace_by_slug, get_member_role
+            from rehearse.dashboard.case_study import generate_case_study, render_case_study_markdown
+            ws = get_workspace_by_slug(root, slug)
+            if not ws:
+                self._send_json({"error": "Workspace not found"}, status=404)
+                return
+            if get_member_role(root, ws["id"], payload["sub"]) is None:
+                self._send_json({"error": "Not a member of this workspace"}, status=403)
+                return
+            case_study = generate_case_study(root, slug)
+            if not case_study:
+                self._send_json(
+                    {"error": "Not enough runs yet — need at least 2 rehearsals to compare"},
+                    status=404,
+                )
+                return
+            if (qs.get("format") or [""])[0] == "markdown":
+                md = render_case_study_markdown(case_study)
+                self._send_bytes(md.encode("utf-8"), "text/markdown; charset=utf-8")
+                return
+            self._send_json(case_study)
+            return
+
         # GET /api/invites/{token} — public lookup so an invitee can see what
         # they're accepting before signing in/up. No auth required: the
         # token itself is the secret, same as any email-invite link.
