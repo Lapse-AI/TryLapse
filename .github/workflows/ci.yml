@@ -29,7 +29,7 @@ jobs:
       - name: Install package + dev deps
         run: |
           python -m pip install --upgrade pip
-          pip install -e ".[dev]"
+          pip install -e ".[dev,billing]"
 
       - name: Unit tests
         run: pytest -q --cov=rehearse --cov-report=term-missing
