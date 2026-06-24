@@ -375,6 +375,36 @@ class _Handler(BaseHTTPRequestHandler):
             self._send_json(case_study)
             return
 
+        # ── Admin / company observability ───────────────────────────────────
+        if path.startswith("/api/admin/"):
+            payload = self._require_jwt()
+            if not payload:
+                self._send_json({"error": "Authentication required"}, status=401)
+                return
+            from rehearse.dashboard.admin_store import (
+                is_admin_email, company_summary, workspace_overview, recent_activity,
+            )
+            from rehearse.dashboard.auth_store import list_all_users
+            if not is_admin_email(payload.get("email")):
+                self._send_json({"error": "Admin access required"}, status=403)
+                return
+
+            if path == "/api/admin/summary":
+                self._send_json(company_summary(root))
+                return
+            if path == "/api/admin/workspaces":
+                self._send_json(workspace_overview(root))
+                return
+            if path == "/api/admin/users":
+                self._send_json(list_all_users(root))
+                return
+            if path == "/api/admin/activity":
+                limit = int((qs.get("limit") or ["50"])[0])
+                self._send_json(recent_activity(root, limit=limit))
+                return
+            self.send_error(404)
+            return
+
         # GET /api/invites/{token} — public lookup so an invitee can see what
         # they're accepting before signing in/up. No auth required: the
         # token itself is the secret, same as any email-invite link.

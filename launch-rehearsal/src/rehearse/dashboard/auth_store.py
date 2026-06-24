@@ -213,6 +213,19 @@ def get_user(artifacts_root: Path, user_id: str) -> dict | None:
     return {"id": row[0], "email": row[1], "name": row[2]}
 
 
+def list_all_users(artifacts_root: Path) -> list[dict]:
+    """All signed-up users, newest first. Admin/company-overview use only —
+    never expose this to a non-admin caller."""
+    conn = _connect(artifacts_root)
+    rows = conn.execute(
+        "SELECT id, email, name, created_at FROM users ORDER BY created_at DESC"
+    ).fetchall()
+    return [
+        {"id": r["id"], "email": r["email"], "name": r["name"], "createdAt": r["created_at"]}
+        for r in rows
+    ]
+
+
 def update_user(
     artifacts_root: Path,
     user_id: str,

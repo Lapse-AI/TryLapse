@@ -394,6 +394,14 @@ def get_workspace_by_id(artifacts_root: Path, workspace_id: str) -> dict | None:
     return _row_to_dict(row) if row else None
 
 
+def list_all_workspaces(artifacts_root: Path) -> list[dict]:
+    """Every workspace in this deployment, newest first. Admin/company-overview
+    use only — never expose this to a non-admin caller (it spans all owners)."""
+    conn = _connect(artifacts_root)
+    rows = conn.execute("SELECT * FROM workspaces ORDER BY created_at DESC").fetchall()
+    return [_row_to_dict(r) for r in rows]
+
+
 def set_workspace_plan(artifacts_root: Path, slug: str, plan: str) -> dict | None:
     """Update a workspace's billing plan (called from the Stripe webhook handler)."""
     conn = _connect(artifacts_root)
