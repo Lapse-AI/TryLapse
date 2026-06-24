@@ -722,6 +722,13 @@ export const api = {
         lastRunError: string | null;
         runsThisMonth: number;
         runLimit: number | null;
+        productAnalysis: {
+          pageCount: number;
+          source: string | null;
+          authWallDetected: boolean | null;
+          loginAttempted: boolean | null;
+          loginSucceeded: boolean | null;
+        } | null;
       }[]
     >("/api/admin/workspaces"),
   adminUsers: () =>

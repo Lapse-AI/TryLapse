@@ -119,7 +119,21 @@ function WorkspacesSection() {
               </td>
               <td className="px-4 py-3">
                 {ws.neverRan ? (
-                  <Chip tone="danger">never ran</Chip>
+                  <div className="text-xs">
+                    <Chip tone="danger">never ran</Chip>
+                    {ws.productAnalysis ? (
+                      <div className="text-muted-foreground mt-1">
+                        Onboarding analysis found {ws.productAnalysis.pageCount} page
+                        {ws.productAnalysis.pageCount !== 1 ? "s" : ""}
+                        {ws.productAnalysis.loginAttempted &&
+                          (ws.productAnalysis.loginSucceeded
+                            ? " · login succeeded"
+                            : " · login failed")}
+                      </div>
+                    ) : (
+                      <div className="text-muted-foreground mt-1">No analysis either</div>
+                    )}
+                  </div>
                 ) : (
                   <div className="text-xs">
                     <Chip

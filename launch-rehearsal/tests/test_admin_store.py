@@ -108,6 +108,53 @@ def test_workspace_overview_surfaces_last_error(tmp_path: Path):
     assert "connection refused" in ws["lastRunError"]
 
 
+def test_workspace_overview_surfaces_product_analysis_when_jobs_never_ran(tmp_path: Path):
+    """The exact correction to the original incident: no rehearsal job ever
+    ran, but onboarding's product-intelligence analysis did, successfully —
+    neverRan must stay true (no readiness score exists) while
+    productAnalysis shows the real, successful crawl underneath it."""
+    from rehearse.product_intelligence import save_product_model
+
+    _setup(tmp_path)
+    owner = create_user(tmp_path, email="sparsh@gmail.com", password="pw123456", name="Sparsh")
+    create_workspace(
+        tmp_path, owner_id=owner["id"], name="ArgyleHRsolutions",
+        target_url="https://faculty-dashboard-eight.vercel.app/login",
+        product_name="Argyle Trainer Dashboard", team_role="founder",
+    )
+    save_product_model(
+        tmp_path,
+        {
+            "pageCount": 8,
+            "source": "llm",
+            "crawlDiagnostics": {
+                "authWallDetected": False,
+                "loginAttempted": True,
+                "loginSucceeded": True,
+            },
+        },
+        "argylehrsolutions",
+    )
+
+    overview = workspace_overview(tmp_path)
+    ws = overview[0]
+    assert ws["neverRan"] is True
+    assert ws["productAnalysis"] is not None
+    assert ws["productAnalysis"]["pageCount"] == 8
+    assert ws["productAnalysis"]["loginSucceeded"] is True
+
+
+def test_workspace_overview_product_analysis_none_when_never_analyzed(tmp_path: Path):
+    _setup(tmp_path)
+    owner = create_user(tmp_path, email="owner4@example.com", password="pw123456", name="Owner")
+    create_workspace(
+        tmp_path, owner_id=owner["id"], name="Fresh", target_url="https://fresh.com",
+        product_name="Fresh", team_role="founder",
+    )
+    overview = workspace_overview(tmp_path)
+    assert overview[0]["productAnalysis"] is None
+
+
 def test_workspace_overview_empty_deployment(tmp_path: Path):
     _setup(tmp_path)
     assert workspace_overview(tmp_path) == []

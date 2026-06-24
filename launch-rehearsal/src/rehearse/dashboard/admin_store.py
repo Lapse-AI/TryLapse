@@ -58,6 +58,7 @@ def workspace_overview(artifacts_root: Path) -> list[dict[str, Any]]:
     from rehearse.dashboard.auth_store import list_all_users
     from rehearse.dashboard.workspace_store import list_all_workspaces, get_members
     from rehearse.dashboard.billing import check_quota
+    from rehearse.product_intelligence import load_product_model
 
     users_by_id = {u["id"]: u for u in list_all_users(artifacts_root)}
     overview = []
@@ -67,6 +68,22 @@ def workspace_overview(artifacts_root: Path) -> list[dict[str, Any]]:
         total_runs = _run_count_for_slug(artifacts_root, slug)
         owner = users_by_id.get(ws.get("ownerId"))
         quota = check_quota(artifacts_root, slug, ws.get("plan"))
+
+        # A workspace can have zero rehearsal jobs but still have a real,
+        # successful onboarding-time product analysis (its own deep crawl,
+        # separate from the job queue) — surface that explicitly so
+        # "neverRan" reads as "no readiness score yet," not "nothing happened."
+        product_model = load_product_model(artifacts_root, slug)
+        product_analysis = None
+        if product_model:
+            diagnostics = product_model.get("crawlDiagnostics") or {}
+            product_analysis = {
+                "pageCount": product_model.get("pageCount", 0),
+                "source": product_model.get("source"),
+                "authWallDetected": diagnostics.get("authWallDetected"),
+                "loginAttempted": diagnostics.get("loginAttempted"),
+                "loginSucceeded": diagnostics.get("loginSucceeded"),
+            }
 
         overview.append({
             "id": ws["id"],
@@ -86,6 +103,7 @@ def workspace_overview(artifacts_root: Path) -> list[dict[str, Any]]:
             "lastRunError": last_job.get("error") if last_job else None,
             "runsThisMonth": quota.get("runsThisMonth"),
             "runLimit": quota.get("limit"),
+            "productAnalysis": product_analysis,
         })
     return overview
 

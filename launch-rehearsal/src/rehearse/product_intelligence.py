@@ -264,7 +264,13 @@ def analyze_product(
 
     result["targetUrl"] = target_url
     result["productName"] = product_name or ""
-    result["pageCount"] = len(pages)
+    # Same fallback as the page_count fed to the prompt above (line ~219) —
+    # sitemap_pages is empty on a workspace's first-ever analysis (no prior
+    # rehearsal run to pull a sitemap from yet), but the deep crawl that just
+    # ran already knows how many pages it actually visited. Without this,
+    # pageCount silently reports 0 even when the crawl succeeded and visited
+    # several pages — exactly what made a real product analysis look broken.
+    result["pageCount"] = max(len(pages), interactions.get("pageCount", 0))
     return result
 
 
