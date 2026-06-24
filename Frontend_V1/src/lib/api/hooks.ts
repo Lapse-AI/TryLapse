@@ -359,6 +359,46 @@ export function useWorkspaceUsage(slug: string) {
   });
 }
 
+export function useAdminSummary() {
+  const health = useApiHealth();
+  return useQuery({
+    queryKey: ["rehearse", "admin-summary"] as const,
+    queryFn: () => api.adminSummary(),
+    enabled: health.isSuccess && !!health.data,
+    retry: false,
+  });
+}
+
+export function useAdminWorkspaces() {
+  const health = useApiHealth();
+  return useQuery({
+    queryKey: ["rehearse", "admin-workspaces"] as const,
+    queryFn: () => api.adminWorkspaces(),
+    enabled: health.isSuccess && !!health.data,
+    retry: false,
+  });
+}
+
+export function useAdminUsers() {
+  const health = useApiHealth();
+  return useQuery({
+    queryKey: ["rehearse", "admin-users"] as const,
+    queryFn: () => api.adminUsers(),
+    enabled: health.isSuccess && !!health.data,
+    retry: false,
+  });
+}
+
+export function useAdminActivity(limit = 50) {
+  const health = useApiHealth();
+  return useQuery({
+    queryKey: ["rehearse", "admin-activity", limit] as const,
+    queryFn: () => api.adminActivity(limit),
+    enabled: health.isSuccess && !!health.data,
+    retry: false,
+  });
+}
+
 export function useCaseStudy(slug: string) {
   const health = useApiHealth();
   return useQuery({

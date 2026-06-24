@@ -687,6 +687,43 @@ export const api = {
         cancelUrl: `${typeof window !== "undefined" ? window.location.origin : ""}/${workspaceSlug}/settings`,
       }),
     }),
+
+  // Admin / company observability — gated server-side by REHEARSE_ADMIN_EMAILS
+  adminSummary: () =>
+    apiFetch<{
+      totalUsers: number;
+      totalWorkspaces: number;
+      workspacesNeverRun: number;
+      neverRunSlugs: string[];
+      failedJobsRecent: number;
+      totalJobsRecorded: number;
+    }>("/api/admin/summary"),
+  adminWorkspaces: () =>
+    apiFetch<
+      {
+        id: string;
+        slug: string;
+        name: string;
+        ownerEmail: string | null;
+        ownerName: string | null;
+        targetUrl: string;
+        productName: string;
+        plan: string;
+        createdAt: string;
+        memberCount: number;
+        totalRuns: number;
+        neverRan: boolean;
+        lastRunStatus: string | null;
+        lastRunAt: string | null;
+        lastRunError: string | null;
+        runsThisMonth: number;
+        runLimit: number | null;
+      }[]
+    >("/api/admin/workspaces"),
+  adminUsers: () =>
+    apiFetch<{ id: string; email: string; name: string; createdAt: string }[]>("/api/admin/users"),
+  adminActivity: (limit = 50) => apiFetch<JobRecord[]>(`/api/admin/activity?limit=${limit}`),
+
   acceptInvite: (token: string) =>
     apiFetch<{ workspaceId: string; userId: string; role: string; joinedAt: string }>(
       `/api/invites/${encodeURIComponent(token)}/accept`,

@@ -20,6 +20,7 @@ import {
   LogOut,
   HardHat,
   User,
+  ShieldAlert,
 } from "lucide-react";
 import { formatRel } from "@/lib/mock-data";
 import { useLatestRun, useWorkspace, useScopedActiveJobs, useAuthMe } from "@/lib/api/hooks";
@@ -98,6 +99,7 @@ const workspaceNav = [
     items: [
       { to: "/integrations", label: "Integrations", icon: Plug, wip: true },
       { to: "/settings", label: "Settings", icon: Settings },
+      { to: "/admin", label: "Company", icon: ShieldAlert },
     ],
   },
   {
@@ -255,6 +257,22 @@ export function AppSidebar() {
                       to="/$workspaceSlug/runs"
                       params={{ workspaceSlug: userWorkspace.slug }}
                       search={{ page: 1 }}
+                      aria-current={active ? "page" : undefined}
+                      className={linkClassName(active)}
+                    >
+                      <Icon className="size-4" />
+                      <span>{it.label}</span>
+                    </Link>
+                  );
+                }
+
+                // Admin — never workspace-scoped, it spans every workspace
+                if (it.to === "/admin") {
+                  const active = pathname === "/admin";
+                  return (
+                    <Link
+                      key={it.to}
+                      to="/admin"
                       aria-current={active ? "page" : undefined}
                       className={linkClassName(active)}
                     >

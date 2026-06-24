@@ -24,6 +24,7 @@ import { Route as CompareRouteImport } from './routes/compare'
 import { Route as CliRouteImport } from './routes/cli'
 import { Route as AlertsRouteImport } from './routes/alerts'
 import { Route as AgentsRouteImport } from './routes/agents'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as WorkspaceSlugRouteImport } from './routes/$workspaceSlug'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RunsIndexRouteImport } from './routes/runs.index'
@@ -117,6 +118,11 @@ const AgentsRoute = AgentsRouteImport.update({
   path: '/agents',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const WorkspaceSlugRoute = WorkspaceSlugRouteImport.update({
   id: '/$workspaceSlug',
   path: '/$workspaceSlug',
@@ -206,6 +212,7 @@ const WorkspaceSlugRunsRunIdRoute = WorkspaceSlugRunsRunIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$workspaceSlug': typeof WorkspaceSlugRouteWithChildren
+  '/admin': typeof AdminRoute
   '/agents': typeof AgentsRoute
   '/alerts': typeof AlertsRoute
   '/cli': typeof CliRoute
@@ -240,6 +247,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$workspaceSlug': typeof WorkspaceSlugRouteWithChildren
+  '/admin': typeof AdminRoute
   '/agents': typeof AgentsRoute
   '/alerts': typeof AlertsRoute
   '/cli': typeof CliRoute
@@ -274,6 +282,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/$workspaceSlug': typeof WorkspaceSlugRouteWithChildren
+  '/admin': typeof AdminRoute
   '/agents': typeof AgentsRoute
   '/alerts': typeof AlertsRoute
   '/cli': typeof CliRoute
@@ -310,6 +319,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/$workspaceSlug'
+    | '/admin'
     | '/agents'
     | '/alerts'
     | '/cli'
@@ -344,6 +354,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/$workspaceSlug'
+    | '/admin'
     | '/agents'
     | '/alerts'
     | '/cli'
@@ -377,6 +388,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/$workspaceSlug'
+    | '/admin'
     | '/agents'
     | '/alerts'
     | '/cli'
@@ -412,6 +424,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   WorkspaceSlugRoute: typeof WorkspaceSlugRouteWithChildren
+  AdminRoute: typeof AdminRoute
   AgentsRoute: typeof AgentsRoute
   AlertsRoute: typeof AlertsRoute
   CliRoute: typeof CliRoute
@@ -539,6 +552,13 @@ declare module '@tanstack/react-router' {
       path: '/agents'
       fullPath: '/agents'
       preLoaderRoute: typeof AgentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$workspaceSlug': {
@@ -705,6 +725,7 @@ const WorkspaceSlugRouteWithChildren = WorkspaceSlugRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   WorkspaceSlugRoute: WorkspaceSlugRouteWithChildren,
+  AdminRoute: AdminRoute,
   AgentsRoute: AgentsRoute,
   AlertsRoute: AlertsRoute,
   CliRoute: CliRoute,
