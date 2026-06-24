@@ -111,6 +111,7 @@ function OnboardingPage() {
   const [productName, setProductName] = useState("");
   const [productUrl, setProductUrl] = useState("");
   const [urlStatus, setUrlStatus] = useState<"idle" | "checking" | "ok" | "fail">("idle");
+  const [authWallWarning, setAuthWallWarning] = useState(false);
 
   // Step 2: Study phase
   const [studyPhaseIdx, setStudyPhaseIdx] = useState(0);
@@ -162,9 +163,11 @@ function OnboardingPage() {
   const checkUrl = async () => {
     if (!productUrl.trim()) return;
     setUrlStatus("checking");
+    setAuthWallWarning(false);
     try {
       const res = await api.preflight(productUrl.trim(), { allowLocalhost: true });
       setUrlStatus(res.ok ? "ok" : "fail");
+      setAuthWallWarning(!!res.looks_like_auth_wall);
     } catch {
       setUrlStatus("fail");
     }
@@ -359,6 +362,15 @@ function OnboardingPage() {
                   <p className="mt-1.5 text-xs text-warn">
                     Could not reach this URL. You can still continue — agents will retry on first
                     run.
+                  </p>
+                )}
+                {authWallWarning && (
+                  <p className="mt-1.5 text-xs text-warn">
+                    This URL looks like a login page. If it requires sign-in, the crawl will find
+                    almost nothing without credentials — add{" "}
+                    <span className="font-mono">REHEARSE_EMAIL</span>/
+                    <span className="font-mono">REHEARSE_PASSWORD</span> in Settings after setup, or
+                    point this at the product's public root URL instead.
                   </p>
                 )}
               </div>

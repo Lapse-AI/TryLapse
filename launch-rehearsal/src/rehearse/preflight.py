@@ -119,6 +119,23 @@ def _follow_redirect_safe(
     return resp
 
 
+_AUTH_WALL_PATH_KEYWORDS = ("login", "signin", "sign-in", "log-in", "auth", "sso")
+
+
+def _looks_like_auth_wall(url: str) -> bool:
+    """Whether a URL's path looks like a login/signin page.
+
+    Catches two real failure modes the hard way (found via a real incident,
+    not speculation): a user pasting a login-page URL as the crawl target
+    themselves, and a server-side redirect bouncing the preflight request to
+    a login page. Either way, crawling from there with no auth configured
+    finds almost nothing — worth a warning before the workspace is created,
+    not a confusing empty result after.
+    """
+    path = urlparse(url).path.lower()
+    return any(kw in path for kw in _AUTH_WALL_PATH_KEYWORDS)
+
+
 def preflight_head(url: str, timeout: float = 15.0, *, allow_localhost: bool = False) -> dict:
     """HEAD/GET probe after SSRF checks. Re-validates every redirect hop."""
     assert_url_allowed(url, allow_localhost=allow_localhost)
@@ -131,8 +148,11 @@ def preflight_head(url: str, timeout: float = 15.0, *, allow_localhost: bool = F
             raise
         except httpx.HTTPError as e:
             raise PreflightError(f"HTTP probe failed for {url}: {e}") from e
+        final_url = str(resp.url)
         return {
-            "url": str(resp.url),
+            "url": final_url,
             "status_code": resp.status_code,
             "ok": resp.status_code < 400,
+            "looks_like_auth_wall": _looks_like_auth_wall(url) or _looks_like_auth_wall(final_url),
+            "redirected": final_url != url,
         }

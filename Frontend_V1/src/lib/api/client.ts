@@ -385,13 +385,17 @@ export const api = {
       finishedAt: string | null;
     }>(`/api/variant/${jobId}`),
   preflight: (url: string, opts?: { allowLocalhost?: boolean }) =>
-    apiFetch<{ ok: boolean; url?: string; status_code?: number; error?: string }>(
-      "/api/preflight",
-      {
-        method: "POST",
-        body: JSON.stringify({ url, allowLocalhost: opts?.allowLocalhost }),
-      },
-    ),
+    apiFetch<{
+      ok: boolean;
+      url?: string;
+      status_code?: number;
+      error?: string;
+      looks_like_auth_wall?: boolean;
+      redirected?: boolean;
+    }>("/api/preflight", {
+      method: "POST",
+      body: JSON.stringify({ url, allowLocalhost: opts?.allowLocalhost }),
+    }),
   annotations: (runId: string) => apiFetch<Annotation[]>(`/api/annotations/${runId}`),
   addAnnotation: (runId: string, ann: Annotation) =>
     apiFetch<Annotation[]>(`/api/annotations/${runId}`, {
