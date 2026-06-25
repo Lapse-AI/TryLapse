@@ -382,7 +382,8 @@ class _Handler(BaseHTTPRequestHandler):
                 self._send_json({"error": "Authentication required"}, status=401)
                 return
             from rehearse.dashboard.admin_store import (
-                is_admin_email, company_summary, workspace_overview, recent_activity,
+                is_admin_email, company_summary, workspace_overview, workspace_detail,
+                recent_activity, live_jobs, failure_breakdown,
             )
             from rehearse.dashboard.auth_store import list_all_users
             if not is_admin_email(payload.get("email")):
@@ -395,12 +396,27 @@ class _Handler(BaseHTTPRequestHandler):
             if path == "/api/admin/workspaces":
                 self._send_json(workspace_overview(root))
                 return
+            if path.startswith("/api/admin/workspaces/"):
+                slug = path.split("/")[4]
+                detail = workspace_detail(root, slug)
+                if not detail:
+                    self._send_json({"error": "Workspace not found"}, status=404)
+                    return
+                self._send_json(detail)
+                return
             if path == "/api/admin/users":
                 self._send_json(list_all_users(root))
                 return
             if path == "/api/admin/activity":
                 limit = int((qs.get("limit") or ["50"])[0])
                 self._send_json(recent_activity(root, limit=limit))
+                return
+            if path == "/api/admin/live":
+                self._send_json(live_jobs(root))
+                return
+            if path == "/api/admin/failures":
+                limit = int((qs.get("limit") or ["200"])[0])
+                self._send_json(failure_breakdown(root, limit=limit))
                 return
             self.send_error(404)
             return

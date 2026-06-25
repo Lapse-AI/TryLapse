@@ -10,8 +10,11 @@ from pathlib import Path
 
 from rehearse.dashboard.admin_store import (
     company_summary,
+    failure_breakdown,
     is_admin_email,
+    live_jobs,
     recent_activity,
+    workspace_detail,
     workspace_overview,
 )
 from rehearse.dashboard.auth_store import create_user, ensure_users_table
@@ -208,3 +211,177 @@ def test_company_summary_empty_deployment(tmp_path: Path):
     assert summary["totalUsers"] == 0
     assert summary["totalWorkspaces"] == 0
     assert summary["workspacesNeverRun"] == 0
+
+
+# ── workspace_detail ──────────────────────────────────────────────────────────
+
+
+def _write_config_yaml(path: Path, *, personas: list[dict], journeys: list[dict] | None = None) -> None:
+    import yaml
+
+    data: dict = {
+        "run": {"target_url": "https://example.com", "run_id_prefix": "x", "product_name": "X"},
+        "personas": personas,
+    }
+    if journeys is not None:
+        data["journeys"] = journeys
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(yaml.dump(data, sort_keys=False))
+
+
+def test_workspace_detail_returns_none_for_unknown_slug(tmp_path: Path):
+    _setup(tmp_path)
+    assert workspace_detail(tmp_path, "nonexistent") is None
+
+
+def test_workspace_detail_reads_personas_with_zero_journeys(tmp_path: Path):
+    """The exact gap caught while writing this test: onboarding's
+    auto-generated config has personas but zero journeys (journeys get
+    supplemented at crawl time) — rehearse.dsl.load_config() would raise on
+    this (MIN_JOURNEYS=5) and show empty personas for nearly every real
+    workspace. workspace_detail() must show the personas anyway."""
+    _setup(tmp_path)
+    owner = create_user(tmp_path, email="sparsh@gmail.com", password="pw123456", name="Sparsh")
+    ws = create_workspace(
+        tmp_path, owner_id=owner["id"], name="ArgyleHRsolutions",
+        target_url="https://faculty-dashboard-eight.vercel.app",
+        product_name="Argyle Trainer Dashboard", team_role="founder",
+    )
+    config_path = Path(ws["configPath"])
+    _write_config_yaml(
+        config_path,
+        personas=[
+            {"id": "p1-new-signup", "name": "New signup", "role": "first-time user", "goals": ["a", "b"]},
+            {"id": "p2-power-user", "name": "Power user", "role": "experienced user", "goals": ["c"]},
+        ],
+        journeys=[],
+    )
+
+    detail = workspace_detail(tmp_path, "argylehrsolutions")
+    assert detail is not None
+    assert len(detail["personas"]) == 2
+    assert detail["personas"][0]["name"] == "New signup"
+    assert detail["journeys"] == []
+    assert detail["configError"] is None
+
+
+def test_workspace_detail_includes_full_job_history_and_members(tmp_path: Path):
+    _setup(tmp_path)
+    owner = create_user(tmp_path, email="owner5@example.com", password="pw123456", name="Owner")
+    ws = create_workspace(
+        tmp_path, owner_id=owner["id"], name="Acme", target_url="https://acme.com",
+        product_name="Acme", team_role="founder",
+    )
+    _write_config_yaml(Path(ws["configPath"]), personas=[{"id": "p1", "name": "P1", "role": "r", "goals": []}])
+    for i in range(3):
+        save_job(tmp_path, {
+            "id": f"job_{i}", "status": "done", "config": "/configs/acme.yaml",
+            "startedAt": f"2026-06-{10+i:02d}T00:00:00+00:00", "finishedAt": None,
+        })
+
+    detail = workspace_detail(tmp_path, "acme")
+    assert len(detail["jobs"]) == 3
+    assert len(detail["members"]) == 1
+    assert detail["members"][0]["email"] == "owner5@example.com"
+
+
+def test_workspace_detail_handles_missing_config_file(tmp_path: Path):
+    """configPath points at a file that's been moved/deleted — must not crash,
+    and a missing file is not the same as a malformed one (no configError)."""
+    _setup(tmp_path)
+    owner = create_user(tmp_path, email="owner6@example.com", password="pw123456", name="Owner")
+    ws = create_workspace(
+        tmp_path, owner_id=owner["id"], name="NoConfig", target_url="https://noconfig.com",
+        product_name="NoConfig", team_role="founder",
+    )
+    Path(ws["configPath"]).unlink()  # create_workspace auto-generates it; remove it
+
+    detail = workspace_detail(tmp_path, "noconfig")
+    assert detail is not None
+    assert detail["personas"] == []
+    assert detail["journeys"] == []
+    assert detail["configError"] is None
+
+
+def test_workspace_detail_surfaces_config_error_on_malformed_yaml(tmp_path: Path):
+    _setup(tmp_path)
+    owner = create_user(tmp_path, email="owner7@example.com", password="pw123456", name="Owner")
+    ws = create_workspace(
+        tmp_path, owner_id=owner["id"], name="Broken", target_url="https://broken.com",
+        product_name="Broken", team_role="founder",
+    )
+    Path(ws["configPath"]).write_text("not: valid: yaml: [[[")
+
+    detail = workspace_detail(tmp_path, "broken")
+    assert detail is not None
+    assert detail["personas"] == []
+    assert detail["configError"] is not None
+
+
+# ── live_jobs ──────────────────────────────────────────────────────────────────
+
+
+def test_live_jobs_includes_only_queued_and_running(tmp_path: Path):
+    save_job(tmp_path, {"id": "j1", "status": "queued", "config": "/x.yaml", "startedAt": "2026-06-01T00:00:00+00:00", "finishedAt": None})
+    save_job(tmp_path, {"id": "j2", "status": "running", "config": "/x.yaml", "startedAt": "2026-06-02T00:00:00+00:00", "finishedAt": None})
+    save_job(tmp_path, {"id": "j3", "status": "done", "config": "/x.yaml", "startedAt": "2026-06-03T00:00:00+00:00", "finishedAt": None})
+    save_job(tmp_path, {"id": "j4", "status": "failed", "config": "/x.yaml", "startedAt": "2026-06-04T00:00:00+00:00", "finishedAt": None})
+
+    live = live_jobs(tmp_path)
+    ids = {j["id"] for j in live}
+    assert ids == {"j1", "j2"}
+
+
+def test_live_jobs_empty_when_nothing_active(tmp_path: Path):
+    save_job(tmp_path, {"id": "j1", "status": "done", "config": "/x.yaml", "startedAt": "2026-06-01T00:00:00+00:00", "finishedAt": None})
+    assert live_jobs(tmp_path) == []
+
+
+# ── failure_breakdown ──────────────────────────────────────────────────────────
+
+
+def test_failure_breakdown_groups_by_error_and_config(tmp_path: Path):
+    save_job(tmp_path, {
+        "id": "j1", "status": "failed", "config": "/configs/acme.yaml",
+        "startedAt": "2026-06-01T00:00:00+00:00", "finishedAt": None,
+        "error": "Preflight failed: connection refused",
+    })
+    save_job(tmp_path, {
+        "id": "j2", "status": "failed", "config": "/configs/acme.yaml",
+        "startedAt": "2026-06-02T00:00:00+00:00", "finishedAt": None,
+        "error": "Preflight failed: connection refused",
+    })
+    save_job(tmp_path, {
+        "id": "j3", "status": "failed", "config": "/configs/beta.yaml",
+        "startedAt": "2026-06-03T00:00:00+00:00", "finishedAt": None,
+        "error": "Timeout waiting for selector",
+    })
+    save_job(tmp_path, {
+        "id": "j4", "status": "done", "config": "/configs/acme.yaml",
+        "startedAt": "2026-06-04T00:00:00+00:00", "finishedAt": None,
+    })
+
+    breakdown = failure_breakdown(tmp_path)
+    assert breakdown["totalFailed"] == 3
+    assert breakdown["topErrors"][0]["error"] == "Preflight failed: connection refused"
+    assert breakdown["topErrors"][0]["count"] == 2
+    assert breakdown["topFailingConfigs"][0]["config"] == "acme.yaml"
+    assert breakdown["topFailingConfigs"][0]["count"] == 2
+
+
+def test_failure_breakdown_empty_when_no_failures(tmp_path: Path):
+    save_job(tmp_path, {"id": "j1", "status": "done", "config": "/x.yaml", "startedAt": "2026-06-01T00:00:00+00:00", "finishedAt": None})
+    breakdown = failure_breakdown(tmp_path)
+    assert breakdown["totalFailed"] == 0
+    assert breakdown["topErrors"] == []
+    assert breakdown["recentFailures"] == []
+
+
+def test_failure_breakdown_handles_missing_error_message(tmp_path: Path):
+    save_job(tmp_path, {
+        "id": "j1", "status": "failed", "config": "/x.yaml",
+        "startedAt": "2026-06-01T00:00:00+00:00", "finishedAt": None,
+    })
+    breakdown = failure_breakdown(tmp_path)
+    assert breakdown["totalFailed"] == 1
+    assert breakdown["topErrors"][0]["error"] == "unknown error"
