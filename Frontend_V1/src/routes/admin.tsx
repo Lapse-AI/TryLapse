@@ -1,11 +1,13 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { AlertTriangle, ShieldAlert } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { AlertTriangle, ShieldAlert, Radio } from "lucide-react";
 import { PageHeader, Panel, SectionTitle, Chip, ClientTime, Stat } from "@/components/ui-bits";
 import {
   useAdminSummary,
   useAdminWorkspaces,
   useAdminUsers,
   useAdminActivity,
+  useAdminLiveJobs,
+  useAdminFailures,
 } from "@/lib/api/hooks";
 import { ApiError } from "@/lib/api/client";
 
@@ -95,7 +97,13 @@ function WorkspacesSection() {
               className={`border-b border-border last:border-0 ${ws.neverRan ? "bg-danger/5" : "hover:bg-surface-2/40"}`}
             >
               <td className="px-4 py-3">
-                <div className="font-medium">{ws.name}</div>
+                <Link
+                  to="/admin/$slug"
+                  params={{ slug: ws.slug }}
+                  className="font-medium hover:underline"
+                >
+                  {ws.name}
+                </Link>
                 <div className="text-xs font-mono text-muted-foreground">{ws.slug}</div>
               </td>
               <td className="px-4 py-3 text-xs">
@@ -205,6 +213,91 @@ function UsersSection() {
   );
 }
 
+function LiveJobsSection() {
+  const { data: jobs, error, isLoading } = useAdminLiveJobs();
+  if (isForbidden(error) || isLoading || !jobs) return null;
+  if (jobs.length === 0) return null;
+
+  return (
+    <Panel className="overflow-hidden border-accent/30">
+      <SectionTitle
+        eyebrow="company"
+        title={`Live now (${jobs.length})`}
+        action={<Radio className="size-3.5 text-accent animate-pulse" />}
+      />
+      <table className="w-full text-sm">
+        <thead className="text-xs text-muted-foreground">
+          <tr className="border-b border-border bg-surface-2/40">
+            <th className="text-left px-4 py-2.5 font-medium">Job</th>
+            <th className="text-left px-4 py-2.5 font-medium">Status</th>
+            <th className="text-left px-4 py-2.5 font-medium">Config</th>
+            <th className="text-left px-4 py-2.5 font-medium">Started</th>
+          </tr>
+        </thead>
+        <tbody>
+          {jobs.map((j) => (
+            <tr key={j.id} className="border-b border-border last:border-0">
+              <td className="px-4 py-3 font-mono text-xs">{j.id}</td>
+              <td className="px-4 py-3">
+                <Chip tone={j.status === "running" ? "ready" : "neutral"}>{j.status}</Chip>
+              </td>
+              <td className="px-4 py-3 font-mono text-xs text-muted-foreground max-w-[260px] truncate">
+                {j.config}
+              </td>
+              <td className="px-4 py-3 text-xs text-muted-foreground">
+                {j.startedAt && <ClientTime iso={j.startedAt} />}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </Panel>
+  );
+}
+
+function FailuresSection() {
+  const { data, error, isLoading } = useAdminFailures(200);
+  if (isForbidden(error) || isLoading || !data) return null;
+  if (data.totalFailed === 0) return null;
+
+  return (
+    <Panel className="overflow-hidden">
+      <SectionTitle
+        eyebrow="company"
+        title={`Where things are failing (${data.totalFailed} of last ${data.totalChecked} jobs)`}
+      />
+      <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-border">
+        <div className="p-4">
+          <div className="text-xs text-muted-foreground mb-2">Most common errors</div>
+          <ul className="space-y-1.5">
+            {data.topErrors.map((e) => (
+              <li key={e.error} className="flex items-start justify-between gap-3 text-xs">
+                <span className="font-mono text-muted-foreground truncate" title={e.error}>
+                  {e.error}
+                </span>
+                <span className="font-mono tabular-nums shrink-0">{e.count}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="p-4">
+          <div className="text-xs text-muted-foreground mb-2">Most failing configs</div>
+          <ul className="space-y-1.5">
+            {data.topFailingConfigs.map((c) => (
+              <li key={c.config} className="flex items-start justify-between gap-3 text-xs">
+                <span className="font-mono text-muted-foreground truncate" title={c.config}>
+                  {c.config}
+                </span>
+                <span className="font-mono tabular-nums shrink-0">{c.count}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </Panel>
+  );
+}
+
 function ActivitySection() {
   const { data: jobs, error, isLoading } = useAdminActivity(50);
   if (isForbidden(error) || isLoading || !jobs) return null;
@@ -258,6 +351,8 @@ function AdminPage() {
       />
       <div className="p-8 max-w-[1400px] space-y-6">
         <SummarySection />
+        <LiveJobsSection />
+        <FailuresSection />
         <WorkspacesSection />
         <ActivitySection />
         <UsersSection />

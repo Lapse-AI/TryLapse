@@ -32,6 +32,7 @@ import { Route as RunsRunIdRouteImport } from './routes/runs.$runId'
 import { Route as JoinTokenRouteImport } from './routes/join.$token'
 import { Route as ExperimentJobIdRouteImport } from './routes/experiment.$jobId'
 import { Route as CohortJobIdRouteImport } from './routes/cohort.$jobId'
+import { Route as AdminSlugRouteImport } from './routes/admin.$slug'
 import { Route as WorkspaceSlugTrendsRouteImport } from './routes/$workspaceSlug.trends'
 import { Route as WorkspaceSlugSettingsRouteImport } from './routes/$workspaceSlug.settings'
 import { Route as WorkspaceSlugRunsRouteImport } from './routes/$workspaceSlug.runs'
@@ -158,6 +159,11 @@ const CohortJobIdRoute = CohortJobIdRouteImport.update({
   path: '/cohort/$jobId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminSlugRoute = AdminSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => AdminRoute,
+} as any)
 const WorkspaceSlugTrendsRoute = WorkspaceSlugTrendsRouteImport.update({
   id: '/trends',
   path: '/trends',
@@ -212,7 +218,7 @@ const WorkspaceSlugRunsRunIdRoute = WorkspaceSlugRunsRunIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$workspaceSlug': typeof WorkspaceSlugRouteWithChildren
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/agents': typeof AgentsRoute
   '/alerts': typeof AlertsRoute
   '/cli': typeof CliRoute
@@ -236,6 +242,7 @@ export interface FileRoutesByFullPath {
   '/$workspaceSlug/runs': typeof WorkspaceSlugRunsRouteWithChildren
   '/$workspaceSlug/settings': typeof WorkspaceSlugSettingsRoute
   '/$workspaceSlug/trends': typeof WorkspaceSlugTrendsRoute
+  '/admin/$slug': typeof AdminSlugRoute
   '/cohort/$jobId': typeof CohortJobIdRoute
   '/experiment/$jobId': typeof ExperimentJobIdRoute
   '/join/$token': typeof JoinTokenRoute
@@ -247,7 +254,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$workspaceSlug': typeof WorkspaceSlugRouteWithChildren
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/agents': typeof AgentsRoute
   '/alerts': typeof AlertsRoute
   '/cli': typeof CliRoute
@@ -270,6 +277,7 @@ export interface FileRoutesByTo {
   '/$workspaceSlug/runner': typeof WorkspaceSlugRunnerRoute
   '/$workspaceSlug/settings': typeof WorkspaceSlugSettingsRoute
   '/$workspaceSlug/trends': typeof WorkspaceSlugTrendsRoute
+  '/admin/$slug': typeof AdminSlugRoute
   '/cohort/$jobId': typeof CohortJobIdRoute
   '/experiment/$jobId': typeof ExperimentJobIdRoute
   '/join/$token': typeof JoinTokenRoute
@@ -282,7 +290,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/$workspaceSlug': typeof WorkspaceSlugRouteWithChildren
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/agents': typeof AgentsRoute
   '/alerts': typeof AlertsRoute
   '/cli': typeof CliRoute
@@ -306,6 +314,7 @@ export interface FileRoutesById {
   '/$workspaceSlug/runs': typeof WorkspaceSlugRunsRouteWithChildren
   '/$workspaceSlug/settings': typeof WorkspaceSlugSettingsRoute
   '/$workspaceSlug/trends': typeof WorkspaceSlugTrendsRoute
+  '/admin/$slug': typeof AdminSlugRoute
   '/cohort/$jobId': typeof CohortJobIdRoute
   '/experiment/$jobId': typeof ExperimentJobIdRoute
   '/join/$token': typeof JoinTokenRoute
@@ -343,6 +352,7 @@ export interface FileRouteTypes {
     | '/$workspaceSlug/runs'
     | '/$workspaceSlug/settings'
     | '/$workspaceSlug/trends'
+    | '/admin/$slug'
     | '/cohort/$jobId'
     | '/experiment/$jobId'
     | '/join/$token'
@@ -377,6 +387,7 @@ export interface FileRouteTypes {
     | '/$workspaceSlug/runner'
     | '/$workspaceSlug/settings'
     | '/$workspaceSlug/trends'
+    | '/admin/$slug'
     | '/cohort/$jobId'
     | '/experiment/$jobId'
     | '/join/$token'
@@ -412,6 +423,7 @@ export interface FileRouteTypes {
     | '/$workspaceSlug/runs'
     | '/$workspaceSlug/settings'
     | '/$workspaceSlug/trends'
+    | '/admin/$slug'
     | '/cohort/$jobId'
     | '/experiment/$jobId'
     | '/join/$token'
@@ -424,7 +436,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   WorkspaceSlugRoute: typeof WorkspaceSlugRouteWithChildren
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
   AgentsRoute: typeof AgentsRoute
   AlertsRoute: typeof AlertsRoute
   CliRoute: typeof CliRoute
@@ -610,6 +622,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CohortJobIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/$slug': {
+      id: '/admin/$slug'
+      path: '/$slug'
+      fullPath: '/admin/$slug'
+      preLoaderRoute: typeof AdminSlugRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/$workspaceSlug/trends': {
       id: '/$workspaceSlug/trends'
       path: '/trends'
@@ -722,10 +741,20 @@ const WorkspaceSlugRouteWithChildren = WorkspaceSlugRoute._addFileChildren(
   WorkspaceSlugRouteChildren,
 )
 
+interface AdminRouteChildren {
+  AdminSlugRoute: typeof AdminSlugRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminSlugRoute: AdminSlugRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   WorkspaceSlugRoute: WorkspaceSlugRouteWithChildren,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
   AgentsRoute: AgentsRoute,
   AlertsRoute: AlertsRoute,
   CliRoute: CliRoute,

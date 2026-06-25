@@ -399,6 +399,37 @@ export function useAdminActivity(limit = 50) {
   });
 }
 
+export function useAdminLiveJobs() {
+  const health = useApiHealth();
+  return useQuery({
+    queryKey: ["rehearse", "admin-live"] as const,
+    queryFn: () => api.adminLiveJobs(),
+    enabled: health.isSuccess && !!health.data,
+    retry: false,
+    refetchInterval: 5000,
+  });
+}
+
+export function useAdminFailures(limit = 200) {
+  const health = useApiHealth();
+  return useQuery({
+    queryKey: ["rehearse", "admin-failures", limit] as const,
+    queryFn: () => api.adminFailures(limit),
+    enabled: health.isSuccess && !!health.data,
+    retry: false,
+  });
+}
+
+export function useAdminWorkspaceDetail(slug: string | undefined) {
+  const health = useApiHealth();
+  return useQuery({
+    queryKey: ["rehearse", "admin-workspace-detail", slug] as const,
+    queryFn: () => api.adminWorkspaceDetail(slug!),
+    enabled: health.isSuccess && !!health.data && !!slug,
+    retry: false,
+  });
+}
+
 export function useCaseStudy(slug: string) {
   const health = useApiHealth();
   return useQuery({

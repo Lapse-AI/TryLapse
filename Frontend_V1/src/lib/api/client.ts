@@ -734,6 +734,57 @@ export const api = {
   adminUsers: () =>
     apiFetch<{ id: string; email: string; name: string; createdAt: string }[]>("/api/admin/users"),
   adminActivity: (limit = 50) => apiFetch<JobRecord[]>(`/api/admin/activity?limit=${limit}`),
+  adminLiveJobs: () => apiFetch<JobRecord[]>("/api/admin/live"),
+  adminFailures: (limit = 200) =>
+    apiFetch<{
+      totalFailed: number;
+      totalChecked: number;
+      topErrors: { error: string; count: number }[];
+      topFailingConfigs: { config: string; count: number }[];
+      recentFailures: JobRecord[];
+    }>(`/api/admin/failures?limit=${limit}`),
+  adminWorkspaceDetail: (slug: string) =>
+    apiFetch<{
+      id: string;
+      slug: string;
+      name: string;
+      ownerEmail: string | null;
+      ownerName: string | null;
+      targetUrl: string;
+      productName: string;
+      plan: string;
+      createdAt: string;
+      memberCount: number;
+      totalRuns: number;
+      neverRan: boolean;
+      lastRunStatus: string | null;
+      lastRunAt: string | null;
+      lastRunError: string | null;
+      runsThisMonth: number;
+      runLimit: number | null;
+      productAnalysis: {
+        pageCount: number;
+        source: string | null;
+        authWallDetected: boolean | null;
+        loginAttempted: boolean | null;
+        loginSucceeded: boolean | null;
+      } | null;
+      members: { userId: string; role: string; joinedAt: string; email: string; name: string }[];
+      personas: {
+        id: string;
+        name: string;
+        role: string;
+        goals: string[];
+        enabled: boolean;
+        techLiteracy: string;
+        patience: string;
+        trustLevel: string;
+      }[];
+      journeys: { id: string; name: string; stepCount: number; personaIds: string[] }[];
+      configError: string | null;
+      jobs: JobRecord[];
+      productModel: Record<string, unknown> | null;
+    }>(`/api/admin/workspaces/${encodeURIComponent(slug)}`),
 
   acceptInvite: (token: string) =>
     apiFetch<{ workspaceId: string; userId: string; role: string; joinedAt: string }>(
