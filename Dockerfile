@@ -35,8 +35,6 @@ COPY launch-rehearsal/artifacts/ /app/demo-artifacts/
 COPY docker-entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-VOLUME ["/data/artifacts"]
-
 # PORT is injected by Railway at runtime; REHEARSE_PORT is the local fallback
 ENV REHEARSE_PORT=8080
 ENV DEEPSEEK_API_KEY=""
