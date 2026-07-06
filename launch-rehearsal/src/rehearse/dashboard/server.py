@@ -1000,9 +1000,13 @@ class _Handler(BaseHTTPRequestHandler):
                     self.end_headers()
                     self.wfile.write(_data)
                     return
-                # SPA fallback: any unknown path → index.html (client-side routing)
-                _index = _client_dir / "index.html"
-            if _index.is_file():
+                # SPA fallback: unknown paths → index.html (client-side routing)
+                # EXCEPT /api/* — those should 404 if not found (prevents SPA serving to API calls)
+                if not path.startswith("/api") and not path.startswith("/auth") and not path.startswith("/files"):
+                    _index = _client_dir / "index.html"
+                else:
+                    _index = None
+            if _index and _index.is_file():
                 _data = _index.read_bytes()
                 self.send_response(200)
                 self.send_header("Content-Type", "text/html; charset=utf-8")
