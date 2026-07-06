@@ -30,7 +30,7 @@ RUN cd Frontend_V1 && npm install --no-audit --no-fund && npm run build \
     && cp -r dist/. /app/launch-rehearsal/src/rehearse/dashboard/static/ \
     && MAIN_JS=$(grep -rl "hydrateRoot" /app/launch-rehearsal/src/rehearse/dashboard/static/client/assets/ | head -1 | xargs basename) \
     && STYLES=$(ls /app/launch-rehearsal/src/rehearse/dashboard/static/client/assets/styles-*.css | head -1 | xargs basename) \
-    && printf '<!doctype html>\n<html lang="en">\n<head>\n<meta charset="UTF-8" />\n<meta name="viewport" content="width=device-width, initial-scale=1" />\n<link rel="stylesheet" href="/assets/%s" />\n</head>\n<body></body>\n<script type="module" src="/assets/%s"></script>\n</html>\n' "$STYLES" "$MAIN_JS" \
+    && printf '<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8" />\n<title>Launch Rehearsal — Monitoring</title>\n<meta name="viewport" content="width=device-width, initial-scale=1" />\n<meta name="description" content="Observe, analyze, and stage-test the customer-facing surface of any enterprise product before launch." />\n<meta property="og:title" content="Launch Rehearsal — Monitoring" />\n<meta property="og:description" content="Observe, do not modify. Persona x journey, evidence-bound, multi-agent." />\n<meta property="og:type" content="website" />\n<meta name="twitter:card" content="summary" />\n<link rel="stylesheet" href="/assets/%s" />\n</head>\n<body>\n<script type="module" src="/assets/%s"><\/script>\n</body>\n</html>\n' "$STYLES" "$MAIN_JS" \
        > /app/launch-rehearsal/src/rehearse/dashboard/static/client/index.html
 
 # Copy demo artifacts (runs/, analysis/, scorecards/, sitemaps/, configs/)
