@@ -1205,6 +1205,20 @@ def build_run_bundle(
     dimensions = _expand_dimensions(analysis.dimensions, evidence)
     _append_dimension_rollup_issues(issues, evidence, dimensions, config)
     _enrich_recurrence(issues, output_dir, evidence.run_id)
+
+    # SEO health signals — run_seo_checks on page snapshots collected during crawl
+    try:
+        from rehearse.seo import run_seo_checks
+        _imap = (ctx.metadata.get("interaction_map") or {}) if ctx else {}
+        _seo_snaps = _imap.get("seoSnapshots") or []
+        if _seo_snaps:
+            _seo_findings = run_seo_checks(_seo_snaps)
+            for _sf in _seo_findings:
+                _sf.setdefault("id", f"seo-{len(issues)+1}")
+                issues.append(_sf)
+    except Exception:
+        pass
+
     delights = _serialize_delights(config, evidence, analysis)
     sitemap_pages, sitemap_edges, sitemap_md = _serialize_sitemap(
         ctx.sitemap if ctx else None, evidence.run_id, ctx.workflows if ctx else None
@@ -1293,6 +1307,29 @@ def build_run_bundle(
         {k: {"score": v[0]} for k, v in (analysis.dimensions or {}).items()},
     )
 
+    # A5: statistical baseline — z-scores vs. prior runs for this config
+    _baseline: dict = {}
+    try:
+        from rehearse.baseline_store import compute_baseline
+        _baseline = compute_baseline(
+            output_dir,
+            evidence.run_id,
+            # Pass a minimal preview of the summary that baseline_store can read
+            # without a circular import (full summary built below).
+            {
+                "readiness": readiness_score,
+                "flakeRate": flake_rate,
+                "blockers": _blockers(issues),
+                "issues": len(issues),
+                "stepCount": len(steps),
+                "durationSec": evidence.duration_ms // 1000 if evidence.duration_ms else 0,
+                "pagesCrawled": pages_crawled,
+            },
+            {k: {"score": v[0]} for k, v in (analysis.dimensions or {}).items()},
+        )
+    except Exception:
+        pass
+
     return {
         "summary": {
             # Gate leads — Jobs: "the score is a consequence of the gate, not the headline"
@@ -1344,6 +1381,7 @@ def build_run_bundle(
             "webVitalsPath": (ctx.metadata.get("web_vitals_path") if ctx else None),
             "experiment": _serialize_experiment(config.experiment),
             "followUpAt": _follow_up_at(evidence.finished_at or evidence.started_at),
+            "baseline": _baseline or None,
         },
         "runHistory": _run_history(output_dir, evidence.run_id),
         "steps": steps,

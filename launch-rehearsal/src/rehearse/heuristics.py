@@ -434,6 +434,25 @@ def _analyze_step(
                     confidence="hypothesis",
                 )
 
+    if step.note and "[consent-banner:blocked]" in step.note:
+        add_issue(
+            "p1",
+            "Undismissable consent banner blocks user journey",
+            f"A GDPR/CCPA consent banner was detected on {step.final_url or step.requested_url} "
+            "and could not be dismissed automatically. This blocks the journey runner from "
+            "testing the page — and blocks real users in regulated markets who cannot proceed "
+            "past the banner. Ensure the banner can be accepted via a visible 'Accept' button.",
+            [step.persona_id],
+            confidence="high",
+        )
+    elif step.note and "[consent-banner:dismissed]" in step.note:
+        add_delight(
+            "Consent banner dismissible",
+            f"A GDPR/CCPA consent banner was detected and successfully dismissed on "
+            f"{step.final_url or step.requested_url}. Users can proceed past it.",
+            [step.persona_id],
+        )
+
     if step.note and "rage:" in step.note and "possible duplicate submission" in step.note:
         add_issue(
             "p0",

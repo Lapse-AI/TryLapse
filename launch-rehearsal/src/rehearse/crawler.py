@@ -10,6 +10,7 @@ from urllib.parse import urljoin, urlparse
 from playwright.sync_api import Page, Request
 
 from rehearse.dsl import CrawlConfig
+from rehearse.route_graph import path_to_template, RouteTemplateGraph
 
 # Title/H1 only — avoid flagging pages that mention "error" in issue/history copy
 _HEADING_ERROR_PATTERNS = (
@@ -169,9 +170,8 @@ def crawl_site(
     seen: set[str] = set()
     pages: list[CrawlPage] = []
     discovered: set[str] = {(urlparse(seed).path or "/").rstrip("/") or "/"}
-    # Pattern-based sampling: track how many pages per URL template
-    pattern_samples: dict[str, int] = {}
-    max_samples_per_pattern = 2
+    # Pattern-based sampling — uses RouteTemplateGraph (route_graph.py)
+    route_graph = RouteTemplateGraph(max_samples=2)
 
     # XHR supplementation: collect same-origin API paths seen during navigation
     xhr_paths: list[str] = []
@@ -194,18 +194,6 @@ def crawl_site(
 
     page.on("request", _on_request)
 
-    def _path_pattern(path: str) -> str:
-        parts = [p for p in path.split("/") if p]
-        normed = []
-        for p in parts:
-            if re.match(r'^\d+$', p) or re.match(r'^[0-9a-f]{8}-[0-9a-f]{4}', p, re.I):
-                normed.append("{id}")
-            elif re.match(r'^[a-z0-9][a-z0-9_-]{7,}$', p, re.I) and (re.search(r'\d', p) or len(p) > 20):
-                normed.append("{id}")
-            else:
-                normed.append(p)
-        return "/" + "/".join(normed) if normed else "/"
-
     try:
         while queue and len(pages) < config.max_pages:
             url, depth = queue.pop(0)
@@ -214,11 +202,10 @@ def crawl_site(
             if key in seen or _path_excluded(key, excludes):
                 continue
 
-            # Skip structurally redundant pages
-            pat = _path_pattern(key)
-            if pattern_samples.get(pat, 0) >= max_samples_per_pattern and pat not in ("/", "/{id}"):
+            # Skip structurally redundant pages (RouteTemplateGraph handles dedup + merge)
+            _template, _skip = route_graph.record(key)
+            if _skip:
                 continue
-            pattern_samples[pat] = pattern_samples.get(pat, 0) + 1
 
             seen.add(key)
 

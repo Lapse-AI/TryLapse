@@ -183,6 +183,8 @@ export function useRunBundle(runId: string) {
     },
     enabled: !!runId && health.isSuccess && (live || allowsMockFallback()),
     placeholderData: live || !allowsMockFallback() ? undefined : getRunBundle(runId),
+    // Poll every 5s while the orchestrator is still writing partial bundles
+    refetchInterval: (q) => (q.state.data?.summary?.partial === true ? 5000 : false),
   });
 }
 

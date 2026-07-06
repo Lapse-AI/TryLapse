@@ -18,7 +18,6 @@ from __future__ import annotations
 import base64
 import json
 import os
-import re
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -110,6 +109,8 @@ class InteractionMap:
     node_status: dict[str, str] = field(default_factory=dict)
     # Route coverage: % of discovered URL templates that were actually visited
     graph_coverage_pct: float = 0.0
+    # SEO data collected per page for run_seo_checks()
+    seo_snapshots: list[dict[str, Any]] = field(default_factory=list)
 
 
 # ── URL helpers ───────────────────────────────────────────────────────────────
@@ -122,42 +123,12 @@ def _origin(url: str) -> str:
     return parts[0] + "//" + parts[1].split("/")[0]
 
 
-_UUID_RE = re.compile(
-    r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$', re.I
-)
-_NUMERIC_RE = re.compile(r'^\d+$')
-_HASH_RE = re.compile(r'^[0-9a-f]{16,}$', re.I)
-# A slug that contains digits AND dashes/underscores and is long enough to be an ID
-_ID_SLUG_RE = re.compile(r'^[a-z0-9][a-z0-9_-]{7,}$', re.I)
+from rehearse.route_graph import url_to_template
 
 
 def _url_pattern(url: str) -> str:
-    """Normalize a URL to a structural template, collapsing IDs/slugs.
-
-    /profiles/12345         → /profiles/{id}
-    /users/abc-def-00abc    → /users/{id}
-    /posts/2024-my-title    → kept (short alpha slug — likely a route)
-    /admin/settings         → /admin/settings (no collapse)
-    """
-    try:
-        from urllib.parse import urlparse, urlunparse
-        parsed = urlparse(url)
-        parts = [p for p in parsed.path.split("/") if p]
-        normed: list[str] = []
-        for part in parts:
-            if _UUID_RE.match(part) or _NUMERIC_RE.match(part) or _HASH_RE.match(part):
-                normed.append("{id}")
-            elif _ID_SLUG_RE.match(part) and (
-                bool(re.search(r'\d', part)) or len(part) > 20
-            ):
-                # Has digits embedded OR very long → treat as ID slug
-                normed.append("{id}")
-            else:
-                normed.append(part)
-        pattern_path = "/" + "/".join(normed) if normed else "/"
-        return urlunparse(("", "", pattern_path, "", "", ""))
-    except Exception:
-        return url
+    """Normalize a URL to a structural template. Delegates to route_graph.url_to_template."""
+    return url_to_template(url)
 
 
 def _resolve_href(href: str, target_url: str) -> str | None:
@@ -1171,6 +1142,16 @@ def run_deep_crawl(
         except Exception:
             pass
 
+        # 2a. SEO extraction — always run, no vision required
+        try:
+            from rehearse.seo import SEO_EXTRACTION_SCRIPT
+            seo_data = page.evaluate(SEO_EXTRACTION_SCRIPT)
+            if isinstance(seo_data, dict):
+                seo_data["url"] = current_url  # use post-redirect URL
+                imap.seo_snapshots.append(seo_data)
+        except Exception:
+            pass
+
         # 2. Auth wall check
         if _detect_auth_wall(page):
             imap.auth_wall_detected = True
@@ -1463,6 +1444,7 @@ def interaction_map_to_dict(imap: InteractionMap) -> dict[str, Any]:
         "skippedPatterns": imap.skipped_patterns,
         "skippedPatternCount": sum(imap.skipped_patterns.values()),
         "graphCoveragePct": imap.graph_coverage_pct,
+        "seoSnapshots": imap.seo_snapshots,
     }
 
 

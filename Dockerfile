@@ -17,17 +17,21 @@ RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python package first (layer cache)
-# static/ is excluded from build context (.dockerignore) to avoid hatch duplicate-file error;
-# we create it empty here so the package installs cleanly, then populate it after the npm build.
+# Install Python deps (editable install so the running package reads from /app/launch-rehearsal/src)
+# This means static files added after npm build are immediately visible — no re-install needed.
 COPY launch-rehearsal/ ./launch-rehearsal/
 RUN mkdir -p launch-rehearsal/src/rehearse/dashboard/static
-RUN pip install --no-cache-dir ./launch-rehearsal
+RUN pip install --no-cache-dir -e ./launch-rehearsal
 
-# Build the frontend and embed it into the Python package static dir
+# Build the frontend and copy dist directly into the source static dir.
+# Because we used -e above, the running package already resolves to this path.
 COPY Frontend_V1/ ./Frontend_V1/
 RUN cd Frontend_V1 && npm install --no-audit --no-fund && npm run build \
-    && cp -r dist/. /app/launch-rehearsal/src/rehearse/dashboard/static/
+    && cp -r dist/. /app/launch-rehearsal/src/rehearse/dashboard/static/ \
+    && MAIN_JS=$(grep -rl "hydrateRoot" /app/launch-rehearsal/src/rehearse/dashboard/static/client/assets/ | head -1 | xargs basename) \
+    && STYLES=$(ls /app/launch-rehearsal/src/rehearse/dashboard/static/client/assets/styles-*.css | head -1 | xargs basename) \
+    && printf '<!doctype html>\n<html lang="en">\n<head>\n<meta charset="UTF-8" />\n<meta name="viewport" content="width=device-width, initial-scale=1" />\n<link rel="stylesheet" href="/assets/%s" />\n</head>\n<body></body>\n<script type="module" src="/assets/%s"></script>\n</html>\n' "$STYLES" "$MAIN_JS" \
+       > /app/launch-rehearsal/src/rehearse/dashboard/static/client/index.html
 
 # Copy demo artifacts (runs/, analysis/, scorecards/, sitemaps/, configs/)
 # tracked in git — seeded into the data volume on first start

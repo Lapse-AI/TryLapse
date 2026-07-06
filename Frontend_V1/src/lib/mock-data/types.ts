@@ -131,6 +131,10 @@ export type RunSummary = {
   networkLogPath?: string | null;
   webVitalsPath?: string | null;
   experiment?: ExperimentSpec | null;
+  // Streaming synthesis — set when orchestrator writes a partial bundle mid-run
+  partial?: boolean | null;
+  personasComplete?: number | null;
+  personasTotal?: number | null;
 };
 
 export type StepSnapshot = {

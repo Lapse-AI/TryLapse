@@ -427,6 +427,23 @@ export function RunDetail() {
               </div>
             )}
             <ExperimentRunBanner experiment={run.experiment} />
+            {run.partial && (
+              <Panel className="p-4 border border-blue-400/30 bg-blue-400/5 flex items-start gap-3">
+                <span className="text-blue-400 text-lg mt-0.5 animate-pulse">⧖</span>
+                <div>
+                  <div className="text-sm font-semibold text-blue-400">
+                    Analysis in progress
+                    {run.personasComplete != null && run.personasTotal != null
+                      ? ` — ${run.personasComplete} of ${run.personasTotal} personas complete`
+                      : ""}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Partial results shown below. The page refreshes automatically as each persona
+                    finishes.
+                  </p>
+                </div>
+              </Panel>
+            )}
             {run.outcome === "partial" && bundle.steps.length > 0 && (
               <Panel className="p-4 border border-warn/30 bg-warn/5 flex items-start gap-3">
                 <span className="text-warn text-lg mt-0.5">⚠</span>

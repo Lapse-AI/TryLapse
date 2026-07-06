@@ -112,6 +112,74 @@ def setup_page_for_run(page: Any) -> None:
         page.add_init_script(script=_ANIMATION_FREEZE_INIT_SCRIPT)
     except Exception:
         pass
+
+
+# Consent banner dismiss selectors — ordered from most specific to most generic
+_CONSENT_DISMISS_SELECTORS = [
+    "button[id*='accept' i]",
+    "button[class*='accept' i]",
+    "button[data-testid*='accept' i]",
+    "button:has-text('Accept all')",
+    "button:has-text('Accept All')",
+    "button:has-text('Accept cookies')",
+    "button:has-text('I accept')",
+    "button:has-text('Allow all')",
+    "button:has-text('OK')",
+    "button:has-text('Got it')",
+    "button:has-text('Agree')",
+    "[aria-label*='Accept' i][role='button']",
+    "[aria-label*='Close cookie' i]",
+]
+
+# JS snippet to detect a blocking consent overlay (heuristic: fixed/sticky element
+# covering ≥25% of viewport height, containing consent keywords).
+_CONSENT_DETECT_SCRIPT = """
+() => {
+  const keywords = ['cookie', 'consent', 'gdpr', 'privacy policy', 'ccpa', 'we use cookies'];
+  const els = Array.from(document.querySelectorAll('*'));
+  for (const el of els) {
+    const style = window.getComputedStyle(el);
+    if (style.position !== 'fixed' && style.position !== 'sticky') continue;
+    const rect = el.getBoundingClientRect();
+    const vpH = window.innerHeight || 600;
+    if (rect.height < vpH * 0.15) continue;
+    const text = (el.innerText || el.textContent || '').toLowerCase();
+    if (keywords.some(k => text.includes(k))) return true;
+  }
+  return false;
+}
+"""
+
+
+def check_and_dismiss_consent_banner(page: Any) -> str:
+    """Detect and attempt to dismiss a GDPR/CCPA consent banner.
+
+    Returns:
+        "none"      — no consent banner detected
+        "dismissed" — banner detected and successfully dismissed
+        "blocked"   — banner detected, all dismiss attempts failed
+    """
+    try:
+        has_banner = page.evaluate(_CONSENT_DETECT_SCRIPT)
+    except Exception:
+        return "none"
+
+    if not has_banner:
+        return "none"
+
+    for sel in _CONSENT_DISMISS_SELECTORS:
+        try:
+            btn = page.query_selector(sel)
+            if btn and btn.is_visible():
+                btn.click(timeout=2000)
+                page.wait_for_timeout(500)
+                still_visible = page.evaluate(_CONSENT_DETECT_SCRIPT)
+                if not still_visible:
+                    return "dismissed"
+        except Exception:
+            continue
+
+    return "blocked"
 # ─────────────────────────────────────────────────────────────────────────────
 
 ERROR_PHRASES = (
@@ -1012,6 +1080,9 @@ class BrowserSession:
                 _settle_ms = _behavioral_settle_pause_ms(persona_obj)
                 if _settle_ms:
                     page.wait_for_timeout(_settle_ms)
+                _consent = check_and_dismiss_consent_banner(page)
+                if _consent != "none":
+                    snap.note = (snap.note or "") + f"[consent-banner:{_consent}]"
             elif step.action == "wait":
                 ms = int(step.value or step.url or "1000")
                 page.wait_for_timeout(ms)
