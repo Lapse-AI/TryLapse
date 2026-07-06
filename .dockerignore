@@ -11,6 +11,8 @@ launch-rehearsal/artifacts/narratives/
 launch-rehearsal/artifacts/jobs.json
 launch-rehearsal/artifacts/workspace.json
 launch-rehearsal/.venv
+# Static dir is populated by npm build inside Docker — exclude pre-built local files
+launch-rehearsal/src/rehearse/dashboard/static
 launch-rehearsal/src/**/__pycache__
 **/__pycache__
 **/*.pyc

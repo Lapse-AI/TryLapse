@@ -12,19 +12,22 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Node for the frontend build step
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+# Node 22 for the frontend build step (packages require >=22.12.0)
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python package first (layer cache)
+# static/ is excluded from build context (.dockerignore) to avoid hatch duplicate-file error;
+# we create it empty here so the package installs cleanly, then populate it after the npm build.
 COPY launch-rehearsal/ ./launch-rehearsal/
+RUN mkdir -p launch-rehearsal/src/rehearse/dashboard/static
 RUN pip install --no-cache-dir ./launch-rehearsal
 
 # Build the frontend and embed it into the Python package static dir
 COPY Frontend_V1/ ./Frontend_V1/
-RUN cd Frontend_V1 && npm ci --silent && npm run build \
-    && cp -r dist/. launch-rehearsal/src/rehearse/dashboard/static/
+RUN cd Frontend_V1 && npm install --no-audit --no-fund && npm run build \
+    && cp -r dist/. /app/launch-rehearsal/src/rehearse/dashboard/static/
 
 # Copy demo artifacts (runs/, analysis/, scorecards/, sitemaps/, configs/)
 # tracked in git — seeded into the data volume on first start
