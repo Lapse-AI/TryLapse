@@ -943,7 +943,7 @@ class _Handler(BaseHTTPRequestHandler):
             for k, v in _cors_headers(self._origin).items():
                 self.send_header(k, v)
             self.end_headers()
-            self.wfile.write(data)
+            self._write(data)
             return
 
         if path.startswith("/files/"):
@@ -978,7 +978,7 @@ class _Handler(BaseHTTPRequestHandler):
             for k, v in _cors_headers(self._origin).items():
                 self.send_header(k, v)
             self.end_headers()
-            self.wfile.write(data)
+            self._write(data)
             return
 
         # Serve from the TanStack Start client build (dist/client/).
@@ -998,7 +998,7 @@ class _Handler(BaseHTTPRequestHandler):
                     self.send_header("Content-Type", _ctype)
                     self.send_header("Content-Length", str(len(_data)))
                     self.end_headers()
-                    self.wfile.write(_data)
+                    self._write(_data)
                     return
                 # SPA fallback: unknown paths → index.html (client-side routing)
                 # EXCEPT /api/* — those should 404 if not found (prevents SPA serving to API calls)
@@ -1012,7 +1012,7 @@ class _Handler(BaseHTTPRequestHandler):
                 self.send_header("Content-Type", "text/html; charset=utf-8")
                 self.send_header("Content-Length", str(len(_data)))
                 self.end_headers()
-                self.wfile.write(_data)
+                self._write(_data)
                 return
         elif path in ("/", "/index.html"):
             # Legacy fallback: flat static/index.html (pre-TanStack Start builds)
@@ -1023,10 +1023,24 @@ class _Handler(BaseHTTPRequestHandler):
                 self.send_header("Content-Type", "text/html; charset=utf-8")
                 self.send_header("Content-Length", str(len(_data)))
                 self.end_headers()
-                self.wfile.write(_data)
+                self._write(_data)
                 return
 
         self.send_error(404)
+
+    def _write(self, data: bytes) -> None:
+        """Write to response body only if not a HEAD request."""
+        if not getattr(self, "_is_head_request", False):
+            self.wfile.write(data)
+
+    def do_HEAD(self) -> None:  # noqa: N802
+        """HEAD request — same as GET but send headers only, not body."""
+        # Mark that this is a HEAD request so do_GET knows not to send body
+        self._is_head_request = True  # type: ignore
+        try:
+            self.do_GET()
+        finally:
+            self._is_head_request = False  # type: ignore
 
     def do_POST(self) -> None:  # noqa: N802
         parsed = urllib.parse.urlparse(self.path)
