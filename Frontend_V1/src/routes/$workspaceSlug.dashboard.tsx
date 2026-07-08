@@ -656,7 +656,8 @@ function NoRunsEmptyState({ onRun, isPending }: { onRun: () => void; isPending: 
         ) : (
           <div className="flex flex-col items-center gap-3">
             <Link
-              to="/init"
+              to="/$workspaceSlug/init"
+              params={{ workspaceSlug }}
               className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity"
               style={{
                 boxShadow: "0 2px 8px color-mix(in oklab, var(--primary) 30%, transparent)",

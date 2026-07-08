@@ -74,7 +74,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   );
 }
 
-const PUBLIC_PATHS = new Set(["/signin", "/signup", "/onboarding"]);
+const PUBLIC_PATHS = new Set(["/signin", "/signup", "/onboarding", "/init"]);
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   beforeLoad: ({ location }) => {

@@ -3,6 +3,7 @@ import { PageHeader, Panel, Chip, UnderConstruction } from "@/components/ui-bits
 import { useLibrary, useApiHealth } from "@/lib/api/hooks";
 import { api } from "@/lib/api/client";
 import { useLatestRun } from "@/lib/api/hooks";
+import { getWorkspace } from "@/lib/workspace";
 
 export const Route = createFileRoute("/library")({
   head: () => ({ meta: [{ title: "Journey library — Launch Rehearsal" }] }),
@@ -13,6 +14,7 @@ function LibraryPage() {
   const { data: live } = useApiHealth();
   const { data: library } = useLibrary();
   const latest = useLatestRun();
+  const workspace = getWorkspace();
 
   return (
     <UnderConstruction>
@@ -107,9 +109,19 @@ function LibraryPage() {
           )}
 
           <div className="text-sm text-muted-foreground">
-            <Link to="/init" className="text-primary hover:underline">
-              Init wizard
-            </Link>{" "}
+            {workspace ? (
+              <Link
+                to="/$workspaceSlug/init"
+                params={{ workspaceSlug: workspace.slug }}
+                className="text-primary hover:underline"
+              >
+                Init wizard
+              </Link>
+            ) : (
+              <Link to="/init" className="text-primary hover:underline">
+                Init wizard
+              </Link>
+            )}{" "}
             · OpenAPI / sitemap.xml seed import via CLI config (Phase 2 UI)
           </div>
         </div>

@@ -196,7 +196,7 @@ function OnboardingPage() {
         teamRole: role ?? "other",
       });
       setWorkspace(ws);
-      navigate({ to: "/init" });
+      navigate({ to: "/$workspaceSlug/init", params: { workspaceSlug: ws.slug } });
     } catch {
       setCreateError("Failed to create workspace. Please try again.");
       setCreating(false);
