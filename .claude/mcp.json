@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "trylapse": {
+      "command": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/.venv/bin/python3",
+      "args": ["-m", "rehearse.mcp_server"],
+      "cwd": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/src",
+      "env": {
+        "TRYLAPSE_ARTIFACTS": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts"
+      }
+    }
+  }
+}

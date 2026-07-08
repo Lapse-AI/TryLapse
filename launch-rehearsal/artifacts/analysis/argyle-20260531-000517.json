@@ -1,5 +1,9 @@
 {
   "summary": {
+    "launchGate": "REVIEW",
+    "verdict": "Review required before launch. Meaningful friction detected. (8 flaky steps \u2014 re-run to confirm.)",
+    "readiness": 95,
+    "readinessBand": "Green",
     "id": "argyle-20260531-000517",
     "productName": "Argyle Faculty Dashboard",
     "target": "faculty-dashboard-eight.vercel.app",
@@ -9,15 +13,37 @@
     "startedAt": "2026-05-31T00:05:17.760439+00:00",
     "finishedAt": "2026-05-31T00:07:26.243167+00:00",
     "durationSec": 128,
-    "readiness": 95,
-    "readinessBand": "Green",
+    "phaseTimings": {
+      "crawlSec": 0,
+      "journeySec": 0,
+      "analysisSec": 0
+    },
     "status": "ready",
+    "scoreDelta": 0,
+    "previousScore": 95,
+    "runDelta": null,
+    "industryBenchmark": {
+      "category": "b2b_saas",
+      "categoryLabel": "B2B SaaS",
+      "median": 67,
+      "delta": 28,
+      "percentile": 90,
+      "source": "lr-beta-v1"
+    },
     "blockers": 0,
-    "issues": 4,
+    "issues": 2,
     "delights": 2,
     "pages": 16,
     "pagesCrawled": 16,
     "stepCount": 57,
+    "flakeCount": 8,
+    "flakeRate": 0.14,
+    "flakeBreakdown": {
+      "Functionality": {
+        "count": 8,
+        "rate": 1.0
+      }
+    },
     "agentCost": 0.2213,
     "costEstimate": {
       "usd": 0.2213,
@@ -39,8 +65,111 @@
     "authGated": 0,
     "networkLogPath": null,
     "webVitalsPath": null,
-    "experiment": null
+    "experiment": null,
+    "followUpAt": "2026-06-07T00:07:26.243167+00:00"
   },
+  "runHistory": [
+    {
+      "id": "argyle-20260608-204758",
+      "startedAt": "2026-06-08T20:47:58.922659+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 95,
+      "flakeRate": 0,
+      "blockerCount": 0,
+      "durationSec": 151
+    },
+    {
+      "id": "argyle-20260608-210028",
+      "startedAt": "2026-06-08T21:00:28.384291+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 95,
+      "flakeRate": 0,
+      "blockerCount": 0,
+      "durationSec": 164
+    },
+    {
+      "id": "argyle-20260608-212354",
+      "startedAt": "2026-06-08T21:23:54.471634+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 95,
+      "flakeRate": 0,
+      "blockerCount": 0,
+      "durationSec": 168
+    },
+    {
+      "id": "argyle-20260609-043312",
+      "startedAt": "2026-06-09T04:33:12.801493+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 95,
+      "flakeRate": 0,
+      "blockerCount": 0,
+      "durationSec": 151
+    },
+    {
+      "id": "argyle-20260609-055051",
+      "startedAt": "2026-06-09T05:50:51.724846+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 29,
+      "flakeRate": 0,
+      "blockerCount": 375,
+      "durationSec": 2619
+    },
+    {
+      "id": "argyle-20260531-000517",
+      "startedAt": "2026-05-31T00:05:17.760439+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 95,
+      "flakeRate": 0,
+      "blockerCount": 0,
+      "durationSec": 128
+    },
+    {
+      "id": "argyle-20260608-002317",
+      "startedAt": "2026-06-08T00:23:17.626773+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 28,
+      "flakeRate": 0,
+      "blockerCount": 19,
+      "durationSec": 313
+    },
+    {
+      "id": "argyle-20260529-184202",
+      "startedAt": "2026-05-29T18:42:02.889281+00:00",
+      "launchGate": "CAUTION",
+      "verdict": "Do not launch yet. Critical issues need resolution.",
+      "readiness": 28,
+      "flakeRate": 0.0,
+      "blockerCount": 0,
+      "durationSec": 0
+    },
+    {
+      "id": "argyle-20260530-235539",
+      "startedAt": "2026-05-30T23:55:39.814026+00:00",
+      "launchGate": "CAUTION",
+      "verdict": "Do not launch yet. Critical issues need resolution.",
+      "readiness": 28,
+      "flakeRate": 0.0,
+      "blockerCount": 0,
+      "durationSec": 0
+    },
+    {
+      "id": "argyle-20260530-235656",
+      "startedAt": "2026-05-30T23:56:56.136781+00:00",
+      "launchGate": "PASS",
+      "verdict": "Ready to launch. No blockers found.",
+      "readiness": 95,
+      "flakeRate": 0.0,
+      "blockerCount": 0,
+      "durationSec": 51
+    }
+  ],
   "steps": [
     {
       "stepId": "j1-deep-link-p1-evaluator-s1-seed1-loop1",
@@ -62,8 +191,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s1-seed1-loop1.png",
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s1-seed1-loop1.txt"
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s1-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -89,8 +217,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s2-seed1-loop1.png",
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s2-seed1-loop1.txt"
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s2-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -116,8 +243,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s3-seed1-loop1.png",
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s3-seed1-loop1.txt"
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s3-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -143,8 +269,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s4-seed1-loop1.png",
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s4-seed1-loop1.txt"
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s4-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -173,8 +298,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s1-seed2-loop1.png",
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s1-seed2-loop1.txt"
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s1-seed2-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -200,8 +324,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s2-seed2-loop1.png",
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s2-seed2-loop1.txt"
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s2-seed2-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -227,8 +350,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s3-seed2-loop1.png",
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s3-seed2-loop1.txt"
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s3-seed2-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -254,8 +376,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s4-seed2-loop1.png",
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s4-seed2-loop1.txt"
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s4-seed2-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -284,8 +405,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s1-seed3-loop1.png",
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s1-seed3-loop1.txt"
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s1-seed3-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -311,8 +431,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s2-seed3-loop1.png",
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s2-seed3-loop1.txt"
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s2-seed3-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -338,8 +457,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s3-seed3-loop1.png",
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s3-seed3-loop1.txt"
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s3-seed3-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -365,8 +483,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s4-seed3-loop1.png",
-        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s4-seed3-loop1.txt"
+        "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s4-seed3-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -392,8 +509,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s1-seed1-loop1.png",
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s1-seed1-loop1.txt"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s1-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -419,8 +535,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s2-seed1-loop1.png",
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s2-seed1-loop1.txt"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s2-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -446,8 +561,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s3-seed1-loop1.png",
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s3-seed1-loop1.txt"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s3-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -473,8 +587,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s4-seed1-loop1.png",
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s4-seed1-loop1.txt"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s4-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -500,8 +613,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s5-seed1-loop1.png",
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s5-seed1-loop1.txt"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s5-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -527,8 +639,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s6-seed1-loop1.png",
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s6-seed1-loop1.txt"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s6-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -557,8 +668,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s1-seed2-loop1.png",
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s1-seed2-loop1.txt"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s1-seed2-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -584,8 +694,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s2-seed2-loop1.png",
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s2-seed2-loop1.txt"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s2-seed2-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -611,8 +720,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s3-seed2-loop1.png",
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s3-seed2-loop1.txt"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s3-seed2-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -638,8 +746,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s4-seed2-loop1.png",
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s4-seed2-loop1.txt"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s4-seed2-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -665,8 +772,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s5-seed2-loop1.png",
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s5-seed2-loop1.txt"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s5-seed2-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -692,8 +798,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s6-seed2-loop1.png",
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s6-seed2-loop1.txt"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s6-seed2-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -722,8 +827,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s1-seed3-loop1.png",
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s1-seed3-loop1.txt"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s1-seed3-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -749,8 +853,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s2-seed3-loop1.png",
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s2-seed3-loop1.txt"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s2-seed3-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -776,8 +879,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s3-seed3-loop1.png",
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s3-seed3-loop1.txt"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s3-seed3-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -803,8 +905,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s4-seed3-loop1.png",
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s4-seed3-loop1.txt"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s4-seed3-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -830,8 +931,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s5-seed3-loop1.png",
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s5-seed3-loop1.txt"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s5-seed3-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -857,8 +957,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s6-seed3-loop1.png",
-        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s6-seed3-loop1.txt"
+        "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s6-seed3-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -884,8 +983,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s1-seed1-loop1.png",
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s1-seed1-loop1.txt"
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s1-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -911,8 +1009,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s2-seed1-loop1.png",
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s2-seed1-loop1.txt"
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s2-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -938,8 +1035,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s3-seed1-loop1.png",
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s3-seed1-loop1.txt"
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s3-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -965,8 +1061,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s4-seed1-loop1.png",
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s4-seed1-loop1.txt"
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s4-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -992,8 +1087,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Argyle Analytics Back to Database Alefiya Rangwala Mumbai Total Experience: 22 years Skills & ",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s5-seed1-loop1.png",
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s5-seed1-loop1.txt"
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s5-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1021,8 +1115,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s1-seed2-loop1.png",
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s1-seed2-loop1.txt"
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s1-seed2-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1048,8 +1141,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s2-seed2-loop1.png",
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s2-seed2-loop1.txt"
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s2-seed2-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1075,8 +1167,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s3-seed2-loop1.png",
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s3-seed2-loop1.txt"
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s3-seed2-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1102,8 +1193,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s4-seed2-loop1.png",
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s4-seed2-loop1.txt"
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s4-seed2-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1129,8 +1219,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Argyle Analytics Back to Database Alefiya Rangwala Mumbai Total Experience: 22 years Skills & ",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s5-seed2-loop1.png",
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s5-seed2-loop1.txt"
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s5-seed2-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1158,8 +1247,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s1-seed3-loop1.png",
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s1-seed3-loop1.txt"
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s1-seed3-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1185,8 +1273,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s2-seed3-loop1.png",
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s2-seed3-loop1.txt"
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s2-seed3-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1212,8 +1299,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s3-seed3-loop1.png",
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s3-seed3-loop1.txt"
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s3-seed3-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1239,8 +1325,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s4-seed3-loop1.png",
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s4-seed3-loop1.txt"
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s4-seed3-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1266,8 +1351,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Argyle Analytics Back to Database Alefiya Rangwala Mumbai Total Experience: 22 years Skills & ",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s5-seed3-loop1.png",
-        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s5-seed3-loop1.txt"
+        "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s5-seed3-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1293,8 +1377,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Analytics Total Profiles 1809 candidates in the database Avg. Experience (Est.) 10 years estim",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s1-seed1-loop1.png",
-        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s1-seed1-loop1.txt"
+        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s1-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1320,8 +1403,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Analytics Total Profiles 1809 candidates in the database Avg. Experience (Est.) 10 years estim",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s2-seed1-loop1.png",
-        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s2-seed1-loop1.txt"
+        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s2-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1349,8 +1431,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Analytics Total Profiles 1809 candidates in the database Avg. Experience (Est.) 10 years estim",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s1-seed2-loop1.png",
-        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s1-seed2-loop1.txt"
+        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s1-seed2-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1376,8 +1457,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Analytics Total Profiles 1809 candidates in the database Avg. Experience (Est.) 10 years estim",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s2-seed2-loop1.png",
-        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s2-seed2-loop1.txt"
+        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s2-seed2-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1405,8 +1485,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Analytics Total Profiles 1809 candidates in the database Avg. Experience (Est.) 10 years estim",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s1-seed3-loop1.png",
-        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s1-seed3-loop1.txt"
+        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s1-seed3-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1432,8 +1511,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Analytics Total Profiles 1809 candidates in the database Avg. Experience (Est.) 10 years estim",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s2-seed3-loop1.png",
-        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s2-seed3-loop1.txt"
+        "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s2-seed3-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1459,8 +1537,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Admin Admin Dashboard Manage file updates and system operations File Update Processor Process ",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s1-seed1-loop1.png",
-        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s1-seed1-loop1.txt"
+        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s1-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1486,8 +1563,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Admin Admin Dashboard Manage file updates and system operations File Update Processor Process ",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s2-seed1-loop1.png",
-        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s2-seed1-loop1.txt"
+        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s2-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1513,8 +1589,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Admin Admin Dashboard Manage file updates and system operations File Update Processor Process ",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s1-seed2-loop1.png",
-        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s1-seed2-loop1.txt"
+        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s1-seed2-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1540,8 +1615,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Admin Admin Dashboard Manage file updates and system operations File Update Processor Process ",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s2-seed2-loop1.png",
-        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s2-seed2-loop1.txt"
+        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s2-seed2-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1567,8 +1641,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Admin Admin Dashboard Manage file updates and system operations File Update Processor Process ",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s1-seed3-loop1.png",
-        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s1-seed3-loop1.txt"
+        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s1-seed3-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1594,8 +1667,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Admin Admin Dashboard Manage file updates and system operations File Update Processor Process ",
       "artifactPaths": [
-        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s2-seed3-loop1.png",
-        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s2-seed3-loop1.txt"
+        "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s2-seed3-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1620,11 +1692,12 @@
       ],
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 42,
+      "recurring": 5,
       "evidence": "42 button(s) lack accessible name across 42 step(s).",
       "severityReason": "P2 from automated heuristics",
       "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s1-seed1-loop1.png"
+      "screenshotPath": "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s1-seed1-loop1.png",
+      "isRecurring": true
     },
     {
       "id": "I2",
@@ -1643,51 +1716,12 @@
       ],
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 5,
       "evidence": "1 of 9 inputs lack label, aria-label, or placeholder.",
       "severityReason": "P2 from automated heuristics",
       "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s1-seed1-loop1.png"
-    },
-    {
-      "id": "DIM-ONBOARDING-ROLLUP",
-      "runId": "argyle-20260531-000517",
-      "severity": "P3",
-      "title": "Onboarding signal from run evidence",
-      "detail": "Phase 2 heuristic from step evidence",
-      "persona": "First-time evaluator",
-      "personaId": "p1-evaluator",
-      "journey": "Run rollup",
-      "journeyId": "rollup",
-      "stepId": "run-rollup",
-      "dimension": "Onboarding",
-      "relatedDimensions": [],
-      "confidence": "high",
-      "owner": "frontend",
-      "recurring": 1,
-      "evidence": "Phase 2 heuristic from step evidence",
-      "severityReason": "P3 from automated dimension rollup",
-      "suggestion": null
-    },
-    {
-      "id": "DIM-RECOVERY-ROLLUP",
-      "runId": "argyle-20260531-000517",
-      "severity": "P3",
-      "title": "Recovery signal from run evidence",
-      "detail": "Phase 2 heuristic from step evidence",
-      "persona": "First-time evaluator",
-      "personaId": "p1-evaluator",
-      "journey": "Run rollup",
-      "journeyId": "rollup",
-      "stepId": "run-rollup",
-      "dimension": "Recovery",
-      "relatedDimensions": [],
-      "confidence": "high",
-      "owner": "frontend",
-      "recurring": 1,
-      "evidence": "Phase 2 heuristic from step evidence",
-      "severityReason": "P3 from automated dimension rollup",
-      "suggestion": null
+      "screenshotPath": "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s1-seed1-loop1.png",
+      "isRecurring": true
     }
   ],
   "delights": [
@@ -1825,13 +1859,13 @@
     {
       "name": "UI/UX",
       "score": 40,
-      "signal": "42 unlabeled buttons; ~1454ms avg step",
+      "signal": "42 unlabeled buttons; 42/378 inputs unlabeled; ~1454ms avg step",
       "automated": true
     },
     {
       "name": "Information",
       "score": 100,
-      "signal": "0 sparse-content pages",
+      "signal": "avg body 1340ch; 8.2 hdg/page; 43.8 links/page; 0 sparse pages",
       "automated": true
     },
     {
@@ -1842,27 +1876,27 @@
     },
     {
       "name": "Accessibility",
-      "score": 65,
-      "signal": "Phase 2 heuristic from step evidence",
-      "automated": false
+      "score": 45,
+      "signal": "42 unlabeled buttons; 336/378 inputs labeled",
+      "automated": true
     },
     {
       "name": "Trust",
       "score": 85,
-      "signal": "Phase 2 heuristic from step evidence",
-      "automated": false
+      "signal": "auth success",
+      "automated": true
     },
     {
       "name": "Onboarding",
-      "score": 80,
-      "signal": "Phase 2 heuristic from step evidence",
-      "automated": false
+      "score": 95,
+      "signal": "auth: success; first journey 100% pass",
+      "automated": true
     },
     {
       "name": "Recovery",
-      "score": 80,
-      "signal": "Phase 2 heuristic from step evidence",
-      "automated": false
+      "score": 85,
+      "signal": "no error signals detected",
+      "automated": true
     }
   ],
   "scorecardMd": "# Launch Rehearsal \u2014 Scorecard\n\n| Field | Value |\n|-------|--------|\n| **Run ID** | `argyle-20260531-000517` |\n| **Date** | 2026-05-31 |\n| **Target** | https://faculty-dashboard-eight.vercel.app |\n| **Product** | Argyle Faculty Dashboard |\n| **Outcome** | complete |\n| **Duration** | 128s |\n\n---\n\n## Executive summary\n\n| | |\n|---|---|\n| **Readiness** | **Green** |\n| **Top blocker** | Icon-only or unlabeled buttons |\n| **Top delight** | Clear navigation structure |\n| **Issues** | 6 |\n| **Delights** | 9 |\n\n| **Pages crawled** | 16 |\n| **Auto journeys added** | 0 |\n| **Auth** | success |\n| **Parallel seeds** | 3 |\n| **Flaky steps** | 0 |\n\n---\n\n## Persona \u00d7 journey matrix\n\n| Journey | P1 First-time | P2 Daily | P3 Admin |\n|---------|--------|--------|--------|\n| **j1-deep-link** Deep link and pagination at sc | **Pass** | **Pass** | **Partial** |\n| **j2-primary-list** Keyword and city filters | **Pass** | **Partial** | **Pass** |\n| **j3-profile** View candidate profile | **Pass** | **Pass** | **Pass** |\n| **j4-analytics** Analytics overview | **Pass** | **Pass** | **Pass** |\n| **j5-admin-boundary** Admin boundary check | **Pass** | **Pass** | **Pass** |\n\n---\n\n## Site map (crawl)\n\n# Site map\n\n**Origin:** https://faculty-dashboard-eight.vercel.app  \n**Pages crawled:** 16  \n\n## Hub pages (most outbound links)\n\n- `/database` \u2014 Argyle Analytics Dashboard\n- `/` \u2014 Argyle Analytics Dashboard\n- `/admin` \u2014 Argyle Analytics Dashboard\n- `/ai-search` \u2014 Argyle Analytics Dashboard\n- `/analytics` \u2014 Argyle Analytics Dashboard\n- `/resume-parser-gemini` \u2014 Argyle Analytics Dashboard\n- `/database/profile/03ea1ef9-cb02-4e5d-b4b6-b6fff1d94512` \u2014 Argyle Analytics Dashboard\n- `/database/profile/276a7cf3-a290-4557-83b2-49234a146628` \u2014 Argyle Analytics Dashboard\n\n## All pages\n\n| Path | Title | Depth | Links | Forms | Words |\n|------|-------|-------|-------|-------|-------|\n| `/` | Argyle Analytics Dashboard | 0 | 6 | 0 | 49 |\n| `/admin` | Argyle Analytics Dashboard | 1 | 6 | 0 | 57 |\n| `/ai-search` | Argyle Analytics Dashboard | 1 | 6 | 1 | 48 |\n| `/analytics` | Argyle Analytics Dashboard | 1 | 6 | 0 | 138 |\n| `/database` | Argyle Analytics Dashboard | 1 | 16 | 0 | 252 |\n| `/database/profile/03ea1ef9-cb02-4e5d-b4b6-b6fff1d94512` | Argyle Analytics Dashboard | 2 | 7 | 0 | 96 |\n| `/database/profile/276a7cf3-a290-4557-83b2-49234a146628` | Argyle Analytics Dashboard | 2 | 7 | 0 | 174 |\n| `/database/profile/359604ac-00e5-43d1-8981-892d9eb63ae9` | Argyle Analytics Dashboard | 2 | 7 | 0 | 333 |\n| `/database/profile/3efdf537-97e8-4597-b99b-a0f5d937daad` | Argyle Analytics Dashboard | 2 | 7 | 0 | 117 |\n| `/database/profile/65198cc7-015b-4945-9ee6-77146595b16a` | Argyle Analytics Dashboard | 2 | 7 | 0 | 88 |\n| `/database/profile/9adb256e-d8a5-4cf9-bbb8-bf9dc1daa8ae` | Argyle Analytics Dashboard | 2 | 7 | 0 | 204 |\n| `/database/profile/9ae8a5ad-6371-46c8-a89c-fedc5906b3a0` | Argyle Analytics Dashboard | 2 | 7 | 0 | 130 |\n| `/database/profile/b9727c77-87ba-4694-8044-5783019ed644` | Argyle Analytics Dashboard | 2 | 7 | 0 | 223 |\n| `/database/profile/dcad854d-3ea2-436b-becd-789b0eb4aa6c` | Argyle Analytics Dashboard | 2 | 7 | 0 | 111 |\n| `/database/profile/e96532c9-30cf-4991-ac62-5b1fdb73e321` | Argyle Analytics Dashboard | 2 | 7 | 0 | 106 |\n| `/resume-parser-gemini` | Argyle Analytics Dashboard | 1 | 6 | 0 | 49 |\n\n---\n\n## Detected workflows\n\n| Type | Path | Title | Signals |\n|------|------|-------|---------|\n| dashboard | `/` | Argyle Analytics Dashboard | \u2014 |\n| admin | `/admin` | Argyle Analytics Dashboard | \u2014 |\n| dashboard | `/admin` | Argyle Analytics Dashboard | \u2014 |\n| search | `/ai-search` | Argyle Analytics Dashboard | 1 forms |\n| dashboard | `/ai-search` | Argyle Analytics Dashboard | 1 forms |\n| dashboard | `/analytics` | Argyle Analytics Dashboard | \u2014 |\n| dashboard | `/database` | Argyle Analytics Dashboard | 9 inputs |\n| dashboard | `/resume-parser-gemini` | Argyle Analytics Dashboard | \u2014 |\n| dashboard | `/database/profile/03ea1ef9-cb02-4e5d-b4b6-b6fff1d94512` | Argyle Analytics Dashboard | \u2014 |\n| dashboard | `/database/profile/276a7cf3-a290-4557-83b2-49234a146628` | Argyle Analytics Dashboard | \u2014 |\n| dashboard | `/database/profile/359604ac-00e5-43d1-8981-892d9eb63ae9` | Argyle Analytics Dashboard | \u2014 |\n| dashboard | `/database/profile/3efdf537-97e8-4597-b99b-a0f5d937daad` | Argyle Analytics Dashboard | \u2014 |\n| dashboard | `/database/profile/65198cc7-015b-4945-9ee6-77146595b16a` | Argyle Analytics Dashboard | \u2014 |\n| dashboard | `/database/profile/9adb256e-d8a5-4cf9-bbb8-bf9dc1daa8ae` | Argyle Analytics Dashboard | \u2014 |\n| dashboard | `/database/profile/9ae8a5ad-6371-46c8-a89c-fedc5906b3a0` | Argyle Analytics Dashboard | \u2014 |\n| dashboard | `/database/profile/b9727c77-87ba-4694-8044-5783019ed644` | Argyle Analytics Dashboard | \u2014 |\n| dashboard | `/database/profile/dcad854d-3ea2-436b-becd-789b0eb4aa6c` | Argyle Analytics Dashboard | \u2014 |\n| dashboard | `/database/profile/e96532c9-30cf-4991-ac62-5b1fdb73e321` | Argyle Analytics Dashboard | \u2014 |\n\n---\n\n## Multi-agent collaboration\n\n| Agent | Role | Summary |\n|-------|------|---------|\n| `crawler` | Site structure discovery | Crawled 16 pages; 0 auth-gated; 0 orphans |\n| `workflow` | Workflow & journey planning | Detected workflow types: admin, dashboard, search |\n| `journey-runner` | E2E journey execution | Executed 57 steps across 5 journeys (0 failures, 0 flaky steps, seeds=3) |\n| `persona-p1-evaluator` | Evaluator: First-time evaluator (prospect / new user) | Analysis from prospect / new user perspective |\n| `persona-p2-operator` | Evaluator: Daily operator (power user) | Analysis from power user perspective |\n| `persona-p3-admin` | Evaluator: Admin / buyer (IT admin) | Analysis from IT admin perspective |\n| `llm-p1-evaluator` | LLM evaluator: First-time evaluator | First-time evaluator successfully reached database and opened a candidate profil |\n| `llm-p2-operator` | LLM evaluator: Daily operator | Filtering reduces result set quickly, but pagination controls are not evident, h |\n| `llm-p3-admin` | LLM evaluator: Admin / buyer | The dashboard shows candidate database functionality but the title says 'Analyti |\n| `synthesizer` | Cross-agent synthesis | Synthesized 6 issues, 9 delights from 9 agent reports |\n\n---\n\n## Dimension rollup (automated subset)\n\n| Dimension | Score 1\u20135 | Signal |\n|-----------|-----------|--------|\n| Functionality | 5 | 100% steps pass; 0 failures |\n| UI/UX | 2 | 42 unlabeled buttons; ~1454ms avg step |\n| Information clarity | 5 | 0 sparse-content pages |\n\n---\n\n## Issues (evidence-bound)\n\n### P2\n\n| ID | Finding | Personas | Evidence |\n|----|---------|----------|----------|\n| **I1** | Icon-only or unlabeled buttons \u2014 1 button(s) lack accessible name on page. | p2-operator, p3-admin | `j1-deep-link-p1-evaluator-s1-seed1-loop1` |\n| **I2** | Form inputs missing labels \u2014 1 of 9 inputs lack label, aria-label, or placeholder. | p1-evaluator, p3-admin | `j1-deep-link-p1-evaluator-s1-seed1-loop1` |\n| **I4** | Pagination controls are not visible or unlabeled \u2014 After filtering, the UI shows 'Displaying 4 matching profiles' but no pagination controls are evident in the excerpts. The consistent 'unlabeled_buttons: 1' across steps suggests a button exists but lacks a label, which could be the pagination control. Without clear pagination, the operator cannot efficiently browse through large result sets. | p2-operator | `j2-primary-list-p1-evaluator-s4-seed1-loop1` |\n| **I5** | Misleading page title: 'Analytics Dashboard' shows candidate database instead of analytics \u2014 The page is titled 'Argyle Analytics Dashboard' but the content is a candidate database browser. Admin buyers seeking analytics may be misled. | p3-admin | `j1-deep-link-p1-evaluator-s1-seed1-loop1` |\n\n### P3\n\n| ID | Finding | Personas | Evidence |\n|----|---------|----------|----------|\n| **I3** | Unlabeled button present on page \u2014 Each step log indicates one unlabeled button. For a first-time user, this lack of label may cause confusion about its function. | p1-evaluator | `j1-deep-link-p1-evaluator-s1-seed1-loop1` |\n| **I6** | Unlabeled button on candidate database page \u2014 One or more buttons lack visible labels, reducing clarity for admin users managing data. | p3-admin | `j1-deep-link-p1-evaluator-s1-seed1-loop1` |\n\n---\n\n## Delights & strengths (required)\n\n| ID | Delight | Personas | Evidence |\n|----|---------|----------|----------|\n| **D1** | Clear navigation structure \u2014 Page has 16 links and 2 headings. | p1-evaluator, p2-operator | `j1-deep-link-p1-evaluator-s1-seed1-loop1` |\n| **D2** | Informative landing content \u2014 Page includes headings and substantive body copy for first-time evaluators. | p1-evaluator | `j1-deep-link-p1-evaluator-s1-seed1-loop1` |\n| **D3** | Interactive forms discovered \u2014 1 pages with forms \u2014 workflow automation candidate. | p1-evaluator | `crawl-graph` |\n| **D4** | Multi-workflow product surface \u2014 Discovered workflow types: admin, dashboard, search. | p1-evaluator, p2-operator, p3-admin | `workflow-graph` |\n| **D5** | Fast interactions for repeat tasks \u2014 54 steps completed under 3s. | p2-operator | `j1-deep-link-p1-evaluator-s1-seed1-loop1` |\n| **D6** | Helpful semantic search prompt \u2014 The page offers example queries like 'Python developers with 5+ years experience in Mumbai', which helps new users understand how to use the AI search. | p1-evaluator | `j1-deep-link-p1-evaluator-s1-seed1-loop1` |\n| **D7** | Fast and responsive filtering \u2014 Filtering reduces the profile count from 1809 to 4 almost instantly (fill action takes ~50-70ms), allowing quick narrowing of candidate results. | p2-operator | `j2-primary-list-p1-evaluator-s3-seed1-loop1` |\n| **D8** | Efficient filtering reduces results from 1809 to 4 based on search terms \u2014 The search/filter functionality quickly narrows down candidates, demonstrating data management capability. | p3-admin | `j2-primary-list-p1-evaluator-s3-seed1-loop1` |\n| **D9** | Comprehensive candidate profile with skills, experience, and work history \u2014 Profile page provides detailed information, aiding admin verification of candidate data. | p3-admin | `j3-profile-p1-evaluator-s5-seed1-loop1` |\n\n---\n\n## Run log\n\n| Step | Journey | Action | Outcome | URL |\n|------|---------|--------|---------|-----|\n| `j1-deep-link-p1-evaluator-s1-seed1-loop1` | j1-deep-link | navigate | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j1-deep-link-p1-evaluator-s2-seed1-loop1` | j1-deep-link | wait | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j1-deep-link-p1-evaluator-s3-seed1-loop1` | j1-deep-link | click | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j1-deep-link-p1-evaluator-s4-seed1-loop1` | j1-deep-link | wait | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j1-deep-link-p1-evaluator-s1-seed2-loop1` | j1-deep-link | navigate | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j1-deep-link-p1-evaluator-s2-seed2-loop1` | j1-deep-link | wait | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j1-deep-link-p1-evaluator-s3-seed2-loop1` | j1-deep-link | click | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j1-deep-link-p1-evaluator-s4-seed2-loop1` | j1-deep-link | wait | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j1-deep-link-p1-evaluator-s1-seed3-loop1` | j1-deep-link | navigate | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j1-deep-link-p1-evaluator-s2-seed3-loop1` | j1-deep-link | wait | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j1-deep-link-p1-evaluator-s3-seed3-loop1` | j1-deep-link | click | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j1-deep-link-p1-evaluator-s4-seed3-loop1` | j1-deep-link | wait | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j2-primary-list-p1-evaluator-s1-seed1-loop1` | j2-primary-list | navigate | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j2-primary-list-p1-evaluator-s2-seed1-loop1` | j2-primary-list | wait | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j2-primary-list-p1-evaluator-s3-seed1-loop1` | j2-primary-list | fill | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j2-primary-list-p1-evaluator-s4-seed1-loop1` | j2-primary-list | wait | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j2-primary-list-p1-evaluator-s5-seed1-loop1` | j2-primary-list | fill | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j2-primary-list-p1-evaluator-s6-seed1-loop1` | j2-primary-list | wait | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j2-primary-list-p1-evaluator-s1-seed2-loop1` | j2-primary-list | navigate | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j2-primary-list-p1-evaluator-s2-seed2-loop1` | j2-primary-list | wait | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j2-primary-list-p1-evaluator-s3-seed2-loop1` | j2-primary-list | fill | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j2-primary-list-p1-evaluator-s4-seed2-loop1` | j2-primary-list | wait | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j2-primary-list-p1-evaluator-s5-seed2-loop1` | j2-primary-list | fill | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j2-primary-list-p1-evaluator-s6-seed2-loop1` | j2-primary-list | wait | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j2-primary-list-p1-evaluator-s1-seed3-loop1` | j2-primary-list | navigate | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j2-primary-list-p1-evaluator-s2-seed3-loop1` | j2-primary-list | wait | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j2-primary-list-p1-evaluator-s3-seed3-loop1` | j2-primary-list | fill | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j2-primary-list-p1-evaluator-s4-seed3-loop1` | j2-primary-list | wait | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j2-primary-list-p1-evaluator-s5-seed3-loop1` | j2-primary-list | fill | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j2-primary-list-p1-evaluator-s6-seed3-loop1` | j2-primary-list | wait | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j3-profile-p1-evaluator-s1-seed1-loop1` | j3-profile | navigate | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j3-profile-p1-evaluator-s2-seed1-loop1` | j3-profile | wait | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j3-profile-p1-evaluator-s3-seed1-loop1` | j3-profile | fill | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j3-profile-p1-evaluator-s4-seed1-loop1` | j3-profile | wait | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j3-profile-p1-evaluator-s5-seed1-loop1` | j3-profile | open_link | pass | https://faculty-dashboard-eight.vercel.app/database/profile/ |\n| `j3-profile-p1-evaluator-s1-seed2-loop1` | j3-profile | navigate | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j3-profile-p1-evaluator-s2-seed2-loop1` | j3-profile | wait | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j3-profile-p1-evaluator-s3-seed2-loop1` | j3-profile | fill | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j3-profile-p1-evaluator-s4-seed2-loop1` | j3-profile | wait | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j3-profile-p1-evaluator-s5-seed2-loop1` | j3-profile | open_link | pass | https://faculty-dashboard-eight.vercel.app/database/profile/ |\n| `j3-profile-p1-evaluator-s1-seed3-loop1` | j3-profile | navigate | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j3-profile-p1-evaluator-s2-seed3-loop1` | j3-profile | wait | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j3-profile-p1-evaluator-s3-seed3-loop1` | j3-profile | fill | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j3-profile-p1-evaluator-s4-seed3-loop1` | j3-profile | wait | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j3-profile-p1-evaluator-s5-seed3-loop1` | j3-profile | open_link | pass | https://faculty-dashboard-eight.vercel.app/database/profile/ |\n| `j4-analytics-p1-evaluator-s1-seed1-loop1` | j4-analytics | navigate | pass | https://faculty-dashboard-eight.vercel.app/analytics |\n| `j4-analytics-p1-evaluator-s2-seed1-loop1` | j4-analytics | wait | pass | https://faculty-dashboard-eight.vercel.app/analytics |\n| `j4-analytics-p1-evaluator-s1-seed2-loop1` | j4-analytics | navigate | pass | https://faculty-dashboard-eight.vercel.app/analytics |\n| `j4-analytics-p1-evaluator-s2-seed2-loop1` | j4-analytics | wait | pass | https://faculty-dashboard-eight.vercel.app/analytics |\n| `j4-analytics-p1-evaluator-s1-seed3-loop1` | j4-analytics | navigate | pass | https://faculty-dashboard-eight.vercel.app/analytics |\n| `j4-analytics-p1-evaluator-s2-seed3-loop1` | j4-analytics | wait | pass | https://faculty-dashboard-eight.vercel.app/analytics |\n| `j5-admin-boundary-p1-evaluator-s1-seed1-loop1` | j5-admin-boundary | navigate | pass | https://faculty-dashboard-eight.vercel.app/admin |\n| `j5-admin-boundary-p1-evaluator-s2-seed1-loop1` | j5-admin-boundary | wait | pass | https://faculty-dashboard-eight.vercel.app/admin |\n| `j5-admin-boundary-p1-evaluator-s1-seed2-loop1` | j5-admin-boundary | navigate | pass | https://faculty-dashboard-eight.vercel.app/admin |\n| `j5-admin-boundary-p1-evaluator-s2-seed2-loop1` | j5-admin-boundary | wait | pass | https://faculty-dashboard-eight.vercel.app/admin |\n| `j5-admin-boundary-p1-evaluator-s1-seed3-loop1` | j5-admin-boundary | navigate | pass | https://faculty-dashboard-eight.vercel.app/admin |\n| `j5-admin-boundary-p1-evaluator-s2-seed3-loop1` | j5-admin-boundary | wait | pass | https://faculty-dashboard-eight.vercel.app/admin |\n\n---\n\n*Generated by Launch Rehearsal CLI \u2014 product-agnostic heuristics. Findings require human review before production decisions.*\n",
@@ -2327,287 +2361,820 @@
     {
       "path": "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s1-seed1-loop1.png",
       "stepId": "j1-deep-link-p1-evaluator-s1-seed1-loop1",
-      "label": "Deep link and pagination at scale"
+      "label": "Deep link and pagination at scale \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Deep link and pagination at scale",
+      "durationMs": 1572,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s2-seed1-loop1.png",
       "stepId": "j1-deep-link-p1-evaluator-s2-seed1-loop1",
-      "label": "Deep link and pagination at scale"
+      "label": "Deep link and pagination at scale \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Deep link and pagination at scale",
+      "durationMs": 3070,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s3-seed1-loop1.png",
       "stepId": "j1-deep-link-p1-evaluator-s3-seed1-loop1",
-      "label": "Deep link and pagination at scale"
+      "label": "Deep link and pagination at scale \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "click",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Deep link and pagination at scale",
+      "durationMs": 79,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s4-seed1-loop1.png",
       "stepId": "j1-deep-link-p1-evaluator-s4-seed1-loop1",
-      "label": "Deep link and pagination at scale"
+      "label": "Deep link and pagination at scale \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Deep link and pagination at scale",
+      "durationMs": 2071,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s1-seed2-loop1.png",
       "stepId": "j1-deep-link-p1-evaluator-s1-seed2-loop1",
-      "label": "Deep link and pagination at scale"
+      "label": "Deep link and pagination at scale \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Deep link and pagination at scale",
+      "durationMs": 1672,
+      "consoleErrors": [
+        "Error fetching profiles: TypeError: Failed to fetch",
+        "Error loading skills: TypeError: Failed to fetch\n    at e (https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/database/page-515c16c95f50d97d.js:1:3261)\n    at https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/database/page-515c16c95f50d97d.js:1:3962\n    at ob (https:"
+      ]
     },
     {
       "path": "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s2-seed2-loop1.png",
       "stepId": "j1-deep-link-p1-evaluator-s2-seed2-loop1",
-      "label": "Deep link and pagination at scale"
+      "label": "Deep link and pagination at scale \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Deep link and pagination at scale",
+      "durationMs": 3069,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s3-seed2-loop1.png",
       "stepId": "j1-deep-link-p1-evaluator-s3-seed2-loop1",
-      "label": "Deep link and pagination at scale"
+      "label": "Deep link and pagination at scale \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "click",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Deep link and pagination at scale",
+      "durationMs": 76,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s4-seed2-loop1.png",
       "stepId": "j1-deep-link-p1-evaluator-s4-seed2-loop1",
-      "label": "Deep link and pagination at scale"
+      "label": "Deep link and pagination at scale \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Deep link and pagination at scale",
+      "durationMs": 2062,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s1-seed3-loop1.png",
       "stepId": "j1-deep-link-p1-evaluator-s1-seed3-loop1",
-      "label": "Deep link and pagination at scale"
+      "label": "Deep link and pagination at scale \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Deep link and pagination at scale",
+      "durationMs": 1325,
+      "consoleErrors": [
+        "Error loading skills: TypeError: Failed to fetch\n    at e (https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/database/page-515c16c95f50d97d.js:1:3261)\n    at https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/database/page-515c16c95f50d97d.js:1:3962\n    at ob (https:",
+        "Error fetching profiles: TypeError: Failed to fetch\n    at r (https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/database/page-515c16c95f50d97d.js:1:26650)\n    at https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/database/page-515c16c95f50d97d.js:1:3405\n    at https:"
+      ]
     },
     {
       "path": "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s2-seed3-loop1.png",
       "stepId": "j1-deep-link-p1-evaluator-s2-seed3-loop1",
-      "label": "Deep link and pagination at scale"
+      "label": "Deep link and pagination at scale \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Deep link and pagination at scale",
+      "durationMs": 3067,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s3-seed3-loop1.png",
       "stepId": "j1-deep-link-p1-evaluator-s3-seed3-loop1",
-      "label": "Deep link and pagination at scale"
+      "label": "Deep link and pagination at scale \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "click",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Deep link and pagination at scale",
+      "durationMs": 77,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j1-deep-link-p1-evaluator-s4-seed3-loop1.png",
       "stepId": "j1-deep-link-p1-evaluator-s4-seed3-loop1",
-      "label": "Deep link and pagination at scale"
+      "label": "Deep link and pagination at scale \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Deep link and pagination at scale",
+      "durationMs": 2071,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s1-seed1-loop1.png",
       "stepId": "j2-primary-list-p1-evaluator-s1-seed1-loop1",
-      "label": "Keyword and city filters"
+      "label": "Keyword and city filters \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Keyword and city filters",
+      "durationMs": 1675,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s2-seed1-loop1.png",
       "stepId": "j2-primary-list-p1-evaluator-s2-seed1-loop1",
-      "label": "Keyword and city filters"
+      "label": "Keyword and city filters \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Keyword and city filters",
+      "durationMs": 2556,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s3-seed1-loop1.png",
       "stepId": "j2-primary-list-p1-evaluator-s3-seed1-loop1",
-      "label": "Keyword and city filters"
+      "label": "Keyword and city filters \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "fill",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Keyword and city filters",
+      "durationMs": 51,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s4-seed1-loop1.png",
       "stepId": "j2-primary-list-p1-evaluator-s4-seed1-loop1",
-      "label": "Keyword and city filters"
+      "label": "Keyword and city filters \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Keyword and city filters",
+      "durationMs": 2063,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s5-seed1-loop1.png",
       "stepId": "j2-primary-list-p1-evaluator-s5-seed1-loop1",
-      "label": "Keyword and city filters"
+      "label": "Keyword and city filters \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "fill",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Keyword and city filters",
+      "durationMs": 52,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s6-seed1-loop1.png",
       "stepId": "j2-primary-list-p1-evaluator-s6-seed1-loop1",
-      "label": "Keyword and city filters"
+      "label": "Keyword and city filters \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Keyword and city filters",
+      "durationMs": 2063,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s1-seed2-loop1.png",
       "stepId": "j2-primary-list-p1-evaluator-s1-seed2-loop1",
-      "label": "Keyword and city filters"
+      "label": "Keyword and city filters \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Keyword and city filters",
+      "durationMs": 1540,
+      "consoleErrors": [
+        "Error loading skills: TypeError: Failed to fetch\n    at e (https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/database/page-515c16c95f50d97d.js:1:3261)\n    at https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/database/page-515c16c95f50d97d.js:1:3962\n    at ob (https:",
+        "Error fetching profiles: TypeError: Failed to fetch"
+      ]
     },
     {
       "path": "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s2-seed2-loop1.png",
       "stepId": "j2-primary-list-p1-evaluator-s2-seed2-loop1",
-      "label": "Keyword and city filters"
+      "label": "Keyword and city filters \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Keyword and city filters",
+      "durationMs": 2576,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s3-seed2-loop1.png",
       "stepId": "j2-primary-list-p1-evaluator-s3-seed2-loop1",
-      "label": "Keyword and city filters"
+      "label": "Keyword and city filters \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "fill",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Keyword and city filters",
+      "durationMs": 66,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s4-seed2-loop1.png",
       "stepId": "j2-primary-list-p1-evaluator-s4-seed2-loop1",
-      "label": "Keyword and city filters"
+      "label": "Keyword and city filters \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Keyword and city filters",
+      "durationMs": 2062,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s5-seed2-loop1.png",
       "stepId": "j2-primary-list-p1-evaluator-s5-seed2-loop1",
-      "label": "Keyword and city filters"
+      "label": "Keyword and city filters \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "fill",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Keyword and city filters",
+      "durationMs": 53,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s6-seed2-loop1.png",
       "stepId": "j2-primary-list-p1-evaluator-s6-seed2-loop1",
-      "label": "Keyword and city filters"
+      "label": "Keyword and city filters \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Keyword and city filters",
+      "durationMs": 2065,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s1-seed3-loop1.png",
       "stepId": "j2-primary-list-p1-evaluator-s1-seed3-loop1",
-      "label": "Keyword and city filters"
+      "label": "Keyword and city filters \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Keyword and city filters",
+      "durationMs": 1306,
+      "consoleErrors": [
+        "Error fetching profiles: TypeError: Failed to fetch\n    at r (https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/database/page-515c16c95f50d97d.js:1:26650)\n    at https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/database/page-515c16c95f50d97d.js:1:3405\n    at https:",
+        "Error loading skills: TypeError: Failed to fetch\n    at e (https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/database/page-515c16c95f50d97d.js:1:3261)\n    at https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/database/page-515c16c95f50d97d.js:1:3962\n    at ob (https:"
+      ]
     },
     {
       "path": "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s2-seed3-loop1.png",
       "stepId": "j2-primary-list-p1-evaluator-s2-seed3-loop1",
-      "label": "Keyword and city filters"
+      "label": "Keyword and city filters \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Keyword and city filters",
+      "durationMs": 2595,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s3-seed3-loop1.png",
       "stepId": "j2-primary-list-p1-evaluator-s3-seed3-loop1",
-      "label": "Keyword and city filters"
+      "label": "Keyword and city filters \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "fill",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Keyword and city filters",
+      "durationMs": 69,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s4-seed3-loop1.png",
       "stepId": "j2-primary-list-p1-evaluator-s4-seed3-loop1",
-      "label": "Keyword and city filters"
+      "label": "Keyword and city filters \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Keyword and city filters",
+      "durationMs": 2063,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s5-seed3-loop1.png",
       "stepId": "j2-primary-list-p1-evaluator-s5-seed3-loop1",
-      "label": "Keyword and city filters"
+      "label": "Keyword and city filters \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "fill",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Keyword and city filters",
+      "durationMs": 64,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j2-primary-list-p1-evaluator-s6-seed3-loop1.png",
       "stepId": "j2-primary-list-p1-evaluator-s6-seed3-loop1",
-      "label": "Keyword and city filters"
+      "label": "Keyword and city filters \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Keyword and city filters",
+      "durationMs": 2065,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s1-seed1-loop1.png",
       "stepId": "j3-profile-p1-evaluator-s1-seed1-loop1",
-      "label": "View candidate profile"
+      "label": "View candidate profile \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "View candidate profile",
+      "durationMs": 1431,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s2-seed1-loop1.png",
       "stepId": "j3-profile-p1-evaluator-s2-seed1-loop1",
-      "label": "View candidate profile"
+      "label": "View candidate profile \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "View candidate profile",
+      "durationMs": 2071,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s3-seed1-loop1.png",
       "stepId": "j3-profile-p1-evaluator-s3-seed1-loop1",
-      "label": "View candidate profile"
+      "label": "View candidate profile \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "fill",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "View candidate profile",
+      "durationMs": 55,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s4-seed1-loop1.png",
       "stepId": "j3-profile-p1-evaluator-s4-seed1-loop1",
-      "label": "View candidate profile"
+      "label": "View candidate profile \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "View candidate profile",
+      "durationMs": 2064,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s5-seed1-loop1.png",
       "stepId": "j3-profile-p1-evaluator-s5-seed1-loop1",
-      "label": "View candidate profile"
+      "label": "View candidate profile \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "open_link",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database/profile/9ae8a5ad-6371-46c8-a89c-fedc5906b3a0",
+      "outcome": "pass",
+      "note": "open_link: followed new-tab navigation",
+      "personaId": "p1-evaluator",
+      "journeyName": "View candidate profile",
+      "durationMs": 934,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s1-seed2-loop1.png",
       "stepId": "j3-profile-p1-evaluator-s1-seed2-loop1",
-      "label": "View candidate profile"
+      "label": "View candidate profile \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "View candidate profile",
+      "durationMs": 1852,
+      "consoleErrors": [
+        "Error fetching profiles: TypeError: Failed to fetch\n    at r (https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/database/page-515c16c95f50d97d.js:1:26650)\n    at https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/database/page-515c16c95f50d97d.js:1:3405\n    at https:"
+      ]
     },
     {
       "path": "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s2-seed2-loop1.png",
       "stepId": "j3-profile-p1-evaluator-s2-seed2-loop1",
-      "label": "View candidate profile"
+      "label": "View candidate profile \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "View candidate profile",
+      "durationMs": 2076,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s3-seed2-loop1.png",
       "stepId": "j3-profile-p1-evaluator-s3-seed2-loop1",
-      "label": "View candidate profile"
+      "label": "View candidate profile \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "fill",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "View candidate profile",
+      "durationMs": 55,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s4-seed2-loop1.png",
       "stepId": "j3-profile-p1-evaluator-s4-seed2-loop1",
-      "label": "View candidate profile"
+      "label": "View candidate profile \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "View candidate profile",
+      "durationMs": 2066,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s5-seed2-loop1.png",
       "stepId": "j3-profile-p1-evaluator-s5-seed2-loop1",
-      "label": "View candidate profile"
+      "label": "View candidate profile \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "open_link",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database/profile/9ae8a5ad-6371-46c8-a89c-fedc5906b3a0",
+      "outcome": "pass",
+      "note": "open_link: followed new-tab navigation",
+      "personaId": "p1-evaluator",
+      "journeyName": "View candidate profile",
+      "durationMs": 847,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s1-seed3-loop1.png",
       "stepId": "j3-profile-p1-evaluator-s1-seed3-loop1",
-      "label": "View candidate profile"
+      "label": "View candidate profile \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "View candidate profile",
+      "durationMs": 1404,
+      "consoleErrors": [
+        "Error fetching profiles: TypeError: Failed to fetch"
+      ]
     },
     {
       "path": "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s2-seed3-loop1.png",
       "stepId": "j3-profile-p1-evaluator-s2-seed3-loop1",
-      "label": "View candidate profile"
+      "label": "View candidate profile \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "View candidate profile",
+      "durationMs": 2056,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s3-seed3-loop1.png",
       "stepId": "j3-profile-p1-evaluator-s3-seed3-loop1",
-      "label": "View candidate profile"
+      "label": "View candidate profile \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "fill",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "View candidate profile",
+      "durationMs": 49,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s4-seed3-loop1.png",
       "stepId": "j3-profile-p1-evaluator-s4-seed3-loop1",
-      "label": "View candidate profile"
+      "label": "View candidate profile \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "View candidate profile",
+      "durationMs": 2064,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j3-profile-p1-evaluator-s5-seed3-loop1.png",
       "stepId": "j3-profile-p1-evaluator-s5-seed3-loop1",
-      "label": "View candidate profile"
+      "label": "View candidate profile \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "open_link",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database/profile/9ae8a5ad-6371-46c8-a89c-fedc5906b3a0",
+      "outcome": "pass",
+      "note": "open_link: followed new-tab navigation",
+      "personaId": "p1-evaluator",
+      "journeyName": "View candidate profile",
+      "durationMs": 783,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s1-seed1-loop1.png",
       "stepId": "j4-analytics-p1-evaluator-s1-seed1-loop1",
-      "label": "Analytics overview"
+      "label": "Analytics overview \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/analytics",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Analytics overview",
+      "durationMs": 1210,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s2-seed1-loop1.png",
       "stepId": "j4-analytics-p1-evaluator-s2-seed1-loop1",
-      "label": "Analytics overview"
+      "label": "Analytics overview \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/analytics",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Analytics overview",
+      "durationMs": 2076,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s1-seed2-loop1.png",
       "stepId": "j4-analytics-p1-evaluator-s1-seed2-loop1",
-      "label": "Analytics overview"
+      "label": "Analytics overview \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/analytics",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Analytics overview",
+      "durationMs": 1192,
+      "consoleErrors": [
+        "Error fetching profiles: TypeError: Failed to fetch"
+      ]
     },
     {
       "path": "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s2-seed2-loop1.png",
       "stepId": "j4-analytics-p1-evaluator-s2-seed2-loop1",
-      "label": "Analytics overview"
+      "label": "Analytics overview \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/analytics",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Analytics overview",
+      "durationMs": 2065,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s1-seed3-loop1.png",
       "stepId": "j4-analytics-p1-evaluator-s1-seed3-loop1",
-      "label": "Analytics overview"
+      "label": "Analytics overview \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/analytics",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Analytics overview",
+      "durationMs": 1176,
+      "consoleErrors": [
+        "Error fetching profiles: TypeError: Failed to fetch"
+      ]
     },
     {
       "path": "artifacts/argyle-20260531-000517/j4-analytics-p1-evaluator-s2-seed3-loop1.png",
       "stepId": "j4-analytics-p1-evaluator-s2-seed3-loop1",
-      "label": "Analytics overview"
+      "label": "Analytics overview \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/analytics",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Analytics overview",
+      "durationMs": 2098,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s1-seed1-loop1.png",
       "stepId": "j5-admin-boundary-p1-evaluator-s1-seed1-loop1",
-      "label": "Admin boundary check"
+      "label": "Admin boundary check \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/admin",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Admin boundary check",
+      "durationMs": 651,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s2-seed1-loop1.png",
       "stepId": "j5-admin-boundary-p1-evaluator-s2-seed1-loop1",
-      "label": "Admin boundary check"
+      "label": "Admin boundary check \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/admin",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Admin boundary check",
+      "durationMs": 2040,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s1-seed2-loop1.png",
       "stepId": "j5-admin-boundary-p1-evaluator-s1-seed2-loop1",
-      "label": "Admin boundary check"
+      "label": "Admin boundary check \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/admin",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Admin boundary check",
+      "durationMs": 655,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s2-seed2-loop1.png",
       "stepId": "j5-admin-boundary-p1-evaluator-s2-seed2-loop1",
-      "label": "Admin boundary check"
+      "label": "Admin boundary check \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/admin",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Admin boundary check",
+      "durationMs": 2044,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s1-seed3-loop1.png",
       "stepId": "j5-admin-boundary-p1-evaluator-s1-seed3-loop1",
-      "label": "Admin boundary check"
+      "label": "Admin boundary check \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/admin",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Admin boundary check",
+      "durationMs": 641,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260531-000517/j5-admin-boundary-p1-evaluator-s2-seed3-loop1.png",
       "stepId": "j5-admin-boundary-p1-evaluator-s2-seed3-loop1",
-      "label": "Admin boundary check"
+      "label": "Admin boundary check \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/admin",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Admin boundary check",
+      "durationMs": 2045,
+      "consoleErrors": []
     }
   ],
   "annotations": [
@@ -2874,6 +3441,46 @@
     "source": "template",
     "readinessBand": "Green",
     "issueCount": 2,
-    "delightCount": 2
-  }
+    "delightCount": 2,
+    "layer1Verdict": {
+      "decision": "ship",
+      "headline": "Ready to ship.",
+      "reason": "100% of canonical steps passed with no journey-breaking failures. Polish opportunity: Icon-only or unlabeled buttons.",
+      "band": "Green"
+    },
+    "layer2Story": "TryLapse sent 3 AI personas through 5 product journeys and scored **19/19** steps as passing. All journeys completed successfully across all tested personas. 2 genuine product strength(s) found: Clear navigation structure.",
+    "layer3FixHierarchy": [
+      {
+        "priority": "P2",
+        "title": "Icon-only or unlabeled buttons",
+        "detail": "1 button(s) lack accessible name on page.",
+        "effort": "small",
+        "action": "Fix before GA \u2014 noticeable but not blocking.",
+        "step_id": "j1-deep-link-p1-evaluator-s1-seed1-loop1",
+        "confidence": "high"
+      },
+      {
+        "priority": "P2",
+        "title": "Form inputs missing labels",
+        "detail": "1 of 9 inputs lack label, aria-label, or placeholder.",
+        "effort": "small",
+        "action": "Fix before GA \u2014 noticeable but not blocking.",
+        "step_id": "j1-deep-link-p1-evaluator-s1-seed1-loop1",
+        "confidence": "high"
+      }
+    ],
+    "layer4Forward": [
+      "Expand coverage: add edge-case journeys for error states and empty states.",
+      "Double down on strength: Clear navigation structure \u2014 amplify in onboarding.",
+      "Run again after fixes to confirm the score moved \u2014 track trend across builds."
+    ],
+    "layer5Trend": {
+      "available": false,
+      "note": "Run a second build to see score trajectory."
+    }
+  },
+  "productModel": null,
+  "interactionMap": null,
+  "behavioralJourneys": null,
+  "parallelErrors": []
 }

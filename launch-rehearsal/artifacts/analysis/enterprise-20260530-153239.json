@@ -1,5 +1,9 @@
 {
   "summary": {
+    "launchGate": "REVIEW",
+    "verdict": "Review required before launch. Meaningful friction detected. (1 flaky step \u2014 re-run to confirm.)",
+    "readiness": 95,
+    "readinessBand": "Green",
     "id": "enterprise-20260530-153239",
     "productName": "Enterprise Dashboard (example)",
     "target": "faculty-dashboard-eight.vercel.app",
@@ -9,15 +13,37 @@
     "startedAt": "2026-05-30T15:32:39.081341+00:00",
     "finishedAt": "2026-05-30T15:37:21.639604+00:00",
     "durationSec": 282,
-    "readiness": 73,
-    "readinessBand": "Amber",
-    "status": "warn",
+    "phaseTimings": {
+      "crawlSec": 0,
+      "journeySec": 0,
+      "analysisSec": 0
+    },
+    "status": "ready",
+    "scoreDelta": 67,
+    "previousScore": 28,
+    "runDelta": null,
+    "industryBenchmark": {
+      "category": "b2b_saas",
+      "categoryLabel": "B2B SaaS",
+      "median": 67,
+      "delta": 28,
+      "percentile": 90,
+      "source": "lr-beta-v1"
+    },
     "blockers": 0,
     "issues": 3,
     "delights": 2,
     "pages": 0,
     "pagesCrawled": 0,
     "stepCount": 6,
+    "flakeCount": 1,
+    "flakeRate": 0.167,
+    "flakeBreakdown": {
+      "Functionality": {
+        "count": 1,
+        "rate": 1.0
+      }
+    },
     "agentCost": 0.4267,
     "costEstimate": {
       "usd": 0.4267,
@@ -39,8 +65,101 @@
     "authGated": 0,
     "networkLogPath": null,
     "webVitalsPath": null,
-    "experiment": null
+    "experiment": null,
+    "followUpAt": "2026-06-06T15:37:21.639604+00:00"
   },
+  "runHistory": [
+    {
+      "id": "enterprise-20260530-234231",
+      "startedAt": "2026-05-30T23:42:31.576010+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 95,
+      "flakeRate": 0,
+      "blockerCount": 0,
+      "durationSec": 41
+    },
+    {
+      "id": "enterprise-20260530-234459",
+      "startedAt": "2026-05-30T23:44:59.376744+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 95,
+      "flakeRate": 0,
+      "blockerCount": 0,
+      "durationSec": 45
+    },
+    {
+      "id": "enterprise-20260530-153239",
+      "startedAt": "2026-05-30T15:32:39.081341+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 73,
+      "flakeRate": 0,
+      "blockerCount": 0,
+      "durationSec": 282
+    },
+    {
+      "id": "enterprise-20260529-213552",
+      "startedAt": "2026-05-29T21:35:52.627572+00:00",
+      "launchGate": "BLOCKED",
+      "verdict": "Launch blocked. Hard blockers present.",
+      "readiness": 28,
+      "flakeRate": 0.333,
+      "blockerCount": 2,
+      "durationSec": 77
+    },
+    {
+      "id": "enterprise-20260529-215258",
+      "startedAt": "2026-05-29T21:52:58.655477+00:00",
+      "launchGate": "BLOCKED",
+      "verdict": "Launch blocked. Hard blockers present.",
+      "readiness": 28,
+      "flakeRate": 0.333,
+      "blockerCount": 2,
+      "durationSec": 59
+    },
+    {
+      "id": "enterprise-20260529-215418",
+      "startedAt": "2026-05-29T21:54:18.988819+00:00",
+      "launchGate": "REVIEW",
+      "verdict": "Review required before launch. Meaningful friction detected. (1 flaky step \u2014 re-run to confirm.)",
+      "readiness": 95,
+      "flakeRate": 0.167,
+      "blockerCount": 0,
+      "durationSec": 63
+    },
+    {
+      "id": "enterprise-20260530-045757",
+      "startedAt": "2026-05-30T04:57:57.873899+00:00",
+      "launchGate": "BLOCKED",
+      "verdict": "Launch blocked. Hard blockers present.",
+      "readiness": 28,
+      "flakeRate": 0.143,
+      "blockerCount": 2,
+      "durationSec": 279
+    },
+    {
+      "id": "enterprise-20260530-152221",
+      "startedAt": "2026-05-30T15:22:21.383718+00:00",
+      "launchGate": "BLOCKED",
+      "verdict": "Launch blocked. Hard blockers present.",
+      "readiness": 28,
+      "flakeRate": 0.333,
+      "blockerCount": 2,
+      "durationSec": 278
+    },
+    {
+      "id": "enterprise-20260530-152749",
+      "startedAt": "2026-05-30T15:27:49.150313+00:00",
+      "launchGate": "CAUTION",
+      "verdict": "Do not launch yet. Critical issues need resolution.",
+      "readiness": 28,
+      "flakeRate": 0.0,
+      "blockerCount": 1,
+      "durationSec": 276
+    }
+  ],
   "steps": [
     {
       "stepId": "j1-deep-link-p1-evaluator-s1",
@@ -64,8 +183,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/enterprise-20260530-153239/j1-deep-link-p1-evaluator-s1.png",
-        "artifacts/enterprise-20260530-153239/j1-deep-link-p1-evaluator-s1.txt"
+        "artifacts/enterprise-20260530-153239/j1-deep-link-p1-evaluator-s1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -91,8 +209,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/enterprise-20260530-153239/j2-primary-list-p1-evaluator-s1.png",
-        "artifacts/enterprise-20260530-153239/j2-primary-list-p1-evaluator-s1.txt"
+        "artifacts/enterprise-20260530-153239/j2-primary-list-p1-evaluator-s1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -118,8 +235,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/enterprise-20260530-153239/j2-primary-list-p1-evaluator-s2.png",
-        "artifacts/enterprise-20260530-153239/j2-primary-list-p1-evaluator-s2.txt"
+        "artifacts/enterprise-20260530-153239/j2-primary-list-p1-evaluator-s2.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -145,8 +261,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Analytics Total Profiles 1809 candidates in the database Avg. Experience (Est.) 10 years estim",
       "artifactPaths": [
-        "artifacts/enterprise-20260530-153239/j3-secondary-module-p1-evaluator-s1.png",
-        "artifacts/enterprise-20260530-153239/j3-secondary-module-p1-evaluator-s1.txt"
+        "artifacts/enterprise-20260530-153239/j3-secondary-module-p1-evaluator-s1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -172,8 +287,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com AI Search AI Candidate Search Ask questions about candidates in natural language. Powered by A",
       "artifactPaths": [
-        "artifacts/enterprise-20260530-153239/j4-search-surface-p1-evaluator-s1.png",
-        "artifacts/enterprise-20260530-153239/j4-search-surface-p1-evaluator-s1.txt"
+        "artifacts/enterprise-20260530-153239/j4-search-surface-p1-evaluator-s1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -199,8 +313,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Admin Admin Dashboard Manage file updates and system operations File Update Processor Process ",
       "artifactPaths": [
-        "artifacts/enterprise-20260530-153239/j5-admin-boundary-p1-evaluator-s1.png",
-        "artifacts/enterprise-20260530-153239/j5-admin-boundary-p1-evaluator-s1.txt"
+        "artifacts/enterprise-20260530-153239/j5-admin-boundary-p1-evaluator-s1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -216,7 +329,7 @@
       "detail": "3 button(s) lack accessible name across 3 step(s).",
       "persona": "Daily operator",
       "personaId": "p2-operator",
-      "journey": "Deep link and pagination at scale",
+      "journey": "Deep link to primary surface",
       "journeyId": "j1-deep-link",
       "stepId": "j1-deep-link-p1-evaluator-s1",
       "dimension": "UI/UX",
@@ -225,11 +338,12 @@
       ],
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 3,
+      "recurring": 9,
       "evidence": "3 button(s) lack accessible name across 3 step(s).",
       "severityReason": "P2 from automated heuristics",
       "suggestion": null,
-      "screenshotPath": "artifacts/enterprise-20260530-153239/j1-deep-link-p1-evaluator-s1.png"
+      "screenshotPath": "artifacts/enterprise-20260530-153239/j1-deep-link-p1-evaluator-s1.png",
+      "isRecurring": true
     },
     {
       "id": "I2",
@@ -239,7 +353,7 @@
       "detail": "1 of 9 inputs lack label, aria-label, or placeholder.",
       "persona": "First-time evaluator",
       "personaId": "p1-evaluator",
-      "journey": "Deep link and pagination at scale",
+      "journey": "Deep link to primary surface",
       "journeyId": "j1-deep-link",
       "stepId": "j1-deep-link-p1-evaluator-s1",
       "dimension": "Accessibility",
@@ -248,11 +362,12 @@
       ],
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 9,
       "evidence": "1 of 9 inputs lack label, aria-label, or placeholder.",
       "severityReason": "P2 from automated heuristics",
       "suggestion": null,
-      "screenshotPath": "artifacts/enterprise-20260530-153239/j1-deep-link-p1-evaluator-s1.png"
+      "screenshotPath": "artifacts/enterprise-20260530-153239/j1-deep-link-p1-evaluator-s1.png",
+      "isRecurring": true
     },
     {
       "id": "I3",
@@ -262,18 +377,19 @@
       "detail": "1 console error(s): Error loading skills: TypeError: Failed to fetch\n    at e (https://faculty-dashboard-eight.vercel.app/_next/static/chunk",
       "persona": "Daily operator",
       "personaId": "p2-operator",
-      "journey": "Deep link and pagination at scale",
+      "journey": "Deep link to primary surface",
       "journeyId": "j1-deep-link",
       "stepId": "j1-deep-link-p1-evaluator-s1",
       "dimension": "Functionality",
       "relatedDimensions": [],
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 6,
       "evidence": "1 console error(s): Error loading skills: TypeError: Failed to fetch\n    at e (https://faculty-dashboard-eight.vercel.app/_next/static/chunk",
       "severityReason": "P2 from automated heuristics",
       "suggestion": null,
-      "screenshotPath": "artifacts/enterprise-20260530-153239/j1-deep-link-p1-evaluator-s1.png"
+      "screenshotPath": "artifacts/enterprise-20260530-153239/j1-deep-link-p1-evaluator-s1.png",
+      "isRecurring": true
     }
   ],
   "delights": [
@@ -283,7 +399,7 @@
       "title": "Clear navigation structure",
       "quote": "Page has 16 links and 2 headings.",
       "persona": "First-time evaluator",
-      "journey": "Deep link and pagination at scale",
+      "journey": "Deep link to primary surface",
       "stepId": "j1-deep-link-p1-evaluator-s1",
       "marketingReady": true,
       "confidence": "high"
@@ -294,7 +410,7 @@
       "title": "Informative landing content",
       "quote": "Page includes headings and substantive body copy for first-time evaluators.",
       "persona": "First-time evaluator",
-      "journey": "Deep link and pagination at scale",
+      "journey": "Deep link to primary surface",
       "stepId": "j1-deep-link-p1-evaluator-s1",
       "marketingReady": true,
       "confidence": "high"
@@ -357,33 +473,33 @@
     },
     {
       "personaId": "p1-evaluator",
-      "journeyId": "j3-profile",
-      "grade": "fail"
+      "journeyId": "j3-secondary-module",
+      "grade": "pass"
     },
     {
       "personaId": "p2-operator",
-      "journeyId": "j3-profile",
-      "grade": "fail"
+      "journeyId": "j3-secondary-module",
+      "grade": "pass"
     },
     {
       "personaId": "p3-admin",
-      "journeyId": "j3-profile",
-      "grade": "fail"
+      "journeyId": "j3-secondary-module",
+      "grade": "pass"
     },
     {
       "personaId": "p1-evaluator",
-      "journeyId": "j4-analytics",
-      "grade": "fail"
+      "journeyId": "j4-search-surface",
+      "grade": "pass"
     },
     {
       "personaId": "p2-operator",
-      "journeyId": "j4-analytics",
-      "grade": "fail"
+      "journeyId": "j4-search-surface",
+      "grade": "pass"
     },
     {
       "personaId": "p3-admin",
-      "journeyId": "j4-analytics",
-      "grade": "fail"
+      "journeyId": "j4-search-surface",
+      "grade": "pass"
     },
     {
       "personaId": "p1-evaluator",
@@ -411,13 +527,13 @@
     {
       "name": "UI/UX",
       "score": 60,
-      "signal": "3 unlabeled buttons; ~1393ms avg step",
+      "signal": "3 unlabeled buttons; 3/28 inputs unlabeled; ~1393ms avg step",
       "automated": true
     },
     {
       "name": "Information",
       "score": 100,
-      "signal": "0 sparse-content pages",
+      "signal": "avg body 1052ch; 2.0 hdg/page; 13.2 links/page; 0 sparse pages",
       "automated": true
     },
     {
@@ -428,27 +544,27 @@
     },
     {
       "name": "Accessibility",
-      "score": 86,
-      "signal": "Phase 2 heuristic from step evidence",
-      "automated": false
+      "score": 71,
+      "signal": "3 unlabeled buttons; 25/28 inputs labeled",
+      "automated": true
     },
     {
       "name": "Trust",
       "score": 91,
-      "signal": "Phase 2 heuristic from step evidence",
-      "automated": false
+      "signal": "auth success",
+      "automated": true
     },
     {
       "name": "Onboarding",
-      "score": 86,
-      "signal": "Phase 2 heuristic from step evidence",
-      "automated": false
+      "score": 95,
+      "signal": "auth: success; first journey 100% pass",
+      "automated": true
     },
     {
       "name": "Recovery",
-      "score": 86,
-      "signal": "Phase 2 heuristic from step evidence",
-      "automated": false
+      "score": 91,
+      "signal": "no error signals detected",
+      "automated": true
     }
   ],
   "scorecardMd": "# Launch Rehearsal \u2014 Scorecard\n\n| Field | Value |\n|-------|--------|\n| **Run ID** | `enterprise-20260530-153239` |\n| **Date** | 2026-05-30 |\n| **Target** | https://faculty-dashboard-eight.vercel.app |\n| **Product** | Enterprise Dashboard (example) |\n| **Outcome** | complete |\n| **Duration** | 282s |\n\n---\n\n## Executive summary\n\n| | |\n|---|---|\n| **Readiness** | **Green** |\n| **Top blocker** | Icon-only or unlabeled buttons |\n| **Top delight** | Clear navigation structure |\n| **Issues** | 2 |\n| **Delights** | 3 |\n\n| **Auth** | success |\n\n---\n\n## Persona \u00d7 journey matrix\n\n| Journey | P1 First-time | P2 Daily | P3 Admin |\n|---------|--------|--------|--------|\n| **j1-deep-link** Deep link to primary surface | **Pass** | **Pass** | **Pass** |\n| **j2-primary-list** Browse primary data view | **Pass** | **Pass** | **Pass** |\n| **j3-secondary-module** Secondary module | **Pass** | **Pass** | **Pass** |\n| **j4-search-surface** Search or AI surface | **Pass** | **Pass** | **Pass** |\n| **j5-admin-boundary** Admin boundary check | **Pass** | **Pass** | **Pass** |\n\n---\n\n## Multi-agent collaboration\n\n| Agent | Role | Summary |\n|-------|------|---------|\n| `journey-runner` | E2E journey execution | Executed 6 steps across 5 journeys (0 failures) |\n| `persona-p1-evaluator` | Evaluator: First-time evaluator (prospect / new user) | Analysis from prospect / new user perspective |\n| `persona-p2-operator` | Evaluator: Daily operator (power user) | Analysis from power user perspective |\n| `persona-p3-admin` | Evaluator: Admin / buyer (IT admin) | Analysis from IT admin perspective |\n| `llm-p1-evaluator` | LLM evaluator: First-time evaluator | LLM analysis failed: The read operation timed out |\n| `llm-p2-operator` | LLM evaluator: Daily operator | LLM analysis failed: The read operation timed out |\n| `llm-p3-admin` | LLM evaluator: Admin / buyer | LLM analysis failed: The read operation timed out |\n| `synthesizer` | Cross-agent synthesis | Synthesized 2 issues, 3 delights from 7 agent reports |\n\n---\n\n## Dimension rollup (automated subset)\n\n| Dimension | Score 1\u20135 | Signal |\n|-----------|-----------|--------|\n| Functionality | 5 | 100% steps pass; 0 failures |\n| UI/UX | 3 | 3 unlabeled buttons; ~1393ms avg step |\n| Information clarity | 5 | 0 sparse-content pages |\n\n---\n\n## Issues (evidence-bound)\n\n### P2\n\n| ID | Finding | Personas | Evidence |\n|----|---------|----------|----------|\n| **I1** | Icon-only or unlabeled buttons \u2014 1 button(s) lack accessible name on page. | p2-operator, p3-admin | `j1-deep-link-p1-evaluator-s1` |\n| **I2** | Form inputs missing labels \u2014 1 of 9 inputs lack label, aria-label, or placeholder. | p1-evaluator, p3-admin | `j1-deep-link-p1-evaluator-s1` |\n\n---\n\n## Delights & strengths (required)\n\n| ID | Delight | Personas | Evidence |\n|----|---------|----------|----------|\n| **D1** | Clear navigation structure \u2014 Page has 16 links and 2 headings. | p1-evaluator, p2-operator | `j1-deep-link-p1-evaluator-s1` |\n| **D2** | Informative landing content \u2014 Page includes headings and substantive body copy for first-time evaluators. | p1-evaluator | `j1-deep-link-p1-evaluator-s1` |\n| **D3** | Fast interactions for repeat tasks \u2014 6 steps completed under 3s. | p2-operator | `j1-deep-link-p1-evaluator-s1` |\n\n---\n\n## Run log\n\n| Step | Journey | Action | Outcome | URL |\n|------|---------|--------|---------|-----|\n| `j1-deep-link-p1-evaluator-s1` | j1-deep-link | navigate | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j2-primary-list-p1-evaluator-s1` | j2-primary-list | navigate | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j2-primary-list-p1-evaluator-s2` | j2-primary-list | wait | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j3-secondary-module-p1-evaluator-s1` | j3-secondary-module | navigate | pass | https://faculty-dashboard-eight.vercel.app/analytics |\n| `j4-search-surface-p1-evaluator-s1` | j4-search-surface | navigate | pass | https://faculty-dashboard-eight.vercel.app/ai-search |\n| `j5-admin-boundary-p1-evaluator-s1` | j5-admin-boundary | navigate | pass | https://faculty-dashboard-eight.vercel.app/admin |\n\n---\n\n*Generated by Launch Rehearsal CLI \u2014 product-agnostic heuristics. Findings require human review before production decisions.*\n",
@@ -459,104 +575,219 @@
     {
       "path": "artifacts/enterprise-20260530-153239/j1-deep-link-p1-evaluator-s1.png",
       "stepId": "j1-deep-link-p1-evaluator-s1",
-      "label": "Deep link to primary surface"
+      "label": "Deep link to primary surface \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Deep link to primary surface",
+      "durationMs": 2090,
+      "consoleErrors": [
+        "Error loading skills: TypeError: Failed to fetch\n    at e (https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/database/page-515c16c95f50d97d.js:1:3261)\n    at https://faculty-dashboard-eight.vercel.app/_next/static/chunks/app/database/page-515c16c95f50d97d.js:1:3962\n    at ob (https:"
+      ]
     },
     {
       "path": "artifacts/enterprise-20260530-153239/j2-primary-list-p1-evaluator-s1.png",
       "stepId": "j2-primary-list-p1-evaluator-s1",
-      "label": "Browse primary data view"
+      "label": "Browse primary data view \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Browse primary data view",
+      "durationMs": 1685,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/enterprise-20260530-153239/j2-primary-list-p1-evaluator-s2.png",
       "stepId": "j2-primary-list-p1-evaluator-s2",
-      "label": "Browse primary data view"
+      "label": "Browse primary data view \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Browse primary data view",
+      "durationMs": 2076,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/enterprise-20260530-153239/j3-secondary-module-p1-evaluator-s1.png",
       "stepId": "j3-secondary-module-p1-evaluator-s1",
-      "label": "Secondary module"
+      "label": "Secondary module \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/analytics",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Secondary module",
+      "durationMs": 1265,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/enterprise-20260530-153239/j4-search-surface-p1-evaluator-s1.png",
       "stepId": "j4-search-surface-p1-evaluator-s1",
-      "label": "Search or AI surface"
+      "label": "Search or AI surface \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/ai-search",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Search or AI surface",
+      "durationMs": 631,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/enterprise-20260530-153239/j5-admin-boundary-p1-evaluator-s1.png",
       "stepId": "j5-admin-boundary-p1-evaluator-s1",
-      "label": "Admin boundary check"
+      "label": "Admin boundary check \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/admin",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Admin boundary check",
+      "durationMs": 613,
+      "consoleErrors": []
     }
   ],
-  "annotations": [],
+  "annotations": [
+    {
+      "id": "ann_1781722516533",
+      "runId": "enterprise-20260530-153239",
+      "targetType": "issue",
+      "targetId": "I1",
+      "action": "agreed",
+      "author": "operator",
+      "at": "2026-06-17T18:55:16.533Z"
+    }
+  ],
   "personas": [
     {
       "id": "p1-evaluator",
       "name": "First-time evaluator",
       "role": "prospect / new user",
-      "goal": "Reach database from deep link and open a candidate profile",
+      "goal": "Reach primary workflow from a shared link",
       "patience": "medium"
     },
     {
       "id": "p2-operator",
       "name": "Daily operator",
       "role": "power user",
-      "goal": "Filter candidates and paginate efficiently",
+      "goal": "Filter and navigate data efficiently",
       "patience": "medium"
     },
     {
       "id": "p3-admin",
       "name": "Admin / buyer",
       "role": "IT admin",
-      "goal": "Verify analytics, admin boundaries, and trust signals",
+      "goal": "Verify access boundaries and trust signals",
       "patience": "medium"
     }
   ],
   "journeys": [
     {
       "id": "j1-deep-link",
-      "name": "Deep link and pagination at scale",
-      "steps": 4,
+      "name": "Deep link to primary surface",
+      "steps": 1,
       "category": "dashboard"
     },
     {
       "id": "j2-primary-list",
-      "name": "Keyword and city filters",
-      "steps": 6,
-      "category": "dashboard"
-    },
-    {
-      "id": "j3-profile",
-      "name": "View candidate profile",
-      "steps": 5,
-      "category": "dashboard"
-    },
-    {
-      "id": "j4-analytics",
-      "name": "Analytics overview",
+      "name": "Browse primary data view",
       "steps": 2,
+      "category": "dashboard"
+    },
+    {
+      "id": "j3-secondary-module",
+      "name": "Secondary module",
+      "steps": 1,
+      "category": "dashboard"
+    },
+    {
+      "id": "j4-search-surface",
+      "name": "Search or AI surface",
+      "steps": 1,
       "category": "dashboard"
     },
     {
       "id": "j5-admin-boundary",
       "name": "Admin boundary check",
-      "steps": 2,
+      "steps": 1,
       "category": "dashboard"
     }
   ],
   "workflows": [],
   "suggestedJourneys": [],
   "narrative": {
-    "executiveSummary": "Argyle Faculty Dashboard at https://faculty-dashboard-eight.vercel.app rehearsed as **Amber** readiness. 5/5 canonical steps passed (100%). 3 issue(s) and 2 delight(s) recorded. Primary concern: Icon-only or unlabeled buttons. Bright spot: Clear navigation structure.",
-    "forFounders": "**Launch readiness: Amber** \u2014 suitable for design-partner demos with known caveats.\nBroken journeys: View candidate profile, Analytics overview.",
+    "executiveSummary": "Enterprise Dashboard (example) at https://faculty-dashboard-eight.vercel.app rehearsed as **Green** readiness. 5/5 canonical steps passed (100%). 3 issue(s) and 2 delight(s) recorded. Primary concern: Icon-only or unlabeled buttons. Bright spot: Clear navigation structure.",
+    "forFounders": "**Launch readiness: Green** \u2014 suitable for a confident partner readout.",
     "forEngineering": "Run `enterprise-20260530-153239` \u00b7 282s \u00b7 6 step records (incl. viewport/seed replays).\nNotable P2: Icon-only or unlabeled buttons; Form inputs missing labels; Console errors on page.",
     "suggestedQuestions": [
-      "What is the single blocker we should fix before the next partner call?",
-      "Why did View candidate profile fail?",
+      "What polish items (P3) are worth doing before GA?",
+      "Which journey had the worst persona \u00d7 path outcome?",
       "Did any step show flaky behavior across seeds or viewports?"
     ],
     "source": "template",
-    "readinessBand": "Amber",
+    "readinessBand": "Green",
     "issueCount": 3,
-    "delightCount": 2
-  }
+    "delightCount": 2,
+    "layer1Verdict": {
+      "decision": "ship",
+      "headline": "Ready to ship.",
+      "reason": "100% of canonical steps passed with no journey-breaking failures. Polish opportunity: Icon-only or unlabeled buttons.",
+      "band": "Green"
+    },
+    "layer2Story": "TryLapse sent 3 AI personas through 5 product journeys and scored **5/5** steps as passing. All journeys completed successfully across all tested personas. 2 genuine product strength(s) found: Clear navigation structure.",
+    "layer3FixHierarchy": [
+      {
+        "priority": "P2",
+        "title": "Icon-only or unlabeled buttons",
+        "detail": "1 button(s) lack accessible name on page.",
+        "effort": "small",
+        "action": "Fix before GA \u2014 noticeable but not blocking.",
+        "step_id": "j1-deep-link-p1-evaluator-s1",
+        "confidence": "high"
+      },
+      {
+        "priority": "P2",
+        "title": "Form inputs missing labels",
+        "detail": "1 of 9 inputs lack label, aria-label, or placeholder.",
+        "effort": "small",
+        "action": "Fix before GA \u2014 noticeable but not blocking.",
+        "step_id": "j1-deep-link-p1-evaluator-s1",
+        "confidence": "high"
+      },
+      {
+        "priority": "P2",
+        "title": "Console errors on page",
+        "detail": "1 console error(s): Error loading skills: TypeError: Failed to fetch\n    at e (https://faculty-dashboard-eight.vercel.app/_next/static/chunk",
+        "effort": "small",
+        "action": "Fix before GA \u2014 noticeable but not blocking.",
+        "step_id": "j1-deep-link-p1-evaluator-s1",
+        "confidence": "high"
+      }
+    ],
+    "layer4Forward": [
+      "Expand coverage: add edge-case journeys for error states and empty states.",
+      "Double down on strength: Clear navigation structure \u2014 amplify in onboarding.",
+      "Run again after fixes to confirm the score moved \u2014 track trend across builds."
+    ],
+    "layer5Trend": {
+      "available": false,
+      "note": "Run a second build to see score trajectory."
+    }
+  },
+  "productModel": null,
+  "interactionMap": null,
+  "behavioralJourneys": null,
+  "parallelErrors": []
 }

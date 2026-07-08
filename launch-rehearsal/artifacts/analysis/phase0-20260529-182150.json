@@ -1,5 +1,9 @@
 {
   "summary": {
+    "launchGate": "CAUTION",
+    "verdict": "Do not launch yet. Critical issues need resolution.",
+    "readiness": 28,
+    "readinessBand": "Red",
     "id": "phase0-20260529-182150",
     "productName": "Unknown",
     "target": "cal.com",
@@ -9,15 +13,32 @@
     "startedAt": "2026-05-29T18:21:50.966661+00:00",
     "finishedAt": null,
     "durationSec": 0,
-    "readiness": 28,
-    "readinessBand": "Red",
+    "phaseTimings": {
+      "crawlSec": 0,
+      "journeySec": 0,
+      "analysisSec": 0
+    },
     "status": "danger",
+    "scoreDelta": null,
+    "previousScore": null,
+    "runDelta": null,
+    "industryBenchmark": {
+      "category": "b2b_saas",
+      "categoryLabel": "B2B SaaS",
+      "median": 67,
+      "delta": -39,
+      "percentile": 13,
+      "source": "lr-beta-v1"
+    },
     "blockers": 0,
     "issues": 4,
     "delights": 0,
     "pages": 0,
     "pagesCrawled": 0,
     "stepCount": 24,
+    "flakeCount": 0,
+    "flakeRate": 0.0,
+    "flakeBreakdown": {},
     "agentCost": 0.05,
     "costEstimate": {
       "usd": 0.05,
@@ -29,7 +50,7 @@
       "agentsRun": 0
     },
     "outcome": "dry_run_complete",
-    "configHash": "fdf82f",
+    "configHash": "f61984",
     "agentsRun": 0,
     "authAttempted": false,
     "authOutcome": null,
@@ -39,8 +60,21 @@
     "authGated": 0,
     "networkLogPath": null,
     "webVitalsPath": null,
-    "experiment": null
+    "experiment": null,
+    "followUpAt": "2026-06-05T18:21:50.966661+00:00"
   },
+  "runHistory": [
+    {
+      "id": "phase0-20260529-182150",
+      "startedAt": "2026-05-29T18:21:50.966661+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 28,
+      "flakeRate": 0,
+      "blockerCount": 0,
+      "durationSec": 0
+    }
+  ],
   "steps": [
     {
       "stepId": "j1-land-value-p1-jordan-s1",
@@ -639,14 +673,14 @@
       "evidence": "Page body has very little text \u2014 value proposition may be unclear.",
       "severityReason": "P2 from automated heuristics",
       "suggestion": null,
-      "screenshotPath": "artifacts/phase0-20260529-182150/j1-land-value-p1-jordan-s1.png"
+      "screenshotPath": "artifacts/phase0-20260529-182150/j1-land-value-p1-jordan-s1.jpg"
     },
     {
       "id": "DIM-TRUST-ROLLUP",
       "runId": "phase0-20260529-182150",
       "severity": "P3",
       "title": "Trust signal from run evidence",
-      "detail": "Phase 2 heuristic from step evidence",
+      "detail": "no auth attempted",
       "persona": "First-time evaluator",
       "personaId": "p1-evaluator",
       "journey": "Run rollup",
@@ -655,9 +689,9 @@
       "dimension": "Trust",
       "relatedDimensions": [],
       "confidence": "high",
-      "owner": "frontend",
+      "owner": "backend",
       "recurring": 1,
-      "evidence": "Phase 2 heuristic from step evidence",
+      "evidence": "no auth attempted",
       "severityReason": "P3 from automated dimension rollup",
       "suggestion": null
     },
@@ -666,7 +700,7 @@
       "runId": "phase0-20260529-182150",
       "severity": "P3",
       "title": "Onboarding signal from run evidence",
-      "detail": "Phase 2 heuristic from step evidence",
+      "detail": "first journey 0% pass",
       "persona": "First-time evaluator",
       "personaId": "p1-evaluator",
       "journey": "Run rollup",
@@ -677,7 +711,7 @@
       "confidence": "high",
       "owner": "frontend",
       "recurring": 1,
-      "evidence": "Phase 2 heuristic from step evidence",
+      "evidence": "first journey 0% pass",
       "severityReason": "P3 from automated dimension rollup",
       "suggestion": null
     },
@@ -686,7 +720,7 @@
       "runId": "phase0-20260529-182150",
       "severity": "P3",
       "title": "Recovery signal from run evidence",
-      "detail": "Phase 2 heuristic from step evidence",
+      "detail": "no error signals detected",
       "persona": "First-time evaluator",
       "personaId": "p1-evaluator",
       "journey": "Run rollup",
@@ -697,7 +731,7 @@
       "confidence": "high",
       "owner": "frontend",
       "recurring": 1,
-      "evidence": "Phase 2 heuristic from step evidence",
+      "evidence": "no error signals detected",
       "severityReason": "P3 from automated dimension rollup",
       "suggestion": null
     }
@@ -729,78 +763,483 @@
   ],
   "matrix": [
     {
-      "personaId": "p1-evaluator",
-      "journeyId": "j1-land",
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-profile-12",
       "grade": "fail"
     },
     {
-      "personaId": "p2-operator",
-      "journeyId": "j1-land",
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-profile-12",
       "grade": "fail"
     },
     {
-      "personaId": "p3-admin",
-      "journeyId": "j1-land",
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-profile-12",
       "grade": "fail"
     },
     {
-      "personaId": "p1-evaluator",
-      "journeyId": "j2-auth-entry",
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-profile-12",
       "grade": "fail"
     },
     {
-      "personaId": "p2-operator",
-      "journeyId": "j2-auth-entry",
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-profile-5",
       "grade": "fail"
     },
     {
-      "personaId": "p3-admin",
-      "journeyId": "j2-auth-entry",
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-profile-5",
       "grade": "fail"
     },
     {
-      "personaId": "p1-evaluator",
-      "journeyId": "j3-primary-workflow",
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-profile-5",
       "grade": "fail"
     },
     {
-      "personaId": "p2-operator",
-      "journeyId": "j3-primary-workflow",
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-profile-5",
       "grade": "fail"
     },
     {
-      "personaId": "p3-admin",
-      "journeyId": "j3-primary-workflow",
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-profile-4",
       "grade": "fail"
     },
     {
-      "personaId": "p1-evaluator",
-      "journeyId": "j4-pricing-or-plans",
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-profile-4",
       "grade": "fail"
     },
     {
-      "personaId": "p2-operator",
-      "journeyId": "j4-pricing-or-plans",
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-profile-4",
       "grade": "fail"
     },
     {
-      "personaId": "p3-admin",
-      "journeyId": "j4-pricing-or-plans",
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-profile-4",
       "grade": "fail"
     },
     {
-      "personaId": "p1-evaluator",
-      "journeyId": "j5-return-navigation",
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-profile-6",
       "grade": "fail"
     },
     {
-      "personaId": "p2-operator",
-      "journeyId": "j5-return-navigation",
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-profile-6",
       "grade": "fail"
     },
     {
-      "personaId": "p3-admin",
-      "journeyId": "j5-return-navigation",
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-profile-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-profile-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-profile-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-profile-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-profile-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-profile-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-profile-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-profile-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-profile-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-profile-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-profile-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-profile-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-profile-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-profile-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-profile-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-profile-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-profile-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-profile-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-profile-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-profile-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-profile-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-profile-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-profile-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-profile-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-profile-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-profile-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-profile-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-profile-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-profile-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-profile-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-profile-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-profile-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-profile-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-profile-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-candid-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-candid-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-candid-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-candid-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-candid-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-candid-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-candid-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-candid-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-candid-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-candid-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-candid-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-candid-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-candid-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-candid-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-candid-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-candid-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-candid-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-candid-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-candid-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-candid-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-candid-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-candid-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-candid-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-candid-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-candid-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-candid-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-candid-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-candid-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-candid-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-candid-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-candid-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-candid-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-candid-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-candid-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-candid-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-candid-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-candid-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-candid-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-candid-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-candid-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-candid-12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-candid-12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-candid-12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-candid-12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-candid-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-candid-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-candid-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-candid-11",
       "grade": "fail"
     }
   ],
@@ -820,7 +1259,7 @@
     {
       "name": "Information",
       "score": 40,
-      "signal": "24 sparse-content pages",
+      "signal": "avg body 0ch; 0.0 hdg/page; 0.0 links/page; 18 sparse pages",
       "automated": true
     },
     {
@@ -831,27 +1270,27 @@
     },
     {
       "name": "Accessibility",
-      "score": 60,
-      "signal": "Phase 2 heuristic from step evidence",
-      "automated": false
+      "score": 65,
+      "signal": "No a11y issues detected",
+      "automated": true
     },
     {
       "name": "Trust",
       "score": 65,
-      "signal": "Phase 2 heuristic from step evidence",
-      "automated": false
+      "signal": "no auth attempted",
+      "automated": true
     },
     {
       "name": "Onboarding",
-      "score": 60,
-      "signal": "Phase 2 heuristic from step evidence",
-      "automated": false
+      "score": 50,
+      "signal": "first journey 0% pass",
+      "automated": true
     },
     {
       "name": "Recovery",
-      "score": 60,
-      "signal": "Phase 2 heuristic from step evidence",
-      "automated": false
+      "score": 65,
+      "signal": "no error signals detected",
+      "automated": true
     }
   ],
   "scorecardMd": "",
@@ -865,70 +1304,262 @@
       "id": "p1-evaluator",
       "name": "First-time evaluator",
       "role": "prospect / new user",
-      "goal": "Understand product value within one session",
+      "goal": "Understand value from landing and primary workflow",
       "patience": "medium"
     },
     {
       "id": "p2-operator",
       "name": "Daily operator",
       "role": "power user",
-      "goal": "Complete repeat tasks quickly",
+      "goal": "Complete core tasks quickly and reliably",
       "patience": "medium"
     },
     {
       "id": "p3-admin",
       "name": "Admin / buyer",
-      "role": "IT or team admin",
-      "goal": "Verify access controls and trust signals",
+      "role": "IT admin",
+      "goal": "Verify access boundaries and trust signals",
+      "patience": "medium"
+    },
+    {
+      "id": "p4-keyboard",
+      "name": "Keyboard-only user",
+      "role": "accessibility tester / screen reader user",
+      "goal": "Complete all primary journeys using only Tab, Enter, and arrow keys",
+      "patience": "medium"
+    },
+    {
+      "id": "p5-frustrated",
+      "name": "Frustrated / rage user",
+      "role": "churning customer",
+      "goal": "Attempt the core task but give up if blocked more than once",
+      "patience": "medium"
+    },
+    {
+      "id": "p6-international",
+      "name": "International / RTL user",
+      "role": "global user on a right-to-left locale",
+      "goal": "Complete signup and primary workflow",
+      "patience": "medium"
+    },
+    {
+      "id": "model-0-faculty-member",
+      "name": "Faculty Member",
+      "role": "Manage their professional profile and search for colleagues.",
+      "goal": "Manage their professional profile and search for colleagues.",
+      "patience": "medium"
+    },
+    {
+      "id": "p4-profile-searcher",
+      "name": "Profile Searcher",
+      "role": "Searches profiles in detail to identify use cases",
+      "goal": "Find specific use cases from profile data",
+      "patience": "medium"
+    },
+    {
+      "id": "p4-candidate-finder",
+      "name": "Alex Chen",
+      "role": "Recruiter using AI Search to find candidates",
+      "goal": "Quickly identify top candidates from a large applicant pool",
+      "patience": "medium"
+    },
+    {
+      "id": "p4-candidate-analyst",
+      "name": "Candidate Analyst",
+      "role": "Analyzes candidate profiles and qualifications",
+      "goal": "Review candidate applications and shortlist qualified candidates",
       "patience": "medium"
     }
   ],
   "journeys": [
     {
-      "id": "j1-land",
-      "name": "Land and grasp value",
-      "steps": 1,
+      "id": "j-4-profile-12",
+      "name": "Use Process Updates to manage faculty data workflows",
+      "steps": 4,
       "category": "dashboard"
     },
     {
-      "id": "j2-auth-entry",
-      "name": "Authentication entry point",
-      "steps": 1,
+      "id": "j-4-profile-5",
+      "name": "Use Resume Parser to extract data from a candidate's resume",
+      "steps": 8,
       "category": "dashboard"
     },
     {
-      "id": "j3-primary-workflow",
-      "name": "Primary workflow surface",
-      "steps": 1,
+      "id": "j-4-profile-4",
+      "name": "Add a new faculty member manually",
+      "steps": 11,
       "category": "dashboard"
     },
     {
-      "id": "j4-pricing-or-plans",
-      "name": "Pricing or plans",
-      "steps": 1,
+      "id": "j-4-profile-6",
+      "name": "Admin panel system management",
+      "steps": 10,
       "category": "dashboard"
     },
     {
-      "id": "j5-return-navigation",
-      "name": "Return visitor wayfinding",
+      "id": "j-4-profile-3",
+      "name": "AI-powered natural language search for a trainer",
+      "steps": 5,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-profile-2",
+      "name": "View detailed faculty profile from database list",
+      "steps": 8,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-profile-8",
+      "name": "Compare multiple faculty profiles side by side",
+      "steps": 12,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-profile-1",
+      "name": "Browse and filter faculty database by state",
+      "steps": 6,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-profile-10",
+      "name": "Recover from a failed profile load or navigation error",
+      "steps": 7,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-profile-11",
+      "name": "Check for new faculty additions or updates",
+      "steps": 8,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-profile-7",
+      "name": "Refresh faculty data after updates",
+      "steps": 4,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-profile-9",
+      "name": "Search for faculty with specific skills using AI search",
       "steps": 2,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-candid-10",
+      "name": "Recover from a failed profile load",
+      "steps": 8,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-candid-8",
+      "name": "Refresh database list after adding or updating candidates",
+      "steps": 10,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-candid-3",
+      "name": "View detailed faculty profile",
+      "steps": 12,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-candid-5",
+      "name": "Use resume parser to extract candidate data",
+      "steps": 11,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-candid-2",
+      "name": "AI-powered natural language search for candidates",
+      "steps": 12,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-candid-7",
+      "name": "Access admin panel for system management",
+      "steps": 11,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-candid-9",
+      "name": "Explore candidate skills and experience depth",
+      "steps": 11,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-candid-6",
+      "name": "Navigate back to database from a profile",
+      "steps": 9,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-candid-4",
+      "name": "Add a new faculty candidate manually",
+      "steps": 9,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-candid-1",
+      "name": "Browse and filter faculty database",
+      "steps": 6,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-candid-12",
+      "name": "Explore candidate overview tab",
+      "steps": 5,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-candid-11",
+      "name": "Process updates on candidate status",
+      "steps": 8,
       "category": "dashboard"
     }
   ],
   "workflows": [],
   "suggestedJourneys": [],
   "narrative": {
-    "executiveSummary": "Example Enterprise SaaS at https://example.com rehearsed as **Red** readiness. 0/5 canonical steps passed (0%). 1 issue(s) and 0 delight(s) recorded. Primary concern: Sparse page content.",
-    "forFounders": "**Launch readiness: Red** \u2014 suitable for internal review before external calls.\nBroken journeys: Land and grasp value, Authentication entry point, Primary workflow surface, Pricing or plans.",
+    "executiveSummary": "Argyle Faculty Dashboard at https://faculty-dashboard-eight.vercel.app/database rehearsed as **Red** readiness. 0/5 canonical steps passed (0%). 1 issue(s) and 0 delight(s) recorded. Primary concern: Sparse page content.",
+    "forFounders": "**Launch readiness: Red** \u2014 suitable for internal review before external calls.\nBroken journeys: Use Process Updates to manage faculty data workflows, Use Resume Parser to extract data from a candidate's resume, Add a new faculty member manually, Admin panel system management.",
     "forEngineering": "Run `phase0-20260529-182150` \u00b7 0s \u00b7 24 step records (incl. viewport/seed replays).\nNotable P2: Sparse page content.",
     "suggestedQuestions": [
       "What is the single blocker we should fix before the next partner call?",
-      "Why did Land and grasp value fail?",
+      "Why did Use Process Updates to manage faculty data workflows fail?",
       "Did any step show flaky behavior across seeds or viewports?"
     ],
     "source": "template",
     "readinessBand": "Red",
     "issueCount": 1,
-    "delightCount": 0
-  }
+    "delightCount": 0,
+    "layer1Verdict": {
+      "decision": "no_ship",
+      "headline": "Do not ship this build.",
+      "reason": "0 blocker(s) will break user journeys in production. ",
+      "band": "Red"
+    },
+    "layer2Story": "TryLapse sent 10 AI personas through 24 product journeys and scored **0/5** steps as passing. 24 journeys \u2014 Use Process Updates to manage faculty data workflows, Use Resume Parser to extract data from a candidate's resume \u2014 failed completely, meaning users would be blocked before completing their goal.",
+    "layer3FixHierarchy": [
+      {
+        "priority": "P2",
+        "title": "Sparse page content",
+        "detail": "Page body has very little text \u2014 value proposition may be unclear.",
+        "effort": "small",
+        "action": "Fix before GA \u2014 noticeable but not blocking.",
+        "step_id": "j1-land-value-p1-jordan-s1",
+        "confidence": "high"
+      }
+    ],
+    "layer4Forward": [
+      "Run again after fixes to confirm the score moved \u2014 track trend across builds."
+    ],
+    "layer5Trend": {
+      "available": false,
+      "note": "Run a second build to see score trajectory."
+    }
+  },
+  "productModel": null,
+  "interactionMap": null,
+  "behavioralJourneys": null,
+  "parallelErrors": []
 }

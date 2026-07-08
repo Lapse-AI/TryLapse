@@ -1,5 +1,9 @@
 {
   "summary": {
+    "launchGate": "CAUTION",
+    "verdict": "Do not launch yet. Critical issues need resolution.",
+    "readiness": 28,
+    "readinessBand": "Red",
     "id": "cal-20260529-193724",
     "productName": "Cal.com (practice target)",
     "target": "cal.com",
@@ -9,15 +13,37 @@
     "startedAt": "2026-05-29T19:37:24.284118+00:00",
     "finishedAt": "2026-05-29T19:38:45.378883+00:00",
     "durationSec": 81,
-    "readiness": 95,
-    "readinessBand": "Green",
-    "status": "ready",
+    "phaseTimings": {
+      "crawlSec": 0,
+      "journeySec": 0,
+      "analysisSec": 0
+    },
+    "status": "danger",
+    "scoreDelta": 0,
+    "previousScore": 28,
+    "runDelta": null,
+    "industryBenchmark": {
+      "category": "b2b_saas",
+      "categoryLabel": "B2B SaaS",
+      "median": 67,
+      "delta": -39,
+      "percentile": 13,
+      "source": "lr-beta-v1"
+    },
     "blockers": 0,
-    "issues": 4,
+    "issues": 5,
     "delights": 2,
     "pages": 25,
     "pagesCrawled": 25,
     "stepCount": 13,
+    "flakeCount": 11,
+    "flakeRate": 0.846,
+    "flakeBreakdown": {
+      "Functionality": {
+        "count": 11,
+        "rate": 1.0
+      }
+    },
     "agentCost": 0.1581,
     "costEstimate": {
       "usd": 0.1581,
@@ -29,7 +55,7 @@
       "agentsRun": 0
     },
     "outcome": "complete",
-    "configHash": "d6e76f",
+    "configHash": "f61984",
     "agentsRun": 0,
     "authAttempted": false,
     "authOutcome": null,
@@ -39,8 +65,51 @@
     "authGated": 2,
     "networkLogPath": null,
     "webVitalsPath": null,
-    "experiment": null
+    "experiment": null,
+    "followUpAt": "2026-06-05T19:38:45.378883+00:00"
   },
+  "runHistory": [
+    {
+      "id": "cal-20260529-193724",
+      "startedAt": "2026-05-29T19:37:24.284118+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 95,
+      "flakeRate": 0,
+      "blockerCount": 0,
+      "durationSec": 81
+    },
+    {
+      "id": "cal-20260529-213154",
+      "startedAt": "2026-05-29T21:31:54.246606+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 95,
+      "flakeRate": 0,
+      "blockerCount": 0,
+      "durationSec": 65
+    },
+    {
+      "id": "cal-20260529-192836",
+      "startedAt": "2026-05-29T19:28:36.265871+00:00",
+      "launchGate": "CAUTION",
+      "verdict": "Do not launch yet. Critical issues need resolution.",
+      "readiness": 28,
+      "flakeRate": 0.75,
+      "blockerCount": 0,
+      "durationSec": 14
+    },
+    {
+      "id": "cal-20260529-192901",
+      "startedAt": "2026-05-29T19:29:01.430152+00:00",
+      "launchGate": "CAUTION",
+      "verdict": "Do not launch yet. Critical issues need resolution.",
+      "readiness": 28,
+      "flakeRate": 0.75,
+      "blockerCount": 0,
+      "durationSec": 11
+    }
+  ],
   "steps": [
     {
       "stepId": "j1-land-p1-evaluator-s1",
@@ -64,7 +133,8 @@
       "webVitals": {},
       "bodyTextExcerpt": "Solutions Enterprise Cal.ai Developer Resources Pricing Sign in Get started Cal.com launches v6.5 The better way to schedule your meetings A fully customizable scheduling software for individuals, bus",
       "artifactPaths": [
-        "artifacts/cal-20260529-193724/j1-land-p1-evaluator-s1.png"
+        "artifacts/cal-20260529-193724/j1-land-p1-evaluator-s1.png",
+        "artifacts/cal-20260529-193724/j1-land-p1-evaluator-s1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -92,7 +162,8 @@
       "webVitals": {},
       "bodyTextExcerpt": "Solutions Enterprise Cal.ai Developer Resources Pricing Sign in Get started Cal.com launches v6.5 The better way to schedule your meetings A fully customizable scheduling software for individuals, bus",
       "artifactPaths": [
-        "artifacts/cal-20260529-193724/j2-signup-path-p1-evaluator-s1.png"
+        "artifacts/cal-20260529-193724/j2-signup-path-p1-evaluator-s1.png",
+        "artifacts/cal-20260529-193724/j2-signup-path-p1-evaluator-s1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -118,7 +189,8 @@
       "webVitals": {},
       "bodyTextExcerpt": "Solutions Enterprise Cal.ai Developer Resources Pricing Sign in Get started Cal.com launches v6.5 The better way to schedule your meetings A fully customizable scheduling software for individuals, bus",
       "artifactPaths": [
-        "artifacts/cal-20260529-193724/j2-signup-path-p1-evaluator-s2.png"
+        "artifacts/cal-20260529-193724/j2-signup-path-p1-evaluator-s2.png",
+        "artifacts/cal-20260529-193724/j2-signup-path-p1-evaluator-s2.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -146,7 +218,8 @@
       "webVitals": {},
       "bodyTextExcerpt": "Solutions Enterprise Cal.ai Developer Resources Pricing Sign in Get started Cal.com launches v6.5 The better way to schedule your meetings A fully customizable scheduling software for individuals, bus",
       "artifactPaths": [
-        "artifacts/cal-20260529-193724/j3-product-depth-p1-evaluator-s1.png"
+        "artifacts/cal-20260529-193724/j3-product-depth-p1-evaluator-s1.png",
+        "artifacts/cal-20260529-193724/j3-product-depth-p1-evaluator-s1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -172,7 +245,8 @@
       "webVitals": {},
       "bodyTextExcerpt": "Solutions Enterprise Cal.ai Developer Resources Pricing Sign in Get started Cal.com launches v6.5 The better way to schedule your meetings A fully customizable scheduling software for individuals, bus",
       "artifactPaths": [
-        "artifacts/cal-20260529-193724/j3-product-depth-p1-evaluator-s2.png"
+        "artifacts/cal-20260529-193724/j3-product-depth-p1-evaluator-s2.png",
+        "artifacts/cal-20260529-193724/j3-product-depth-p1-evaluator-s2.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -200,7 +274,8 @@
       "webVitals": {},
       "bodyTextExcerpt": "Solutions Enterprise Cal.ai Developer Resources Pricing Sign in Get started Pricing Choose your Cal.com subscription Start scheduling for free, with no usage limits. For collaborative features, choose",
       "artifactPaths": [
-        "artifacts/cal-20260529-193724/j4-pricing-p1-evaluator-s1.png"
+        "artifacts/cal-20260529-193724/j4-pricing-p1-evaluator-s1.png",
+        "artifacts/cal-20260529-193724/j4-pricing-p1-evaluator-s1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -228,7 +303,8 @@
       "webVitals": {},
       "bodyTextExcerpt": "Solutions Enterprise Cal.ai Developer Resources Pricing Sign in Get started Pricing Choose your Cal.com subscription Start scheduling for free, with no usage limits. For collaborative features, choose",
       "artifactPaths": [
-        "artifacts/cal-20260529-193724/j5-return-nav-p1-evaluator-s1.png"
+        "artifacts/cal-20260529-193724/j5-return-nav-p1-evaluator-s1.png",
+        "artifacts/cal-20260529-193724/j5-return-nav-p1-evaluator-s1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -256,7 +332,8 @@
       "webVitals": {},
       "bodyTextExcerpt": "Solutions Enterprise Cal.ai Developer Resources Pricing Sign in Get started Cal.com launches v6.5 The better way to schedule your meetings A fully customizable scheduling software for individuals, bus",
       "artifactPaths": [
-        "artifacts/cal-20260529-193724/j5-return-nav-p1-evaluator-s2.png"
+        "artifacts/cal-20260529-193724/j5-return-nav-p1-evaluator-s2.png",
+        "artifacts/cal-20260529-193724/j5-return-nav-p1-evaluator-s2.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -284,7 +361,8 @@
       "webVitals": {},
       "bodyTextExcerpt": "Solutions Enterprise Cal.ai Developer Resources Pricing Sign in Get started Upvote Cal.com Companion now! Your scheduling companion in your pocket or browser. Take your favourite scheduling tool where",
       "artifactPaths": [
-        "artifacts/cal-20260529-193724/auto-j1-dashboard-p1-evaluator-s1.png"
+        "artifacts/cal-20260529-193724/auto-j1-dashboard-p1-evaluator-s1.png",
+        "artifacts/cal-20260529-193724/auto-j1-dashboard-p1-evaluator-s1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -324,7 +402,8 @@
       "webVitals": {},
       "bodyTextExcerpt": "11:45 AM UTC -8 1:45 PM UTC -6 3:45 PM UTC -4 5:45 PM UTC -2 7:45 PM UTC +0 9:45 PM UTC +2 11:45 PM UTC +4 1:45 AM UTC +6 3:45 AM UTC +8 Cal.com Welcome back! Sign in to continue Sign in with Google S",
       "artifactPaths": [
-        "artifacts/cal-20260529-193724/auto-j2-authentication-p1-evaluator-s1.png"
+        "artifacts/cal-20260529-193724/auto-j2-authentication-p1-evaluator-s1.png",
+        "artifacts/cal-20260529-193724/auto-j2-authentication-p1-evaluator-s1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -361,7 +440,8 @@
       "webVitals": {},
       "bodyTextExcerpt": "Solutions Enterprise Cal.ai Developer Resources Pricing Sign in Get started App store Discover the Cal.com app store Get started Learn more Trusted by fast-growing companies around the world Discover ",
       "artifactPaths": [
-        "artifacts/cal-20260529-193724/auto-j3-search-p1-evaluator-s1.png"
+        "artifacts/cal-20260529-193724/auto-j3-search-p1-evaluator-s1.png",
+        "artifacts/cal-20260529-193724/auto-j3-search-p1-evaluator-s1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -394,7 +474,8 @@
       "webVitals": {},
       "bodyTextExcerpt": "Skip to main content Cal.com Docs home page Search... \u2318K Support Dashboard API v2 Reference Atoms Developing Self Hosting Getting Started Introduction to Cal.com Atoms Setup Cal OAuth Provider Onboard",
       "artifactPaths": [
-        "artifacts/cal-20260529-193724/auto-j4-documentation-p1-evaluator-s1.png"
+        "artifacts/cal-20260529-193724/auto-j4-documentation-p1-evaluator-s1.png",
+        "artifacts/cal-20260529-193724/auto-j4-documentation-p1-evaluator-s1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -435,7 +516,8 @@
       "webVitals": {},
       "bodyTextExcerpt": "App store Connecting people, technology and the workplace. Featured categories Automation 23 apps Analytics 11 apps Other 11 apps Calendar 10 apps Payment 6 apps Crm 6 apps Messaging 3 apps Video 1 ap",
       "artifactPaths": [
-        "artifacts/cal-20260529-193724/auto-j5-hub-p1-evaluator-s1.png"
+        "artifacts/cal-20260529-193724/auto-j5-hub-p1-evaluator-s1.png",
+        "artifacts/cal-20260529-193724/auto-j5-hub-p1-evaluator-s1.txt"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -458,11 +540,12 @@
       "relatedDimensions": [],
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 4,
       "evidence": "1 console error(s): Fetch failed: Error: Key 'user.name' not found in response",
       "severityReason": "P2 from automated heuristics",
       "suggestion": null,
-      "screenshotPath": "artifacts/cal-20260529-193724/auto-j1-dashboard-p1-evaluator-s1.png"
+      "screenshotPath": "artifacts/cal-20260529-193724/auto-j1-dashboard-p1-evaluator-s1.png",
+      "isRecurring": true
     },
     {
       "id": "I2",
@@ -485,7 +568,8 @@
       "evidence": "1 of 3 inputs lack label, aria-label, or placeholder.",
       "severityReason": "P2 from automated heuristics",
       "suggestion": null,
-      "screenshotPath": "artifacts/cal-20260529-193724/auto-j2-authentication-p1-evaluator-s1.png"
+      "screenshotPath": "artifacts/cal-20260529-193724/auto-j2-authentication-p1-evaluator-s1.png",
+      "isRecurring": false
     },
     {
       "id": "I3",
@@ -502,11 +586,12 @@
       "relatedDimensions": [],
       "confidence": "hypothesis",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 4,
       "evidence": "Detected 5 similar signup CTAs \u2014 may confuse return visitors.",
       "severityReason": "P3 from automated heuristics",
       "suggestion": null,
-      "screenshotPath": "artifacts/cal-20260529-193724/auto-j3-search-p1-evaluator-s1.png"
+      "screenshotPath": "artifacts/cal-20260529-193724/auto-j3-search-p1-evaluator-s1.png",
+      "isRecurring": true
     },
     {
       "id": "I4",
@@ -523,11 +608,33 @@
       "relatedDimensions": [],
       "confidence": "high",
       "owner": "backend",
-      "recurring": 1,
+      "recurring": 4,
       "evidence": "Captured 39 console error(s) and 0 warning(s) across canonical steps \u2014 review network-log and step artifacts.",
       "severityReason": "P2 from automated heuristics",
       "suggestion": null,
-      "screenshotPath": "artifacts/cal-20260529-193724/auto-j1-dashboard-p1-evaluator-s1.png"
+      "screenshotPath": "artifacts/cal-20260529-193724/auto-j1-dashboard-p1-evaluator-s1.png",
+      "isRecurring": true
+    },
+    {
+      "id": "DIM-RECOVERY-ROLLUP",
+      "runId": "cal-20260529-193724",
+      "severity": "P3",
+      "title": "Recovery signal from run evidence",
+      "detail": "7 network failures",
+      "persona": "First-time evaluator",
+      "personaId": "p1-evaluator",
+      "journey": "Run rollup",
+      "journeyId": "rollup",
+      "stepId": "run-rollup",
+      "dimension": "Recovery",
+      "relatedDimensions": [],
+      "confidence": "high",
+      "owner": "backend",
+      "recurring": 1,
+      "evidence": "7 network failures",
+      "severityReason": "P3 from automated dimension rollup",
+      "suggestion": null,
+      "isRecurring": false
     }
   ],
   "delights": [
@@ -580,79 +687,484 @@
   ],
   "matrix": [
     {
-      "personaId": "p1-evaluator",
-      "journeyId": "j1-land",
-      "grade": "pass"
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-profile-12",
+      "grade": "fail"
     },
     {
-      "personaId": "p2-operator",
-      "journeyId": "j1-land",
-      "grade": "pass"
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-profile-12",
+      "grade": "fail"
     },
     {
-      "personaId": "p3-admin",
-      "journeyId": "j1-land",
-      "grade": "pass"
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-profile-12",
+      "grade": "fail"
     },
     {
-      "personaId": "p1-evaluator",
-      "journeyId": "j2-signup-path",
-      "grade": "pass"
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-profile-12",
+      "grade": "fail"
     },
     {
-      "personaId": "p2-operator",
-      "journeyId": "j2-signup-path",
-      "grade": "pass"
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-profile-5",
+      "grade": "fail"
     },
     {
-      "personaId": "p3-admin",
-      "journeyId": "j2-signup-path",
-      "grade": "pass"
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-profile-5",
+      "grade": "fail"
     },
     {
-      "personaId": "p1-evaluator",
-      "journeyId": "j3-product-depth",
-      "grade": "pass"
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-profile-5",
+      "grade": "fail"
     },
     {
-      "personaId": "p2-operator",
-      "journeyId": "j3-product-depth",
-      "grade": "pass"
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-profile-5",
+      "grade": "fail"
     },
     {
-      "personaId": "p3-admin",
-      "journeyId": "j3-product-depth",
-      "grade": "pass"
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-profile-4",
+      "grade": "fail"
     },
     {
-      "personaId": "p1-evaluator",
-      "journeyId": "j4-pricing",
-      "grade": "pass"
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-profile-4",
+      "grade": "fail"
     },
     {
-      "personaId": "p2-operator",
-      "journeyId": "j4-pricing",
-      "grade": "pass"
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-profile-4",
+      "grade": "fail"
     },
     {
-      "personaId": "p3-admin",
-      "journeyId": "j4-pricing",
-      "grade": "pass"
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-profile-4",
+      "grade": "fail"
     },
     {
-      "personaId": "p1-evaluator",
-      "journeyId": "j5-return-nav",
-      "grade": "pass"
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-profile-6",
+      "grade": "fail"
     },
     {
-      "personaId": "p2-operator",
-      "journeyId": "j5-return-nav",
-      "grade": "pass"
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-profile-6",
+      "grade": "fail"
     },
     {
-      "personaId": "p3-admin",
-      "journeyId": "j5-return-nav",
-      "grade": "pass"
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-profile-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-profile-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-profile-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-profile-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-profile-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-profile-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-profile-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-profile-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-profile-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-profile-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-profile-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-profile-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-profile-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-profile-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-profile-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-profile-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-profile-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-profile-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-profile-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-profile-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-profile-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-profile-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-profile-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-profile-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-profile-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-profile-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-profile-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-profile-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-profile-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-profile-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-profile-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-profile-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-profile-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-profile-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-candid-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-candid-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-candid-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-candid-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-candid-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-candid-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-candid-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-candid-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-candid-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-candid-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-candid-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-candid-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-candid-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-candid-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-candid-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-candid-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-candid-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-candid-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-candid-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-candid-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-candid-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-candid-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-candid-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-candid-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-candid-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-candid-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-candid-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-candid-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-candid-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-candid-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-candid-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-candid-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-candid-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-candid-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-candid-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-candid-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-candid-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-candid-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-candid-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-candid-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-candid-12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-candid-12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-candid-12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-candid-12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-candid-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-profile-searcher",
+      "journeyId": "j-4-candid-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-finder",
+      "journeyId": "j-4-candid-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-candidate-analyst",
+      "journeyId": "j-4-candid-11",
+      "grade": "fail"
     }
   ],
   "dimensions": [
@@ -665,13 +1177,13 @@
     {
       "name": "UI/UX",
       "score": 100,
-      "signal": "0 unlabeled buttons; ~2243ms avg step",
+      "signal": "0 unlabeled buttons; 2/16 inputs unlabeled; ~2243ms avg step",
       "automated": true
     },
     {
       "name": "Information",
       "score": 100,
-      "signal": "0 sparse-content pages",
+      "signal": "avg body 1845ch; 54.0 hdg/page; 122.5 links/page; 0 sparse pages",
       "automated": true
     },
     {
@@ -682,27 +1194,27 @@
     },
     {
       "name": "Accessibility",
-      "score": 93,
-      "signal": "Phase 2 heuristic from step evidence",
-      "automated": false
+      "score": 88,
+      "signal": "14/16 inputs labeled",
+      "automated": true
     },
     {
       "name": "Trust",
-      "score": 95,
-      "signal": "Phase 2 heuristic from step evidence",
-      "automated": false
+      "score": 88,
+      "signal": "7 network failures",
+      "automated": true
     },
     {
       "name": "Onboarding",
-      "score": 93,
-      "signal": "Phase 2 heuristic from step evidence",
-      "automated": false
+      "score": 95,
+      "signal": "first journey 100% pass",
+      "automated": true
     },
     {
       "name": "Recovery",
-      "score": 93,
-      "signal": "Phase 2 heuristic from step evidence",
-      "automated": false
+      "score": 83,
+      "signal": "7 network failures",
+      "automated": true
     }
   ],
   "scorecardMd": "# Launch Rehearsal \u2014 Scorecard\n\n| Field | Value |\n|-------|--------|\n| **Run ID** | `cal-20260529-193724` |\n| **Date** | 2026-05-29 |\n| **Target** | https://cal.com |\n| **Product** | Cal.com (practice target) |\n| **Outcome** | complete |\n| **Duration** | 81s |\n\n---\n\n## Executive summary\n\n| | |\n|---|---|\n| **Readiness** | **Amber** |\n| **Top blocker** | Duplicate primary CTAs |\n| **Top delight** | Clear navigation structure |\n| **Issues** | 5 |\n| **Delights** | 5 |\n\n| **Pages crawled** | 25 |\n| **Auto journeys added** | 5 |\n---\n\n## Persona \u00d7 journey matrix\n\n| Journey | P1 First-time | P2 Daily | P3 Admin |\n|---------|--------|--------|--------|\n| **j1-land** Land and grasp value | **Pass** | **Pass** | **Pass** |\n| **j2-signup-path** Start signup path | **Pass** | **Pass** | **Pass** |\n| **j3-product-depth** Explore product depth | **Pass** | **Pass** | **Pass** |\n| **j4-pricing** Pricing evaluation | **Pass** | **Pass** | **Pass** |\n| **j5-return-nav** Return visitor navigation | **Pass** | **Pass** | **Pass** |\n| **auto-j1-dashboard** Auto: Dashboard | **Pass** | **Pass** | **Pass** |\n| **auto-j2-authentication** Auto: Authentication | **Partial** | **Partial** | **Partial** |\n| **auto-j3-search** Auto: Search | **Pass** | **Pass** | **Pass** |\n| **auto-j4-documentation** Auto: Documentation | **Pass** | **Pass** | **Partial** |\n| **auto-j5-hub** Auto: Navigation hub | **Partial** | **Partial** | **Partial** |\n\n---\n\n## Site map (crawl)\n\n# Site map\n\n**Origin:** https://cal.com  \n**Pages crawled:** 25  \n\n## Hub pages (most outbound links)\n\n- `/apps` \u2014 App store | Cal.com\n- `/blog/category/all-categories` \u2014 Blog - Explore Insights, Updates, and Use Cases | Cal.com Blog\n- `/faq` \u2014 FAQ | Cal.com\n- `/` \u2014 Cal.com | Scheduling Software for Online Bookings\n- `/embed` \u2014 Embed a Scheduling Widget on Your Website | Cal.com\n- `/features/app-store` \u2014 App Store | Cal.com\n- `/affiliate-program` \u2014 Cal.com Affiliate Program | Earn 20% Recurring Commissions\n- `/blog/calcom-v6-5` \u2014 Cal.com v6.5 - Salesforce improvements, Event type history, Insights/booking page speed improvements & more | Cal.com - Scheduling Software for Online Bookings\n\n## Auth-gated (redirect to login)\n\n- `/auth/login`\n- `/auth/sso/google`\n\n## All pages\n\n| Path | Title | Depth | Links | Forms | Words |\n|------|-------|-------|-------|-------|-------|\n| `/` | Cal.com | Scheduling Software for Online | 0 | 92 | 0 | 1034 |\n| `/about` | Learn More About Cal.com's Story | Cal.c | 1 | 82 | 0 | 848 |\n| `/affiliate-program` | Cal.com Affiliate Program | Earn 20% Rec | 1 | 88 | 0 | 370 |\n| `/ai` | AI-Powered Phone Calls for Automated Sch | 1 | 92 | 0 | 1541 |\n| `/android` | Bradley (ANDROID) Fodor | Cal.com | 1 | 2 | 0 | 71 |\n| `/app` | Cal.com Companion for iOS, Android and C | 1 | 114 | 0 | 1170 |\n| `/apps` | App store | Cal.com | 1 | 348 | 0 | 7431 |\n| `/atoms` | Introduction to Cal.com Atoms - Cal.com  | 1 | 57 | 0 | 380 |\n| `/auth/login` | Login | Cal.com | 1 | 2 | 1 | 63 |\n| `/auth/sso/google` |  | 1 | 5 | 2 | 151 |\n| `/blog/calcom-v6-5` | Cal.com v6.5 - Salesforce improvements,  | 1 | 95 | 0 | 820 |\n| `/blog/category/all-categories` | Blog - Explore Insights, Updates, and Us | 1 | 96 | 0 | 783 |\n| `/calcom-vs-calendly` | Switch from Calendly - We'll Credit Your | 1 | 89 | 0 | 633 |\n| `/calcom/cal.com` | 404: This page could not be found. | Cal | 1 | 3 | 0 | 42 |\n| `/calcom/cal.com/blob/main/LICENSE` | 404: This page could not be found. | Cal | 1 | 3 | 0 | 42 |\n| `/chrome` | DominusTrax | Cal.com | 1 | 2 | 0 | 17 |\n| `/docs` | Introduction to API v2 - Cal.com Docs | 1 | 55 | 0 | 935 |\n| `/docs/enterprise-features/api` | Introduction to API v2 - Cal.com Docs | 1 | 55 | 0 | 935 |\n| `/docs/introduction/quick-start/self-hosting/docker` | Docker | 1 | 76 | 0 | 706 |\n| `/download` |  | 1 | 0 | 0 | 0 |\n| `/edge` | 404: This page could not be found. | Cal | 1 | 5 | 0 | 47 |\n| `/embed` | Embed a Scheduling Widget on Your Websit | 1 | 101 | 0 | 1838 |\n| `/enterprise` | Cal.com for Enterprise | 1 | 95 | 0 | 1154 |\n| `/faq` | FAQ | Cal.com | 1 | 98 | 0 | 7131 |\n| `/features/app-store` | App Store | Cal.com | 1 | 88 | 0 | 400 |\n\n---\n\n## Detected workflows\n\n| Type | Path | Title | Signals |\n|------|------|-------|---------|\n| dashboard | `/app` | Cal.com Companion for iOS, Android and C | \u2014 |\n| dashboard | `/apps` | App store | Cal.com | \u2014 |\n| documentation | `/atoms` | Introduction to Cal.com Atoms - Cal.com  | \u2014 |\n| authentication | `/auth/login` | Login | Cal.com | 1 forms, 3 inputs, auth-gated |\n| authentication | `/auth/sso/google` |  | 2 forms, auth-gated |\n| dashboard | `/auth/sso/google` |  | 2 forms, auth-gated |\n| documentation | `/docs` | Introduction to API v2 - Cal.com Docs | \u2014 |\n| integration | `/docs` | Introduction to API v2 - Cal.com Docs | \u2014 |\n| documentation | `/docs/enterprise-features/api` | Introduction to API v2 - Cal.com Docs | \u2014 |\n| integration | `/docs/enterprise-features/api` | Introduction to API v2 - Cal.com Docs | \u2014 |\n| documentation | `/docs/introduction/quick-start/self-hosting/docker` | Docker | \u2014 |\n| search | `/features/app-store` | App Store | Cal.com | \u2014 |\n| dashboard | `/features/app-store` | App Store | Cal.com | \u2014 |\n\n---\n\n## Multi-agent collaboration\n\n| Agent | Role | Summary |\n|-------|------|---------|\n| `crawler` | Site structure discovery | Crawled 25 pages; 2 auth-gated; 0 orphans |\n| `workflow` | Workflow & journey planning | Detected workflow types: authentication, dashboard, documentation, integration,  |\n| `journey-runner` | E2E journey execution | Executed 13 steps across 10 journeys (0 failures) |\n| `persona-p1-evaluator` | Evaluator: First-time evaluator (prospect / founder) | Analysis from prospect / founder perspective |\n| `persona-p2-operator` | Evaluator: Daily operator (power user) | Analysis from power user perspective |\n| `persona-p3-admin` | Evaluator: Admin / buyer (team admin) | Analysis from team admin perspective |\n| `synthesizer` | Cross-agent synthesis | Synthesized 5 issues, 5 delights from 6 agent reports |\n\n---\n\n## Dimension rollup (automated subset)\n\n| Dimension | Score 1\u20135 | Signal |\n|-----------|-----------|--------|\n| Functionality | 4 | 85% steps pass; 0 failures |\n| UI/UX | 5 | 0 unlabeled buttons; ~2243ms avg step |\n| Information clarity | 5 | 0 sparse-content pages |\n\n---\n\n## Issues (evidence-bound)\n\n### P1\n\n| ID | Finding | Personas | Evidence |\n|----|---------|----------|----------|\n| **I3** | Crawl found error pages \u2014 Paths: /apps, /auth/sso/google, /calcom/cal.com, /calcom/cal.com/blob/main/LICENSE, /docs/introduction/quick-start/self-hosting/docker, /download, /edge | p3-admin | `crawl-graph` |\n\n### P2\n\n| ID | Finding | Personas | Evidence |\n|----|---------|----------|----------|\n| **I2** | Form inputs missing labels \u2014 1 of 3 inputs lack label, aria-label, or placeholder. | p1-evaluator, p2-operator, p3-admin | `auto-j2-authentication-p1-evaluator-s1` |\n| **I5** | Error paths reachable in crawl \u2014 Paths with errors: /apps, /auth/sso/google, /calcom/cal.com, /calcom/cal.com/blob/main/LICENSE, /docs/introduction/quick-start/self-hosting/docker | p3-admin | `crawl-graph` |\n\n### P3\n\n| ID | Finding | Personas | Evidence |\n|----|---------|----------|----------|\n| **I1** | Duplicate primary CTAs (hypothesis) \u2014 Detected 5 similar signup CTAs \u2014 may confuse return visitors. | p2-operator | `j1-land-p1-evaluator-s1` |\n| **I4** | Crawl budget reached \u2014 Stopped at max_pages=25; site may be larger. | p3-admin | `crawl-graph` |\n\n---\n\n## Delights & strengths (required)\n\n| ID | Delight | Personas | Evidence |\n|----|---------|----------|----------|\n| **D1** | Clear navigation structure \u2014 Page has 92 links and 29 headings. | p1-evaluator, p2-operator | `j1-land-p1-evaluator-s1` |\n| **D2** | Informative landing content \u2014 Page includes headings and substantive body copy for first-time evaluators. | p1-evaluator | `j1-land-p1-evaluator-s1` |\n| **D3** | Interactive forms discovered \u2014 2 pages with forms \u2014 workflow automation candidate. | p1-evaluator | `crawl-graph` |\n| **D4** | Multi-workflow product surface \u2014 Discovered workflow types: authentication, dashboard, documentation, integration, search. | p1-evaluator, p2-operator, p3-admin | `workflow-graph` |\n| **D5** | Fast interactions for repeat tasks \u2014 11 steps completed under 3s. | p2-operator | `j1-land-p1-evaluator-s1` |\n\n---\n\n## Run log\n\n| Step | Journey | Action | Outcome | URL |\n|------|---------|--------|---------|-----|\n| `j1-land-p1-evaluator-s1` | j1-land | navigate | pass | https://cal.com/ |\n| `j2-signup-path-p1-evaluator-s1` | j2-signup-path | navigate | pass | https://cal.com/ |\n| `j2-signup-path-p1-evaluator-s2` | j2-signup-path | click | pass | https://cal.com/ |\n| `j3-product-depth-p1-evaluator-s1` | j3-product-depth | navigate | pass | https://cal.com/ |\n| `j3-product-depth-p1-evaluator-s2` | j3-product-depth | click | pass | https://cal.com/ |\n| `j4-pricing-p1-evaluator-s1` | j4-pricing | navigate | pass | https://cal.com/pricing |\n| `j5-return-nav-p1-evaluator-s1` | j5-return-nav | navigate | pass | https://cal.com/pricing |\n| `j5-return-nav-p1-evaluator-s2` | j5-return-nav | navigate | pass | https://cal.com/ |\n| `auto-j1-dashboard-p1-evaluator-s1` | auto-j1-dashboard | navigate | pass | https://cal.com/app |\n| `auto-j2-authentication-p1-evaluator-s1` | auto-j2-authentication | navigate | partial | https://app.cal.com/auth/login |\n| `auto-j3-search-p1-evaluator-s1` | auto-j3-search | navigate | pass | https://cal.com/features/app-store |\n| `auto-j4-documentation-p1-evaluator-s1` | auto-j4-documentation | navigate | pass | https://cal.com/docs/atoms/introduction |\n| `auto-j5-hub-p1-evaluator-s1` | auto-j5-hub | navigate | partial | https://cal.com/apps |\n\n---\n\n*Generated by Launch Rehearsal CLI \u2014 product-agnostic heuristics. Findings require human review before production decisions.*\n",
@@ -1467,67 +1979,214 @@
     {
       "path": "artifacts/cal-20260529-193724/j1-land-p1-evaluator-s1.png",
       "stepId": "j1-land-p1-evaluator-s1",
-      "label": "Land and grasp value"
+      "label": "Land and grasp value \u2014 Solutions Enterprise Cal.ai Developer Resources Pricing",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://cal.com/",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Land and grasp value",
+      "durationMs": 2138,
+      "consoleErrors": [
+        "Fetch failed: Error: Key 'user.name' not found in response"
+      ]
     },
     {
       "path": "artifacts/cal-20260529-193724/j2-signup-path-p1-evaluator-s1.png",
       "stepId": "j2-signup-path-p1-evaluator-s1",
-      "label": "Start signup path"
+      "label": "Start signup path \u2014 Solutions Enterprise Cal.ai Developer Resources Pricing",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://cal.com/",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Start signup path",
+      "durationMs": 2267,
+      "consoleErrors": [
+        "Fetch failed: Error: Key 'user.name' not found in response"
+      ]
     },
     {
       "path": "artifacts/cal-20260529-193724/j2-signup-path-p1-evaluator-s2.png",
       "stepId": "j2-signup-path-p1-evaluator-s2",
-      "label": "Start signup path"
+      "label": "Start signup path \u2014 Solutions Enterprise Cal.ai Developer Resources Pricing",
+      "action": "click",
+      "intent": null,
+      "url": "https://cal.com/",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Start signup path",
+      "durationMs": 425,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/cal-20260529-193724/j3-product-depth-p1-evaluator-s1.png",
       "stepId": "j3-product-depth-p1-evaluator-s1",
-      "label": "Explore product depth"
+      "label": "Explore product depth \u2014 Solutions Enterprise Cal.ai Developer Resources Pricing",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://cal.com/",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Explore product depth",
+      "durationMs": 2117,
+      "consoleErrors": [
+        "Fetch failed: Error: Key 'user.name' not found in response"
+      ]
     },
     {
       "path": "artifacts/cal-20260529-193724/j3-product-depth-p1-evaluator-s2.png",
       "stepId": "j3-product-depth-p1-evaluator-s2",
-      "label": "Explore product depth"
+      "label": "Explore product depth \u2014 Solutions Enterprise Cal.ai Developer Resources Pricing",
+      "action": "click",
+      "intent": null,
+      "url": "https://cal.com/",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Explore product depth",
+      "durationMs": 357,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/cal-20260529-193724/j4-pricing-p1-evaluator-s1.png",
       "stepId": "j4-pricing-p1-evaluator-s1",
-      "label": "Pricing evaluation"
+      "label": "Pricing evaluation \u2014 Solutions Enterprise Cal.ai Developer Resources Pricing",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://cal.com/pricing",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Pricing evaluation",
+      "durationMs": 2739,
+      "consoleErrors": [
+        "Fetch failed: Error: Key 'user.name' not found in response"
+      ]
     },
     {
       "path": "artifacts/cal-20260529-193724/j5-return-nav-p1-evaluator-s1.png",
       "stepId": "j5-return-nav-p1-evaluator-s1",
-      "label": "Return visitor navigation"
+      "label": "Return visitor navigation \u2014 Solutions Enterprise Cal.ai Developer Resources Pricing",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://cal.com/pricing",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Return visitor navigation",
+      "durationMs": 1962,
+      "consoleErrors": [
+        "Fetch failed: Error: Key 'user.name' not found in response"
+      ]
     },
     {
       "path": "artifacts/cal-20260529-193724/j5-return-nav-p1-evaluator-s2.png",
       "stepId": "j5-return-nav-p1-evaluator-s2",
-      "label": "Return visitor navigation"
+      "label": "Return visitor navigation \u2014 Solutions Enterprise Cal.ai Developer Resources Pricing",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://cal.com/",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Return visitor navigation",
+      "durationMs": 2292,
+      "consoleErrors": [
+        "Fetch failed: Error: Key 'user.name' not found in response"
+      ]
     },
     {
       "path": "artifacts/cal-20260529-193724/auto-j1-dashboard-p1-evaluator-s1.png",
       "stepId": "auto-j1-dashboard-p1-evaluator-s1",
-      "label": "Auto: Dashboard"
+      "label": "Auto: Dashboard \u2014 Solutions Enterprise Cal.ai Developer Resources Pricing",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://cal.com/app",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Auto: Dashboard",
+      "durationMs": 2239,
+      "consoleErrors": [
+        "Fetch failed: Error: Key 'user.name' not found in response"
+      ]
     },
     {
       "path": "artifacts/cal-20260529-193724/auto-j2-authentication-p1-evaluator-s1.png",
       "stepId": "auto-j2-authentication-p1-evaluator-s1",
-      "label": "Auto: Authentication"
+      "label": "Auto: Authentication \u2014 11:45 AM UTC -8 1:45 PM",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://app.cal.com/auth/login",
+      "outcome": "partial",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Auto: Authentication",
+      "durationMs": 4189,
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 401 ()",
+        "Failed to load resource: the server responded with a status of 401 ()",
+        "Failed to load resource: the server responded with a status of 401 ()"
+      ]
     },
     {
       "path": "artifacts/cal-20260529-193724/auto-j3-search-p1-evaluator-s1.png",
       "stepId": "auto-j3-search-p1-evaluator-s1",
-      "label": "Auto: Search"
+      "label": "Auto: Search \u2014 Solutions Enterprise Cal.ai Developer Resources Pricing",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://cal.com/features/app-store",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Auto: Search",
+      "durationMs": 2506,
+      "consoleErrors": [
+        "Connecting to 'https://bzr.openai.com/v1/sdk/events?pid=RjjunM53FUaPvHw8pSZYiz&st=oaiq-web&sv=0.1.6&t=1780083517026&ec=2' violates the following Content Security Policy directive: \"connect-src 'self'\". The action has been blocked.",
+        "Connecting to 'https://analytics.google.com/g/collect?v=2&tid=G-RX4HHQ613S&gtm=45je65r2v9135545983z89135538394za20gzb9135538394zd9135538394&_p=1780083513114&gcd=13l3l3l3l1l1&npa=0&dma=0&ecid=698277075&_eu=AAAAAGQC&are=1&cid=174147775.1780083446&frm=0&pscdl=noapi&rcb=9&sr=1280x900&uaa=arm&uab=64&uafv",
+        "Fetch API cannot load https://analytics.google.com/g/collect?v=2&tid=G-RX4HHQ613S&gtm=45je65r2v9135545983z89135538394za20gzb9135538394zd9135538394&_p=1780083513114&gcd=13l3l3l3l1l1&npa=0&dma=0&ecid=698277075&_eu=AAAAAGQC&are=1&cid=174147775.1780083446&frm=0&pscdl=noapi&rcb=9&sr=1280x900&uaa=arm&uab="
+      ]
     },
     {
       "path": "artifacts/cal-20260529-193724/auto-j4-documentation-p1-evaluator-s1.png",
       "stepId": "auto-j4-documentation-p1-evaluator-s1",
-      "label": "Auto: Documentation"
+      "label": "Auto: Documentation \u2014 Skip to main content Cal.com Docs",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://cal.com/docs/atoms/introduction",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Auto: Documentation",
+      "durationMs": 1590,
+      "consoleErrors": [
+        "Access to fetch at 'https://cal.diy/installation' (redirected from 'https://cal.com/docs/self-hosting/installation?_rsc=BlMr3OldSBAhhgP6') from origin 'https://cal.com' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: Redirect is not allowed for a pre",
+        "Failed to load resource: net::ERR_FAILED",
+        "Failed to fetch RSC payload for https://cal.com/docs/self-hosting/installation. Falling back to browser navigation. TypeError: Failed to fetch\n    at y (https://cal.com/docs/_next/static/chunks/90018-06104c16f9e45575.js?dpl=dpl_BF9UKUBzndACSVEdd9pGVs5oAczQ:1:2242)\n    at async _ (https://cal.com/doc"
+      ]
     },
     {
       "path": "artifacts/cal-20260529-193724/auto-j5-hub-p1-evaluator-s1.png",
       "stepId": "auto-j5-hub-p1-evaluator-s1",
-      "label": "Auto: Navigation hub"
+      "label": "Auto: Navigation hub \u2014 App store Connecting people, technology and",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://cal.com/apps",
+      "outcome": "partial",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Auto: Navigation hub",
+      "durationMs": 4347,
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 401 ()",
+        "%c << query #4 %cviewer.me.myStats%c %O \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n   \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n  ; font-weight: bold; \n    background-color: #3fb0d8;\n    color: white;\n    padding: 2px;\n  ; font-weight: normal; {inpu",
+        "Failed to load resource: the server responded with a status of 401 ()"
+      ]
     }
   ],
   "annotations": [],
@@ -1535,54 +2194,217 @@
     {
       "id": "p1-evaluator",
       "name": "First-time evaluator",
-      "role": "prospect / founder",
-      "goal": "Grasp product value in one scroll",
+      "role": "prospect / new user",
+      "goal": "Understand value from landing and primary workflow",
       "patience": "medium"
     },
     {
       "id": "p2-operator",
       "name": "Daily operator",
       "role": "power user",
-      "goal": "Find pricing and signup quickly on repeat visits",
+      "goal": "Complete core tasks quickly and reliably",
       "patience": "medium"
     },
     {
       "id": "p3-admin",
       "name": "Admin / buyer",
-      "role": "team admin",
-      "goal": "Compare plans and enterprise signals",
+      "role": "IT admin",
+      "goal": "Verify access boundaries and trust signals",
+      "patience": "medium"
+    },
+    {
+      "id": "p4-keyboard",
+      "name": "Keyboard-only user",
+      "role": "accessibility tester / screen reader user",
+      "goal": "Complete all primary journeys using only Tab, Enter, and arrow keys",
+      "patience": "medium"
+    },
+    {
+      "id": "p5-frustrated",
+      "name": "Frustrated / rage user",
+      "role": "churning customer",
+      "goal": "Attempt the core task but give up if blocked more than once",
+      "patience": "medium"
+    },
+    {
+      "id": "p6-international",
+      "name": "International / RTL user",
+      "role": "global user on a right-to-left locale",
+      "goal": "Complete signup and primary workflow",
+      "patience": "medium"
+    },
+    {
+      "id": "model-0-faculty-member",
+      "name": "Faculty Member",
+      "role": "Manage their professional profile and search for colleagues.",
+      "goal": "Manage their professional profile and search for colleagues.",
+      "patience": "medium"
+    },
+    {
+      "id": "p4-profile-searcher",
+      "name": "Profile Searcher",
+      "role": "Searches profiles in detail to identify use cases",
+      "goal": "Find specific use cases from profile data",
+      "patience": "medium"
+    },
+    {
+      "id": "p4-candidate-finder",
+      "name": "Alex Chen",
+      "role": "Recruiter using AI Search to find candidates",
+      "goal": "Quickly identify top candidates from a large applicant pool",
+      "patience": "medium"
+    },
+    {
+      "id": "p4-candidate-analyst",
+      "name": "Candidate Analyst",
+      "role": "Analyzes candidate profiles and qualifications",
+      "goal": "Review candidate applications and shortlist qualified candidates",
       "patience": "medium"
     }
   ],
   "journeys": [
     {
-      "id": "j1-land",
-      "name": "Land and grasp value",
-      "steps": 1,
+      "id": "j-4-profile-12",
+      "name": "Use Process Updates to manage faculty data workflows",
+      "steps": 4,
       "category": "dashboard"
     },
     {
-      "id": "j2-signup-path",
-      "name": "Start signup path",
+      "id": "j-4-profile-5",
+      "name": "Use Resume Parser to extract data from a candidate's resume",
+      "steps": 8,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-profile-4",
+      "name": "Add a new faculty member manually",
+      "steps": 11,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-profile-6",
+      "name": "Admin panel system management",
+      "steps": 10,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-profile-3",
+      "name": "AI-powered natural language search for a trainer",
+      "steps": 5,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-profile-2",
+      "name": "View detailed faculty profile from database list",
+      "steps": 8,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-profile-8",
+      "name": "Compare multiple faculty profiles side by side",
+      "steps": 12,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-profile-1",
+      "name": "Browse and filter faculty database by state",
+      "steps": 6,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-profile-10",
+      "name": "Recover from a failed profile load or navigation error",
+      "steps": 7,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-profile-11",
+      "name": "Check for new faculty additions or updates",
+      "steps": 8,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-profile-7",
+      "name": "Refresh faculty data after updates",
+      "steps": 4,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-profile-9",
+      "name": "Search for faculty with specific skills using AI search",
       "steps": 2,
       "category": "dashboard"
     },
     {
-      "id": "j3-product-depth",
-      "name": "Explore product depth",
-      "steps": 2,
+      "id": "j-4-candid-10",
+      "name": "Recover from a failed profile load",
+      "steps": 8,
       "category": "dashboard"
     },
     {
-      "id": "j4-pricing",
-      "name": "Pricing evaluation",
-      "steps": 1,
+      "id": "j-4-candid-8",
+      "name": "Refresh database list after adding or updating candidates",
+      "steps": 10,
       "category": "dashboard"
     },
     {
-      "id": "j5-return-nav",
-      "name": "Return visitor navigation",
-      "steps": 2,
+      "id": "j-4-candid-3",
+      "name": "View detailed faculty profile",
+      "steps": 12,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-candid-5",
+      "name": "Use resume parser to extract candidate data",
+      "steps": 11,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-candid-2",
+      "name": "AI-powered natural language search for candidates",
+      "steps": 12,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-candid-7",
+      "name": "Access admin panel for system management",
+      "steps": 11,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-candid-9",
+      "name": "Explore candidate skills and experience depth",
+      "steps": 11,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-candid-6",
+      "name": "Navigate back to database from a profile",
+      "steps": 9,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-candid-4",
+      "name": "Add a new faculty candidate manually",
+      "steps": 9,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-candid-1",
+      "name": "Browse and filter faculty database",
+      "steps": 6,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-candid-12",
+      "name": "Explore candidate overview tab",
+      "steps": 5,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-candid-11",
+      "name": "Process updates on candidate status",
+      "steps": 8,
       "category": "dashboard"
     }
   ],
@@ -1742,17 +2564,74 @@
     }
   ],
   "narrative": {
-    "executiveSummary": "Cal.com (practice target) at https://cal.com rehearsed as **Green** readiness. 8/10 canonical steps passed (80%). 4 issue(s) and 2 delight(s) recorded. Primary concern: Console errors on page. Bright spot: Clear navigation structure.",
-    "forFounders": "**Launch readiness: Green** \u2014 suitable for a confident partner readout.",
+    "executiveSummary": "Argyle Faculty Dashboard at https://faculty-dashboard-eight.vercel.app/database rehearsed as **Red** readiness. 8/10 canonical steps passed (80%). 4 issue(s) and 2 delight(s) recorded. Primary concern: Console errors on page. Bright spot: Clear navigation structure.",
+    "forFounders": "**Launch readiness: Red** \u2014 suitable for internal review before external calls.\nBroken journeys: Use Process Updates to manage faculty data workflows, Use Resume Parser to extract data from a candidate's resume, Add a new faculty member manually, Admin panel system management.",
     "forEngineering": "Run `cal-20260529-193724` \u00b7 81s \u00b7 13 step records (incl. viewport/seed replays).\nCrawl: 25 pages, 7 error paths, 0 orphans.\nNotable P2: Console errors on page; Form inputs missing labels; Console noise spike across run.",
     "suggestedQuestions": [
-      "What polish items (P3) are worth doing before GA?",
-      "Which journey had the worst persona \u00d7 path outcome?",
+      "What is the single blocker we should fix before the next partner call?",
+      "Why did Use Process Updates to manage faculty data workflows fail?",
       "Did any step show flaky behavior across seeds or viewports?"
     ],
     "source": "template",
-    "readinessBand": "Green",
+    "readinessBand": "Red",
     "issueCount": 4,
-    "delightCount": 2
-  }
+    "delightCount": 2,
+    "layer1Verdict": {
+      "decision": "no_ship",
+      "headline": "Do not ship this build.",
+      "reason": "0 blocker(s) will break user journeys in production. ",
+      "band": "Red"
+    },
+    "layer2Story": "TryLapse sent 10 AI personas through 24 product journeys and scored **8/10** steps as passing. 24 journeys \u2014 Use Process Updates to manage faculty data workflows, Use Resume Parser to extract data from a candidate's resume \u2014 failed completely, meaning users would be blocked before completing their goal. 2 genuine product strength(s) found: Clear navigation structure.",
+    "layer3FixHierarchy": [
+      {
+        "priority": "P2",
+        "title": "Console errors on page",
+        "detail": "1 console error(s): Fetch failed: Error: Key 'user.name' not found in response",
+        "effort": "small",
+        "action": "Fix before GA \u2014 noticeable but not blocking.",
+        "step_id": "auto-j1-dashboard-p1-evaluator-s1",
+        "confidence": "high"
+      },
+      {
+        "priority": "P2",
+        "title": "Form inputs missing labels",
+        "detail": "1 of 3 inputs lack label, aria-label, or placeholder.",
+        "effort": "small",
+        "action": "Fix before GA \u2014 noticeable but not blocking.",
+        "step_id": "auto-j2-authentication-p1-evaluator-s1",
+        "confidence": "high"
+      },
+      {
+        "priority": "P2",
+        "title": "Console noise spike across run",
+        "detail": "Captured 39 console error(s) and 0 warning(s) across canonical steps \u2014 review network-log and step artifacts.",
+        "effort": "small",
+        "action": "Fix before GA \u2014 noticeable but not blocking.",
+        "step_id": "auto-j1-dashboard-p1-evaluator-s1",
+        "confidence": "high"
+      },
+      {
+        "priority": "P3",
+        "title": "Duplicate primary CTAs",
+        "detail": "Detected 5 similar signup CTAs \u2014 may confuse return visitors.",
+        "effort": "tiny",
+        "action": "Track in backlog \u2014 polish item.",
+        "step_id": "auto-j3-search-p1-evaluator-s1",
+        "confidence": "hypothesis"
+      }
+    ],
+    "layer4Forward": [
+      "Double down on strength: Clear navigation structure \u2014 amplify in onboarding.",
+      "Run again after fixes to confirm the score moved \u2014 track trend across builds."
+    ],
+    "layer5Trend": {
+      "available": false,
+      "note": "Run a second build to see score trajectory."
+    }
+  },
+  "productModel": null,
+  "interactionMap": null,
+  "behavioralJourneys": null,
+  "parallelErrors": []
 }

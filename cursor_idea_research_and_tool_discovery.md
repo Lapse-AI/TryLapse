@@ -1,3 +1,4 @@
+
 # Idea research and tool discovery
 _Exported on 6/3/2026 at 01:30:27 EDT from Cursor (3.6.28)_
 

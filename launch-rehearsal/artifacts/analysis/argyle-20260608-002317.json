@@ -1,5 +1,9 @@
 {
   "summary": {
+    "launchGate": "CAUTION",
+    "verdict": "Do not launch yet. Critical issues need resolution.",
+    "readiness": 28,
+    "readinessBand": "Red",
     "id": "argyle-20260608-002317",
     "productName": "Argyle Faculty Dashboard",
     "target": "faculty-dashboard-eight.vercel.app",
@@ -9,38 +13,163 @@
     "startedAt": "2026-06-08T00:23:17.626773+00:00",
     "finishedAt": "2026-06-08T00:28:46.032888+00:00",
     "durationSec": 313,
-    "readiness": 28,
-    "readinessBand": "Red",
+    "phaseTimings": {
+      "crawlSec": 0,
+      "journeySec": 0,
+      "analysisSec": 0
+    },
     "status": "danger",
-    "blockers": 19,
-    "issues": 44,
-    "delights": 3,
+    "scoreDelta": -67,
+    "previousScore": 95,
+    "runDelta": null,
+    "industryBenchmark": {
+      "category": "b2b_saas",
+      "categoryLabel": "B2B SaaS",
+      "median": 67,
+      "delta": -39,
+      "percentile": 13,
+      "source": "lr-beta-v1"
+    },
+    "blockers": 12,
+    "issues": 34,
+    "delights": 0,
     "pages": 1,
     "pagesCrawled": 1,
     "stepCount": 51,
-    "agentCost": 0.005,
+    "flakeCount": 9,
+    "flakeRate": 0.176,
+    "flakeBreakdown": {
+      "Functionality": {
+        "count": 9,
+        "rate": 1.0
+      }
+    },
+    "agentCost": 0.4676,
     "costEstimate": {
-      "usd": 0.005,
-      "source": "llm_tokens",
-      "inputTokens": 26311,
-      "outputTokens": 4763,
-      "totalTokens": 31074,
+      "usd": 0.4676,
+      "source": "heuristic",
+      "inputTokens": null,
+      "outputTokens": null,
+      "totalTokens": null,
       "durationSec": 313,
-      "agentsRun": 15
+      "agentsRun": 0
     },
     "outcome": "complete",
-    "configHash": "53ee1a",
-    "agentsRun": 15,
+    "configHash": "671288",
+    "agentsRun": 0,
     "authAttempted": false,
     "authOutcome": null,
     "llmEnabled": false,
     "crawlEnabled": true,
     "orphans": 0,
     "authGated": 1,
-    "networkLogPath": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/artifacts/argyle-20260608-002317/network-log.json",
+    "networkLogPath": null,
     "webVitalsPath": null,
-    "experiment": null
+    "experiment": null,
+    "followUpAt": "2026-06-15T00:28:46.032888+00:00"
   },
+  "runHistory": [
+    {
+      "id": "argyle-20260608-204758",
+      "startedAt": "2026-06-08T20:47:58.922659+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 95,
+      "flakeRate": 0,
+      "blockerCount": 0,
+      "durationSec": 151
+    },
+    {
+      "id": "argyle-20260608-210028",
+      "startedAt": "2026-06-08T21:00:28.384291+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 95,
+      "flakeRate": 0,
+      "blockerCount": 0,
+      "durationSec": 164
+    },
+    {
+      "id": "argyle-20260608-212354",
+      "startedAt": "2026-06-08T21:23:54.471634+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 95,
+      "flakeRate": 0,
+      "blockerCount": 0,
+      "durationSec": 168
+    },
+    {
+      "id": "argyle-20260609-043312",
+      "startedAt": "2026-06-09T04:33:12.801493+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 95,
+      "flakeRate": 0,
+      "blockerCount": 0,
+      "durationSec": 151
+    },
+    {
+      "id": "argyle-20260609-055051",
+      "startedAt": "2026-06-09T05:50:51.724846+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 29,
+      "flakeRate": 0,
+      "blockerCount": 375,
+      "durationSec": 2619
+    },
+    {
+      "id": "argyle-20260608-002317",
+      "startedAt": "2026-06-08T00:23:17.626773+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 28,
+      "flakeRate": 0,
+      "blockerCount": 19,
+      "durationSec": 313
+    },
+    {
+      "id": "argyle-20260529-184202",
+      "startedAt": "2026-05-29T18:42:02.889281+00:00",
+      "launchGate": "CAUTION",
+      "verdict": "Do not launch yet. Critical issues need resolution.",
+      "readiness": 28,
+      "flakeRate": 0.0,
+      "blockerCount": 0,
+      "durationSec": 0
+    },
+    {
+      "id": "argyle-20260530-235539",
+      "startedAt": "2026-05-30T23:55:39.814026+00:00",
+      "launchGate": "CAUTION",
+      "verdict": "Do not launch yet. Critical issues need resolution.",
+      "readiness": 28,
+      "flakeRate": 0.0,
+      "blockerCount": 0,
+      "durationSec": 0
+    },
+    {
+      "id": "argyle-20260530-235656",
+      "startedAt": "2026-05-30T23:56:56.136781+00:00",
+      "launchGate": "PASS",
+      "verdict": "Ready to launch. No blockers found.",
+      "readiness": 95,
+      "flakeRate": 0.0,
+      "blockerCount": 0,
+      "durationSec": 51
+    },
+    {
+      "id": "argyle-20260531-000517",
+      "startedAt": "2026-05-31T00:05:17.760439+00:00",
+      "launchGate": "REVIEW",
+      "verdict": "Review required before launch. Meaningful friction detected. (8 flaky steps \u2014 re-run to confirm.)",
+      "readiness": 95,
+      "flakeRate": 0.14,
+      "blockerCount": 0,
+      "durationSec": 128
+    }
+  ],
   "steps": [
     {
       "stepId": "j-argyle-login-p1-new-signup-s1-desktop-seed1-loop1",
@@ -88,8 +217,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Welcome Back Enter your email and password to login. Email Address Password Remember me Login Only authorized users can access this dashboard.",
       "artifactPaths": [
-        "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s2-desktop-seed1-loop1.png",
-        "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s2-desktop-seed1-loop1.txt"
+        "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s2-desktop-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -141,8 +269,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Welcome Back Enter your email and password to login. Email Address Password Remember me Login Only authorized users can access this dashboard.",
       "artifactPaths": [
-        "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s4-desktop-seed1-loop1.png",
-        "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s4-desktop-seed1-loop1.txt"
+        "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s4-desktop-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -194,8 +321,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Welcome Back Enter your email and password to login. Email Address Password Remember me Login Only authorized users can access this dashboard.",
       "artifactPaths": [
-        "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s2-tablet-seed1-loop1.png",
-        "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s2-tablet-seed1-loop1.txt"
+        "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s2-tablet-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -247,8 +373,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Welcome Back Enter your email and password to login. Email Address Password Remember me Login Only authorized users can access this dashboard.",
       "artifactPaths": [
-        "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s4-tablet-seed1-loop1.png",
-        "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s4-tablet-seed1-loop1.txt"
+        "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s4-tablet-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -300,8 +425,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Welcome Back Enter your email and password to login. Email Address Password Remember me Login Only authorized users can access this dashboard.",
       "artifactPaths": [
-        "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s2-mobile-seed1-loop1.png",
-        "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s2-mobile-seed1-loop1.txt"
+        "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s2-mobile-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -353,8 +477,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Welcome Back Enter your email and password to login. Email Address Password Remember me Login Only authorized users can access this dashboard.",
       "artifactPaths": [
-        "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s4-mobile-seed1-loop1.png",
-        "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s4-mobile-seed1-loop1.txt"
+        "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s4-mobile-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -406,8 +529,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Welcome Back Enter your email and password to login. Email Address Password Remember me Login Only authorized users can access this dashboard.",
       "artifactPaths": [
-        "artifacts/argyle-20260608-002317/j-argyle-explore-dashboard-p1-new-signup-s2-desktop-seed1-loop1.png",
-        "artifacts/argyle-20260608-002317/j-argyle-explore-dashboard-p1-new-signup-s2-desktop-seed1-loop1.txt"
+        "artifacts/argyle-20260608-002317/j-argyle-explore-dashboard-p1-new-signup-s2-desktop-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -485,8 +607,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Welcome Back Enter your email and password to login. Email Address Password Remember me Login Only authorized users can access this dashboard.",
       "artifactPaths": [
-        "artifacts/argyle-20260608-002317/j-argyle-explore-dashboard-p1-new-signup-s2-tablet-seed1-loop1.png",
-        "artifacts/argyle-20260608-002317/j-argyle-explore-dashboard-p1-new-signup-s2-tablet-seed1-loop1.txt"
+        "artifacts/argyle-20260608-002317/j-argyle-explore-dashboard-p1-new-signup-s2-tablet-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -564,8 +685,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Welcome Back Enter your email and password to login. Email Address Password Remember me Login Only authorized users can access this dashboard.",
       "artifactPaths": [
-        "artifacts/argyle-20260608-002317/j-argyle-explore-dashboard-p1-new-signup-s2-mobile-seed1-loop1.png",
-        "artifacts/argyle-20260608-002317/j-argyle-explore-dashboard-p1-new-signup-s2-mobile-seed1-loop1.txt"
+        "artifacts/argyle-20260608-002317/j-argyle-explore-dashboard-p1-new-signup-s2-mobile-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -643,8 +763,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Welcome Back Enter your email and password to login. Email Address Password Remember me Login Only authorized users can access this dashboard.",
       "artifactPaths": [
-        "artifacts/argyle-20260608-002317/j-argyle-view-users-p1-new-signup-s2-desktop-seed1-loop1.png",
-        "artifacts/argyle-20260608-002317/j-argyle-view-users-p1-new-signup-s2-desktop-seed1-loop1.txt"
+        "artifacts/argyle-20260608-002317/j-argyle-view-users-p1-new-signup-s2-desktop-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -722,8 +841,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Welcome Back Enter your email and password to login. Email Address Password Remember me Login Only authorized users can access this dashboard.",
       "artifactPaths": [
-        "artifacts/argyle-20260608-002317/j-argyle-view-users-p1-new-signup-s2-tablet-seed1-loop1.png",
-        "artifacts/argyle-20260608-002317/j-argyle-view-users-p1-new-signup-s2-tablet-seed1-loop1.txt"
+        "artifacts/argyle-20260608-002317/j-argyle-view-users-p1-new-signup-s2-tablet-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -801,8 +919,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Welcome Back Enter your email and password to login. Email Address Password Remember me Login Only authorized users can access this dashboard.",
       "artifactPaths": [
-        "artifacts/argyle-20260608-002317/j-argyle-view-users-p1-new-signup-s2-mobile-seed1-loop1.png",
-        "artifacts/argyle-20260608-002317/j-argyle-view-users-p1-new-signup-s2-mobile-seed1-loop1.txt"
+        "artifacts/argyle-20260608-002317/j-argyle-view-users-p1-new-signup-s2-mobile-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -880,8 +997,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Welcome Back Enter your email and password to login. Email Address Password Remember me Login Only authorized users can access this dashboard.",
       "artifactPaths": [
-        "artifacts/argyle-20260608-002317/j-argyle-admin-settings-p1-new-signup-s2-desktop-seed1-loop1.png",
-        "artifacts/argyle-20260608-002317/j-argyle-admin-settings-p1-new-signup-s2-desktop-seed1-loop1.txt"
+        "artifacts/argyle-20260608-002317/j-argyle-admin-settings-p1-new-signup-s2-desktop-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -959,8 +1075,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Welcome Back Enter your email and password to login. Email Address Password Remember me Login Only authorized users can access this dashboard.",
       "artifactPaths": [
-        "artifacts/argyle-20260608-002317/j-argyle-admin-settings-p1-new-signup-s2-tablet-seed1-loop1.png",
-        "artifacts/argyle-20260608-002317/j-argyle-admin-settings-p1-new-signup-s2-tablet-seed1-loop1.txt"
+        "artifacts/argyle-20260608-002317/j-argyle-admin-settings-p1-new-signup-s2-tablet-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1038,8 +1153,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Welcome Back Enter your email and password to login. Email Address Password Remember me Login Only authorized users can access this dashboard.",
       "artifactPaths": [
-        "artifacts/argyle-20260608-002317/j-argyle-admin-settings-p1-new-signup-s2-mobile-seed1-loop1.png",
-        "artifacts/argyle-20260608-002317/j-argyle-admin-settings-p1-new-signup-s2-mobile-seed1-loop1.txt"
+        "artifacts/argyle-20260608-002317/j-argyle-admin-settings-p1-new-signup-s2-mobile-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1117,8 +1231,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Welcome Back Enter your email and password to login. Email Address Password Remember me Login Only authorized users can access this dashboard.",
       "artifactPaths": [
-        "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s2-desktop-seed1-loop1.png",
-        "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s2-desktop-seed1-loop1.txt"
+        "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s2-desktop-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1144,9 +1257,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Welcome Back Enter your email and password to login. Email Address Password Remember me Login Only authorized users can access this dashboard.",
       "artifactPaths": [
-        "artifacts/argyle-20260608-002317/explore-j-argyle-team-collaboration-p1-new-signup-s3-desktop-seed1-loop1.json",
-        "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s3-desktop-seed1-loop1.png",
-        "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s3-desktop-seed1-loop1.txt"
+        "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s3-desktop-seed1-loop1.png"
       ],
       "exploreLog": [
         {
@@ -1208,8 +1319,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Welcome Back Enter your email and password to login. Email Address Password Remember me Login Only authorized users can access this dashboard.",
       "artifactPaths": [
-        "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s2-tablet-seed1-loop1.png",
-        "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s2-tablet-seed1-loop1.txt"
+        "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s2-tablet-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1235,9 +1345,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Welcome Back Enter your email and password to login. Email Address Password Remember me Login Only authorized users can access this dashboard.",
       "artifactPaths": [
-        "artifacts/argyle-20260608-002317/explore-j-argyle-team-collaboration-p1-new-signup-s3-tablet-seed1-loop1.json",
-        "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s3-tablet-seed1-loop1.png",
-        "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s3-tablet-seed1-loop1.txt"
+        "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s3-tablet-seed1-loop1.png"
       ],
       "exploreLog": [
         {
@@ -1315,8 +1423,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Welcome Back Enter your email and password to login. Email Address Password Remember me Login Only authorized users can access this dashboard.",
       "artifactPaths": [
-        "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s2-mobile-seed1-loop1.png",
-        "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s2-mobile-seed1-loop1.txt"
+        "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s2-mobile-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1342,9 +1449,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Welcome Back Enter your email and password to login. Email Address Password Remember me Login Only authorized users can access this dashboard.",
       "artifactPaths": [
-        "artifacts/argyle-20260608-002317/explore-j-argyle-team-collaboration-p1-new-signup-s3-mobile-seed1-loop1.json",
-        "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s3-mobile-seed1-loop1.png",
-        "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s3-mobile-seed1-loop1.txt"
+        "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s3-mobile-seed1-loop1.png"
       ],
       "exploreLog": [
         {
@@ -1390,9 +1495,7 @@
       },
       "bodyTextExcerpt": "Welcome Back Enter your email and password to login. Email Address Password Remember me Login Only authorized users can access this dashboard.",
       "artifactPaths": [
-        "artifacts/argyle-20260608-002317/auto-j1-dashboard-p1-new-signup-s1-desktop-seed1-loop1-aria.json",
-        "artifacts/argyle-20260608-002317/auto-j1-dashboard-p1-new-signup-s1-desktop-seed1-loop1.png",
-        "artifacts/argyle-20260608-002317/auto-j1-dashboard-p1-new-signup-s1-desktop-seed1-loop1.txt"
+        "artifacts/argyle-20260608-002317/auto-j1-dashboard-p1-new-signup-s1-desktop-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1428,9 +1531,7 @@
       },
       "bodyTextExcerpt": "Welcome Back Enter your email and password to login. Email Address Password Remember me Login Only authorized users can access this dashboard.",
       "artifactPaths": [
-        "artifacts/argyle-20260608-002317/auto-j1-dashboard-p1-new-signup-s1-tablet-seed1-loop1-aria.json",
-        "artifacts/argyle-20260608-002317/auto-j1-dashboard-p1-new-signup-s1-tablet-seed1-loop1.png",
-        "artifacts/argyle-20260608-002317/auto-j1-dashboard-p1-new-signup-s1-tablet-seed1-loop1.txt"
+        "artifacts/argyle-20260608-002317/auto-j1-dashboard-p1-new-signup-s1-tablet-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1466,9 +1567,7 @@
       },
       "bodyTextExcerpt": "Welcome Back Enter your email and password to login. Email Address Password Remember me Login Only authorized users can access this dashboard.",
       "artifactPaths": [
-        "artifacts/argyle-20260608-002317/auto-j1-dashboard-p1-new-signup-s1-mobile-seed1-loop1-aria.json",
-        "artifacts/argyle-20260608-002317/auto-j1-dashboard-p1-new-signup-s1-mobile-seed1-loop1.png",
-        "artifacts/argyle-20260608-002317/auto-j1-dashboard-p1-new-signup-s1-mobile-seed1-loop1.txt"
+        "artifacts/argyle-20260608-002317/auto-j1-dashboard-p1-new-signup-s1-mobile-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1484,18 +1583,19 @@
       "detail": "Requested https://faculty-dashboard-eight.vercel.app/database/database/database returned status 404.",
       "persona": "Internal champion",
       "personaId": "p4-internal-champion",
-      "journey": "Auto: Dashboard",
+      "journey": "auto-j1-dashboard",
       "journeyId": "auto-j1-dashboard",
       "stepId": "auto-j1-dashboard-p1-new-signup-s1-desktop-seed1-loop1",
       "dimension": "Functionality",
       "relatedDimensions": [],
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 2,
       "evidence": "Requested https://faculty-dashboard-eight.vercel.app/database/database/database returned status 404.",
       "severityReason": "P1 from automated heuristics",
       "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/auto-j1-dashboard-p1-new-signup-s1-desktop-seed1-loop1.png"
+      "screenshotPath": "artifacts/argyle-20260608-002317/auto-j1-dashboard-p1-new-signup-s1-desktop-seed1-loop1.png",
+      "isRecurring": true
     },
     {
       "id": "I2",
@@ -1505,7 +1605,7 @@
       "detail": "48 button(s) lack accessible name across 24 step(s).",
       "persona": "New signup",
       "personaId": "p1-new-signup",
-      "journey": "Auto: Dashboard",
+      "journey": "auto-j1-dashboard",
       "journeyId": "auto-j1-dashboard",
       "stepId": "auto-j1-dashboard-p1-new-signup-s1-desktop-seed1-loop1",
       "dimension": "UI/UX",
@@ -1514,11 +1614,12 @@
       ],
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 24,
+      "recurring": 5,
       "evidence": "48 button(s) lack accessible name across 24 step(s).",
       "severityReason": "P2 from automated heuristics",
       "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/auto-j1-dashboard-p1-new-signup-s1-desktop-seed1-loop1.png"
+      "screenshotPath": "artifacts/argyle-20260608-002317/auto-j1-dashboard-p1-new-signup-s1-desktop-seed1-loop1.png",
+      "isRecurring": true
     },
     {
       "id": "I3",
@@ -1528,7 +1629,7 @@
       "detail": "1 of 3 inputs lack label, aria-label, or placeholder.",
       "persona": "New signup",
       "personaId": "p1-new-signup",
-      "journey": "Auto: Dashboard",
+      "journey": "auto-j1-dashboard",
       "journeyId": "auto-j1-dashboard",
       "stepId": "auto-j1-dashboard-p1-new-signup-s1-desktop-seed1-loop1",
       "dimension": "Accessibility",
@@ -1537,11 +1638,12 @@
       ],
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 5,
       "evidence": "1 of 3 inputs lack label, aria-label, or placeholder.",
       "severityReason": "P2 from automated heuristics",
       "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/auto-j1-dashboard-p1-new-signup-s1-desktop-seed1-loop1.png"
+      "screenshotPath": "artifacts/argyle-20260608-002317/auto-j1-dashboard-p1-new-signup-s1-desktop-seed1-loop1.png",
+      "isRecurring": true
     },
     {
       "id": "I4",
@@ -1551,18 +1653,19 @@
       "detail": "1 console error(s): Failed to load resource: the server responded with a status of 404 ()",
       "persona": "New signup",
       "personaId": "p1-new-signup",
-      "journey": "Auto: Dashboard",
+      "journey": "auto-j1-dashboard",
       "journeyId": "auto-j1-dashboard",
       "stepId": "auto-j1-dashboard-p1-new-signup-s1-desktop-seed1-loop1",
       "dimension": "Functionality",
       "relatedDimensions": [],
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 2,
       "evidence": "1 console error(s): Failed to load resource: the server responded with a status of 404 ()",
       "severityReason": "P2 from automated heuristics",
       "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/auto-j1-dashboard-p1-new-signup-s1-desktop-seed1-loop1.png"
+      "screenshotPath": "artifacts/argyle-20260608-002317/auto-j1-dashboard-p1-new-signup-s1-desktop-seed1-loop1.png",
+      "isRecurring": true
     },
     {
       "id": "I5",
@@ -1579,12 +1682,13 @@
       "relatedDimensions": [],
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 3,
       "evidence": "Page body has very little text \u2014 value proposition may be unclear.",
       "severityReason": "P2 from automated heuristics",
       "suggestion": null,
       "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-admin-settings-p1-new-signup-s1-desktop-seed1-loop1-error.png",
-      "errorType": "BrowserStepError"
+      "errorType": "BrowserStepError",
+      "isRecurring": true
     },
     {
       "id": "I6",
@@ -1603,301 +1707,60 @@
       ],
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 3,
       "evidence": "Step took 40728ms (>8s perceived delay threshold).",
       "severityReason": "P3 from automated heuristics",
       "suggestion": null,
       "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-explore-dashboard-p1-new-signup-s3-desktop-seed1-loop1-error.png",
-      "errorType": "BrowserStepTimeout"
+      "errorType": "BrowserStepTimeout",
+      "isRecurring": true
     },
     {
-      "id": "I7",
-      "runId": "argyle-20260608-002317",
-      "severity": "P1",
-      "title": "Crawl found error pages",
-      "detail": "Paths: /database/database",
-      "persona": "Internal champion",
-      "personaId": "p4-internal-champion",
-      "journey": "unknown",
-      "journeyId": "unknown",
-      "stepId": "crawl-graph",
-      "dimension": "Functionality",
-      "relatedDimensions": [],
-      "confidence": "high",
-      "owner": "frontend",
-      "recurring": 1,
-      "evidence": "Paths: /database/database",
-      "severityReason": "P1 from automated heuristics",
-      "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/crawl-graph.png"
-    },
-    {
-      "id": "I8",
+      "id": "E4",
       "runId": "argyle-20260608-002317",
       "severity": "P2",
-      "title": "Auth-gated routes without login surface in crawl",
-      "detail": "Some paths redirect to login but no /login-style route was classified \u2014 wayfinding gap.",
-      "persona": "New signup",
-      "personaId": "p1-new-signup",
-      "journey": "unknown",
-      "journeyId": "unknown",
-      "stepId": "workflow-graph",
-      "dimension": "Functionality",
-      "relatedDimensions": [],
-      "confidence": "high",
-      "owner": "backend",
-      "recurring": 1,
-      "evidence": "Some paths redirect to login but no /login-style route was classified \u2014 wayfinding gap.",
-      "severityReason": "P2 from automated heuristics",
-      "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/workflow-graph.png"
-    },
-    {
-      "id": "I9",
-      "runId": "argyle-20260608-002317",
-      "severity": "P1",
-      "title": "No signup/registration option on login page",
-      "detail": "The login page only displays 'Welcome Back' and offers login for existing users. New signup users have no way to register or create an account, which blocks onboarding entirely.",
-      "persona": "New signup",
-      "personaId": "p1-new-signup",
-      "journey": "Login to Argyle",
-      "journeyId": "j-argyle-login",
-      "stepId": "j-argyle-login-p1-new-signup-s2-desktop-seed1-loop1",
-      "dimension": "Functionality",
-      "relatedDimensions": [],
-      "confidence": "high",
-      "owner": "frontend",
-      "recurring": 1,
-      "evidence": "The login page only displays 'Welcome Back' and offers login for existing users. New signup users have no way to register or create an account, which blocks onboarding entirely.",
-      "severityReason": "P1 from automated heuristics",
-      "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s2-desktop-seed1-loop1.png"
-    },
-    {
-      "id": "I10",
-      "runId": "argyle-20260608-002317",
-      "severity": "P1",
-      "title": "All click actions fail after login page",
-      "detail": "Every click attempt (both on login and subsequent journeys) results in a failure with no error message or transition, suggesting broken interaction logic or missing elements.",
-      "persona": "New signup",
-      "personaId": "p1-new-signup",
-      "journey": "Login to Argyle",
-      "journeyId": "j-argyle-login",
-      "stepId": "j-argyle-login-p1-new-signup-s3-desktop-seed1-loop1",
-      "dimension": "Functionality",
-      "relatedDimensions": [],
-      "confidence": "high",
-      "owner": "frontend",
-      "recurring": 1,
-      "evidence": "Every click attempt (both on login and subsequent journeys) results in a failure with no error message or transition, suggesting broken interaction logic or missing elements.",
-      "severityReason": "P1 from automated heuristics",
-      "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s3-desktop-seed1-loop1-error.png",
-      "errorType": "BrowserStepTimeout"
-    },
-    {
-      "id": "I11",
-      "runId": "argyle-20260608-002317",
-      "severity": "P3",
-      "title": "Initial navigation to '/' or '/database' fails with redirect",
-      "detail": "Navigating to the root or dashboard URL results in a failed step before redirecting to /login, which may confuse users expecting direct access.",
+      "title": "BrowserStepError: Login to Argyle",
+      "detail": "Page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"/\", waiting until \"domcontentloaded\"\n",
       "persona": "New signup",
       "personaId": "p1-new-signup",
       "journey": "Login to Argyle",
       "journeyId": "j-argyle-login",
       "stepId": "j-argyle-login-p1-new-signup-s1-desktop-seed1-loop1",
       "dimension": "Functionality",
-      "relatedDimensions": [],
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
-      "evidence": "Navigating to the root or dashboard URL results in a failed step before redirecting to /login, which may confuse users expecting direct access.",
-      "severityReason": "P3 from automated heuristics",
+      "recurring": 3,
+      "evidence": "Page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"/\", waiting until \"domcontentloaded\"\n",
+      "errorType": "BrowserStepError",
+      "severityReason": "Named error BrowserStepError",
       "suggestion": null,
       "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s1-desktop-seed1-loop1-error.png",
-      "errorType": "BrowserStepError"
+      "isRecurring": true
     },
     {
-      "id": "I12",
+      "id": "E5",
       "runId": "argyle-20260608-002317",
-      "severity": "P2",
-      "title": "Unlabeled buttons on login page",
-      "detail": "48 button(s) lack accessible name across 24 step(s).",
+      "severity": "P1",
+      "title": "BrowserStepTimeout: Login to Argyle",
+      "detail": "Locator.is_disabled: Timeout 3000ms exceeded.\nCall log:\n  - waiting for get_by_text(\"login button\").first\n",
       "persona": "New signup",
       "personaId": "p1-new-signup",
       "journey": "Login to Argyle",
       "journeyId": "j-argyle-login",
-      "stepId": "j-argyle-login-p1-new-signup-s2-desktop-seed1-loop1",
-      "dimension": "UI/UX",
-      "relatedDimensions": [
-        "Accessibility"
-      ],
-      "confidence": "hypothesis",
-      "owner": "frontend",
-      "recurring": 24,
-      "evidence": "48 button(s) lack accessible name across 24 step(s).",
-      "severityReason": "P2 from automated heuristics",
-      "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s2-desktop-seed1-loop1.png"
-    },
-    {
-      "id": "I13",
-      "runId": "argyle-20260608-002317",
-      "severity": "P1",
-      "title": "Login submission fails across all devices",
-      "detail": "The click action on the login page (step s3) consistently fails after entering credentials, preventing any access to the dashboard. This blocks all core tasks for power users.",
-      "persona": "Power user",
-      "personaId": "p2-power-user",
-      "journey": "Login to Argyle",
-      "journeyId": "j-argyle-login",
       "stepId": "j-argyle-login-p1-new-signup-s3-desktop-seed1-loop1",
       "dimension": "Functionality",
-      "relatedDimensions": [],
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
-      "evidence": "The click action on the login page (step s3) consistently fails after entering credentials, preventing any access to the dashboard. This blocks all core tasks for power users.",
-      "severityReason": "P1 from automated heuristics",
+      "recurring": 3,
+      "evidence": "Locator.is_disabled: Timeout 3000ms exceeded.\nCall log:\n  - waiting for get_by_text(\"login button\").first\n",
+      "errorType": "BrowserStepTimeout",
+      "severityReason": "Named error BrowserStepTimeout",
       "suggestion": null,
       "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s3-desktop-seed1-loop1-error.png",
-      "errorType": "BrowserStepTimeout"
+      "isRecurring": true
     },
     {
-      "id": "I14",
-      "runId": "argyle-20260608-002317",
-      "severity": "P3",
-      "title": "Login form buttons are unlabeled",
-      "detail": "48 button(s) lack accessible name across 24 step(s).",
-      "persona": "Power user",
-      "personaId": "p2-power-user",
-      "journey": "Login to Argyle",
-      "journeyId": "j-argyle-login",
-      "stepId": "j-argyle-login-p1-new-signup-s2-desktop-seed1-loop1",
-      "dimension": "UI/UX",
-      "relatedDimensions": [
-        "Accessibility"
-      ],
-      "confidence": "high",
-      "owner": "frontend",
-      "recurring": 24,
-      "evidence": "48 button(s) lack accessible name across 24 step(s).",
-      "severityReason": "P3 from automated heuristics",
-      "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s2-desktop-seed1-loop1.png"
-    },
-    {
-      "id": "I15",
-      "runId": "argyle-20260608-002317",
-      "severity": "P1",
-      "title": "Login form submission fails silently",
-      "detail": "Click actions on the login page (step j-argyle-login-p1-new-signup-s3-desktop-seed1-loop1 and equivalent) fail without any error message or feedback, preventing users from logging in and accessing any dashboard features.",
-      "persona": "Developer dogfooder",
-      "personaId": "p3-dogfood",
-      "journey": "Login to Argyle",
-      "journeyId": "j-argyle-login",
-      "stepId": "j-argyle-login-p1-new-signup-s3-desktop-seed1-loop1",
-      "dimension": "Functionality",
-      "relatedDimensions": [],
-      "confidence": "high",
-      "owner": "frontend",
-      "recurring": 1,
-      "evidence": "Click actions on the login page (step j-argyle-login-p1-new-signup-s3-desktop-seed1-loop1 and equivalent) fail without any error message or feedback, preventing users from logging in and accessing any dashboard features.",
-      "severityReason": "P1 from automated heuristics",
-      "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s3-desktop-seed1-loop1-error.png",
-      "errorType": "BrowserStepTimeout"
-    },
-    {
-      "id": "I16",
-      "runId": "argyle-20260608-002317",
-      "severity": "P3",
-      "title": "Login page has 2 unlabeled buttons",
-      "detail": "48 button(s) lack accessible name across 24 step(s).",
-      "persona": "Developer dogfooder",
-      "personaId": "p3-dogfood",
-      "journey": "Login to Argyle",
-      "journeyId": "j-argyle-login",
-      "stepId": "j-argyle-login-p1-new-signup-s2-desktop-seed1-loop1",
-      "dimension": "UI/UX",
-      "relatedDimensions": [
-        "Accessibility"
-      ],
-      "confidence": "high",
-      "owner": "frontend",
-      "recurring": 24,
-      "evidence": "48 button(s) lack accessible name across 24 step(s).",
-      "severityReason": "P3 from automated heuristics",
-      "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s2-desktop-seed1-loop1.png"
-    },
-    {
-      "id": "I17",
-      "runId": "argyle-20260608-002317",
-      "severity": "P1",
-      "title": "Login form submission fails on all devices",
-      "detail": "After navigating to the login page and entering credentials, the click action on the login button fails (step outcome 'fail') across desktop, tablet, and mobile viewports. This prevents authentication and blocks all subsequent journeys.",
-      "persona": "Internal champion",
-      "personaId": "p4-internal-champion",
-      "journey": "Login to Argyle",
-      "journeyId": "j-argyle-login",
-      "stepId": "j-argyle-login-p1-new-signup-s3-desktop-seed1-loop1",
-      "dimension": "Functionality",
-      "relatedDimensions": [],
-      "confidence": "high",
-      "owner": "backend",
-      "recurring": 1,
-      "evidence": "After navigating to the login page and entering credentials, the click action on the login button fails (step outcome 'fail') across desktop, tablet, and mobile viewports. This prevents authentication and blocks all subsequent journeys.",
-      "severityReason": "P1 from automated heuristics",
-      "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s3-desktop-seed1-loop1-error.png",
-      "errorType": "BrowserStepTimeout"
-    },
-    {
-      "id": "I18",
-      "runId": "argyle-20260608-002317",
-      "severity": "P1",
-      "title": "Dashboard inaccessible behind authentication wall",
-      "detail": "Every attempt to navigate to /database results in an immediate redirect to /login, and subsequent click actions on the login page fail (no credentials submitted). No dashboard content is reachable, making the entire product non-functional for an unauthenticated test user.",
-      "persona": "Internal champion",
-      "personaId": "p4-champion",
-      "journey": "Explore Dashboard",
-      "journeyId": "j-argyle-explore-dashboard",
-      "stepId": "j-argyle-explore-dashboard-p1-new-signup-s1-desktop-seed1-loop1",
-      "dimension": "Functionality",
-      "relatedDimensions": [],
-      "confidence": "high",
-      "owner": "backend",
-      "recurring": 1,
-      "evidence": "Every attempt to navigate to /database results in an immediate redirect to /login, and subsequent click actions on the login page fail (no credentials submitted). No dashboard content is reachable, making the entire product non-functional for an unauthenticated test user.",
-      "severityReason": "P1 from automated heuristics",
-      "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-explore-dashboard-p1-new-signup-s1-desktop-seed1-loop1-error.png",
-      "errorType": "BrowserStepError"
-    },
-    {
-      "id": "I19",
-      "runId": "argyle-20260608-002317",
-      "severity": "P1",
-      "title": "Login flow appears broken; no successful authentication possible",
-      "detail": "Login page renders with email/password fields and a Login button, but all click actions (step s3) time out or fail, and no successful login occurs. This prevents any further testing of dashboard features.",
-      "persona": "Internal champion",
-      "personaId": "p4-champion",
-      "journey": "Login to Argyle",
-      "journeyId": "j-argyle-login",
-      "stepId": "j-argyle-login-p1-new-signup-s3-desktop-seed1-loop1",
-      "dimension": "Functionality",
-      "relatedDimensions": [],
-      "confidence": "high",
-      "owner": "backend",
-      "recurring": 1,
-      "evidence": "Login page renders with email/password fields and a Login button, but all click actions (step s3) time out or fail, and no successful login occurs. This prevents any further testing of dashboard features.",
-      "severityReason": "P1 from automated heuristics",
-      "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s3-desktop-seed1-loop1-error.png",
-      "errorType": "BrowserStepTimeout"
-    },
-    {
-      "id": "E10",
+      "id": "E6",
       "runId": "argyle-20260608-002317",
       "severity": "P2",
       "title": "BrowserStepError: Login to Argyle",
@@ -1910,15 +1773,16 @@
       "dimension": "Functionality",
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 3,
       "evidence": "Page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"/\", waiting until \"domcontentloaded\"\n",
       "errorType": "BrowserStepError",
       "severityReason": "Named error BrowserStepError",
       "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s1-tablet-seed1-loop1-error.png"
+      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s1-tablet-seed1-loop1-error.png",
+      "isRecurring": true
     },
     {
-      "id": "E11",
+      "id": "E7",
       "runId": "argyle-20260608-002317",
       "severity": "P1",
       "title": "BrowserStepTimeout: Login to Argyle",
@@ -1931,15 +1795,16 @@
       "dimension": "Functionality",
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 3,
       "evidence": "Locator.is_disabled: Timeout 3000ms exceeded.\nCall log:\n  - waiting for get_by_text(\"login button\").first\n",
       "errorType": "BrowserStepTimeout",
       "severityReason": "Named error BrowserStepTimeout",
       "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s3-tablet-seed1-loop1-error.png"
+      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s3-tablet-seed1-loop1-error.png",
+      "isRecurring": true
     },
     {
-      "id": "E12",
+      "id": "E8",
       "runId": "argyle-20260608-002317",
       "severity": "P2",
       "title": "BrowserStepError: Login to Argyle",
@@ -1952,15 +1817,16 @@
       "dimension": "Functionality",
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 3,
       "evidence": "Page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"/\", waiting until \"domcontentloaded\"\n",
       "errorType": "BrowserStepError",
       "severityReason": "Named error BrowserStepError",
       "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s1-mobile-seed1-loop1-error.png"
+      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s1-mobile-seed1-loop1-error.png",
+      "isRecurring": true
     },
     {
-      "id": "E13",
+      "id": "E9",
       "runId": "argyle-20260608-002317",
       "severity": "P1",
       "title": "BrowserStepTimeout: Login to Argyle",
@@ -1973,15 +1839,38 @@
       "dimension": "Functionality",
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 3,
       "evidence": "Locator.is_disabled: Timeout 3000ms exceeded.\nCall log:\n  - waiting for get_by_text(\"login button\").first\n",
       "errorType": "BrowserStepTimeout",
       "severityReason": "Named error BrowserStepTimeout",
       "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s3-mobile-seed1-loop1-error.png"
+      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s3-mobile-seed1-loop1-error.png",
+      "isRecurring": true
     },
     {
-      "id": "E14",
+      "id": "E10",
+      "runId": "argyle-20260608-002317",
+      "severity": "P2",
+      "title": "BrowserStepError: Explore Dashboard",
+      "detail": "Page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"/database\", waiting until \"domcontentloaded\"\n",
+      "persona": "New signup",
+      "personaId": "p1-new-signup",
+      "journey": "Explore Dashboard",
+      "journeyId": "j-argyle-explore-dashboard",
+      "stepId": "j-argyle-explore-dashboard-p1-new-signup-s1-desktop-seed1-loop1",
+      "dimension": "Functionality",
+      "confidence": "high",
+      "owner": "frontend",
+      "recurring": 3,
+      "evidence": "Page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"/database\", waiting until \"domcontentloaded\"\n",
+      "errorType": "BrowserStepError",
+      "severityReason": "Named error BrowserStepError",
+      "suggestion": null,
+      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-explore-dashboard-p1-new-signup-s1-desktop-seed1-loop1-error.png",
+      "isRecurring": true
+    },
+    {
+      "id": "E11",
       "runId": "argyle-20260608-002317",
       "severity": "P2",
       "title": "BrowserStepError: Explore Dashboard",
@@ -1994,15 +1883,16 @@
       "dimension": "Functionality",
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 3,
       "evidence": "Page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"/database\", waiting until \"domcontentloaded\"\n",
       "errorType": "BrowserStepError",
       "severityReason": "Named error BrowserStepError",
       "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-explore-dashboard-p1-new-signup-s1-tablet-seed1-loop1-error.png"
+      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-explore-dashboard-p1-new-signup-s1-tablet-seed1-loop1-error.png",
+      "isRecurring": true
     },
     {
-      "id": "E15",
+      "id": "E12",
       "runId": "argyle-20260608-002317",
       "severity": "P1",
       "title": "BrowserStepTimeout: Explore Dashboard",
@@ -2015,15 +1905,16 @@
       "dimension": "Functionality",
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 3,
       "evidence": "Locator.scroll_into_view_if_needed: Timeout 30000ms exceeded.\nCall log:\n  - waiting for get_by_text(\"down\").first\n",
       "errorType": "BrowserStepTimeout",
       "severityReason": "Named error BrowserStepTimeout",
       "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-explore-dashboard-p1-new-signup-s3-tablet-seed1-loop1-error.png"
+      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-explore-dashboard-p1-new-signup-s3-tablet-seed1-loop1-error.png",
+      "isRecurring": true
     },
     {
-      "id": "E16",
+      "id": "E13",
       "runId": "argyle-20260608-002317",
       "severity": "P2",
       "title": "BrowserStepError: Explore Dashboard",
@@ -2036,15 +1927,16 @@
       "dimension": "Functionality",
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 3,
       "evidence": "Page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"/database\", waiting until \"domcontentloaded\"\n",
       "errorType": "BrowserStepError",
       "severityReason": "Named error BrowserStepError",
       "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-explore-dashboard-p1-new-signup-s1-mobile-seed1-loop1-error.png"
+      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-explore-dashboard-p1-new-signup-s1-mobile-seed1-loop1-error.png",
+      "isRecurring": true
     },
     {
-      "id": "E17",
+      "id": "E14",
       "runId": "argyle-20260608-002317",
       "severity": "P1",
       "title": "BrowserStepTimeout: Explore Dashboard",
@@ -2057,15 +1949,16 @@
       "dimension": "Functionality",
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 3,
       "evidence": "Locator.scroll_into_view_if_needed: Timeout 30000ms exceeded.\nCall log:\n  - waiting for get_by_text(\"down\").first\n",
       "errorType": "BrowserStepTimeout",
       "severityReason": "Named error BrowserStepTimeout",
       "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-explore-dashboard-p1-new-signup-s3-mobile-seed1-loop1-error.png"
+      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-explore-dashboard-p1-new-signup-s3-mobile-seed1-loop1-error.png",
+      "isRecurring": true
     },
     {
-      "id": "E18",
+      "id": "E15",
       "runId": "argyle-20260608-002317",
       "severity": "P2",
       "title": "BrowserStepError: View Users List",
@@ -2078,15 +1971,16 @@
       "dimension": "Functionality",
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 3,
       "evidence": "Page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"/database\", waiting until \"domcontentloaded\"\n",
       "errorType": "BrowserStepError",
       "severityReason": "Named error BrowserStepError",
       "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-view-users-p1-new-signup-s1-desktop-seed1-loop1-error.png"
+      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-view-users-p1-new-signup-s1-desktop-seed1-loop1-error.png",
+      "isRecurring": true
     },
     {
-      "id": "E19",
+      "id": "E16",
       "runId": "argyle-20260608-002317",
       "severity": "P1",
       "title": "BrowserStepTimeout: View Users List",
@@ -2099,15 +1993,16 @@
       "dimension": "Functionality",
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 3,
       "evidence": "Locator.is_disabled: Timeout 3000ms exceeded.\nCall log:\n  - waiting for get_by_text(\"users tab or menu\").first\n",
       "errorType": "BrowserStepTimeout",
       "severityReason": "Named error BrowserStepTimeout",
       "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-view-users-p1-new-signup-s3-desktop-seed1-loop1-error.png"
+      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-view-users-p1-new-signup-s3-desktop-seed1-loop1-error.png",
+      "isRecurring": true
     },
     {
-      "id": "E20",
+      "id": "E17",
       "runId": "argyle-20260608-002317",
       "severity": "P2",
       "title": "BrowserStepError: View Users List",
@@ -2120,15 +2015,16 @@
       "dimension": "Functionality",
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 3,
       "evidence": "Page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"/database\", waiting until \"domcontentloaded\"\n",
       "errorType": "BrowserStepError",
       "severityReason": "Named error BrowserStepError",
       "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-view-users-p1-new-signup-s1-tablet-seed1-loop1-error.png"
+      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-view-users-p1-new-signup-s1-tablet-seed1-loop1-error.png",
+      "isRecurring": true
     },
     {
-      "id": "E21",
+      "id": "E18",
       "runId": "argyle-20260608-002317",
       "severity": "P1",
       "title": "BrowserStepTimeout: View Users List",
@@ -2141,15 +2037,16 @@
       "dimension": "Functionality",
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 3,
       "evidence": "Locator.is_disabled: Timeout 3000ms exceeded.\nCall log:\n  - waiting for get_by_text(\"users tab or menu\").first\n",
       "errorType": "BrowserStepTimeout",
       "severityReason": "Named error BrowserStepTimeout",
       "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-view-users-p1-new-signup-s3-tablet-seed1-loop1-error.png"
+      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-view-users-p1-new-signup-s3-tablet-seed1-loop1-error.png",
+      "isRecurring": true
     },
     {
-      "id": "E22",
+      "id": "E19",
       "runId": "argyle-20260608-002317",
       "severity": "P2",
       "title": "BrowserStepError: View Users List",
@@ -2162,15 +2059,16 @@
       "dimension": "Functionality",
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 3,
       "evidence": "Page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"/database\", waiting until \"domcontentloaded\"\n",
       "errorType": "BrowserStepError",
       "severityReason": "Named error BrowserStepError",
       "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-view-users-p1-new-signup-s1-mobile-seed1-loop1-error.png"
+      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-view-users-p1-new-signup-s1-mobile-seed1-loop1-error.png",
+      "isRecurring": true
     },
     {
-      "id": "E23",
+      "id": "E20",
       "runId": "argyle-20260608-002317",
       "severity": "P1",
       "title": "BrowserStepTimeout: View Users List",
@@ -2183,15 +2081,16 @@
       "dimension": "Functionality",
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 3,
       "evidence": "Locator.is_disabled: Timeout 3000ms exceeded.\nCall log:\n  - waiting for get_by_text(\"users tab or menu\").first\n",
       "errorType": "BrowserStepTimeout",
       "severityReason": "Named error BrowserStepTimeout",
       "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-view-users-p1-new-signup-s3-mobile-seed1-loop1-error.png"
+      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-view-users-p1-new-signup-s3-mobile-seed1-loop1-error.png",
+      "isRecurring": true
     },
     {
-      "id": "E24",
+      "id": "E21",
       "runId": "argyle-20260608-002317",
       "severity": "P1",
       "title": "BrowserStepTimeout: Access Admin Settings",
@@ -2204,15 +2103,16 @@
       "dimension": "Functionality",
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 3,
       "evidence": "Locator.is_disabled: Timeout 3000ms exceeded.\nCall log:\n  - waiting for get_by_text(\"admin or settings menu\").first\n",
       "errorType": "BrowserStepTimeout",
       "severityReason": "Named error BrowserStepTimeout",
       "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-admin-settings-p1-new-signup-s3-desktop-seed1-loop1-error.png"
+      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-admin-settings-p1-new-signup-s3-desktop-seed1-loop1-error.png",
+      "isRecurring": true
     },
     {
-      "id": "E25",
+      "id": "E22",
       "runId": "argyle-20260608-002317",
       "severity": "P2",
       "title": "BrowserStepError: Access Admin Settings",
@@ -2225,15 +2125,16 @@
       "dimension": "Functionality",
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 3,
       "evidence": "Page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"/database\", waiting until \"domcontentloaded\"\n",
       "errorType": "BrowserStepError",
       "severityReason": "Named error BrowserStepError",
       "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-admin-settings-p1-new-signup-s1-tablet-seed1-loop1-error.png"
+      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-admin-settings-p1-new-signup-s1-tablet-seed1-loop1-error.png",
+      "isRecurring": true
     },
     {
-      "id": "E26",
+      "id": "E23",
       "runId": "argyle-20260608-002317",
       "severity": "P1",
       "title": "BrowserStepTimeout: Access Admin Settings",
@@ -2246,15 +2147,16 @@
       "dimension": "Functionality",
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 3,
       "evidence": "Locator.is_disabled: Timeout 3000ms exceeded.\nCall log:\n  - waiting for get_by_text(\"admin or settings menu\").first\n",
       "errorType": "BrowserStepTimeout",
       "severityReason": "Named error BrowserStepTimeout",
       "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-admin-settings-p1-new-signup-s3-tablet-seed1-loop1-error.png"
+      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-admin-settings-p1-new-signup-s3-tablet-seed1-loop1-error.png",
+      "isRecurring": true
     },
     {
-      "id": "E27",
+      "id": "E24",
       "runId": "argyle-20260608-002317",
       "severity": "P2",
       "title": "BrowserStepError: Access Admin Settings",
@@ -2267,15 +2169,16 @@
       "dimension": "Functionality",
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 3,
       "evidence": "Page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"/database\", waiting until \"domcontentloaded\"\n",
       "errorType": "BrowserStepError",
       "severityReason": "Named error BrowserStepError",
       "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-admin-settings-p1-new-signup-s1-mobile-seed1-loop1-error.png"
+      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-admin-settings-p1-new-signup-s1-mobile-seed1-loop1-error.png",
+      "isRecurring": true
     },
     {
-      "id": "E28",
+      "id": "E25",
       "runId": "argyle-20260608-002317",
       "severity": "P1",
       "title": "BrowserStepTimeout: Access Admin Settings",
@@ -2288,15 +2191,16 @@
       "dimension": "Functionality",
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 3,
       "evidence": "Locator.is_disabled: Timeout 3000ms exceeded.\nCall log:\n  - waiting for get_by_text(\"admin or settings menu\").first\n",
       "errorType": "BrowserStepTimeout",
       "severityReason": "Named error BrowserStepTimeout",
       "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-admin-settings-p1-new-signup-s3-mobile-seed1-loop1-error.png"
+      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-admin-settings-p1-new-signup-s3-mobile-seed1-loop1-error.png",
+      "isRecurring": true
     },
     {
-      "id": "E29",
+      "id": "E26",
       "runId": "argyle-20260608-002317",
       "severity": "P2",
       "title": "BrowserStepError: Test Team Collaboration",
@@ -2309,15 +2213,16 @@
       "dimension": "Functionality",
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 3,
       "evidence": "Page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"/database\", waiting until \"domcontentloaded\"\n",
       "errorType": "BrowserStepError",
       "severityReason": "Named error BrowserStepError",
       "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s1-desktop-seed1-loop1-error.png"
+      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s1-desktop-seed1-loop1-error.png",
+      "isRecurring": true
     },
     {
-      "id": "E30",
+      "id": "E27",
       "runId": "argyle-20260608-002317",
       "severity": "P2",
       "title": "BrowserStepError: Test Team Collaboration",
@@ -2330,15 +2235,16 @@
       "dimension": "Functionality",
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 3,
       "evidence": "Page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"/database\", waiting until \"domcontentloaded\"\n",
       "errorType": "BrowserStepError",
       "severityReason": "Named error BrowserStepError",
       "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s1-tablet-seed1-loop1-error.png"
+      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s1-tablet-seed1-loop1-error.png",
+      "isRecurring": true
     },
     {
-      "id": "E31",
+      "id": "E28",
       "runId": "argyle-20260608-002317",
       "severity": "P2",
       "title": "BrowserStepError: Test Team Collaboration",
@@ -2351,12 +2257,13 @@
       "dimension": "Functionality",
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 3,
       "evidence": "Page.goto: Protocol error (Page.navigate): Cannot navigate to invalid URL\nCall log:\n  - navigating to \"/database\", waiting until \"domcontentloaded\"\n",
       "errorType": "BrowserStepError",
       "severityReason": "Named error BrowserStepError",
       "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s1-mobile-seed1-loop1-error.png"
+      "screenshotPath": "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s1-mobile-seed1-loop1-error.png",
+      "isRecurring": true
     },
     {
       "id": "DIM-TRUST-ROLLUP",
@@ -2373,10 +2280,11 @@
       "relatedDimensions": [],
       "confidence": "high",
       "owner": "backend",
-      "recurring": 1,
+      "recurring": 14,
       "evidence": "3 network failures",
       "severityReason": "P3 from automated dimension rollup",
-      "suggestion": null
+      "suggestion": null,
+      "isRecurring": true
     },
     {
       "id": "DIM-ONBOARDING-ROLLUP",
@@ -2393,17 +2301,18 @@
       "relatedDimensions": [],
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 13,
       "evidence": "first journey 50% pass",
       "severityReason": "P3 from automated dimension rollup",
-      "suggestion": null
+      "suggestion": null,
+      "isRecurring": true
     },
     {
       "id": "DIM-RECOVERY-ROLLUP",
       "runId": "argyle-20260608-002317",
       "severity": "P3",
       "title": "Recovery signal from run evidence",
-      "detail": "27 steps errored; 3 network failures",
+      "detail": "27 steps errored; 3 network failures; 3 HTTP 4xx/5xx pages; 5 journey(s) recovered across seeds",
       "persona": "New signup",
       "personaId": "p1-new-signup",
       "journey": "Run rollup",
@@ -2413,358 +2322,15 @@
       "relatedDimensions": [],
       "confidence": "high",
       "owner": "backend",
-      "recurring": 1,
-      "evidence": "27 steps errored; 3 network failures",
+      "recurring": 14,
+      "evidence": "27 steps errored; 3 network failures; 3 HTTP 4xx/5xx pages; 5 journey(s) recovered across seeds",
       "severityReason": "P3 from automated dimension rollup",
-      "suggestion": null
+      "suggestion": null,
+      "isRecurring": true
     }
   ],
-  "delights": [
-    {
-      "id": "D1",
-      "runId": "argyle-20260608-002317",
-      "title": "Interactive forms discovered",
-      "quote": "1 pages with forms \u2014 workflow automation candidate.",
-      "persona": "New signup",
-      "journey": "unknown",
-      "stepId": "crawl-graph",
-      "marketingReady": true,
-      "confidence": "high"
-    },
-    {
-      "id": "D2",
-      "runId": "argyle-20260608-002317",
-      "title": "Fast interactions for repeat tasks",
-      "quote": "17 steps completed under 3s.",
-      "persona": "Power user",
-      "journey": "Login to Argyle",
-      "stepId": "j-argyle-login-p1-new-signup-s2-desktop-seed1-loop1",
-      "marketingReady": true,
-      "confidence": "high"
-    },
-    {
-      "id": "D3",
-      "runId": "argyle-20260608-002317",
-      "title": "Security message clearly displayed",
-      "quote": "The login page explicitly states 'Only authorized users can access this dashboard.', which sets proper security expectations.",
-      "persona": "Developer dogfooder",
-      "journey": "Login to Argyle",
-      "stepId": "j-argyle-login-p1-new-signup-s2-desktop-seed1-loop1",
-      "marketingReady": true,
-      "confidence": "high"
-    }
-  ],
+  "delights": [],
   "agents": [
-    {
-      "id": "crawler",
-      "runId": "argyle-20260608-002317",
-      "name": "crawler",
-      "role": "Site structure discovery",
-      "phase": "crawl",
-      "status": "done",
-      "durationSec": 0,
-      "costUsd": 0.0,
-      "lastSummary": "Crawled 1 pages; 1 auth-gated; 0 orphans",
-      "findingsCount": 0,
-      "delightsCount": 0,
-      "handoff": {
-        "page_count": 1,
-        "hub_paths": [
-          "/database/database"
-        ]
-      }
-    },
-    {
-      "id": "workflow",
-      "runId": "argyle-20260608-002317",
-      "name": "workflow",
-      "role": "Workflow & journey planning",
-      "phase": "workflow",
-      "status": "done",
-      "durationSec": 0,
-      "costUsd": 0.0,
-      "lastSummary": "Detected workflow types: dashboard",
-      "findingsCount": 1,
-      "delightsCount": 0,
-      "handoff": {
-        "workflow_types": [
-          "dashboard"
-        ],
-        "suggested_journeys": 2,
-        "auto_journeys_added": [
-          "auto-j1-dashboard"
-        ]
-      }
-    },
-    {
-      "id": "journey-runner",
-      "runId": "argyle-20260608-002317",
-      "name": "journey-runner",
-      "role": "E2E journey execution",
-      "phase": "journey",
-      "status": "done",
-      "durationSec": 0,
-      "costUsd": 0.0,
-      "lastSummary": "Executed 51 steps across 6 journeys (30 failures, 9 flaky steps, seeds=1, viewports=['desktop', 'tablet', 'mobile'], personas=1)",
-      "findingsCount": 0,
-      "delightsCount": 0,
-      "handoff": {
-        "steps_executed": 51,
-        "step_failures": 30,
-        "flaky_steps": 0,
-        "parallel_seeds": 1,
-        "viewports": [
-          "desktop",
-          "tablet",
-          "mobile"
-        ],
-        "personas_executed": 1,
-        "execute_all_personas_in_browser": false
-      }
-    },
-    {
-      "id": "performance-v1",
-      "runId": "argyle-20260608-002317",
-      "name": "performance-v1",
-      "role": "Web Vitals (lab)",
-      "phase": "persona",
-      "status": "done",
-      "durationSec": 0,
-      "costUsd": 0.0,
-      "lastSummary": "Web Vitals captured for 1 journey(s); no threshold breaches",
-      "findingsCount": 0,
-      "delightsCount": 0,
-      "handoff": {
-        "web_vitals_path": "/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/artifacts/argyle-20260608-002317/web-vitals.json",
-        "web_vitals_by_journey": {
-          "auto-j1-dashboard": {
-            "stepId": "auto-j1-dashboard-p1-new-signup-s1-desktop-seed1-loop1",
-            "finalUrl": "https://faculty-dashboard-eight.vercel.app/login",
-            "viewport": "desktop",
-            "vitals": {
-              "lcp": null,
-              "cls": 0.0,
-              "inp": null,
-              "fcp": 200.0,
-              "ttfb": 26.0
-            },
-            "issues": []
-          }
-        }
-      }
-    },
-    {
-      "id": "persona-p1-new-signup",
-      "runId": "argyle-20260608-002317",
-      "name": "New signup (first-time user)",
-      "role": "Evaluator: New signup (first-time user)",
-      "phase": "persona",
-      "status": "done",
-      "durationSec": 0,
-      "costUsd": 0.0,
-      "lastSummary": "Analysis from first-time user perspective",
-      "findingsCount": 0,
-      "delightsCount": 0,
-      "handoff": {
-        "persona_id": "p1-new-signup",
-        "journeys_graded": 6
-      }
-    },
-    {
-      "id": "persona-p2-power-user",
-      "runId": "argyle-20260608-002317",
-      "name": "Power user (experienced user)",
-      "role": "Evaluator: Power user (experienced user)",
-      "phase": "persona",
-      "status": "done",
-      "durationSec": 0,
-      "costUsd": 0.0,
-      "lastSummary": "Analysis from experienced user perspective",
-      "findingsCount": 0,
-      "delightsCount": 1,
-      "handoff": {
-        "persona_id": "p2-power-user",
-        "journeys_graded": 6
-      }
-    },
-    {
-      "id": "persona-p3-dogfood",
-      "runId": "argyle-20260608-002317",
-      "name": "Developer dogfooder (internal engineer)",
-      "role": "Evaluator: Developer dogfooder (internal engineer)",
-      "phase": "persona",
-      "status": "done",
-      "durationSec": 0,
-      "costUsd": 0.0,
-      "lastSummary": "Analysis from internal engineer perspective",
-      "findingsCount": 0,
-      "delightsCount": 0,
-      "handoff": {
-        "persona_id": "p3-dogfood",
-        "journeys_graded": 6
-      }
-    },
-    {
-      "id": "persona-p4-internal-champion",
-      "runId": "argyle-20260608-002317",
-      "name": "Internal champion (team lead / champion)",
-      "role": "Evaluator: Internal champion (team lead / champion)",
-      "phase": "persona",
-      "status": "done",
-      "durationSec": 0,
-      "costUsd": 0.0,
-      "lastSummary": "Analysis from team lead / champion perspective",
-      "findingsCount": 0,
-      "delightsCount": 0,
-      "handoff": {
-        "persona_id": "p4-internal-champion",
-        "journeys_graded": 6
-      }
-    },
-    {
-      "id": "persona-p4-champion",
-      "runId": "argyle-20260608-002317",
-      "name": "Internal champion (team lead / champion)",
-      "role": "Evaluator: Internal champion (team lead / champion)",
-      "phase": "persona",
-      "status": "done",
-      "durationSec": 0,
-      "costUsd": 0.0,
-      "lastSummary": "Analysis from team lead / champion perspective",
-      "findingsCount": 0,
-      "delightsCount": 0,
-      "handoff": {
-        "persona_id": "p4-champion",
-        "journeys_graded": 6
-      }
-    },
-    {
-      "id": "llm-p1-new-signup",
-      "runId": "argyle-20260608-002317",
-      "name": "New signup",
-      "role": "LLM evaluator: New signup",
-      "phase": "persona",
-      "status": "done",
-      "durationSec": 0,
-      "costUsd": 0.001145,
-      "lastSummary": "New signup users cannot onboard because the login page only supports existing users and all interactions fail, preventing any progress.",
-      "findingsCount": 4,
-      "delightsCount": 0,
-      "handoff": {
-        "provider": "deepseek",
-        "model": "deepseek-v4-flash",
-        "issues": 4,
-        "delights": 0,
-        "input_tokens": 5262,
-        "output_tokens": 1458,
-        "total_tokens": 6720
-      }
-    },
-    {
-      "id": "llm-p2-power-user",
-      "runId": "argyle-20260608-002317",
-      "name": "Power user",
-      "role": "LLM evaluator: Power user",
-      "phase": "persona",
-      "status": "done",
-      "durationSec": 0,
-      "costUsd": 0.000941,
-      "lastSummary": "All journeys are blocked by a failed login flow, preventing any core task completion or integration testing.",
-      "findingsCount": 2,
-      "delightsCount": 0,
-      "handoff": {
-        "provider": "deepseek",
-        "model": "deepseek-v4-flash",
-        "issues": 2,
-        "delights": 0,
-        "input_tokens": 5256,
-        "output_tokens": 732,
-        "total_tokens": 5988
-      }
-    },
-    {
-      "id": "llm-p3-dogfood",
-      "runId": "argyle-20260608-002317",
-      "name": "Developer dogfooder",
-      "role": "LLM evaluator: Developer dogfooder",
-      "phase": "persona",
-      "status": "done",
-      "durationSec": 0,
-      "costUsd": 0.001113,
-      "lastSummary": "The dogfooding session reveals a broken login flow that prevents access to all dashboard features, with no actionable error messages and unlabeled buttons on the login page.",
-      "findingsCount": 2,
-      "delightsCount": 1,
-      "handoff": {
-        "provider": "deepseek",
-        "model": "deepseek-v4-flash",
-        "issues": 2,
-        "delights": 1,
-        "input_tokens": 5264,
-        "output_tokens": 1342,
-        "total_tokens": 6606
-      }
-    },
-    {
-      "id": "llm-p4-internal-champion",
-      "runId": "argyle-20260608-002317",
-      "name": "Internal champion",
-      "role": "LLM evaluator: Internal champion",
-      "phase": "persona",
-      "status": "done",
-      "durationSec": 0,
-      "costUsd": 0.00094,
-      "lastSummary": "All journeys fail because the login form click action consistently fails, preventing access to any authenticated functionality.",
-      "findingsCount": 1,
-      "delightsCount": 0,
-      "handoff": {
-        "provider": "deepseek",
-        "model": "deepseek-v4-flash",
-        "issues": 1,
-        "delights": 0,
-        "input_tokens": 5270,
-        "output_tokens": 723,
-        "total_tokens": 5993
-      }
-    },
-    {
-      "id": "llm-p4-champion",
-      "runId": "argyle-20260608-002317",
-      "name": "Internal champion",
-      "role": "LLM evaluator: Internal champion",
-      "phase": "persona",
-      "status": "done",
-      "durationSec": 0,
-      "costUsd": 0.000879,
-      "lastSummary": "All authenticated journeys are blocked by login redirection; no dashboard functionality is accessible, preventing rollout validation.",
-      "findingsCount": 2,
-      "delightsCount": 0,
-      "handoff": {
-        "provider": "deepseek",
-        "model": "deepseek-v4-flash",
-        "issues": 2,
-        "delights": 0,
-        "input_tokens": 5259,
-        "output_tokens": 508,
-        "total_tokens": 5767
-      }
-    },
-    {
-      "id": "synthesizer",
-      "runId": "argyle-20260608-002317",
-      "name": "synthesizer",
-      "role": "Cross-agent synthesis",
-      "phase": "synthesis",
-      "status": "done",
-      "durationSec": 0,
-      "costUsd": 0.0,
-      "lastSummary": "Synthesized 19 issues, 3 delights from 14 agent reports",
-      "findingsCount": 0,
-      "delightsCount": 0,
-      "handoff": {
-        "agents_merged": 14,
-        "readiness": "Red"
-      }
-    },
     {
       "id": "ag_compl",
       "runId": "argyle-20260608-002317",
@@ -2913,31 +2479,6 @@
       "personaId": "p4-champion",
       "journeyId": "j-argyle-team-collaboration",
       "grade": "fail"
-    },
-    {
-      "personaId": "p1-new-signup",
-      "journeyId": "auto-j1-dashboard",
-      "grade": "fail"
-    },
-    {
-      "personaId": "p2-power-user",
-      "journeyId": "auto-j1-dashboard",
-      "grade": "fail"
-    },
-    {
-      "personaId": "p3-dogfood",
-      "journeyId": "auto-j1-dashboard",
-      "grade": "fail"
-    },
-    {
-      "personaId": "p4-internal-champion",
-      "journeyId": "auto-j1-dashboard",
-      "grade": "fail"
-    },
-    {
-      "personaId": "p4-champion",
-      "journeyId": "auto-j1-dashboard",
-      "grade": "fail"
     }
   ],
   "dimensions": [
@@ -2956,7 +2497,7 @@
     {
       "name": "Information",
       "score": 40,
-      "signal": "27 content-sparse pages; 0 headings; 0 links",
+      "signal": "avg body 23ch; 0.0 hdg/page; 0.0 links/page; 15 sparse pages",
       "automated": true
     },
     {
@@ -2985,8 +2526,8 @@
     },
     {
       "name": "Recovery",
-      "score": 25,
-      "signal": "27 steps errored; 3 network failures",
+      "score": 40,
+      "signal": "27 steps errored; 3 network failures; 3 HTTP 4xx/5xx pages; 5 journey(s) recovered across seeds",
       "automated": true
     }
   ],
@@ -3005,259 +2546,346 @@
   "sitemapEdges": [],
   "screenshots": [
     {
-      "path": "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s1-desktop-seed1-loop1-error.png",
-      "stepId": "j-argyle-login-p1-new-signup-s1-desktop-seed1-loop1",
-      "label": "Login to Argyle"
-    },
-    {
       "path": "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s2-desktop-seed1-loop1.png",
       "stepId": "j-argyle-login-p1-new-signup-s2-desktop-seed1-loop1",
-      "label": "Login to Argyle"
-    },
-    {
-      "path": "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s3-desktop-seed1-loop1-error.png",
-      "stepId": "j-argyle-login-p1-new-signup-s3-desktop-seed1-loop1",
-      "label": "Login to Argyle"
+      "label": "Login to Argyle \u2014 Welcome Back Enter your email and",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-new-signup",
+      "journeyName": "Login to Argyle",
+      "durationMs": 2053,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s4-desktop-seed1-loop1.png",
       "stepId": "j-argyle-login-p1-new-signup-s4-desktop-seed1-loop1",
-      "label": "Login to Argyle"
-    },
-    {
-      "path": "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s1-tablet-seed1-loop1-error.png",
-      "stepId": "j-argyle-login-p1-new-signup-s1-tablet-seed1-loop1",
-      "label": "Login to Argyle"
+      "label": "Login to Argyle \u2014 Welcome Back Enter your email and",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-new-signup",
+      "journeyName": "Login to Argyle",
+      "durationMs": 1533,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s2-tablet-seed1-loop1.png",
       "stepId": "j-argyle-login-p1-new-signup-s2-tablet-seed1-loop1",
-      "label": "Login to Argyle"
-    },
-    {
-      "path": "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s3-tablet-seed1-loop1-error.png",
-      "stepId": "j-argyle-login-p1-new-signup-s3-tablet-seed1-loop1",
-      "label": "Login to Argyle"
+      "label": "Login to Argyle \u2014 Welcome Back Enter your email and",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-new-signup",
+      "journeyName": "Login to Argyle",
+      "durationMs": 2053,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s4-tablet-seed1-loop1.png",
       "stepId": "j-argyle-login-p1-new-signup-s4-tablet-seed1-loop1",
-      "label": "Login to Argyle"
-    },
-    {
-      "path": "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s1-mobile-seed1-loop1-error.png",
-      "stepId": "j-argyle-login-p1-new-signup-s1-mobile-seed1-loop1",
-      "label": "Login to Argyle"
+      "label": "Login to Argyle \u2014 Welcome Back Enter your email and",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-new-signup",
+      "journeyName": "Login to Argyle",
+      "durationMs": 1542,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s2-mobile-seed1-loop1.png",
       "stepId": "j-argyle-login-p1-new-signup-s2-mobile-seed1-loop1",
-      "label": "Login to Argyle"
-    },
-    {
-      "path": "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s3-mobile-seed1-loop1-error.png",
-      "stepId": "j-argyle-login-p1-new-signup-s3-mobile-seed1-loop1",
-      "label": "Login to Argyle"
+      "label": "Login to Argyle \u2014 Welcome Back Enter your email and",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-new-signup",
+      "journeyName": "Login to Argyle",
+      "durationMs": 2038,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260608-002317/j-argyle-login-p1-new-signup-s4-mobile-seed1-loop1.png",
       "stepId": "j-argyle-login-p1-new-signup-s4-mobile-seed1-loop1",
-      "label": "Login to Argyle"
-    },
-    {
-      "path": "artifacts/argyle-20260608-002317/j-argyle-explore-dashboard-p1-new-signup-s1-desktop-seed1-loop1-error.png",
-      "stepId": "j-argyle-explore-dashboard-p1-new-signup-s1-desktop-seed1-loop1",
-      "label": "Explore Dashboard"
+      "label": "Login to Argyle \u2014 Welcome Back Enter your email and",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-new-signup",
+      "journeyName": "Login to Argyle",
+      "durationMs": 1547,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260608-002317/j-argyle-explore-dashboard-p1-new-signup-s2-desktop-seed1-loop1.png",
       "stepId": "j-argyle-explore-dashboard-p1-new-signup-s2-desktop-seed1-loop1",
-      "label": "Explore Dashboard"
-    },
-    {
-      "path": "artifacts/argyle-20260608-002317/j-argyle-explore-dashboard-p1-new-signup-s3-desktop-seed1-loop1-error.png",
-      "stepId": "j-argyle-explore-dashboard-p1-new-signup-s3-desktop-seed1-loop1",
-      "label": "Explore Dashboard"
-    },
-    {
-      "path": "artifacts/argyle-20260608-002317/j-argyle-explore-dashboard-p1-new-signup-s1-tablet-seed1-loop1-error.png",
-      "stepId": "j-argyle-explore-dashboard-p1-new-signup-s1-tablet-seed1-loop1",
-      "label": "Explore Dashboard"
+      "label": "Explore Dashboard \u2014 Welcome Back Enter your email and",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-new-signup",
+      "journeyName": "Explore Dashboard",
+      "durationMs": 2065,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260608-002317/j-argyle-explore-dashboard-p1-new-signup-s2-tablet-seed1-loop1.png",
       "stepId": "j-argyle-explore-dashboard-p1-new-signup-s2-tablet-seed1-loop1",
-      "label": "Explore Dashboard"
-    },
-    {
-      "path": "artifacts/argyle-20260608-002317/j-argyle-explore-dashboard-p1-new-signup-s3-tablet-seed1-loop1-error.png",
-      "stepId": "j-argyle-explore-dashboard-p1-new-signup-s3-tablet-seed1-loop1",
-      "label": "Explore Dashboard"
-    },
-    {
-      "path": "artifacts/argyle-20260608-002317/j-argyle-explore-dashboard-p1-new-signup-s1-mobile-seed1-loop1-error.png",
-      "stepId": "j-argyle-explore-dashboard-p1-new-signup-s1-mobile-seed1-loop1",
-      "label": "Explore Dashboard"
+      "label": "Explore Dashboard \u2014 Welcome Back Enter your email and",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-new-signup",
+      "journeyName": "Explore Dashboard",
+      "durationMs": 4001,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260608-002317/j-argyle-explore-dashboard-p1-new-signup-s2-mobile-seed1-loop1.png",
       "stepId": "j-argyle-explore-dashboard-p1-new-signup-s2-mobile-seed1-loop1",
-      "label": "Explore Dashboard"
-    },
-    {
-      "path": "artifacts/argyle-20260608-002317/j-argyle-explore-dashboard-p1-new-signup-s3-mobile-seed1-loop1-error.png",
-      "stepId": "j-argyle-explore-dashboard-p1-new-signup-s3-mobile-seed1-loop1",
-      "label": "Explore Dashboard"
-    },
-    {
-      "path": "artifacts/argyle-20260608-002317/j-argyle-view-users-p1-new-signup-s1-desktop-seed1-loop1-error.png",
-      "stepId": "j-argyle-view-users-p1-new-signup-s1-desktop-seed1-loop1",
-      "label": "View Users List"
+      "label": "Explore Dashboard \u2014 Welcome Back Enter your email and",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-new-signup",
+      "journeyName": "Explore Dashboard",
+      "durationMs": 2060,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260608-002317/j-argyle-view-users-p1-new-signup-s2-desktop-seed1-loop1.png",
       "stepId": "j-argyle-view-users-p1-new-signup-s2-desktop-seed1-loop1",
-      "label": "View Users List"
-    },
-    {
-      "path": "artifacts/argyle-20260608-002317/j-argyle-view-users-p1-new-signup-s3-desktop-seed1-loop1-error.png",
-      "stepId": "j-argyle-view-users-p1-new-signup-s3-desktop-seed1-loop1",
-      "label": "View Users List"
-    },
-    {
-      "path": "artifacts/argyle-20260608-002317/j-argyle-view-users-p1-new-signup-s1-tablet-seed1-loop1-error.png",
-      "stepId": "j-argyle-view-users-p1-new-signup-s1-tablet-seed1-loop1",
-      "label": "View Users List"
+      "label": "View Users List \u2014 Welcome Back Enter your email and",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-new-signup",
+      "journeyName": "View Users List",
+      "durationMs": 2041,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260608-002317/j-argyle-view-users-p1-new-signup-s2-tablet-seed1-loop1.png",
       "stepId": "j-argyle-view-users-p1-new-signup-s2-tablet-seed1-loop1",
-      "label": "View Users List"
-    },
-    {
-      "path": "artifacts/argyle-20260608-002317/j-argyle-view-users-p1-new-signup-s3-tablet-seed1-loop1-error.png",
-      "stepId": "j-argyle-view-users-p1-new-signup-s3-tablet-seed1-loop1",
-      "label": "View Users List"
-    },
-    {
-      "path": "artifacts/argyle-20260608-002317/j-argyle-view-users-p1-new-signup-s1-mobile-seed1-loop1-error.png",
-      "stepId": "j-argyle-view-users-p1-new-signup-s1-mobile-seed1-loop1",
-      "label": "View Users List"
+      "label": "View Users List \u2014 Welcome Back Enter your email and",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-new-signup",
+      "journeyName": "View Users List",
+      "durationMs": 2031,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260608-002317/j-argyle-view-users-p1-new-signup-s2-mobile-seed1-loop1.png",
       "stepId": "j-argyle-view-users-p1-new-signup-s2-mobile-seed1-loop1",
-      "label": "View Users List"
-    },
-    {
-      "path": "artifacts/argyle-20260608-002317/j-argyle-view-users-p1-new-signup-s3-mobile-seed1-loop1-error.png",
-      "stepId": "j-argyle-view-users-p1-new-signup-s3-mobile-seed1-loop1",
-      "label": "View Users List"
-    },
-    {
-      "path": "artifacts/argyle-20260608-002317/j-argyle-admin-settings-p1-new-signup-s1-desktop-seed1-loop1-error.png",
-      "stepId": "j-argyle-admin-settings-p1-new-signup-s1-desktop-seed1-loop1",
-      "label": "Access Admin Settings"
+      "label": "View Users List \u2014 Welcome Back Enter your email and",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-new-signup",
+      "journeyName": "View Users List",
+      "durationMs": 2046,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260608-002317/j-argyle-admin-settings-p1-new-signup-s2-desktop-seed1-loop1.png",
       "stepId": "j-argyle-admin-settings-p1-new-signup-s2-desktop-seed1-loop1",
-      "label": "Access Admin Settings"
-    },
-    {
-      "path": "artifacts/argyle-20260608-002317/j-argyle-admin-settings-p1-new-signup-s3-desktop-seed1-loop1-error.png",
-      "stepId": "j-argyle-admin-settings-p1-new-signup-s3-desktop-seed1-loop1",
-      "label": "Access Admin Settings"
-    },
-    {
-      "path": "artifacts/argyle-20260608-002317/j-argyle-admin-settings-p1-new-signup-s1-tablet-seed1-loop1-error.png",
-      "stepId": "j-argyle-admin-settings-p1-new-signup-s1-tablet-seed1-loop1",
-      "label": "Access Admin Settings"
+      "label": "Access Admin Settings \u2014 Welcome Back Enter your email and",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-new-signup",
+      "journeyName": "Access Admin Settings",
+      "durationMs": 2062,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260608-002317/j-argyle-admin-settings-p1-new-signup-s2-tablet-seed1-loop1.png",
       "stepId": "j-argyle-admin-settings-p1-new-signup-s2-tablet-seed1-loop1",
-      "label": "Access Admin Settings"
-    },
-    {
-      "path": "artifacts/argyle-20260608-002317/j-argyle-admin-settings-p1-new-signup-s3-tablet-seed1-loop1-error.png",
-      "stepId": "j-argyle-admin-settings-p1-new-signup-s3-tablet-seed1-loop1",
-      "label": "Access Admin Settings"
-    },
-    {
-      "path": "artifacts/argyle-20260608-002317/j-argyle-admin-settings-p1-new-signup-s1-mobile-seed1-loop1-error.png",
-      "stepId": "j-argyle-admin-settings-p1-new-signup-s1-mobile-seed1-loop1",
-      "label": "Access Admin Settings"
+      "label": "Access Admin Settings \u2014 Welcome Back Enter your email and",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-new-signup",
+      "journeyName": "Access Admin Settings",
+      "durationMs": 2069,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260608-002317/j-argyle-admin-settings-p1-new-signup-s2-mobile-seed1-loop1.png",
       "stepId": "j-argyle-admin-settings-p1-new-signup-s2-mobile-seed1-loop1",
-      "label": "Access Admin Settings"
-    },
-    {
-      "path": "artifacts/argyle-20260608-002317/j-argyle-admin-settings-p1-new-signup-s3-mobile-seed1-loop1-error.png",
-      "stepId": "j-argyle-admin-settings-p1-new-signup-s3-mobile-seed1-loop1",
-      "label": "Access Admin Settings"
-    },
-    {
-      "path": "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s1-desktop-seed1-loop1-error.png",
-      "stepId": "j-argyle-team-collaboration-p1-new-signup-s1-desktop-seed1-loop1",
-      "label": "Test Team Collaboration"
+      "label": "Access Admin Settings \u2014 Welcome Back Enter your email and",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-new-signup",
+      "journeyName": "Access Admin Settings",
+      "durationMs": 2035,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s2-desktop-seed1-loop1.png",
       "stepId": "j-argyle-team-collaboration-p1-new-signup-s2-desktop-seed1-loop1",
-      "label": "Test Team Collaboration"
+      "label": "Test Team Collaboration \u2014 Welcome Back Enter your email and",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-new-signup",
+      "journeyName": "Test Team Collaboration",
+      "durationMs": 2061,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s3-desktop-seed1-loop1.png",
       "stepId": "j-argyle-team-collaboration-p1-new-signup-s3-desktop-seed1-loop1",
-      "label": "Test Team Collaboration"
-    },
-    {
-      "path": "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s1-tablet-seed1-loop1-error.png",
-      "stepId": "j-argyle-team-collaboration-p1-new-signup-s1-tablet-seed1-loop1",
-      "label": "Test Team Collaboration"
+      "label": "Test Team Collaboration \u2014 Welcome Back Enter your email and",
+      "action": "explore",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "pass",
+      "note": "The exploration for team collaboration features attempted one round but encountered an error parsing the login page response, resulting in no successful actions. The step stopped before explicit completion due to the error.",
+      "personaId": "p1-new-signup",
+      "journeyName": "Test Team Collaboration",
+      "durationMs": 7582,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s2-tablet-seed1-loop1.png",
       "stepId": "j-argyle-team-collaboration-p1-new-signup-s2-tablet-seed1-loop1",
-      "label": "Test Team Collaboration"
+      "label": "Test Team Collaboration \u2014 Welcome Back Enter your email and",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-new-signup",
+      "journeyName": "Test Team Collaboration",
+      "durationMs": 2047,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s3-tablet-seed1-loop1.png",
       "stepId": "j-argyle-team-collaboration-p1-new-signup-s3-tablet-seed1-loop1",
-      "label": "Test Team Collaboration"
-    },
-    {
-      "path": "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s1-mobile-seed1-loop1-error.png",
-      "stepId": "j-argyle-team-collaboration-p1-new-signup-s1-mobile-seed1-loop1",
-      "label": "Test Team Collaboration"
+      "label": "Test Team Collaboration \u2014 Welcome Back Enter your email and",
+      "action": "explore",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "pass",
+      "note": "The exploration for team collaboration features began by waiting for the login page to load, but the second round encountered a JSON parsing error when processing the ARIA snapshot, preventing further progress. The exploration stopped before explicit completion.",
+      "personaId": "p1-new-signup",
+      "journeyName": "Test Team Collaboration",
+      "durationMs": 15575,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s2-mobile-seed1-loop1.png",
       "stepId": "j-argyle-team-collaboration-p1-new-signup-s2-mobile-seed1-loop1",
-      "label": "Test Team Collaboration"
+      "label": "Test Team Collaboration \u2014 Welcome Back Enter your email and",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-new-signup",
+      "journeyName": "Test Team Collaboration",
+      "durationMs": 2034,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260608-002317/j-argyle-team-collaboration-p1-new-signup-s3-mobile-seed1-loop1.png",
       "stepId": "j-argyle-team-collaboration-p1-new-signup-s3-mobile-seed1-loop1",
-      "label": "Test Team Collaboration"
+      "label": "Test Team Collaboration \u2014 Welcome Back Enter your email and",
+      "action": "explore",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "pass",
+      "note": "The exploration attempted to load the login page but encountered a JSON parsing error, preventing any actions from being taken. Consequently, no evidence regarding team collaboration features was gathered in the single round.",
+      "personaId": "p1-new-signup",
+      "journeyName": "Test Team Collaboration",
+      "durationMs": 8120,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/argyle-20260608-002317/auto-j1-dashboard-p1-new-signup-s1-desktop-seed1-loop1.png",
       "stepId": "auto-j1-dashboard-p1-new-signup-s1-desktop-seed1-loop1",
-      "label": "Auto: Dashboard"
+      "label": "Auto: Dashboard \u2014 Welcome Back Enter your email and",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "fail",
+      "note": null,
+      "personaId": "p1-new-signup",
+      "journeyName": "Auto: Dashboard",
+      "durationMs": 859,
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ]
     },
     {
       "path": "artifacts/argyle-20260608-002317/auto-j1-dashboard-p1-new-signup-s1-tablet-seed1-loop1.png",
       "stepId": "auto-j1-dashboard-p1-new-signup-s1-tablet-seed1-loop1",
-      "label": "Auto: Dashboard"
+      "label": "Auto: Dashboard \u2014 Welcome Back Enter your email and",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "fail",
+      "note": null,
+      "personaId": "p1-new-signup",
+      "journeyName": "Auto: Dashboard",
+      "durationMs": 693,
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ]
     },
     {
       "path": "artifacts/argyle-20260608-002317/auto-j1-dashboard-p1-new-signup-s1-mobile-seed1-loop1.png",
       "stepId": "auto-j1-dashboard-p1-new-signup-s1-mobile-seed1-loop1",
-      "label": "Auto: Dashboard"
+      "label": "Auto: Dashboard \u2014 Welcome Back Enter your email and",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/login",
+      "outcome": "fail",
+      "note": null,
+      "personaId": "p1-new-signup",
+      "journeyName": "Auto: Dashboard",
+      "durationMs": 608,
+      "consoleErrors": [
+        "Failed to load resource: the server responded with a status of 404 ()"
+      ]
     }
   ],
   "annotations": [],
@@ -3328,12 +2956,6 @@
       "name": "Test Team Collaboration",
       "steps": 3,
       "category": "dashboard"
-    },
-    {
-      "id": "auto-j1-dashboard",
-      "name": "Auto: Dashboard",
-      "steps": 1,
-      "category": "dashboard"
     }
   ],
   "workflows": [
@@ -3372,9 +2994,9 @@
     }
   ],
   "narrative": {
-    "executiveSummary": "Argyle Faculty Dashboard at https://faculty-dashboard-eight.vercel.app/database rehearsed as **Red** readiness. 7/17 canonical steps passed (41%). 19 issue(s) and 3 delight(s) recorded. Primary concern: HTTP 404 on navigation. Bright spot: Interactive forms discovered.",
-    "forFounders": "**Launch readiness: Red** \u2014 suitable for internal review before external calls.\nBroken journeys: Login to Argyle, Explore Dashboard, View Users List, Access Admin Settings.\nBlockers to discuss: HTTP 404 on navigation; Crawl found error pages; No signup/registration option on login page.",
-    "forEngineering": "Run `argyle-20260608-002317` \u00b7 0s \u00b7 51 step records (incl. viewport/seed replays).\nCrawl: 1 pages, 1 error paths, 0 orphans.\nNetwork log: `/Users/sparshnagpal/Desktop/projects/TryLapse/launch-rehearsal/artifacts/artifacts/argyle-20260608-002317/network-log.json`.\nNotable P2: Icon-only or unlabeled buttons; Form inputs missing labels; Console errors on page; Sparse page content.",
+    "executiveSummary": "Argyle Faculty Dashboard at https://faculty-dashboard-eight.vercel.app rehearsed as **Red** readiness. 7/17 canonical steps passed (41%). 6 issue(s) and 0 delight(s) recorded. Primary concern: HTTP 404 on navigation.",
+    "forFounders": "**Launch readiness: Red** \u2014 suitable for internal review before external calls.\nBroken journeys: Login to Argyle, Explore Dashboard, View Users List, Access Admin Settings.\nBlockers to discuss: HTTP 404 on navigation.",
+    "forEngineering": "Run `argyle-20260608-002317` \u00b7 313s \u00b7 51 step records (incl. viewport/seed replays).\nCrawl: 1 pages, 1 error paths, 0 orphans.\nNotable P2: Icon-only or unlabeled buttons; Form inputs missing labels; Console errors on page; Sparse page content.",
     "suggestedQuestions": [
       "What is the single blocker we should fix before the next partner call?",
       "Why did Login to Argyle fail?",
@@ -3382,220 +3004,82 @@
     ],
     "source": "template",
     "readinessBand": "Red",
-    "issueCount": 19,
-    "delightCount": 3
+    "issueCount": 6,
+    "delightCount": 0,
+    "layer1Verdict": {
+      "decision": "no_ship",
+      "headline": "Do not ship this build.",
+      "reason": "1 blocker(s) will break user journeys in production. Worst: HTTP 404 on navigation.",
+      "band": "Red"
+    },
+    "layer2Story": "TryLapse sent 5 AI personas through 5 product journeys and scored **7/17** steps as passing. 5 journeys \u2014 Login to Argyle, Explore Dashboard \u2014 failed completely, meaning users would be blocked before completing their goal.",
+    "layer3FixHierarchy": [
+      {
+        "priority": "P1",
+        "title": "HTTP 404 on navigation",
+        "detail": "Requested https://faculty-dashboard-eight.vercel.app/database/database/database returned status 404.",
+        "effort": "medium",
+        "action": "Fix before launch \u2014 significant user impact.",
+        "step_id": "auto-j1-dashboard-p1-new-signup-s1-desktop-seed1-loop1",
+        "confidence": "high"
+      },
+      {
+        "priority": "P2",
+        "title": "Icon-only or unlabeled buttons",
+        "detail": "2 button(s) lack accessible name on page.",
+        "effort": "small",
+        "action": "Fix before GA \u2014 noticeable but not blocking.",
+        "step_id": "auto-j1-dashboard-p1-new-signup-s1-desktop-seed1-loop1",
+        "confidence": "high"
+      },
+      {
+        "priority": "P2",
+        "title": "Form inputs missing labels",
+        "detail": "1 of 3 inputs lack label, aria-label, or placeholder.",
+        "effort": "small",
+        "action": "Fix before GA \u2014 noticeable but not blocking.",
+        "step_id": "auto-j1-dashboard-p1-new-signup-s1-desktop-seed1-loop1",
+        "confidence": "high"
+      },
+      {
+        "priority": "P2",
+        "title": "Console errors on page",
+        "detail": "1 console error(s): Failed to load resource: the server responded with a status of 404 ()",
+        "effort": "small",
+        "action": "Fix before GA \u2014 noticeable but not blocking.",
+        "step_id": "auto-j1-dashboard-p1-new-signup-s1-desktop-seed1-loop1",
+        "confidence": "high"
+      },
+      {
+        "priority": "P2",
+        "title": "Sparse page content",
+        "detail": "Page body has very little text \u2014 value proposition may be unclear.",
+        "effort": "small",
+        "action": "Fix before GA \u2014 noticeable but not blocking.",
+        "step_id": "j-argyle-admin-settings-p1-new-signup-s1-desktop-seed1-loop1",
+        "confidence": "high"
+      },
+      {
+        "priority": "P3",
+        "title": "Slow step completion",
+        "detail": "Step took 40728ms (>8s perceived delay threshold).",
+        "effort": "tiny",
+        "action": "Track in backlog \u2014 polish item.",
+        "step_id": "j-argyle-explore-dashboard-p1-new-signup-s3-desktop-seed1-loop1",
+        "confidence": "high"
+      }
+    ],
+    "layer4Forward": [
+      "Fix P1 before launch: HTTP 404 on navigation.",
+      "Run again after fixes to confirm the score moved \u2014 track trend across builds."
+    ],
+    "layer5Trend": {
+      "available": false,
+      "note": "Run a second build to see score trajectory."
+    }
   },
   "productModel": null,
-  "interactionMap": {
-    "buttonCount": 2,
-    "formCount": 1,
-    "apiCallCount": 4,
-    "errorCount": 0,
-    "chatbotDetected": false
-  },
-  "behavioralJourneys": {
-    "j-argyle-login:p1-new-signup": {
-      "behavioral_journey_verdict": "fail",
-      "goal_completion": "failed",
-      "friction_score": 10,
-      "key_friction_points": [
-        "Page failed to load for new user",
-        "No sign-up option on login page",
-        "Accessibility issues: unlabeled buttons, missing headings",
-        "No content or navigation after click"
-      ],
-      "ux_improvements": [
-        {
-          "type": "information-architecture",
-          "finding": "Login page only serves returning users, no sign-up path for new users",
-          "recommendation": "Add a clear 'Sign Up' link or button on the login page"
-        },
-        {
-          "type": "feedback",
-          "finding": "Page failed to load without any error message or fallback",
-          "recommendation": "Implement error handling and display a user-friendly message when page fails to load"
-        },
-        {
-          "type": "label",
-          "finding": "Buttons are unlabeled and headings are missing, causing accessibility issues",
-          "recommendation": "Add proper aria-labels to buttons and ensure headings are present and descriptive"
-        },
-        {
-          "type": "content",
-          "finding": "After click, page lacks any content or navigation",
-          "recommendation": "Ensure all pages have meaningful content and navigation elements"
-        }
-      ],
-      "information_access_issues": [
-        "No sign-up option available",
-        "No error feedback when page fails to load",
-        "Missing labels and headings for screen readers"
-      ],
-      "journey_length_assessment": "too-long",
-      "priority_for_persona": "critical",
-      "behavioral_summary": "As a new user trying to sign up, I encountered a login page that only serves returning users. The page failed to load without any feedback, and there was no sign-up option, making it impossible to proceed. This journey completely failed to meet my goal of onboarding.",
-      "source": "llm"
-    },
-    "j-argyle-explore-dashboard:p1-new-signup": {
-      "behavioral_journey_verdict": "partial",
-      "goal_completion": "partially",
-      "friction_score": 10,
-      "key_friction_points": [],
-      "ux_improvements": [],
-      "information_access_issues": [],
-      "journey_length_assessment": "appropriate",
-      "priority_for_persona": "medium",
-      "behavioral_summary": "Template verdict \u2014 enable LLM for behavioral analysis",
-      "source": "template"
-    },
-    "j-argyle-view-users:p1-new-signup": {
-      "behavioral_journey_verdict": "fail",
-      "goal_completion": "failed",
-      "friction_score": 10,
-      "key_friction_points": [
-        "Step 1: Technical failure on navigation to database page",
-        "Step 2: No sign-up path, only login page for first-time user",
-        "Step 3: Click action failed to load Users List page"
-      ],
-      "ux_improvements": [
-        {
-          "type": "navigation",
-          "finding": "First-time user cannot find sign-up option; only login is presented.",
-          "recommendation": "Add a prominent 'Sign Up' link or button on the login page."
-        },
-        {
-          "type": "feedback",
-          "finding": "Technical failure on page load provides no error message or guidance.",
-          "recommendation": "Implement clear error messages and a retry or back-to-home button."
-        },
-        {
-          "type": "information-architecture",
-          "finding": "No onboarding flow for new users; they are dropped into login.",
-          "recommendation": "Create a guided onboarding or sign-up-first flow for new users."
-        }
-      ],
-      "information_access_issues": [
-        "No sign-up path available",
-        "No error explanation after technical failure",
-        "No way to view users list as intended"
-      ],
-      "journey_length_assessment": "too-long",
-      "priority_for_persona": "critical",
-      "behavioral_summary": "As a new user, I tried to view the users list but hit a technical failure immediately. Then I was confused by a login page with no sign-up option, and my click to proceed failed again. I couldn't complete my goal at all.",
-      "source": "llm"
-    },
-    "j-argyle-admin-settings:p1-new-signup": {
-      "behavioral_journey_verdict": "fail",
-      "goal_completion": "failed",
-      "friction_score": 9,
-      "key_friction_points": [
-        "Navigation step failed with no page content or links",
-        "Login page lacks guidance for first-time users",
-        "Click action resulted in blank/broken page with no error messages"
-      ],
-      "ux_improvements": [
-        {
-          "type": "feedback",
-          "finding": "No error messages or navigation elements on broken pages",
-          "recommendation": "Provide clear error messages and a way to return to previous step"
-        },
-        {
-          "type": "label",
-          "finding": "Unlabeled buttons and missing headings on login page",
-          "recommendation": "Add descriptive labels and headings to guide users"
-        },
-        {
-          "type": "content",
-          "finding": "Login page shows 'Welcome Back' which is inappropriate for new signups",
-          "recommendation": "Personalize content based on user status; show onboarding steps for new users"
-        }
-      ],
-      "information_access_issues": [
-        "No indication of how to proceed after login",
-        "Missing onboarding instructions or next steps",
-        "No access to admin settings or help documentation"
-      ],
-      "journey_length_assessment": "too-long",
-      "priority_for_persona": "critical",
-      "behavioral_summary": "As a new user trying to complete onboarding and access admin settings, I encountered a dead end at every step. The navigation failed, the login page was confusing, and clicking led to a blank page with no guidance. I couldn't achieve my goal and felt completely stuck.",
-      "source": "llm"
-    },
-    "j-argyle-team-collaboration:p1-new-signup": {
-      "behavioral_journey_verdict": "fail",
-      "goal_completion": "failed",
-      "friction_score": 10,
-      "key_friction_points": [
-        "Navigation step failed with no content",
-        "Login page has no sign-up option for new users",
-        "Message restricts access to authorized users only",
-        "Unlabeled buttons create confusion"
-      ],
-      "ux_improvements": [
-        {
-          "type": "information-architecture",
-          "finding": "No sign-up link or option for new users on login page",
-          "recommendation": "Add a prominent 'Sign Up' or 'Create Account' button on the login page"
-        },
-        {
-          "type": "feedback",
-          "finding": "Navigation step failed silently with no error message or content",
-          "recommendation": "Provide clear error feedback and a way to retry or navigate back"
-        },
-        {
-          "type": "content",
-          "finding": "Message 'Only a' is incomplete and confusing",
-          "recommendation": "Replace with clear, complete messaging about access restrictions and next steps"
-        },
-        {
-          "type": "label",
-          "finding": "Buttons are unlabeled or unclear",
-          "recommendation": "Label all buttons with descriptive text (e.g., 'Login', 'Sign Up')"
-        }
-      ],
-      "information_access_issues": [
-        "No sign-up option or guidance for first-time users",
-        "No explanation of how to get access or create an account",
-        "Incomplete message 'Only a' provides no useful information"
-      ],
-      "journey_length_assessment": "too-long",
-      "priority_for_persona": "critical",
-      "behavioral_summary": "As a new user, I hit a dead end immediately: the navigation failed, and then I landed on a login page with no way to sign up. The system seems designed only for existing users, leaving me stuck and unable to proceed with onboarding.",
-      "source": "llm"
-    },
-    "auto-j1-dashboard:p1-new-signup": {
-      "behavioral_journey_verdict": "fail",
-      "goal_completion": "failed",
-      "friction_score": 10,
-      "key_friction_points": [
-        "Login page shown instead of sign-up for first-time user",
-        "No sign-up option available",
-        "Page content truncated, missing full instructions"
-      ],
-      "ux_improvements": [
-        {
-          "type": "information-architecture",
-          "finding": "First-time user is directed to login page with no sign-up option",
-          "recommendation": "Redirect new users to a sign-up/registration page or provide a clear 'Create Account' link on the login page"
-        },
-        {
-          "type": "content",
-          "finding": "Page text is cut off, showing 'Only a' which is incomplete",
-          "recommendation": "Ensure full content is displayed, e.g., 'Only a few steps left' or similar"
-        },
-        {
-          "type": "navigation",
-          "finding": "No clear path for new users to register",
-          "recommendation": "Add a prominent 'Sign Up' button or link on the login page"
-        }
-      ],
-      "information_access_issues": [
-        "Could not find a way to create an account",
-        "No instructions for first-time users"
-      ],
-      "journey_length_assessment": "too-long",
-      "priority_for_persona": "critical",
-      "behavioral_summary": "As a first-time user, I was immediately blocked because the page only offers login without any sign-up option. The truncated text adds confusion. I cannot proceed with onboarding at all.",
-      "source": "llm"
-    }
-  }
+  "interactionMap": null,
+  "behavioralJourneys": null,
+  "parallelErrors": []
 }

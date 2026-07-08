@@ -1,0 +1,110 @@
+run:
+  target_url: https://faculty-dashboard-eight.vercel.app
+  run_id_prefix: faculty-smoketest
+  product_name: Argyle Faculty Dashboard Smoketest
+  viewports:
+  - desktop
+  execute_all_personas_in_browser: true
+  persona_lens: true
+crawl:
+  enabled: true
+  max_depth: 1
+  max_pages: 8
+  supplement_journeys: false
+personas:
+- id: p1-evaluator
+  name: First-time evaluator
+  role: prospect / new user
+  goals:
+  - Understand value from landing and primary workflow
+  enabled: true
+- id: p2-operator
+  name: Daily operator
+  role: power user
+  goals:
+  - Complete core tasks quickly and reliably
+  enabled: false
+- id: p3-admin
+  name: Admin / buyer
+  role: IT admin
+  goals:
+  - Verify access boundaries and trust signals
+  enabled: false
+journeys:
+- id: j-smoke-noop-1
+  name: Noop placeholder 1 (disabled persona, should not run for p1)
+  priority: smoke
+  persona_ids:
+  - p2-operator
+  steps:
+  - action: navigate
+    url: /login
+- id: j-smoke-noop-2
+  name: Noop placeholder 2 (disabled persona, should not run for p1)
+  priority: smoke
+  persona_ids:
+  - p3-admin
+  steps:
+  - action: navigate
+    url: /login
+- id: j-smoke-noop-3
+  name: Noop placeholder 3 (disabled persona, should not run for p1)
+  priority: smoke
+  persona_ids:
+  - p2-operator
+  steps:
+  - action: navigate
+    url: /login
+- id: j-smoke-login
+  name: Login and load dashboard
+  priority: smoke
+  persona_ids:
+  - p1-evaluator
+  steps:
+  - action: navigate
+    url: /login
+    intent: Go to login page
+  - action: fill
+    intent: Email input field
+    selector: input[type='email']
+    value: ${REHEARSE_EMAIL}
+  - action: fill
+    intent: Password input field
+    selector: input[type='password']
+    value: ${REHEARSE_PASSWORD}
+  - action: click
+    intent: Sign In button
+    selector: button:has-text('Sign In')
+  - action: wait
+    value: '3000'
+  - action: scroll
+    intent: scroll down to see full dashboard content
+- id: j-smoke-search
+  name: Search for faculty
+  priority: smoke
+  persona_ids:
+  - p1-evaluator
+  steps:
+  - action: navigate
+    url: /database
+    intent: Go to the main database page
+  - action: wait
+    value: '3000'
+  - action: click
+    intent: Focus the search input
+    selector: input[placeholder*='Search']
+  - action: fill
+    intent: Enter search query
+    selector: input[placeholder*='Search']
+    value: machine learning
+  - action: wait
+    value: '2000'
+budgets:
+  max_steps_per_journey: 10
+  max_run_seconds: 1200
+  step_timeout_ms: 30000
+  parallel_journeys: 2
+auth:
+  login_path: /login
+  email_env: REHEARSE_EMAIL
+  password_env: REHEARSE_PASSWORD

@@ -1,5 +1,9 @@
 {
   "summary": {
+    "launchGate": "CAUTION",
+    "verdict": "Do not launch yet. Critical issues need resolution.",
+    "readiness": 28,
+    "readinessBand": "Red",
     "id": "argyle-20260529-184202",
     "productName": "Unknown",
     "target": "faculty-dashboard-eight.vercel.app",
@@ -9,15 +13,32 @@
     "startedAt": "2026-05-29T18:42:02.889281+00:00",
     "finishedAt": null,
     "durationSec": 0,
-    "readiness": 28,
-    "readinessBand": "Red",
+    "phaseTimings": {
+      "crawlSec": 0,
+      "journeySec": 0,
+      "analysisSec": 0
+    },
     "status": "danger",
+    "scoreDelta": 0,
+    "previousScore": 28,
+    "runDelta": null,
+    "industryBenchmark": {
+      "category": "b2b_saas",
+      "categoryLabel": "B2B SaaS",
+      "median": 67,
+      "delta": -39,
+      "percentile": 13,
+      "source": "lr-beta-v1"
+    },
     "blockers": 0,
     "issues": 4,
     "delights": 0,
     "pages": 0,
     "pagesCrawled": 0,
     "stepCount": 27,
+    "flakeCount": 0,
+    "flakeRate": 0.0,
+    "flakeBreakdown": {},
     "agentCost": 0.05,
     "costEstimate": {
       "usd": 0.05,
@@ -29,7 +50,7 @@
       "agentsRun": 0
     },
     "outcome": "dry_run_complete",
-    "configHash": "2d7bed",
+    "configHash": "a5dc04",
     "agentsRun": 0,
     "authAttempted": false,
     "authOutcome": null,
@@ -39,8 +60,111 @@
     "authGated": 0,
     "networkLogPath": null,
     "webVitalsPath": null,
-    "experiment": null
+    "experiment": null,
+    "followUpAt": "2026-06-05T18:42:02.889281+00:00"
   },
+  "runHistory": [
+    {
+      "id": "argyle-20260608-204758",
+      "startedAt": "2026-06-08T20:47:58.922659+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 95,
+      "flakeRate": 0,
+      "blockerCount": 0,
+      "durationSec": 151
+    },
+    {
+      "id": "argyle-20260608-210028",
+      "startedAt": "2026-06-08T21:00:28.384291+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 95,
+      "flakeRate": 0,
+      "blockerCount": 0,
+      "durationSec": 164
+    },
+    {
+      "id": "argyle-20260608-212354",
+      "startedAt": "2026-06-08T21:23:54.471634+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 95,
+      "flakeRate": 0,
+      "blockerCount": 0,
+      "durationSec": 168
+    },
+    {
+      "id": "argyle-20260609-043312",
+      "startedAt": "2026-06-09T04:33:12.801493+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 95,
+      "flakeRate": 0,
+      "blockerCount": 0,
+      "durationSec": 151
+    },
+    {
+      "id": "argyle-20260609-055051",
+      "startedAt": "2026-06-09T05:50:51.724846+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 29,
+      "flakeRate": 0,
+      "blockerCount": 375,
+      "durationSec": 2619
+    },
+    {
+      "id": "argyle-20260529-184202",
+      "startedAt": "2026-05-29T18:42:02.889281+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 28,
+      "flakeRate": 0,
+      "blockerCount": 0,
+      "durationSec": 0
+    },
+    {
+      "id": "argyle-20260530-235539",
+      "startedAt": "2026-05-30T23:55:39.814026+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 95,
+      "flakeRate": 0,
+      "blockerCount": 0,
+      "durationSec": 0
+    },
+    {
+      "id": "argyle-20260530-235656",
+      "startedAt": "2026-05-30T23:56:56.136781+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 95,
+      "flakeRate": 0,
+      "blockerCount": 0,
+      "durationSec": 51
+    },
+    {
+      "id": "argyle-20260531-000517",
+      "startedAt": "2026-05-31T00:05:17.760439+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 95,
+      "flakeRate": 0,
+      "blockerCount": 0,
+      "durationSec": 128
+    },
+    {
+      "id": "argyle-20260608-002317",
+      "startedAt": "2026-06-08T00:23:17.626773+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 28,
+      "flakeRate": 0,
+      "blockerCount": 19,
+      "durationSec": 313
+    }
+  ],
   "steps": [
     {
       "stepId": "j1-deep-link-database-p1-jordan-s1",
@@ -698,8 +822,8 @@
       "severity": "P2",
       "title": "Sparse page content",
       "detail": "Page body has very little text \u2014 value proposition may be unclear.",
-      "persona": "First-time evaluator",
-      "personaId": "p1-evaluator",
+      "persona": "New Faculty Member",
+      "personaId": "p3-new-faculty",
       "journey": "j1-deep-link-database",
       "journeyId": "j1-deep-link-database",
       "stepId": "j1-deep-link-database-p1-jordan-s1",
@@ -707,40 +831,42 @@
       "relatedDimensions": [],
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 2,
       "evidence": "Page body has very little text \u2014 value proposition may be unclear.",
       "severityReason": "P2 from automated heuristics",
       "suggestion": null,
-      "screenshotPath": "artifacts/argyle-20260529-184202/j1-deep-link-database-p1-jordan-s1.png"
+      "screenshotPath": "artifacts/argyle-20260529-184202/j1-deep-link-database-p1-jordan-s1.jpg",
+      "isRecurring": true
     },
     {
       "id": "DIM-TRUST-ROLLUP",
       "runId": "argyle-20260529-184202",
       "severity": "P3",
       "title": "Trust signal from run evidence",
-      "detail": "Phase 2 heuristic from step evidence",
-      "persona": "First-time evaluator",
-      "personaId": "p1-evaluator",
+      "detail": "no auth attempted",
+      "persona": "Faculty Member",
+      "personaId": "p1-faculty-member",
       "journey": "Run rollup",
       "journeyId": "rollup",
       "stepId": "run-rollup",
       "dimension": "Trust",
       "relatedDimensions": [],
       "confidence": "high",
-      "owner": "frontend",
-      "recurring": 1,
-      "evidence": "Phase 2 heuristic from step evidence",
+      "owner": "backend",
+      "recurring": 14,
+      "evidence": "no auth attempted",
       "severityReason": "P3 from automated dimension rollup",
-      "suggestion": null
+      "suggestion": null,
+      "isRecurring": true
     },
     {
       "id": "DIM-ONBOARDING-ROLLUP",
       "runId": "argyle-20260529-184202",
       "severity": "P3",
       "title": "Onboarding signal from run evidence",
-      "detail": "Phase 2 heuristic from step evidence",
-      "persona": "First-time evaluator",
-      "personaId": "p1-evaluator",
+      "detail": "first journey 0% pass",
+      "persona": "Faculty Member",
+      "personaId": "p1-faculty-member",
       "journey": "Run rollup",
       "journeyId": "rollup",
       "stepId": "run-rollup",
@@ -748,19 +874,20 @@
       "relatedDimensions": [],
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
-      "evidence": "Phase 2 heuristic from step evidence",
+      "recurring": 15,
+      "evidence": "first journey 0% pass",
       "severityReason": "P3 from automated dimension rollup",
-      "suggestion": null
+      "suggestion": null,
+      "isRecurring": true
     },
     {
       "id": "DIM-RECOVERY-ROLLUP",
       "runId": "argyle-20260529-184202",
       "severity": "P3",
       "title": "Recovery signal from run evidence",
-      "detail": "Phase 2 heuristic from step evidence",
-      "persona": "First-time evaluator",
-      "personaId": "p1-evaluator",
+      "detail": "no error signals detected",
+      "persona": "Faculty Member",
+      "personaId": "p1-faculty-member",
       "journey": "Run rollup",
       "journeyId": "rollup",
       "stepId": "run-rollup",
@@ -768,10 +895,11 @@
       "relatedDimensions": [],
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
-      "evidence": "Phase 2 heuristic from step evidence",
+      "recurring": 15,
+      "evidence": "no error signals detected",
       "severityReason": "P3 from automated dimension rollup",
-      "suggestion": null
+      "suggestion": null,
+      "isRecurring": true
     }
   ],
   "delights": [],
@@ -801,78 +929,2768 @@
   ],
   "matrix": [
     {
-      "personaId": "p1-evaluator",
-      "journeyId": "j1-deep-link",
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-load-dashboard",
       "grade": "fail"
     },
     {
-      "personaId": "p2-operator",
-      "journeyId": "j1-deep-link",
+      "personaId": "p2-department-admin",
+      "journeyId": "j-load-dashboard",
       "grade": "fail"
     },
     {
-      "personaId": "p3-admin",
-      "journeyId": "j1-deep-link",
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-load-dashboard",
       "grade": "fail"
     },
     {
-      "personaId": "p1-evaluator",
-      "journeyId": "j2-primary-list",
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-load-dashboard",
       "grade": "fail"
     },
     {
-      "personaId": "p2-operator",
-      "journeyId": "j2-primary-list",
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-load-dashboard",
       "grade": "fail"
     },
     {
-      "personaId": "p3-admin",
-      "journeyId": "j2-primary-list",
+      "personaId": "p4-champion",
+      "journeyId": "j-load-dashboard",
       "grade": "fail"
     },
     {
-      "personaId": "p1-evaluator",
-      "journeyId": "j3-profile",
+      "personaId": "model-1-admin",
+      "journeyId": "j-load-dashboard",
       "grade": "fail"
     },
     {
-      "personaId": "p2-operator",
-      "journeyId": "j3-profile",
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-explore-analytics",
       "grade": "fail"
     },
     {
-      "personaId": "p3-admin",
-      "journeyId": "j3-profile",
+      "personaId": "p2-department-admin",
+      "journeyId": "j-explore-analytics",
       "grade": "fail"
     },
     {
-      "personaId": "p1-evaluator",
-      "journeyId": "j4-analytics",
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-explore-analytics",
       "grade": "fail"
     },
     {
-      "personaId": "p2-operator",
-      "journeyId": "j4-analytics",
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-explore-analytics",
       "grade": "fail"
     },
     {
-      "personaId": "p3-admin",
-      "journeyId": "j4-analytics",
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-explore-analytics",
       "grade": "fail"
     },
     {
-      "personaId": "p1-evaluator",
-      "journeyId": "j5-admin-boundary",
+      "personaId": "p4-champion",
+      "journeyId": "j-explore-analytics",
       "grade": "fail"
     },
     {
-      "personaId": "p2-operator",
-      "journeyId": "j5-admin-boundary",
+      "personaId": "model-1-admin",
+      "journeyId": "j-explore-analytics",
       "grade": "fail"
     },
     {
-      "personaId": "p3-admin",
-      "journeyId": "j5-admin-boundary",
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-view-course-data",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-view-course-data",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-view-course-data",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-view-course-data",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-view-course-data",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-view-course-data",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-view-course-data",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-check-student-metrics",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-check-student-metrics",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-check-student-metrics",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-check-student-metrics",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-check-student-metrics",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-check-student-metrics",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-check-student-metrics",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-navigate-pages",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-navigate-pages",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-navigate-pages",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-navigate-pages",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-navigate-pages",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-navigate-pages",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-navigate-pages",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-1-evalua-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-1-evalua-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-1-evalua-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-1-evalua-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-1-evalua-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-1-evalua-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-1-evalua-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-1-evalua-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-1-evalua-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-1-evalua-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-1-evalua-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-1-evalua-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-1-evalua-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-1-evalua-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-1-evalua-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-1-evalua-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-1-evalua-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-1-evalua-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-1-evalua-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-1-evalua-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-1-evalua-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-1-evalua-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-1-evalua-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-1-evalua-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-1-evalua-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-1-evalua-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-1-evalua-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-1-evalua-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-1-evalua-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-1-evalua-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-1-evalua-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-1-evalua-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-1-evalua-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-1-evalua-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-1-evalua-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-1-evalua-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-1-evalua-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-1-evalua-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-1-evalua-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-1-evalua-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-1-evalua-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-1-evalua-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-1-evalua-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-1-evalua-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-1-evalua-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-1-evalua-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-1-evalua-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-1-evalua-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-1-evalua-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-1-evalua-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-1-evalua-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-1-evalua-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-1-evalua-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-1-evalua-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-1-evalua-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-1-evalua-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-1-evalua-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-1-evalua-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-1-evalua-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-1-evalua-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-1-evalua-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-1-evalua-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-1-evalua-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-1-evalua-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-1-evalua-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-1-evalua-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-1-evalua-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-1-evalua-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-1-evalua-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-1-evalua-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-1-evalua-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-1-evalua-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-1-evalua-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-1-evalua-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-1-evalua-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-1-evalua-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-1-evalua-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-1-evalua-12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-1-evalua-12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-1-evalua-12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-1-evalua-12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-1-evalua-12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-1-evalua-12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-1-evalua-12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-1-evalua-13",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-1-evalua-13",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-1-evalua-13",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-1-evalua-13",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-1-evalua-13",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-1-evalua-13",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-1-evalua-13",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-1-evalua-14",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-1-evalua-14",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-1-evalua-14",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-1-evalua-14",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-1-evalua-14",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-1-evalua-14",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-1-evalua-14",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-2-oerato-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-2-oerato-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-2-oerato-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-2-oerato-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-2-oerato-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-2-oerato-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-2-oerato-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-2-oerato-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-2-oerato-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-2-oerato-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-2-oerato-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-2-oerato-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-2-oerato-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-2-oerato-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-2-oerato-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-2-oerato-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-2-oerato-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-2-oerato-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-2-oerato-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-2-oerato-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-2-oerato-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-2-oerato-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-2-oerato-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-2-oerato-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-2-oerato-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-2-oerato-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-2-oerato-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-2-oerato-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-2-oerato-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-2-oerato-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-2-oerato-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-2-oerato-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-2-oerato-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-2-oerato-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-2-oerato-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-2-oerato-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-2-oerato-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-2-oerato-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-2-oerato-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-2-oerato-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-2-oerato-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-2-oerato-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-2-oerato-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-2-oerato-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-2-oerato-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-2-oerato-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-2-oerato-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-2-oerato-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-2-oerato-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-2-oerato-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-2-oerato-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-2-oerato-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-2-oerato-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-2-oerato-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-2-oerato-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-2-oerato-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-2-oerato-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-2-oerato-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-2-oerato-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-2-oerato-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-2-oerato-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-2-oerato-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-2-oerato-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-2-oerato-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-2-oerato-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-2-oerato-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-2-oerato-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-2-oerato-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-2-oerato-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-2-oerato-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-2-oerato-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-2-oerato-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-2-oerato-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-2-oerato-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-2-oerato-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-2-oerato-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-2-oerato-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-2-oerato-12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-2-oerato-12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-2-oerato-12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-2-oerato-12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-2-oerato-12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-2-oerato-12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-2-oerato-12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-3-admin-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-3-admin-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-3-admin-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-3-admin-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-3-admin-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-3-admin-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-3-admin-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-3-admin-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-3-admin-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-3-admin-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-3-admin-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-3-admin-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-3-admin-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-3-admin-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-3-admin-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-3-admin-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-3-admin-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-3-admin-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-3-admin-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-3-admin-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-3-admin-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-3-admin-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-3-admin-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-3-admin-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-3-admin-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-3-admin-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-3-admin-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-3-admin-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-3-admin-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-3-admin-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-3-admin-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-3-admin-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-3-admin-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-3-admin-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-3-admin-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-3-admin-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-3-admin-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-3-admin-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-3-admin-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-3-admin-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-3-admin-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-3-admin-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-3-admin-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-3-admin-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-3-admin-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-3-admin-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-3-admin-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-3-admin-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-3-admin-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-3-admin-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-3-admin-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-3-admin-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-3-admin-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-3-admin-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-3-admin-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-3-admin-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-3-admin-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-3-admin-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-3-admin-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-3-admin-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-3-admin-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-3-admin-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-3-admin-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-3-admin-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-3-admin-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-3-admin-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-3-admin-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-3-admin-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-3-admin-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-3-admin-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-model-0--1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-model-0--1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-model-0--1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-model-0--1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-model-0--1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-model-0--1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-model-0--1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-model-0--2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-model-0--2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-model-0--2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-model-0--2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-model-0--2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-model-0--2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-model-0--2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-model-0--3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-model-0--3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-model-0--3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-model-0--3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-model-0--3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-model-0--3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-model-0--3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-model-0--4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-model-0--4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-model-0--4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-model-0--4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-model-0--4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-model-0--4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-model-0--4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-model-0--5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-model-0--5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-model-0--5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-model-0--5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-model-0--5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-model-0--5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-model-0--5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-model-0--6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-model-0--6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-model-0--6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-model-0--6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-model-0--6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-model-0--6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-model-0--6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-model-0--7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-model-0--7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-model-0--7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-model-0--7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-model-0--7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-model-0--7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-model-0--7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-model-0--8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-model-0--8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-model-0--8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-model-0--8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-model-0--8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-model-0--8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-model-0--8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-model-0--9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-model-0--9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-model-0--9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-model-0--9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-model-0--9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-model-0--9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-model-0--9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-model-0--10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-model-0--10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-model-0--10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-model-0--10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-model-0--10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-model-0--10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-model-0--10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-model-0--11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-model-0--11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-model-0--11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-model-0--11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-model-0--11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-model-0--11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-model-0--11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-model-0--12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-model-0--12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-model-0--12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-model-0--12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-model-0--12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-model-0--12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-model-0--12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-4-chamio-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-4-chamio-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-4-chamio-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-4-chamio-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-chamio-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-4-chamio-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-4-chamio-1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-4-chamio-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-4-chamio-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-4-chamio-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-4-chamio-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-chamio-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-4-chamio-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-4-chamio-2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-4-chamio-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-4-chamio-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-4-chamio-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-4-chamio-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-chamio-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-4-chamio-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-4-chamio-3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-4-chamio-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-4-chamio-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-4-chamio-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-4-chamio-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-chamio-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-4-chamio-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-4-chamio-4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-4-chamio-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-4-chamio-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-4-chamio-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-4-chamio-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-chamio-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-4-chamio-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-4-chamio-5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-4-chamio-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-4-chamio-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-4-chamio-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-4-chamio-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-chamio-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-4-chamio-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-4-chamio-6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-4-chamio-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-4-chamio-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-4-chamio-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-4-chamio-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-chamio-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-4-chamio-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-4-chamio-7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-4-chamio-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-4-chamio-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-4-chamio-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-4-chamio-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-chamio-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-4-chamio-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-4-chamio-8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-4-chamio-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-4-chamio-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-4-chamio-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-4-chamio-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-chamio-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-4-chamio-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-4-chamio-9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-4-chamio-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-4-chamio-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-4-chamio-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-4-chamio-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-chamio-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-4-chamio-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-4-chamio-10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-4-chamio-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-4-chamio-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-4-chamio-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-4-chamio-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-chamio-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-4-chamio-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-4-chamio-11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-4-chamio-12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-4-chamio-12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-4-chamio-12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-4-chamio-12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-4-chamio-12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-4-chamio-12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-4-chamio-12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-model-1--1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-model-1--1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-model-1--1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-model-1--1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-model-1--1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-model-1--1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-model-1--1",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-model-1--2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-model-1--2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-model-1--2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-model-1--2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-model-1--2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-model-1--2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-model-1--2",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-model-1--3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-model-1--3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-model-1--3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-model-1--3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-model-1--3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-model-1--3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-model-1--3",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-model-1--4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-model-1--4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-model-1--4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-model-1--4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-model-1--4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-model-1--4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-model-1--4",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-model-1--5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-model-1--5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-model-1--5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-model-1--5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-model-1--5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-model-1--5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-model-1--5",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-model-1--6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-model-1--6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-model-1--6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-model-1--6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-model-1--6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-model-1--6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-model-1--6",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-model-1--7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-model-1--7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-model-1--7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-model-1--7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-model-1--7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-model-1--7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-model-1--7",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-model-1--8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-model-1--8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-model-1--8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-model-1--8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-model-1--8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-model-1--8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-model-1--8",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-model-1--9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-model-1--9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-model-1--9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-model-1--9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-model-1--9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-model-1--9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-model-1--9",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-model-1--10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-model-1--10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-model-1--10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-model-1--10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-model-1--10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-model-1--10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-model-1--10",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-model-1--11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-model-1--11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-model-1--11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-model-1--11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-model-1--11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-model-1--11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-model-1--11",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-model-1--12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-model-1--12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-model-1--12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-model-1--12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-model-1--12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-model-1--12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-model-1--12",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-2-oerato-13",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-2-oerato-13",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-2-oerato-13",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-2-oerato-13",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-2-oerato-13",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-2-oerato-13",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-2-oerato-13",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p1-faculty-member",
+      "journeyId": "j-2-oerato-14",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p2-department-admin",
+      "journeyId": "j-2-oerato-14",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p3-new-faculty",
+      "journeyId": "j-2-oerato-14",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-university-administrator",
+      "journeyId": "j-2-oerato-14",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-0-faculty-member",
+      "journeyId": "j-2-oerato-14",
+      "grade": "fail"
+    },
+    {
+      "personaId": "p4-champion",
+      "journeyId": "j-2-oerato-14",
+      "grade": "fail"
+    },
+    {
+      "personaId": "model-1-admin",
+      "journeyId": "j-2-oerato-14",
       "grade": "fail"
     }
   ],
@@ -892,7 +3710,7 @@
     {
       "name": "Information",
       "score": 40,
-      "signal": "27 sparse-content pages",
+      "signal": "avg body 0ch; 0.0 hdg/page; 0.0 links/page; 18 sparse pages",
       "automated": true
     },
     {
@@ -903,27 +3721,27 @@
     },
     {
       "name": "Accessibility",
-      "score": 60,
-      "signal": "Phase 2 heuristic from step evidence",
-      "automated": false
+      "score": 65,
+      "signal": "No a11y issues detected",
+      "automated": true
     },
     {
       "name": "Trust",
       "score": 65,
-      "signal": "Phase 2 heuristic from step evidence",
-      "automated": false
+      "signal": "no auth attempted",
+      "automated": true
     },
     {
       "name": "Onboarding",
-      "score": 60,
-      "signal": "Phase 2 heuristic from step evidence",
-      "automated": false
+      "score": 50,
+      "signal": "first journey 0% pass",
+      "automated": true
     },
     {
       "name": "Recovery",
-      "score": 60,
-      "signal": "Phase 2 heuristic from step evidence",
-      "automated": false
+      "score": 65,
+      "signal": "no error signals detected",
+      "automated": true
     }
   ],
   "scorecardMd": "",
@@ -934,56 +3752,528 @@
   "annotations": [],
   "personas": [
     {
-      "id": "p1-evaluator",
-      "name": "First-time evaluator",
-      "role": "prospect / new user",
-      "goal": "Reach database from deep link and open a candidate profile",
+      "id": "p1-faculty-member",
+      "name": "Faculty Member",
+      "role": "professor / academic staff",
+      "goal": "View academic analytics and performance data",
       "patience": "medium"
     },
     {
-      "id": "p2-operator",
-      "name": "Daily operator",
-      "role": "power user",
-      "goal": "Filter candidates and paginate efficiently",
+      "id": "p2-department-admin",
+      "name": "Department Admin",
+      "role": "academic administrator",
+      "goal": "Oversee department-wide analytics",
       "patience": "medium"
     },
     {
-      "id": "p3-admin",
-      "name": "Admin / buyer",
-      "role": "IT admin",
-      "goal": "Verify analytics, admin boundaries, and trust signals",
+      "id": "p3-new-faculty",
+      "name": "New Faculty Member",
+      "role": "first-time user / new hire",
+      "goal": "Complete onboarding and understand the dashboard",
+      "patience": "medium"
+    },
+    {
+      "id": "model-0-university-administrator",
+      "name": "University Administrator",
+      "role": "Manage faculty records and find specific faculty quickly",
+      "goal": "Manage faculty records",
+      "patience": "medium"
+    },
+    {
+      "id": "model-0-faculty-member",
+      "name": "Faculty Member",
+      "role": "Manage their professional profile and search for colleagues.",
+      "goal": "Manage their professional profile and search for colleagues.",
+      "patience": "medium"
+    },
+    {
+      "id": "p4-champion",
+      "name": "Internal champion",
+      "role": "team lead / champion",
+      "goal": "Validate rollout to their team",
+      "patience": "medium"
+    },
+    {
+      "id": "model-1-admin",
+      "name": "Admin",
+      "role": "Manage user accounts and oversee the database.",
+      "goal": "Manage user accounts and oversee the database.",
       "patience": "medium"
     }
   ],
   "journeys": [
     {
-      "id": "j1-deep-link",
-      "name": "Deep link and pagination at scale",
+      "id": "j-load-dashboard",
+      "name": "Load main dashboard",
+      "steps": 3,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-explore-analytics",
+      "name": "Explore analytics section",
       "steps": 4,
       "category": "dashboard"
     },
     {
-      "id": "j2-primary-list",
-      "name": "Keyword and city filters",
-      "steps": 6,
-      "category": "dashboard"
-    },
-    {
-      "id": "j3-profile",
-      "name": "View candidate profile",
+      "id": "j-view-course-data",
+      "name": "View course data",
       "steps": 5,
       "category": "dashboard"
     },
     {
-      "id": "j4-analytics",
-      "name": "Analytics overview",
-      "steps": 2,
+      "id": "j-check-student-metrics",
+      "name": "Check student engagement metrics",
+      "steps": 4,
       "category": "dashboard"
     },
     {
-      "id": "j5-admin-boundary",
-      "name": "Admin boundary check",
-      "steps": 2,
+      "id": "j-navigate-pages",
+      "name": "Navigate between dashboard pages",
+      "steps": 6,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-1-evalua-1",
+      "name": "AI Search for Faculty",
+      "steps": 12,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-1-evalua-2",
+      "name": "View Profile Details",
+      "steps": 12,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-1-evalua-3",
+      "name": "Add New Faculty Profile",
+      "steps": 12,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-1-evalua-4",
+      "name": "Browse Faculty Database",
+      "steps": 14,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-1-evalua-5",
+      "name": "Filter Faculty by Department or Expertise",
+      "steps": 12,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-1-evalua-6",
+      "name": "Edit Own Profile",
+      "steps": 11,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-1-evalua-7",
+      "name": "Admin User Management",
+      "steps": 14,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-1-evalua-8",
+      "name": "Resume Upload and Parsing",
+      "steps": 14,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-1-evalua-9",
+      "name": "Search by Name (Exact Match)",
+      "steps": 11,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-1-evalua-10",
+      "name": "View Resume Parsed Data",
+      "steps": 11,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-1-evalua-11",
+      "name": "Delete Faculty Profile",
+      "steps": 14,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-1-evalua-12",
+      "name": "Onboarding: First Login",
+      "steps": 13,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-1-evalua-13",
+      "name": "Recover from Failed Resume Parse",
+      "steps": 9,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-1-evalua-14",
+      "name": "Export Profile Data",
+      "steps": 8,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-2-oerato-1",
+      "name": "Search faculty profiles by expertise",
+      "steps": 12,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-2-oerato-2",
+      "name": "View profile details",
+      "steps": 9,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-2-oerato-3",
+      "name": "Add new faculty profile",
+      "steps": 13,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-2-oerato-4",
+      "name": "Filter profiles by department",
+      "steps": 7,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-2-oerato-5",
+      "name": "Edit existing profile",
+      "steps": 8,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-2-oerato-6",
+      "name": "Admin user management",
+      "steps": 14,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-2-oerato-7",
+      "name": "Resume re-parsing",
+      "steps": 9,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-2-oerato-8",
+      "name": "Export faculty list",
+      "steps": 10,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-2-oerato-9",
+      "name": "Search by resume content",
+      "steps": 11,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-2-oerato-10",
+      "name": "Recover from search failure",
+      "steps": 12,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-2-oerato-11",
+      "name": "Onboarding: first login",
+      "steps": 11,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-2-oerato-12",
+      "name": "Check for duplicate profiles",
+      "steps": 13,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-3-admin-1",
+      "name": "Search for faculty profiles",
+      "steps": 14,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-3-admin-2",
+      "name": "View profile details",
+      "steps": 10,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-3-admin-3",
+      "name": "Add new faculty profile",
+      "steps": 14,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-3-admin-4",
+      "name": "Edit existing faculty profile",
+      "steps": 8,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-3-admin-5",
+      "name": "Delete faculty profile",
+      "steps": 9,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-3-admin-6",
+      "name": "Manage user access (admin panel)",
+      "steps": 13,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-3-admin-7",
+      "name": "Review parsing errors",
+      "steps": 14,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-3-admin-8",
+      "name": "Export faculty data",
+      "steps": 9,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-3-admin-9",
+      "name": "Troubleshoot repeated GET requests",
+      "steps": 14,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-3-admin-10",
+      "name": "Check for missing accessibility labels",
+      "steps": 13,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-model-0--1",
+      "name": "Search for colleagues by expertise",
+      "steps": 11,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-model-0--2",
+      "name": "View own profile details",
+      "steps": 11,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-model-0--3",
+      "name": "Browse all faculty profiles",
+      "steps": 12,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-model-0--4",
+      "name": "Update own profile via resume upload",
+      "steps": 14,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-model-0--5",
+      "name": "Add a new faculty profile",
+      "steps": 16,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-model-0--6",
+      "name": "View colleague's profile details",
+      "steps": 7,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-model-0--7",
+      "name": "Filter search results by department",
+      "steps": 12,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-model-0--8",
+      "name": "Export own profile data",
+      "steps": 12,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-model-0--9",
+      "name": "Report incorrect profile data",
+      "steps": 12,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-model-0--10",
+      "name": "Search by specific publication or keyword",
+      "steps": 13,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-model-0--11",
+      "name": "Navigate to admin panel (if admin)",
+      "steps": 14,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-model-0--12",
+      "name": "Recover from failed resume parsing",
+      "steps": 14,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-chamio-1",
+      "name": "Daily AI search for faculty profiles",
+      "steps": 12,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-chamio-2",
+      "name": "Add a new faculty profile with resume upload",
+      "steps": 14,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-chamio-3",
+      "name": "View profile details and verify parsed data",
+      "steps": 11,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-chamio-4",
+      "name": "Admin user management",
+      "steps": 14,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-chamio-5",
+      "name": "Filter and sort faculty database",
+      "steps": 14,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-chamio-6",
+      "name": "Export faculty data",
+      "steps": 7,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-chamio-7",
+      "name": "Onboard a new team member to the dashboard",
+      "steps": 13,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-chamio-8",
+      "name": "Test resume parsing with various file formats",
+      "steps": 13,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-chamio-9",
+      "name": "Check for duplicate profiles",
+      "steps": 14,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-chamio-10",
+      "name": "Edit an existing faculty profile",
+      "steps": 7,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-chamio-11",
+      "name": "Delete a faculty profile",
+      "steps": 7,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-4-chamio-12",
+      "name": "Review dashboard analytics (if available)",
+      "steps": 12,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-model-1--1",
+      "name": "Review new user registrations",
+      "steps": 14,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-model-1--2",
+      "name": "Monitor database health",
+      "steps": 14,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-model-1--3",
+      "name": "Add new faculty profile manually",
+      "steps": 14,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-model-1--4",
+      "name": "Edit or delete a faculty profile",
+      "steps": 11,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-model-1--5",
+      "name": "Search for a specific faculty profile",
+      "steps": 11,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-model-1--6",
+      "name": "View profile details and parsed resume",
+      "steps": 11,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-model-1--7",
+      "name": "Filter faculty profiles by criteria",
+      "steps": 11,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-model-1--8",
+      "name": "Handle failed resume parsing",
+      "steps": 10,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-model-1--9",
+      "name": "Audit user activity logs",
+      "steps": 14,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-model-1--10",
+      "name": "Reset a user's password",
+      "steps": 12,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-model-1--11",
+      "name": "Export database to CSV",
+      "steps": 5,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-model-1--12",
+      "name": "Onboard a new admin",
+      "steps": 14,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-2-oerato-13",
+      "name": "Onboarding: first login and profile setup",
+      "steps": 12,
+      "category": "dashboard"
+    },
+    {
+      "id": "j-2-oerato-14",
+      "name": "Recover from session timeout",
+      "steps": 7,
       "category": "dashboard"
     }
   ],
@@ -991,16 +4281,45 @@
   "suggestedJourneys": [],
   "narrative": {
     "executiveSummary": "Argyle Faculty Dashboard at https://faculty-dashboard-eight.vercel.app rehearsed as **Red** readiness. 0/5 canonical steps passed (0%). 1 issue(s) and 0 delight(s) recorded. Primary concern: Sparse page content.",
-    "forFounders": "**Launch readiness: Red** \u2014 suitable for internal review before external calls.\nBroken journeys: Deep link and pagination at scale, Keyword and city filters, View candidate profile, Analytics overview.",
+    "forFounders": "**Launch readiness: Red** \u2014 suitable for internal review before external calls.\nBroken journeys: Load main dashboard, Explore analytics section, View course data, Check student engagement metrics.",
     "forEngineering": "Run `argyle-20260529-184202` \u00b7 0s \u00b7 27 step records (incl. viewport/seed replays).\nNotable P2: Sparse page content.",
     "suggestedQuestions": [
       "What is the single blocker we should fix before the next partner call?",
-      "Why did Deep link and pagination at scale fail?",
+      "Why did Load main dashboard fail?",
       "Did any step show flaky behavior across seeds or viewports?"
     ],
     "source": "template",
     "readinessBand": "Red",
     "issueCount": 1,
-    "delightCount": 0
-  }
+    "delightCount": 0,
+    "layer1Verdict": {
+      "decision": "no_ship",
+      "headline": "Do not ship this build.",
+      "reason": "0 blocker(s) will break user journeys in production. ",
+      "band": "Red"
+    },
+    "layer2Story": "TryLapse sent 7 AI personas through 79 product journeys and scored **0/5** steps as passing. 79 journeys \u2014 Load main dashboard, Explore analytics section \u2014 failed completely, meaning users would be blocked before completing their goal.",
+    "layer3FixHierarchy": [
+      {
+        "priority": "P2",
+        "title": "Sparse page content",
+        "detail": "Page body has very little text \u2014 value proposition may be unclear.",
+        "effort": "small",
+        "action": "Fix before GA \u2014 noticeable but not blocking.",
+        "step_id": "j1-deep-link-database-p1-jordan-s1",
+        "confidence": "high"
+      }
+    ],
+    "layer4Forward": [
+      "Run again after fixes to confirm the score moved \u2014 track trend across builds."
+    ],
+    "layer5Trend": {
+      "available": false,
+      "note": "Run a second build to see score trajectory."
+    }
+  },
+  "productModel": null,
+  "interactionMap": null,
+  "behavioralJourneys": null,
+  "parallelErrors": []
 }

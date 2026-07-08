@@ -1,5 +1,9 @@
 {
   "summary": {
+    "launchGate": "PASS",
+    "verdict": "Ready to launch. No blockers found.",
+    "readiness": 95,
+    "readinessBand": "Green",
     "id": "enterprise-20260530-234459",
     "productName": "Enterprise Dashboard (example)",
     "target": "faculty-dashboard-eight.vercel.app",
@@ -9,15 +13,32 @@
     "startedAt": "2026-05-30T23:44:59.376744+00:00",
     "finishedAt": "2026-05-30T23:45:44.786077+00:00",
     "durationSec": 45,
-    "readiness": 95,
-    "readinessBand": "Green",
+    "phaseTimings": {
+      "crawlSec": 0,
+      "journeySec": 0,
+      "analysisSec": 0
+    },
     "status": "ready",
+    "scoreDelta": 0,
+    "previousScore": 95,
+    "runDelta": null,
+    "industryBenchmark": {
+      "category": "b2b_saas",
+      "categoryLabel": "B2B SaaS",
+      "median": 67,
+      "delta": 28,
+      "percentile": 90,
+      "source": "lr-beta-v1"
+    },
     "blockers": 0,
     "issues": 2,
     "delights": 2,
     "pages": 16,
     "pagesCrawled": 16,
     "stepCount": 8,
+    "flakeCount": 0,
+    "flakeRate": 0.0,
+    "flakeBreakdown": {},
     "agentCost": 0.1105,
     "costEstimate": {
       "usd": 0.1105,
@@ -39,8 +60,101 @@
     "authGated": 0,
     "networkLogPath": null,
     "webVitalsPath": null,
-    "experiment": null
+    "experiment": null,
+    "followUpAt": "2026-06-06T23:45:44.786077+00:00"
   },
+  "runHistory": [
+    {
+      "id": "enterprise-20260530-234459",
+      "startedAt": "2026-05-30T23:44:59.376744+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 95,
+      "flakeRate": 0,
+      "blockerCount": 0,
+      "durationSec": 45
+    },
+    {
+      "id": "enterprise-20260529-213552",
+      "startedAt": "2026-05-29T21:35:52.627572+00:00",
+      "launchGate": "BLOCKED",
+      "verdict": "Launch blocked. Hard blockers present.",
+      "readiness": 28,
+      "flakeRate": 0.333,
+      "blockerCount": 2,
+      "durationSec": 77
+    },
+    {
+      "id": "enterprise-20260529-215258",
+      "startedAt": "2026-05-29T21:52:58.655477+00:00",
+      "launchGate": "BLOCKED",
+      "verdict": "Launch blocked. Hard blockers present.",
+      "readiness": 28,
+      "flakeRate": 0.333,
+      "blockerCount": 2,
+      "durationSec": 59
+    },
+    {
+      "id": "enterprise-20260529-215418",
+      "startedAt": "2026-05-29T21:54:18.988819+00:00",
+      "launchGate": "REVIEW",
+      "verdict": "Review required before launch. Meaningful friction detected. (1 flaky step \u2014 re-run to confirm.)",
+      "readiness": 95,
+      "flakeRate": 0.167,
+      "blockerCount": 0,
+      "durationSec": 63
+    },
+    {
+      "id": "enterprise-20260530-045757",
+      "startedAt": "2026-05-30T04:57:57.873899+00:00",
+      "launchGate": "BLOCKED",
+      "verdict": "Launch blocked. Hard blockers present.",
+      "readiness": 28,
+      "flakeRate": 0.143,
+      "blockerCount": 2,
+      "durationSec": 279
+    },
+    {
+      "id": "enterprise-20260530-152221",
+      "startedAt": "2026-05-30T15:22:21.383718+00:00",
+      "launchGate": "BLOCKED",
+      "verdict": "Launch blocked. Hard blockers present.",
+      "readiness": 28,
+      "flakeRate": 0.333,
+      "blockerCount": 2,
+      "durationSec": 278
+    },
+    {
+      "id": "enterprise-20260530-152749",
+      "startedAt": "2026-05-30T15:27:49.150313+00:00",
+      "launchGate": "CAUTION",
+      "verdict": "Do not launch yet. Critical issues need resolution.",
+      "readiness": 28,
+      "flakeRate": 0.0,
+      "blockerCount": 1,
+      "durationSec": 276
+    },
+    {
+      "id": "enterprise-20260530-153239",
+      "startedAt": "2026-05-30T15:32:39.081341+00:00",
+      "launchGate": "REVIEW",
+      "verdict": "Review required before launch. Meaningful friction detected. (1 flaky step \u2014 re-run to confirm.)",
+      "readiness": 95,
+      "flakeRate": 0.167,
+      "blockerCount": 0,
+      "durationSec": 282
+    },
+    {
+      "id": "enterprise-20260530-234231",
+      "startedAt": "2026-05-30T23:42:31.576010+00:00",
+      "launchGate": "REVIEW",
+      "verdict": "Review required before launch. Meaningful friction detected. (1 flaky step \u2014 re-run to confirm.)",
+      "readiness": 95,
+      "flakeRate": 0.167,
+      "blockerCount": 0,
+      "durationSec": 41
+    }
+  ],
   "steps": [
     {
       "stepId": "j1-deep-link-p1-evaluator-s1",
@@ -62,8 +176,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/enterprise-20260530-234459/j1-deep-link-p1-evaluator-s1.png",
-        "artifacts/enterprise-20260530-234459/j1-deep-link-p1-evaluator-s1.txt"
+        "artifacts/enterprise-20260530-234459/j1-deep-link-p1-evaluator-s1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -89,8 +202,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/enterprise-20260530-234459/j2-primary-list-p1-evaluator-s1.png",
-        "artifacts/enterprise-20260530-234459/j2-primary-list-p1-evaluator-s1.txt"
+        "artifacts/enterprise-20260530-234459/j2-primary-list-p1-evaluator-s1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -116,8 +228,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Candidate Database Candidate Database Browse and filter parsed candidate profiles. Currently 1",
       "artifactPaths": [
-        "artifacts/enterprise-20260530-234459/j2-primary-list-p1-evaluator-s2.png",
-        "artifacts/enterprise-20260530-234459/j2-primary-list-p1-evaluator-s2.txt"
+        "artifacts/enterprise-20260530-234459/j2-primary-list-p1-evaluator-s2.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -143,8 +254,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Analytics Total Profiles 1809 candidates in the database Avg. Experience (Est.) 10 years estim",
       "artifactPaths": [
-        "artifacts/enterprise-20260530-234459/j3-secondary-module-p1-evaluator-s1.png",
-        "artifacts/enterprise-20260530-234459/j3-secondary-module-p1-evaluator-s1.txt"
+        "artifacts/enterprise-20260530-234459/j3-secondary-module-p1-evaluator-s1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -170,8 +280,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com AI Search AI Candidate Search Ask questions about candidates in natural language. Powered by A",
       "artifactPaths": [
-        "artifacts/enterprise-20260530-234459/j4-search-surface-p1-evaluator-s1.png",
-        "artifacts/enterprise-20260530-234459/j4-search-surface-p1-evaluator-s1.txt"
+        "artifacts/enterprise-20260530-234459/j4-search-surface-p1-evaluator-s1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -197,8 +306,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Admin Admin Dashboard Manage file updates and system operations File Update Processor Process ",
       "artifactPaths": [
-        "artifacts/enterprise-20260530-234459/j5-admin-boundary-p1-evaluator-s1.png",
-        "artifacts/enterprise-20260530-234459/j5-admin-boundary-p1-evaluator-s1.txt"
+        "artifacts/enterprise-20260530-234459/j5-admin-boundary-p1-evaluator-s1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -224,8 +332,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Resume Parser Resume Parser Parse resumes using Gemini AI with intelligent rate limit handling",
       "artifactPaths": [
-        "artifacts/enterprise-20260530-234459/auto-j1-dashboard-p1-evaluator-s1.png",
-        "artifacts/enterprise-20260530-234459/auto-j1-dashboard-p1-evaluator-s1.txt"
+        "artifacts/enterprise-20260530-234459/auto-j1-dashboard-p1-evaluator-s1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -251,8 +358,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Argyle Candidate Database Analytics AI Search Resume Parser Admin Logout Logged in as: 0sparsh2@gmail.com Argyle Analytics Back to Database Gursharan Singh #49, City Enclave, Manakwal, Ludhiana - 1411",
       "artifactPaths": [
-        "artifacts/enterprise-20260530-234459/auto-j5-explore-p1-evaluator-s1.png",
-        "artifacts/enterprise-20260530-234459/auto-j5-explore-p1-evaluator-s1.txt"
+        "artifacts/enterprise-20260530-234459/auto-j5-explore-p1-evaluator-s1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -277,11 +383,12 @@
       ],
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 9,
       "evidence": "1 of 1 inputs lack label, aria-label, or placeholder.",
       "severityReason": "P2 from automated heuristics",
       "suggestion": null,
-      "screenshotPath": "artifacts/enterprise-20260530-234459/auto-j1-dashboard-p1-evaluator-s1.png"
+      "screenshotPath": "artifacts/enterprise-20260530-234459/auto-j1-dashboard-p1-evaluator-s1.png",
+      "isRecurring": true
     },
     {
       "id": "I2",
@@ -300,11 +407,12 @@
       ],
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 3,
+      "recurring": 9,
       "evidence": "3 button(s) lack accessible name across 3 step(s).",
       "severityReason": "P2 from automated heuristics",
       "suggestion": null,
-      "screenshotPath": "artifacts/enterprise-20260530-234459/j1-deep-link-p1-evaluator-s1.png"
+      "screenshotPath": "artifacts/enterprise-20260530-234459/j1-deep-link-p1-evaluator-s1.png",
+      "isRecurring": true
     }
   ],
   "delights": [
@@ -442,13 +550,13 @@
     {
       "name": "UI/UX",
       "score": 60,
-      "signal": "3 unlabeled buttons; ~1180ms avg step",
+      "signal": "3 unlabeled buttons; 4/29 inputs unlabeled; ~1180ms avg step",
       "automated": true
     },
     {
       "name": "Information",
       "score": 100,
-      "signal": "0 sparse-content pages",
+      "signal": "avg body 904ch; 2.4 hdg/page; 11.3 links/page; 0 sparse pages",
       "automated": true
     },
     {
@@ -459,27 +567,27 @@
     },
     {
       "name": "Accessibility",
-      "score": 86,
-      "signal": "Phase 2 heuristic from step evidence",
-      "automated": false
+      "score": 61,
+      "signal": "3 unlabeled buttons; 25/29 inputs labeled",
+      "automated": true
     },
     {
       "name": "Trust",
       "score": 91,
-      "signal": "Phase 2 heuristic from step evidence",
-      "automated": false
+      "signal": "auth success",
+      "automated": true
     },
     {
       "name": "Onboarding",
-      "score": 86,
-      "signal": "Phase 2 heuristic from step evidence",
-      "automated": false
+      "score": 95,
+      "signal": "auth: success; first journey 100% pass",
+      "automated": true
     },
     {
       "name": "Recovery",
-      "score": 86,
-      "signal": "Phase 2 heuristic from step evidence",
-      "automated": false
+      "score": 91,
+      "signal": "no error signals detected",
+      "automated": true
     }
   ],
   "scorecardMd": "# Launch Rehearsal \u2014 Scorecard\n\n| Field | Value |\n|-------|--------|\n| **Run ID** | `enterprise-20260530-234459` |\n| **Date** | 2026-05-30 |\n| **Target** | https://faculty-dashboard-eight.vercel.app |\n| **Product** | Enterprise Dashboard (example) |\n| **Outcome** | complete |\n| **Duration** | 45s |\n\n---\n\n## Executive summary\n\n| | |\n|---|---|\n| **Readiness** | **Green** |\n| **Top blocker** | Icon-only or unlabeled buttons |\n| **Top delight** | Clear navigation structure |\n| **Issues** | 5 |\n| **Delights** | 7 |\n\n| **Pages crawled** | 16 |\n| **Auto journeys added** | 2 |\n| **Auth** | success |\n\n---\n\n## Persona \u00d7 journey matrix\n\n| Journey | P1 First-time | P2 Daily | P3 Admin |\n|---------|--------|--------|--------|\n| **j1-deep-link** Deep link to primary surface | **Pass** | **Pass** | **Pass** |\n| **j2-primary-list** Browse primary data view | **Pass** | **Pass** | **Pass** |\n| **j3-secondary-module** Secondary module | **Pass** | **Pass** | **Pass** |\n| **j4-search-surface** Search or AI surface | **Pass** | **Pass** | **Pass** |\n| **j5-admin-boundary** Admin boundary check | **Pass** | **Pass** | **Pass** |\n| **auto-j1-dashboard** Auto: Dashboard | **Pass** | **Pass** | **Pass** |\n| **auto-j5-explore** Auto: Explore /database/profil | **Pass** | **Pass** | **Pass** |\n\n---\n\n## Site map (crawl)\n\n# Site map\n\n**Origin:** https://faculty-dashboard-eight.vercel.app  \n**Pages crawled:** 16  \n\n## Hub pages (most outbound links)\n\n- `/database` \u2014 Argyle Analytics Dashboard\n- `/` \u2014 Argyle Analytics Dashboard\n- `/admin` \u2014 Argyle Analytics Dashboard\n- `/ai-search` \u2014 Argyle Analytics Dashboard\n- `/analytics` \u2014 Argyle Analytics Dashboard\n- `/resume-parser-gemini` \u2014 Argyle Analytics Dashboard\n- `/database/profile/03ea1ef9-cb02-4e5d-b4b6-b6fff1d94512` \u2014 Argyle Analytics Dashboard\n- `/database/profile/276a7cf3-a290-4557-83b2-49234a146628` \u2014 Argyle Analytics Dashboard\n\n## All pages\n\n| Path | Title | Depth | Links | Forms | Words |\n|------|-------|-------|-------|-------|-------|\n| `/` | Argyle Analytics Dashboard | 0 | 6 | 0 | 49 |\n| `/admin` | Argyle Analytics Dashboard | 1 | 6 | 0 | 57 |\n| `/ai-search` | Argyle Analytics Dashboard | 1 | 6 | 1 | 48 |\n| `/analytics` | Argyle Analytics Dashboard | 1 | 6 | 0 | 138 |\n| `/database` | Argyle Analytics Dashboard | 1 | 16 | 0 | 252 |\n| `/database/profile/03ea1ef9-cb02-4e5d-b4b6-b6fff1d94512` | Argyle Analytics Dashboard | 2 | 7 | 0 | 96 |\n| `/database/profile/276a7cf3-a290-4557-83b2-49234a146628` | Argyle Analytics Dashboard | 2 | 7 | 0 | 174 |\n| `/database/profile/359604ac-00e5-43d1-8981-892d9eb63ae9` | Argyle Analytics Dashboard | 2 | 7 | 0 | 333 |\n| `/database/profile/3efdf537-97e8-4597-b99b-a0f5d937daad` | Argyle Analytics Dashboard | 2 | 7 | 0 | 117 |\n| `/database/profile/65198cc7-015b-4945-9ee6-77146595b16a` | Argyle Analytics Dashboard | 2 | 7 | 0 | 88 |\n| `/database/profile/9adb256e-d8a5-4cf9-bbb8-bf9dc1daa8ae` | Argyle Analytics Dashboard | 2 | 7 | 0 | 204 |\n| `/database/profile/9ae8a5ad-6371-46c8-a89c-fedc5906b3a0` | Argyle Analytics Dashboard | 2 | 7 | 0 | 130 |\n| `/database/profile/b9727c77-87ba-4694-8044-5783019ed644` | Argyle Analytics Dashboard | 2 | 7 | 0 | 223 |\n| `/database/profile/dcad854d-3ea2-436b-becd-789b0eb4aa6c` | Argyle Analytics Dashboard | 2 | 7 | 0 | 111 |\n| `/database/profile/e96532c9-30cf-4991-ac62-5b1fdb73e321` | Argyle Analytics Dashboard | 2 | 7 | 0 | 106 |\n| `/resume-parser-gemini` | Argyle Analytics Dashboard | 1 | 6 | 0 | 49 |\n\n---\n\n## Detected workflows\n\n| Type | Path | Title | Signals |\n|------|------|-------|---------|\n| dashboard | `/` | Argyle Analytics Dashboard | \u2014 |\n| admin | `/admin` | Argyle Analytics Dashboard | \u2014 |\n| dashboard | `/admin` | Argyle Analytics Dashboard | \u2014 |\n| search | `/ai-search` | Argyle Analytics Dashboard | 1 forms |\n| dashboard | `/ai-search` | Argyle Analytics Dashboard | 1 forms |\n| dashboard | `/analytics` | Argyle Analytics Dashboard | \u2014 |\n| dashboard | `/database` | Argyle Analytics Dashboard | 9 inputs |\n| dashboard | `/resume-parser-gemini` | Argyle Analytics Dashboard | \u2014 |\n| dashboard | `/database/profile/03ea1ef9-cb02-4e5d-b4b6-b6fff1d94512` | Argyle Analytics Dashboard | \u2014 |\n| dashboard | `/database/profile/276a7cf3-a290-4557-83b2-49234a146628` | Argyle Analytics Dashboard | \u2014 |\n| dashboard | `/database/profile/359604ac-00e5-43d1-8981-892d9eb63ae9` | Argyle Analytics Dashboard | \u2014 |\n| dashboard | `/database/profile/3efdf537-97e8-4597-b99b-a0f5d937daad` | Argyle Analytics Dashboard | \u2014 |\n| dashboard | `/database/profile/65198cc7-015b-4945-9ee6-77146595b16a` | Argyle Analytics Dashboard | \u2014 |\n| dashboard | `/database/profile/9adb256e-d8a5-4cf9-bbb8-bf9dc1daa8ae` | Argyle Analytics Dashboard | \u2014 |\n| dashboard | `/database/profile/9ae8a5ad-6371-46c8-a89c-fedc5906b3a0` | Argyle Analytics Dashboard | \u2014 |\n| dashboard | `/database/profile/b9727c77-87ba-4694-8044-5783019ed644` | Argyle Analytics Dashboard | \u2014 |\n| dashboard | `/database/profile/dcad854d-3ea2-436b-becd-789b0eb4aa6c` | Argyle Analytics Dashboard | \u2014 |\n| dashboard | `/database/profile/e96532c9-30cf-4991-ac62-5b1fdb73e321` | Argyle Analytics Dashboard | \u2014 |\n\n---\n\n## Multi-agent collaboration\n\n| Agent | Role | Summary |\n|-------|------|---------|\n| `crawler` | Site structure discovery | Crawled 16 pages; 0 auth-gated; 0 orphans |\n| `workflow` | Workflow & journey planning | Detected workflow types: admin, dashboard, search |\n| `journey-runner` | E2E journey execution | Executed 8 steps across 7 journeys (0 failures) |\n| `persona-p1-evaluator` | Evaluator: First-time evaluator (prospect / new user) | Analysis from prospect / new user perspective |\n| `persona-p2-operator` | Evaluator: Daily operator (power user) | Analysis from power user perspective |\n| `persona-p3-admin` | Evaluator: Admin / buyer (IT admin) | Analysis from IT admin perspective |\n| `llm-p1-evaluator` | LLM evaluator: First-time evaluator | First-time evaluator can reach primary workflow via deep link, but unlabeled nav |\n| `llm-p2-operator` | LLM evaluator: Daily operator | The candidate database dashboard is largely functional for efficient navigation, |\n| `llm-p3-admin` | LLM evaluator: Admin / buyer | Admin can navigate all pages without access errors, but a minor accessibility is |\n| `synthesizer` | Cross-agent synthesis | Synthesized 5 issues, 7 delights from 9 agent reports |\n\n---\n\n## Dimension rollup (automated subset)\n\n| Dimension | Score 1\u20135 | Signal |\n|-----------|-----------|--------|\n| Functionality | 5 | 100% steps pass; 0 failures |\n| UI/UX | 3 | 3 unlabeled buttons; ~1180ms avg step |\n| Information clarity | 5 | 0 sparse-content pages |\n\n---\n\n## Issues (evidence-bound)\n\n### P2\n\n| ID | Finding | Personas | Evidence |\n|----|---------|----------|----------|\n| **I1** | Icon-only or unlabeled buttons \u2014 1 button(s) lack accessible name on page. | p2-operator, p3-admin | `j1-deep-link-p1-evaluator-s1` |\n| **I2** | Form inputs missing labels \u2014 1 of 9 inputs lack label, aria-label, or placeholder. | p1-evaluator, p3-admin | `j1-deep-link-p1-evaluator-s1` |\n\n### P3\n\n| ID | Finding | Personas | Evidence |\n|----|---------|----------|----------|\n| **I3** | Unlabeled navigation button on dashboard \u2014 The dashboard has 1 unlabeled button, which may confuse first-time users about its function, especially when trying to navigate from a shared link. | p1-evaluator | `j1-deep-link-p1-evaluator-s1` |\n| **I4** | Unlabeled button on candidate database page \u2014 The database page has one unlabeled button. For a daily operator relying on efficient navigation, this button's purpose is unclear, potentially causing confusion or extra clicks. | p2-operator | `j1-deep-link-p1-evaluator-s1` |\n| **I5** | Unlabeled button on database page \u2014 One button on the database page lacks an accessible label, which may hinder screen reader users and reduce trust in accessibility compliance. | p3-admin | `j1-deep-link-p1-evaluator-s1` |\n\n---\n\n## Delights & strengths (required)\n\n| ID | Delight | Personas | Evidence |\n|----|---------|----------|----------|\n| **D1** | Clear navigation structure \u2014 Page has 16 links and 2 headings. | p1-evaluator, p2-operator | `j1-deep-link-p1-evaluator-s1` |\n| **D2** | Informative landing content \u2014 Page includes headings and substantive body copy for first-time evaluators. | p1-evaluator | `j1-deep-link-p1-evaluator-s1` |\n| **D3** | Interactive forms discovered \u2014 1 pages with forms \u2014 workflow automation candidate. | p1-evaluator | `crawl-graph` |\n| **D4** | Multi-workflow product surface \u2014 Discovered workflow types: admin, dashboard, search. | p1-evaluator, p2-operator, p3-admin | `workflow-graph` |\n| **D5** | Fast interactions for repeat tasks \u2014 8 steps completed under 3s. | p2-operator | `j1-deep-link-p1-evaluator-s1` |\n| **D6** | Fast page loads from shared link \u2014 The deep link to /database loaded in 1.6 seconds, providing a quick entry to the primary workflow. | p1-evaluator | `j1-deep-link-p1-evaluator-s1` |\n| **D7** | Clear user identity display \u2014 The dashboard prominently shows the logged-in user's email ('Logged in as: 0sparsh2@gmail.com'), providing a strong trust signal for admin verification. | p3-admin | `j1-deep-link-p1-evaluator-s1` |\n\n---\n\n## Run log\n\n| Step | Journey | Action | Outcome | URL |\n|------|---------|--------|---------|-----|\n| `j1-deep-link-p1-evaluator-s1` | j1-deep-link | navigate | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j2-primary-list-p1-evaluator-s1` | j2-primary-list | navigate | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j2-primary-list-p1-evaluator-s2` | j2-primary-list | wait | pass | https://faculty-dashboard-eight.vercel.app/database |\n| `j3-secondary-module-p1-evaluator-s1` | j3-secondary-module | navigate | pass | https://faculty-dashboard-eight.vercel.app/analytics |\n| `j4-search-surface-p1-evaluator-s1` | j4-search-surface | navigate | pass | https://faculty-dashboard-eight.vercel.app/ai-search |\n| `j5-admin-boundary-p1-evaluator-s1` | j5-admin-boundary | navigate | pass | https://faculty-dashboard-eight.vercel.app/admin |\n| `auto-j1-dashboard-p1-evaluator-s1` | auto-j1-dashboard | navigate | pass | https://faculty-dashboard-eight.vercel.app/resume-parser-gem |\n| `auto-j5-explore-p1-evaluator-s1` | auto-j5-explore | navigate | pass | https://faculty-dashboard-eight.vercel.app/database/profile/ |\n\n---\n\n*Generated by Launch Rehearsal CLI \u2014 product-agnostic heuristics. Findings require human review before production decisions.*\n",
@@ -944,42 +1052,114 @@
     {
       "path": "artifacts/enterprise-20260530-234459/j1-deep-link-p1-evaluator-s1.png",
       "stepId": "j1-deep-link-p1-evaluator-s1",
-      "label": "Deep link to primary surface"
+      "label": "Deep link to primary surface \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Deep link to primary surface",
+      "durationMs": 1589,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/enterprise-20260530-234459/j2-primary-list-p1-evaluator-s1.png",
       "stepId": "j2-primary-list-p1-evaluator-s1",
-      "label": "Browse primary data view"
+      "label": "Browse primary data view \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Browse primary data view",
+      "durationMs": 1619,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/enterprise-20260530-234459/j2-primary-list-p1-evaluator-s2.png",
       "stepId": "j2-primary-list-p1-evaluator-s2",
-      "label": "Browse primary data view"
+      "label": "Browse primary data view \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "wait",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Browse primary data view",
+      "durationMs": 2079,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/enterprise-20260530-234459/j3-secondary-module-p1-evaluator-s1.png",
       "stepId": "j3-secondary-module-p1-evaluator-s1",
-      "label": "Secondary module"
+      "label": "Secondary module \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/analytics",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Secondary module",
+      "durationMs": 1331,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/enterprise-20260530-234459/j4-search-surface-p1-evaluator-s1.png",
       "stepId": "j4-search-surface-p1-evaluator-s1",
-      "label": "Search or AI surface"
+      "label": "Search or AI surface \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/ai-search",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Search or AI surface",
+      "durationMs": 635,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/enterprise-20260530-234459/j5-admin-boundary-p1-evaluator-s1.png",
       "stepId": "j5-admin-boundary-p1-evaluator-s1",
-      "label": "Admin boundary check"
+      "label": "Admin boundary check \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/admin",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Admin boundary check",
+      "durationMs": 682,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/enterprise-20260530-234459/auto-j1-dashboard-p1-evaluator-s1.png",
       "stepId": "auto-j1-dashboard-p1-evaluator-s1",
-      "label": "Auto: Dashboard"
+      "label": "Auto: Dashboard \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/resume-parser-gemini",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Auto: Dashboard",
+      "durationMs": 675,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/enterprise-20260530-234459/auto-j5-explore-p1-evaluator-s1.png",
       "stepId": "auto-j5-explore-p1-evaluator-s1",
-      "label": "Auto: Explore /database/profile/03ea1ef9-cb02-4e5d-b4b6-b6fff1d94512"
+      "label": "Auto: Explore /database/profile/03ea1ef9-cb02-4e5d-b4b6-b6fff1d94512 \u2014 Argyle Candidate Database Analytics AI Search",
+      "action": "navigate",
+      "intent": null,
+      "url": "https://faculty-dashboard-eight.vercel.app/database/profile/03ea1ef9-cb02-4e5d-b4b6-b6fff1d94512",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Auto: Explore /database/profile/03ea1ef9-cb02-4e5d-b4b6-b6fff1d94512",
+      "durationMs": 835,
+      "consoleErrors": []
     }
   ],
   "annotations": [],
@@ -1236,6 +1416,46 @@
     "source": "template",
     "readinessBand": "Green",
     "issueCount": 2,
-    "delightCount": 2
-  }
+    "delightCount": 2,
+    "layer1Verdict": {
+      "decision": "ship",
+      "headline": "Ready to ship.",
+      "reason": "100% of canonical steps passed with no journey-breaking failures. Polish opportunity: Form inputs missing labels.",
+      "band": "Green"
+    },
+    "layer2Story": "TryLapse sent 3 AI personas through 5 product journeys and scored **7/7** steps as passing. All journeys completed successfully across all tested personas. 2 genuine product strength(s) found: Clear navigation structure.",
+    "layer3FixHierarchy": [
+      {
+        "priority": "P2",
+        "title": "Form inputs missing labels",
+        "detail": "1 of 1 inputs lack label, aria-label, or placeholder.",
+        "effort": "small",
+        "action": "Fix before GA \u2014 noticeable but not blocking.",
+        "step_id": "auto-j1-dashboard-p1-evaluator-s1",
+        "confidence": "high"
+      },
+      {
+        "priority": "P2",
+        "title": "Icon-only or unlabeled buttons",
+        "detail": "1 button(s) lack accessible name on page.",
+        "effort": "small",
+        "action": "Fix before GA \u2014 noticeable but not blocking.",
+        "step_id": "j1-deep-link-p1-evaluator-s1",
+        "confidence": "high"
+      }
+    ],
+    "layer4Forward": [
+      "Expand coverage: add edge-case journeys for error states and empty states.",
+      "Double down on strength: Clear navigation structure \u2014 amplify in onboarding.",
+      "Run again after fixes to confirm the score moved \u2014 track trend across builds."
+    ],
+    "layer5Trend": {
+      "available": false,
+      "note": "Run a second build to see score trajectory."
+    }
+  },
+  "productModel": null,
+  "interactionMap": null,
+  "behavioralJourneys": null,
+  "parallelErrors": []
 }

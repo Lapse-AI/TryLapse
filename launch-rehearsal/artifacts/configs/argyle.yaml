@@ -24,26 +24,6 @@ personas:
   - Manage their professional profile and search for colleagues.
   - The product is named 'Faculty Dashboard' and includes features like AI Search
     and Add Faculty.
-  tech_literacy: intermediate
-  patience: medium
-  trust_level: neutral
-  character: Reads section headers before clicking; prefers familiar workflows;
-    gets frustrated when a feature moves between releases without warning.
-  usage_context: Returning user checking their own profile and looking up colleagues
-    by name.
-- id: model-1-admin
-  name: Admin
-  role: Manage user accounts and oversee the database.
-  goals:
-  - Manage user accounts and oversee the database.
-  - There is an /admin endpoint and an admin panel.
-  tech_literacy: expert
-  patience: high
-  trust_level: neutral
-  character: Task-oriented and systematic; uses keyboard shortcuts where available;
-    checks the audit log before making changes.
-  usage_context: Power user with full access; audits the system periodically rather
-    than on a daily basis.
 - id: p4-profile-searcher
   name: Profile Searcher
   role: Searches profiles in detail to identify use cases
@@ -51,13 +31,6 @@ personas:
   - Find specific use cases from profile data
   - Efficiently search and filter profiles
   - Validate use case hypotheses
-  tech_literacy: intermediate
-  patience: medium
-  trust_level: skeptical
-  character: Methodical researcher who cross-references results; questions whether
-    the data is complete or stale before drawing conclusions.
-  usage_context: Evaluating the product for a research project; first time using
-    this specific faculty directory.
 - id: p4-candidate-finder
   name: Alex Chen
   role: Recruiter using AI Search to find candidates
@@ -65,13 +38,6 @@ personas:
   - Quickly identify top candidates from a large applicant pool
   - Evaluate candidate fit based on job requirements
   - Streamline the initial screening process
-  tech_literacy: intermediate
-  patience: low
-  trust_level: trusting
-  character: Fast-moving and goal-driven; scans results rather than reading carefully;
-    trusts AI suggestions but abandons if results look off after two tries.
-  usage_context: Switched from manual spreadsheet screening; expects AI search to
-    cut time-to-shortlist by 50%.
 - id: p4-candidate-analyst
   name: Candidate Analyst
   role: Analyzes candidate profiles and qualifications
@@ -79,13 +45,6 @@ personas:
   - Review candidate applications and shortlist qualified candidates
   - Compare candidate skills against job requirements
   - Provide hiring recommendations
-  tech_literacy: intermediate
-  patience: high
-  trust_level: skeptical
-  character: Detail-oriented; opens multiple profiles in tabs; hesitates before
-    acting on AI recommendations without seeing the underlying data.
-  usage_context: Works alongside a recruiter; receives a shortlist to verify before
-    recommending to the hiring manager.
 journeys:
 - id: j-load-dashboard
   name: Load main dashboard
@@ -3035,6 +2994,560 @@ journeys:
     value: '2000'
   - action: assert_url_contains
     url: /database
+- id: j-4-profile-12
+  name: Use Process Updates to manage faculty data workflows
+  steps:
+  - action: navigate
+    url: /database
+    intent: Candidate Database
+  - action: click
+    intent: Process Updates
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    value: /database
+  persona_ids:
+  - p4-profile-searcher
+- id: j-4-profile-5
+  name: Use Resume Parser to extract data from a candidate's resume
+  steps:
+  - action: navigate
+    url: /resume-parser-gemini
+  - action: fill
+    intent: File upload input
+    selector: input[type='file']
+    value: /path/to/resume.pdf
+  - action: wait
+    value: '5000'
+  - action: assert_url_contains
+    value: resume-parser-gemini
+  - action: click
+    intent: Experience5
+  - action: click
+    intent: Education & Certs1
+  - action: click
+    intent: Skills16
+  - action: assert_url_contains
+    value: resume-parser-gemini
+  persona_ids:
+  - p4-profile-searcher
+- id: j-4-profile-4
+  name: Add a new faculty member manually
+  steps:
+  - action: navigate
+    url: /database
+    intent: Candidate Database
+  - action: click
+    intent: + Add Faculty
+  - action: wait
+    value: '1000'
+  - action: fill
+    intent: Name
+    selector: input[placeholder='Name']
+    value: Dr. Jane Smith
+  - action: fill
+    intent: Email
+    selector: input[placeholder='Email']
+    value: ${REHEARSE_EMAIL}
+  - action: fill
+    intent: State
+    selector: input[placeholder='State']
+    value: California
+  - action: fill
+    intent: Title
+    selector: input[placeholder='Title']
+    value: Associate Professor
+  - action: fill
+    intent: Biography
+    selector: textarea[placeholder='Biography']
+    value: Expert in AI and machine learning with 10 years of teaching experience.
+  - action: click
+    intent: Submit
+    selector: button:has-text('Submit')
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    url: /database
+  persona_ids:
+  - p4-profile-searcher
+- id: j-4-profile-6
+  name: Admin panel system management
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/admin
+    intent: Admin
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    value: /admin
+  - action: click
+    intent: Process Updates
+  - action: wait
+    value: '3000'
+  - action: click
+    intent: Refresh
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: Overview
+  - action: wait
+    value: '1000'
+  - action: assert_url_contains
+    value: /admin
+  persona_ids:
+  - p4-profile-searcher
+- id: j-4-profile-3
+  name: AI-powered natural language search for a trainer
+  steps:
+  - action: navigate
+    url: /ai-search
+    intent: Ai Search
+  - action: fill
+    intent: natural language search input
+    selector: input[type='text'], textarea
+    value: experienced data science professor with industry background in California
+  - action: press
+    intent: Enter
+    value: Enter
+  - action: wait
+    value: '3000'
+  - action: assert_url_contains
+    value: /ai-search
+  persona_ids:
+  - p4-profile-searcher
+- id: j-4-profile-2
+  name: View detailed faculty profile from database list
+  steps:
+  - action: navigate
+    url: /database/profile/03ea1ef9-cb02-4e5d-b4b6-b6fff1d94512
+    intent: Profile page
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: Overview
+  - action: assert_url_contains
+    value: 03ea1ef9-cb02-4e5d-b4b6-b6fff1d94512
+  - action: click
+    intent: Experience5
+  - action: click
+    intent: Skills16
+  - action: click
+    intent: Education & Certs1
+  - action: scroll
+    value: '0'
+  persona_ids:
+  - p4-profile-searcher
+- id: j-4-profile-8
+  name: Compare multiple faculty profiles side by side
+  steps:
+  - action: navigate
+    url: /database/profile/359604ac-00e5-43d1-8981-892d9eb63ae9
+  - action: assert_url_contains
+    value: 359604ac-00e5-43d1-8981-892d9eb63ae9
+  - action: click
+    intent: Experience
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: Skills16
+  - action: wait
+    value: '2000'
+  - action: navigate
+    url: /database/profile/03ea1ef9-cb02-4e5d-b4b6-b6fff1d94512
+  - action: assert_url_contains
+    value: 03ea1ef9-cb02-4e5d-b4b6-b6fff1d94512
+  - action: click
+    intent: Experience
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: Skills76
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - p4-profile-searcher
+- id: j-4-profile-1
+  name: Browse and filter faculty database by state
+  steps:
+  - action: navigate
+    url: /database
+    intent: Candidate Database
+  - action: assert_url_contains
+    value: /database
+  - action: click
+    intent: State
+  - action: select
+    intent: State
+    value: California
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    value: /database
+  persona_ids:
+  - p4-profile-searcher
+- id: j-4-profile-10
+  name: Recover from a failed profile load or navigation error
+  steps:
+  - action: navigate
+    url: /database
+  - action: assert_url_contains
+    value: /database
+  - action: navigate
+    url: /database/profile/03ea1ef9-cb02-4e5d-b4b6-b6fff1d94512
+  - action: assert_url_contains
+    value: /database/profile/
+  - action: wait
+    value: '2000'
+  - action: navigate
+    url: /database
+  - action: assert_url_contains
+    value: /database
+  persona_ids:
+  - p4-profile-searcher
+- id: j-4-profile-11
+  name: Check for new faculty additions or updates
+  steps:
+  - action: navigate
+    url: /database
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: Refresh
+  - action: assert_url_contains
+    value: /database
+  - action: scroll
+    value: '500'
+  - action: navigate
+    url: /database/profile/03ea1ef9-cb02-4e5d-b4b6-b6fff1d94512
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: Overview
+  persona_ids:
+  - p4-profile-searcher
+- id: j-4-profile-7
+  name: Refresh faculty data after updates
+  steps:
+  - action: navigate
+    url: /database
+  - action: click
+    intent: Refresh
+  - action: wait
+    value: '3000'
+  - action: assert_url_contains
+    value: /database
+  persona_ids:
+  - p4-profile-searcher
+- id: j-4-profile-9
+  name: Search for faculty with specific skills using AI search
+  steps:
+  - action: navigate
+    url: /ai-search
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - p4-profile-searcher
+- id: j-4-candid-10
+  name: Recover from a failed profile load
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database/profile/03ea1ef9-cb02-4e5d-b4b6-b6fff1d94512
+  - action: assert_url_contains
+    value: /database/profile/03ea1ef9-cb02-4e5d-b4b6-b6fff1d94512
+  - action: wait
+    value: '3000'
+  - action: explore
+    intent: Overview
+  - action: click
+    intent: Refresh
+  - action: wait
+    value: '3000'
+  - action: assert_url_contains
+    value: /database/profile/03ea1ef9-cb02-4e5d-b4b6-b6fff1d94512
+  - action: explore
+    intent: Experience5
+  persona_ids:
+  - p4-candidate-finder
+- id: j-4-candid-8
+  name: Refresh database list after adding or updating candidates
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Candidate Database
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    value: /database
+  - action: click
+    intent: Refresh
+  - action: wait
+    value: '3000'
+  - action: assert_url_contains
+    value: /database
+  - action: explore
+  - action: click
+    intent: Overview
+  - action: assert_url_contains
+    value: /database/profile/
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Candidate Database
+  persona_ids:
+  - p4-candidate-finder
+- id: j-4-candid-3
+  name: View detailed faculty profile
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database/profile/03ea1ef9-cb02-4e5d-b4b6-b6fff1d94512
+  - action: assert_url_contains
+    value: /database/profile/
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: Overview
+  - action: assert_url_contains
+    value: /database/profile/
+  - action: click
+    intent: Experience5
+  - action: wait
+    value: '1000'
+  - action: click
+    intent: Education & Certs1
+  - action: wait
+    value: '1000'
+  - action: click
+    intent: Skills16
+  - action: wait
+    value: '1000'
+  - action: assert_url_contains
+    value: /database/profile/
+  persona_ids:
+  - p4-candidate-finder
+- id: j-4-candid-5
+  name: Use resume parser to extract candidate data
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/resume-parser-gemini
+    intent: Resume Parser
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    value: /resume-parser-gemini
+  - action: click
+    intent: Resume Parser
+    selector: input[type='file']
+  - action: fill
+    intent: Resume Parser
+    selector: input[type='file']
+    value: /path/to/sample_resume.pdf
+  - action: wait
+    value: '1000'
+  - action: click
+    intent: Process Updates
+  - action: wait
+    value: '5000'
+  - action: assert_url_contains
+    value: /resume-parser-gemini
+  - action: scroll
+    intent: Experience
+  - action: assert_url_contains
+    value: /resume-parser-gemini
+  persona_ids:
+  - p4-candidate-finder
+- id: j-4-candid-2
+  name: AI-powered natural language search for candidates
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/ai-search
+    intent: AI Search
+  - action: wait
+    value: '2000'
+  - action: fill
+    intent: AI Search
+    selector: input[type='text'], textarea
+    value: Find a senior data scientist with 5+ years of experience in machine learning,
+      Python, and TensorFlow, preferably with a PhD and experience in healthcare analytics
+  - action: click
+    intent: AI Search
+    selector: button[type='submit'], button:contains('Search')
+  - action: wait
+    value: '3000'
+  - action: assert_url_contains
+    value: /ai-search
+  - action: explore
+  - action: click
+    selector: a:first-of-type, .result-item:first-child a
+  - action: assert_url_contains
+    value: /database/profile/
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: Skills16
+  - action: assert_url_contains
+    value: /database/profile/
+  persona_ids:
+  - p4-candidate-finder
+- id: j-4-candid-7
+  name: Access admin panel for system management
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/admin
+    intent: Admin
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    value: /admin
+  - action: click
+    intent: Overview
+  - action: wait
+    value: '1500'
+  - action: click
+    intent: Process Updates
+  - action: wait
+    value: '1500'
+  - action: click
+    intent: Refresh
+  - action: wait
+    value: '1000'
+  - action: click
+    intent: Candidate Database
+  - action: assert_url_contains
+    value: /database
+  persona_ids:
+  - p4-candidate-finder
+- id: j-4-candid-9
+  name: Explore candidate skills and experience depth
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database/profile/03ea1ef9-cb02-4e5d-b4b6-b6fff1d94512
+  - action: wait
+    value: '3000'
+  - action: assert_url_contains
+    value: 03ea1ef9-cb02-4e5d-b4b6-b6fff1d94512
+  - action: click
+    intent: Skills76
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    value: 03ea1ef9-cb02-4e5d-b4b6-b6fff1d94512
+  - action: click
+    intent: Experience5
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    value: 03ea1ef9-cb02-4e5d-b4b6-b6fff1d94512
+  - action: click
+    intent: Overview
+  - action: wait
+    value: '2000'
+  persona_ids:
+  - p4-candidate-finder
+- id: j-4-candid-6
+  name: Navigate back to database from a profile
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database/profile/03ea1ef9-cb02-4e5d-b4b6-b6fff1d94512
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    value: /database/profile/
+  - action: click
+    intent: Candidate Database
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    value: /database
+  - action: click
+    selector: a[href*='/database/profile/']:nth-of-type(2)
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    value: /database/profile/359604ac-00e5-43d1-8981-892d9eb63ae9
+  persona_ids:
+  - p4-candidate-finder
+- id: j-4-candid-4
+  name: Add a new faculty candidate manually
+  steps:
+  - action: navigate
+    url: /database
+  - action: click
+    intent: + Add Faculty
+  - action: fill
+    intent: First Name
+    value: Jane
+  - action: fill
+    intent: Last Name
+    value: Smith
+  - action: fill
+    intent: Email
+    value: jane.smith@university.edu
+  - action: fill
+    intent: Department
+    value: Computer Science
+  - action: click
+    intent: Save
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    value: /database
+  persona_ids:
+  - p4-candidate-finder
+- id: j-4-candid-1
+  name: Browse and filter faculty database
+  steps:
+  - action: navigate
+    url: /database
+    intent: Candidate Database
+  - action: wait
+    value: '3000'
+  - action: select
+    intent: State
+    value: California
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    value: /database
+  - action: explore
+    intent: Faculty List Cards
+  persona_ids:
+  - p4-candidate-analyst
+- id: j-4-candid-12
+  name: Explore candidate overview tab
+  steps:
+  - action: navigate
+    url: /database/profile/03ea1ef9-cb02-4e5d-b4b6-b6fff1d94512
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: Overview
+  - action: wait
+    value: '1000'
+  - action: assert_url_contains
+    value: /database/profile/03ea1ef9-cb02-4e5d-b4b6-b6fff1d94512
+  persona_ids:
+  - p4-candidate-analyst
+- id: j-4-candid-11
+  name: Process updates on candidate status
+  steps:
+  - action: navigate
+    url: https://faculty-dashboard-eight.vercel.app/database
+    intent: Candidate Database
+  - action: wait
+    value: '3000'
+  - action: click
+    intent: Process Updates
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: Shortlisted
+  - action: click
+    intent: Confirm
+  - action: wait
+    value: '2000'
+  - action: assert_url_contains
+    value: /database
+  persona_ids:
+  - p4-candidate-analyst
 auth:
   login_path: /login
   email_env: REHEARSE_EMAIL

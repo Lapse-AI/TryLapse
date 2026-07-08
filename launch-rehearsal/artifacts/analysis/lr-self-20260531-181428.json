@@ -1,5 +1,9 @@
 {
   "summary": {
+    "launchGate": "PASS",
+    "verdict": "Ready to launch. No blockers found.",
+    "readiness": 95,
+    "readinessBand": "Green",
     "id": "lr-self-20260531-181428",
     "productName": "Launch Rehearsal Dashboard",
     "target": "127.0.0.1:8081",
@@ -9,15 +13,32 @@
     "startedAt": "2026-05-31T18:14:28.475976+00:00",
     "finishedAt": "2026-05-31T18:16:41.412287+00:00",
     "durationSec": 132,
-    "readiness": 95,
-    "readinessBand": "Green",
+    "phaseTimings": {
+      "crawlSec": 0,
+      "journeySec": 0,
+      "analysisSec": 0
+    },
     "status": "ready",
+    "scoreDelta": 0,
+    "previousScore": 95,
+    "runDelta": null,
+    "industryBenchmark": {
+      "category": "b2b_saas",
+      "categoryLabel": "B2B SaaS",
+      "median": 67,
+      "delta": 28,
+      "percentile": 90,
+      "source": "lr-beta-v1"
+    },
     "blockers": 0,
     "issues": 2,
     "delights": 3,
     "pages": 14,
     "pagesCrawled": 14,
     "stepCount": 60,
+    "flakeCount": 0,
+    "flakeRate": 0.0,
+    "flakeBreakdown": {},
     "agentCost": 0.2272,
     "costEstimate": {
       "usd": 0.2272,
@@ -39,8 +60,111 @@
     "authGated": 0,
     "networkLogPath": null,
     "webVitalsPath": null,
-    "experiment": null
+    "experiment": null,
+    "followUpAt": "2026-06-07T18:16:41.412287+00:00"
   },
+  "runHistory": [
+    {
+      "id": "lr-self-20260531-190439",
+      "startedAt": "2026-05-31T19:04:39.003869+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 95,
+      "flakeRate": 0,
+      "blockerCount": 0,
+      "durationSec": 101
+    },
+    {
+      "id": "lr-self-20260531-190700",
+      "startedAt": "2026-05-31T19:07:00.849992+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 95,
+      "flakeRate": 0,
+      "blockerCount": 0,
+      "durationSec": 123
+    },
+    {
+      "id": "lr-self-20260601-071239",
+      "startedAt": "2026-06-01T07:12:39.416943+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 95,
+      "flakeRate": 0,
+      "blockerCount": 0,
+      "durationSec": 106
+    },
+    {
+      "id": "lr-self-20260601-071739",
+      "startedAt": "2026-06-01T07:17:39.481382+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 95,
+      "flakeRate": 0,
+      "blockerCount": 0,
+      "durationSec": 97
+    },
+    {
+      "id": "lr-self-20260601-072624",
+      "startedAt": "2026-06-01T07:26:24.106454+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 95,
+      "flakeRate": 0,
+      "blockerCount": 0,
+      "durationSec": 109
+    },
+    {
+      "id": "lr-self-20260602-154152",
+      "startedAt": "2026-06-02T15:41:52.213387+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 91,
+      "flakeRate": 0,
+      "blockerCount": 2,
+      "durationSec": 171
+    },
+    {
+      "id": "lr-self-20260603-142649",
+      "startedAt": "2026-06-03T14:26:49.258484+00:00",
+      "launchGate": null,
+      "verdict": null,
+      "readiness": 91,
+      "flakeRate": 0,
+      "blockerCount": 2,
+      "durationSec": 243
+    },
+    {
+      "id": "lr-self-20260531-042429",
+      "startedAt": "2026-05-31T04:24:29.745186+00:00",
+      "launchGate": "CAUTION",
+      "verdict": "Do not launch yet. Critical issues need resolution.",
+      "readiness": 95,
+      "flakeRate": 0.385,
+      "blockerCount": 0,
+      "durationSec": 62
+    },
+    {
+      "id": "lr-self-20260531-045823",
+      "startedAt": "2026-05-31T04:58:23.182499+00:00",
+      "launchGate": "PASS",
+      "verdict": "Ready to launch. No blockers found. (1 flaky step \u2014 re-run to confirm.)",
+      "readiness": 95,
+      "flakeRate": 0.077,
+      "blockerCount": 0,
+      "durationSec": 69
+    },
+    {
+      "id": "lr-self-20260531-050020",
+      "startedAt": "2026-05-31T05:00:20.551327+00:00",
+      "launchGate": "PASS",
+      "verdict": "Ready to launch. No blockers found. (1 flaky step \u2014 re-run to confirm.)",
+      "readiness": 95,
+      "flakeRate": 0.077,
+      "blockerCount": 0,
+      "durationSec": 67
+    }
+  ],
   "steps": [
     {
       "stepId": "j1-command-center-p1-evaluator-s1-desktop-seed1-loop1",
@@ -68,9 +192,7 @@
       },
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j1-command-center-p1-evaluator-s1-desktop-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/j1-command-center-p1-evaluator-s1-desktop-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j1-command-center-p1-evaluator-s1-desktop-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j1-command-center-p1-evaluator-s1-desktop-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -96,8 +218,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j1-command-center-p1-evaluator-s2-desktop-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j1-command-center-p1-evaluator-s2-desktop-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j1-command-center-p1-evaluator-s2-desktop-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -129,9 +250,7 @@
       },
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j1-command-center-p1-evaluator-s1-tablet-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/j1-command-center-p1-evaluator-s1-tablet-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j1-command-center-p1-evaluator-s1-tablet-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j1-command-center-p1-evaluator-s1-tablet-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -157,8 +276,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j1-command-center-p1-evaluator-s2-tablet-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j1-command-center-p1-evaluator-s2-tablet-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j1-command-center-p1-evaluator-s2-tablet-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -190,9 +308,7 @@
       },
       "bodyTextExcerpt": "Run rehearsal Command center Pre-launch readiness, observed. Live rollup of every persona \u00d7 journey rehearsal against 127.0.0.1:8081. Evidence-bound, no auto-fix. running All runs \u2192 Run rehearsal Craw",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j1-command-center-p1-evaluator-s1-mobile-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/j1-command-center-p1-evaluator-s1-mobile-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j1-command-center-p1-evaluator-s1-mobile-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j1-command-center-p1-evaluator-s1-mobile-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -218,8 +334,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Run rehearsal Command center Pre-launch readiness, observed. Live rollup of every persona \u00d7 journey rehearsal against 127.0.0.1:8081. Evidence-bound, no auto-fix. running All runs \u2192 Run rehearsal Craw",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j1-command-center-p1-evaluator-s2-mobile-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j1-command-center-p1-evaluator-s2-mobile-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j1-command-center-p1-evaluator-s2-mobile-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -251,9 +366,7 @@
       },
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j2-runs-p1-evaluator-s1-desktop-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/j2-runs-p1-evaluator-s1-desktop-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j2-runs-p1-evaluator-s1-desktop-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j2-runs-p1-evaluator-s1-desktop-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -279,8 +392,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j2-runs-p1-evaluator-s2-desktop-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j2-runs-p1-evaluator-s2-desktop-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j2-runs-p1-evaluator-s2-desktop-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -312,9 +424,7 @@
       },
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j2-runs-p1-evaluator-s1-tablet-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/j2-runs-p1-evaluator-s1-tablet-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j2-runs-p1-evaluator-s1-tablet-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j2-runs-p1-evaluator-s1-tablet-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -340,8 +450,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j2-runs-p1-evaluator-s2-tablet-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j2-runs-p1-evaluator-s2-tablet-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j2-runs-p1-evaluator-s2-tablet-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -373,9 +482,7 @@
       },
       "bodyTextExcerpt": "Run rehearsal runs Run history Every rehearsal, every environment. Includes backend-shaped runs (enterprise-*, cal-*). Diff last two Run ID Product Target Env Readiness Blockers Delights Pages Duratio",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j2-runs-p1-evaluator-s1-mobile-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/j2-runs-p1-evaluator-s1-mobile-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j2-runs-p1-evaluator-s1-mobile-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j2-runs-p1-evaluator-s1-mobile-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -401,8 +508,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Run rehearsal runs Run history Every rehearsal, every environment. Includes backend-shaped runs (enterprise-*, cal-*). Diff last two Run ID Product Target Env Readiness Blockers Delights Pages Duratio",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j2-runs-p1-evaluator-s2-mobile-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j2-runs-p1-evaluator-s2-mobile-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j2-runs-p1-evaluator-s2-mobile-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -443,9 +549,7 @@
       },
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j3-compare-p1-evaluator-s1-desktop-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/j3-compare-p1-evaluator-s1-desktop-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j3-compare-p1-evaluator-s1-desktop-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j3-compare-p1-evaluator-s1-desktop-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -471,8 +575,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j3-compare-p1-evaluator-s2-desktop-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j3-compare-p1-evaluator-s2-desktop-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j3-compare-p1-evaluator-s2-desktop-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -513,9 +616,7 @@
       },
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j3-compare-p1-evaluator-s1-tablet-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/j3-compare-p1-evaluator-s1-tablet-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j3-compare-p1-evaluator-s1-tablet-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j3-compare-p1-evaluator-s1-tablet-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -541,8 +642,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j3-compare-p1-evaluator-s2-tablet-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j3-compare-p1-evaluator-s2-tablet-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j3-compare-p1-evaluator-s2-tablet-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -583,9 +683,7 @@
       },
       "bodyTextExcerpt": "Run rehearsal monitor Run diff Side-by-side comparison \u2014 readiness, sitemap, step outcomes. Mirrors rehearse diff CLI and GET /api/diff. Run A (baseline) lr-self-20260531-050020 lr-self-20260531-04582",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j3-compare-p1-evaluator-s1-mobile-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/j3-compare-p1-evaluator-s1-mobile-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j3-compare-p1-evaluator-s1-mobile-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j3-compare-p1-evaluator-s1-mobile-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -611,8 +709,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Run rehearsal monitor Run diff Side-by-side comparison \u2014 readiness, sitemap, step outcomes. Mirrors rehearse diff CLI and GET /api/diff. Run A (baseline) lr-self-20260531-050020 lr-self-20260531-04582",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j3-compare-p1-evaluator-s2-mobile-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j3-compare-p1-evaluator-s2-mobile-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j3-compare-p1-evaluator-s2-mobile-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -644,9 +741,7 @@
       },
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s1-desktop-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s1-desktop-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s1-desktop-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s1-desktop-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -672,8 +767,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s2-desktop-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s2-desktop-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s2-desktop-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -699,9 +793,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s3-desktop-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s3-desktop-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s3-desktop-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s3-desktop-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -727,9 +819,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s4-desktop-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s4-desktop-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s4-desktop-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s4-desktop-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -755,8 +845,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s5-desktop-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s5-desktop-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s5-desktop-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -788,9 +877,7 @@
       },
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s1-tablet-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s1-tablet-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s1-tablet-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s1-tablet-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -816,8 +903,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s2-tablet-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s2-tablet-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s2-tablet-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -843,9 +929,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s3-tablet-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s3-tablet-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s3-tablet-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s3-tablet-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -871,9 +955,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s4-tablet-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s4-tablet-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s4-tablet-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s4-tablet-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -899,8 +981,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s5-tablet-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s5-tablet-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s5-tablet-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -932,9 +1013,7 @@
       },
       "bodyTextExcerpt": "Run rehearsal configure rehearse init wizard rehearse init -c config.yaml && rehearse run -c config.yaml Dogfood this dashboard Paste this dashboard URL to rehearse Launch Rehearsal with Launch Rehear",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s1-mobile-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s1-mobile-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s1-mobile-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s1-mobile-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -960,8 +1039,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Run rehearsal configure rehearse init wizard rehearse init -c config.yaml && rehearse run -c config.yaml Dogfood this dashboard Paste this dashboard URL to rehearse Launch Rehearsal with Launch Rehear",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s2-mobile-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s2-mobile-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s2-mobile-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -987,9 +1065,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Run rehearsal configure rehearse init wizard rehearse init -c config.yaml && rehearse run -c config.yaml Dogfood this dashboard Paste this dashboard URL to rehearse Launch Rehearsal with Launch Rehear",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s3-mobile-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s3-mobile-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s3-mobile-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s3-mobile-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1015,9 +1091,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Run rehearsal configure rehearse init wizard rehearse init -c config.yaml && rehearse run -c config.yaml Dogfood this dashboard Paste this dashboard URL to rehearse Launch Rehearsal with Launch Rehear",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s4-mobile-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s4-mobile-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s4-mobile-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s4-mobile-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1043,8 +1117,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Run rehearsal configure rehearse init wizard rehearse init -c config.yaml && rehearse run -c config.yaml Dogfood this dashboard Paste this dashboard URL to rehearse Launch Rehearsal with Launch Rehear",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s5-mobile-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s5-mobile-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s5-mobile-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1076,9 +1149,7 @@
       },
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s1-desktop-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s1-desktop-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s1-desktop-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s1-desktop-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1104,8 +1175,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s2-desktop-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s2-desktop-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s2-desktop-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1131,9 +1201,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s3-desktop-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s3-desktop-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s3-desktop-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s3-desktop-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1159,8 +1227,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s4-desktop-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s4-desktop-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s4-desktop-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1192,9 +1259,7 @@
       },
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s1-tablet-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s1-tablet-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s1-tablet-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s1-tablet-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1220,8 +1285,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s2-tablet-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s2-tablet-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s2-tablet-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1247,9 +1311,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s3-tablet-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s3-tablet-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s3-tablet-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s3-tablet-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1275,8 +1337,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s4-tablet-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s4-tablet-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s4-tablet-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1308,9 +1369,7 @@
       },
       "bodyTextExcerpt": "Run rehearsal monitor Run & crawl triggers POST /api/jobs \u2014 background CLI runs with live status. Parallel journey seeds, repeat micro-loop, and viewport profiles come from rehearse.yaml. Dogfood: gen",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s1-mobile-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s1-mobile-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s1-mobile-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s1-mobile-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1336,8 +1395,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Run rehearsal monitor Run & crawl triggers POST /api/jobs \u2014 background CLI runs with live status. Parallel journey seeds, repeat micro-loop, and viewport profiles come from rehearse.yaml. Dogfood: gen",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s2-mobile-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s2-mobile-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s2-mobile-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1363,9 +1421,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Run rehearsal monitor Run & crawl triggers POST /api/jobs \u2014 background CLI runs with live status. Parallel journey seeds, repeat micro-loop, and viewport profiles come from rehearse.yaml. Dogfood: gen",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s3-mobile-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s3-mobile-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s3-mobile-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s3-mobile-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1391,8 +1447,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Run rehearsal monitor Run & crawl triggers POST /api/jobs \u2014 background CLI runs with live status. Parallel journey seeds, repeat micro-loop, and viewport profiles come from rehearse.yaml. Dogfood: gen",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s4-mobile-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s4-mobile-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s4-mobile-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1424,9 +1479,7 @@
       },
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j6-trends-p1-evaluator-s1-desktop-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/j6-trends-p1-evaluator-s1-desktop-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j6-trends-p1-evaluator-s1-desktop-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j6-trends-p1-evaluator-s1-desktop-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1452,8 +1505,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j6-trends-p1-evaluator-s2-desktop-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j6-trends-p1-evaluator-s2-desktop-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j6-trends-p1-evaluator-s2-desktop-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1485,9 +1537,7 @@
       },
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j6-trends-p1-evaluator-s1-tablet-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/j6-trends-p1-evaluator-s1-tablet-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j6-trends-p1-evaluator-s1-tablet-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j6-trends-p1-evaluator-s1-tablet-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1513,8 +1563,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j6-trends-p1-evaluator-s2-tablet-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j6-trends-p1-evaluator-s2-tablet-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j6-trends-p1-evaluator-s2-tablet-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1546,9 +1595,7 @@
       },
       "bodyTextExcerpt": "Run rehearsal monitor Trends & monitoring Readiness drift, recurring issues, flake rate, crawl size \u2014 observe the curve, not the snapshot. Readiness avg (7d) 65.3 goal \u2265 80 Issues opened 0 new in late",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j6-trends-p1-evaluator-s1-mobile-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/j6-trends-p1-evaluator-s1-mobile-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j6-trends-p1-evaluator-s1-mobile-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j6-trends-p1-evaluator-s1-mobile-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1574,8 +1621,7 @@
       "webVitals": {},
       "bodyTextExcerpt": "Run rehearsal monitor Trends & monitoring Readiness drift, recurring issues, flake rate, crawl size \u2014 observe the curve, not the snapshot. Readiness avg (7d) 65.3 goal \u2265 80 Issues opened 0 new in late",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/j6-trends-p1-evaluator-s2-mobile-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/j6-trends-p1-evaluator-s2-mobile-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/j6-trends-p1-evaluator-s2-mobile-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1607,9 +1653,7 @@
       },
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/auto-j1-dashboard-p1-evaluator-s1-desktop-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/auto-j1-dashboard-p1-evaluator-s1-desktop-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/auto-j1-dashboard-p1-evaluator-s1-desktop-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/auto-j1-dashboard-p1-evaluator-s1-desktop-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1641,9 +1685,7 @@
       },
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/auto-j1-dashboard-p1-evaluator-s1-tablet-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/auto-j1-dashboard-p1-evaluator-s1-tablet-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/auto-j1-dashboard-p1-evaluator-s1-tablet-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/auto-j1-dashboard-p1-evaluator-s1-tablet-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1675,9 +1717,7 @@
       },
       "bodyTextExcerpt": "Run rehearsal configure Workspace \u00b7 rehearse.yaml Versioned config. Secrets only via env vars \u2014 never in YAML or scorecards. Workspace Faculty-Dashboard-Eight Workspace ws_default \u00b7 1 members \u00b7 1 prod",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/auto-j1-dashboard-p1-evaluator-s1-mobile-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/auto-j1-dashboard-p1-evaluator-s1-mobile-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/auto-j1-dashboard-p1-evaluator-s1-mobile-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/auto-j1-dashboard-p1-evaluator-s1-mobile-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1709,9 +1749,7 @@
       },
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/auto-j3-explore-p1-evaluator-s1-desktop-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/auto-j3-explore-p1-evaluator-s1-desktop-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/auto-j3-explore-p1-evaluator-s1-desktop-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/auto-j3-explore-p1-evaluator-s1-desktop-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1743,9 +1781,7 @@
       },
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/auto-j3-explore-p1-evaluator-s1-tablet-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/auto-j3-explore-p1-evaluator-s1-tablet-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/auto-j3-explore-p1-evaluator-s1-tablet-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/auto-j3-explore-p1-evaluator-s1-tablet-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1777,9 +1813,7 @@
       },
       "bodyTextExcerpt": "Run rehearsal analysis Recommendations & backlog Prioritized export \u2014 no auto-fix. Evidence-bound suggestions aligned with Evaluation rubric. Export to Linear Fix before launch 0 items Prioritized bac",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/auto-j3-explore-p1-evaluator-s1-mobile-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/auto-j3-explore-p1-evaluator-s1-mobile-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/auto-j3-explore-p1-evaluator-s1-mobile-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/auto-j3-explore-p1-evaluator-s1-mobile-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1811,9 +1845,7 @@
       },
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/auto-j5-explore-p1-evaluator-s1-desktop-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/auto-j5-explore-p1-evaluator-s1-desktop-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/auto-j5-explore-p1-evaluator-s1-desktop-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/auto-j5-explore-p1-evaluator-s1-desktop-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1845,9 +1877,7 @@
       },
       "bodyTextExcerpt": "Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor Command center Runs Runner Compare runs Trends Alerts Recommendations Map Site map Workflows Journey library Agents Agent con",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/auto-j5-explore-p1-evaluator-s1-tablet-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/auto-j5-explore-p1-evaluator-s1-tablet-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/auto-j5-explore-p1-evaluator-s1-tablet-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/auto-j5-explore-p1-evaluator-s1-tablet-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1879,9 +1909,7 @@
       },
       "bodyTextExcerpt": "Run rehearsal map Journey library & templates Example configs, workflow-suggested journeys, parallel seeds, and FLAKY detection settings. Parallel seeds enabled Flaky config enabled Templates 8 Sugges",
       "artifactPaths": [
-        "artifacts/lr-self-20260531-181428/auto-j5-explore-p1-evaluator-s1-mobile-seed1-loop1-aria.json",
-        "artifacts/lr-self-20260531-181428/auto-j5-explore-p1-evaluator-s1-mobile-seed1-loop1.png",
-        "artifacts/lr-self-20260531-181428/auto-j5-explore-p1-evaluator-s1-mobile-seed1-loop1.txt"
+        "artifacts/lr-self-20260531-181428/auto-j5-explore-p1-evaluator-s1-mobile-seed1-loop1.png"
       ],
       "exploreLog": [],
       "exploreSummary": null,
@@ -1904,11 +1932,12 @@
       "relatedDimensions": [],
       "confidence": "high",
       "owner": "frontend",
-      "recurring": 1,
+      "recurring": 16,
       "evidence": "8 warning(s): Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route tem",
       "severityReason": "P3 from automated heuristics",
       "suggestion": null,
-      "screenshotPath": "artifacts/lr-self-20260531-181428/j3-compare-p1-evaluator-s1-desktop-seed1-loop1.png"
+      "screenshotPath": "artifacts/lr-self-20260531-181428/j3-compare-p1-evaluator-s1-desktop-seed1-loop1.png",
+      "isRecurring": true
     },
     {
       "id": "I2",
@@ -1925,11 +1954,12 @@
       "relatedDimensions": [],
       "confidence": "high",
       "owner": "backend",
-      "recurring": 1,
+      "recurring": 16,
       "evidence": "Captured 0 console error(s) and 8 warning(s) across canonical steps \u2014 review network-log and step artifacts.",
       "severityReason": "P2 from automated heuristics",
       "suggestion": null,
-      "screenshotPath": "artifacts/lr-self-20260531-181428/auto-j1-dashboard-p1-evaluator-s1-desktop-seed1-loop1.png"
+      "screenshotPath": "artifacts/lr-self-20260531-181428/auto-j1-dashboard-p1-evaluator-s1-desktop-seed1-loop1.png",
+      "isRecurring": true
     }
   ],
   "delights": [
@@ -2099,7 +2129,7 @@
     {
       "name": "Information",
       "score": 100,
-      "signal": "0 sparse-content pages",
+      "signal": "avg body 1747ch; 3.1 hdg/page; 45.6 links/page; 0 sparse pages",
       "automated": true
     },
     {
@@ -2111,26 +2141,26 @@
     {
       "name": "Accessibility",
       "score": 95,
-      "signal": "Phase 2 heuristic from step evidence",
-      "automated": false
+      "signal": "225/225 inputs labeled",
+      "automated": true
     },
     {
       "name": "Trust",
       "score": 95,
-      "signal": "Phase 2 heuristic from step evidence",
-      "automated": false
+      "signal": "no auth attempted",
+      "automated": true
     },
     {
       "name": "Onboarding",
       "score": 95,
-      "signal": "Phase 2 heuristic from step evidence",
-      "automated": false
+      "signal": "first journey 100% pass",
+      "automated": true
     },
     {
       "name": "Recovery",
       "score": 95,
-      "signal": "Phase 2 heuristic from step evidence",
-      "automated": false
+      "signal": "no error signals detected",
+      "automated": true
     }
   ],
   "scorecardMd": "# Launch Rehearsal \u2014 Scorecard\n\n| Field | Value |\n|-------|--------|\n| **Run ID** | `lr-self-20260531-181428` |\n| **Date** | 2026-05-31 |\n| **Target** | http://127.0.0.1:8081 |\n| **Product** | Launch Rehearsal Dashboard |\n| **Outcome** | complete |\n| **Duration** | 132s |\n\n---\n\n## Executive summary\n\n| | |\n|---|---|\n| **Readiness** | **Green** |\n| **Top blocker** | Console warnings on page |\n| **Top delight** | Clear navigation structure |\n| **Issues** | 5 |\n| **Delights** | 7 |\n\n| **Pages crawled** | 14 |\n| **Auto journeys added** | 3 |\n\n---\n\n## Persona \u00d7 journey matrix\n\n| Journey | P1 First-time | P2 Daily | P3 Admin |\n|---------|--------|--------|--------|\n| **j1-command-center** Command center | **Pass** | **Pass** | **Pass** |\n| **j2-runs** Runs list | **Pass** | **Pass** | **Pass** |\n| **j3-compare** Compare runs | **Partial** | **Partial** | **Partial** |\n| **j4-init-dogfood** Init dogfood flow | **Pass** | **Pass** | **Pass** |\n| **j5-runner-selftest** Runner self-test trigger | **Pass** | **Pass** | **Pass** |\n| **j6-trends** Trends monitoring | **Pass** | **Pass** | **Pass** |\n| **auto-j1-dashboard** Auto: Dashboard | **Pass** | **Pass** | **Pass** |\n| **auto-j3-explore** Auto: Explore /recommendations | **Pass** | **Pass** | **Pass** |\n| **auto-j5-explore** Auto: Explore /library | **Pass** | **Pass** | **Pass** |\n\n---\n\n## Site map (crawl)\n\n# Site map\n\n**Origin:** http://127.0.0.1:8081  \n**Pages crawled:** 14  \n\n## Hub pages (most outbound links)\n\n- `/` \u2014 Command center \u2014 Launch Rehearsal\n- `/compare` \u2014 Compare runs \u2014 Launch Rehearsal\n- `/library` \u2014 Journey library \u2014 Launch Rehearsal\n- `/agents` \u2014 Agents \u2014 Launch Rehearsal\n- `/alerts` \u2014 Alerts \u2014 Launch Rehearsal\n- `/cli` \u2014 CLI \u2014 Launch Rehearsal\n- `/config` \u2014 Workspace \u2014 Launch Rehearsal\n- `/init` \u2014 Init wizard \u2014 Launch Rehearsal\n\n## All pages\n\n| Path | Title | Depth | Links | Forms | Words |\n|------|-------|-------|-------|-------|-------|\n| `/` | Command center \u2014 Launch Rehearsal | 0 | 29 | 0 | 372 |\n| `/agents` | Agents \u2014 Launch Rehearsal | 1 | 16 | 0 | 450 |\n| `/alerts` | Alerts \u2014 Launch Rehearsal | 1 | 16 | 0 | 151 |\n| `/cli` | CLI \u2014 Launch Rehearsal | 1 | 16 | 0 | 334 |\n| `/compare` | Compare runs \u2014 Launch Rehearsal | 1 | 18 | 0 | 261 |\n| `/config` | Workspace \u2014 Launch Rehearsal | 1 | 16 | 0 | 356 |\n| `/init` | Init wizard \u2014 Launch Rehearsal | 1 | 17 | 0 | 266 |\n| `/integrations` | Integrations \u2014 Launch Rehearsal | 1 | 16 | 0 | 124 |\n| `/library` | Journey library \u2014 Launch Rehearsal | 1 | 18 | 0 | 152 |\n| `/recommendations` | Recommendations \u2014 Launch Rehearsal | 1 | 21 | 0 | 199 |\n| `/runner` | Runner \u2014 Launch Rehearsal | 1 | 17 | 0 | 172 |\n| `/sitemap` | Site map \u2014 Launch Rehearsal | 1 | 16 | 0 | 55 |\n| `/trends` | Trends \u2014 Launch Rehearsal | 1 | 16 | 0 | 308 |\n| `/workflows` | Workflows \u2014 Launch Rehearsal | 1 | 16 | 0 | 240 |\n\n---\n\n## Detected workflows\n\n| Type | Path | Title | Signals |\n|------|------|-------|---------|\n| dashboard | `/config` | Workspace \u2014 Launch Rehearsal | \u2014 |\n| integration | `/integrations` | Integrations \u2014 Launch Rehearsal | \u2014 |\n\n---\n\n## Multi-agent collaboration\n\n| Agent | Role | Summary |\n|-------|------|---------|\n| `crawler` | Site structure discovery | Crawled 14 pages; 0 auth-gated; 0 orphans |\n| `workflow` | Workflow & journey planning | Detected workflow types: dashboard, integration |\n| `journey-runner` | E2E journey execution | Executed 60 steps across 9 journeys (0 failures, 0 flaky steps, seeds=1, viewpor |\n| `performance-v1` | Web Vitals (lab) | Web Vitals captured for 9 journey(s); no threshold breaches |\n| `persona-p1-evaluator` | Evaluator: First-time evaluator (prospect / new user) | Analysis from prospect / new user perspective |\n| `persona-p2-operator` | Evaluator: Daily operator (power user) | Analysis from power user perspective |\n| `persona-p3-admin` | Evaluator: Admin / buyer (IT admin) | Analysis from IT admin perspective |\n| `llm-p1-evaluator` | LLM evaluator: First-time evaluator | First-time evaluator can assess product value from landing and runs, but mobile  |\n| `llm-p2-operator` | LLM evaluator: Daily operator | Dashboard performs reliably on desktop and tablet, but mobile compare page encou |\n| `llm-p3-admin` | LLM evaluator: Admin / buyer | Compare runs on mobile shows errors, impacting trust in cross-device consistency |\n| `synthesizer` | Cross-agent synthesis | Synthesized 5 issues, 7 delights from 10 agent reports |\n\n---\n\n## Dimension rollup (automated subset)\n\n| Dimension | Score 1\u20135 | Signal |\n|-----------|-----------|--------|\n| Functionality | 5 | 100% steps pass; 0 failures |\n| UI/UX | 5 | 0 unlabeled buttons; ~1479ms avg step |\n| Information clarity | 5 | 0 sparse-content pages |\n\n---\n\n## Issues (evidence-bound)\n\n### P2\n\n| ID | Finding | Personas | Evidence |\n|----|---------|----------|----------|\n| **I2** | Console noise spike across run \u2014 Captured 0 console error(s) and 8 warning(s) across canonical steps \u2014 review network-log and step artifacts. | p2-operator | `auto-j1-dashboard-p1-evaluator-s1-desktop-seed1-loop1` |\n| **I3** | Mobile compare page has failed errors \u2014 On mobile view, the compare runs page shows 'failed' errors in the console, which may indicate a rendering or data loading issue that could confuse a new user. | p1-evaluator | `j3-compare-p1-evaluator-s1-mobile-seed1-loop1` |\n| **I4** | Compare page fails on mobile \u2014 Navigation and wait steps on the Compare page (mobile) return an error 'failed', preventing the journey from completing. | p2-operator | `j3-compare-p1-evaluator-s1-mobile-seed1-loop1` |\n| **I5** | Compare runs page fails on mobile with errors \u2014 The mobile version of the compare runs page (j3-compare) shows 'failed' errors in step outcomes. This may prevent mobile users from viewing side-by-side run comparisons, undermining cross-device reliability. | p3-admin | `j3-compare-p1-evaluator-s1-mobile-seed1-loop1` |\n\n### P3\n\n| ID | Finding | Personas | Evidence |\n|----|---------|----------|----------|\n| **I1** | Console warnings on page \u2014 8 warning(s): Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route tem | p2-operator | `j3-compare-p1-evaluator-s1-desktop-seed1-loop1` |\n\n---\n\n## Delights & strengths (required)\n\n| ID | Delight | Personas | Evidence |\n|----|---------|----------|----------|\n| **D1** | Clear navigation structure \u2014 Page has 16 links and 1 headings. | p1-evaluator, p2-operator | `auto-j1-dashboard-p1-evaluator-s1-desktop-seed1-loop1` |\n| **D2** | Informative landing content \u2014 Page includes headings and substantive body copy for first-time evaluators. | p1-evaluator | `auto-j1-dashboard-p1-evaluator-s1-desktop-seed1-loop1` |\n| **D3** | Accessible form labels \u2014 All 2 form inputs have labels or placeholders. | p3-admin | `auto-j3-explore-p1-evaluator-s1-desktop-seed1-loop1` |\n| **D4** | Fast interactions for repeat tasks \u2014 58 steps completed under 3s. | p2-operator | `j1-command-center-p1-evaluator-s1-desktop-seed1-loop1` |\n| **D5** | Clear value proposition on mobile landing page \u2014 The mobile landing page succinctly explains 'Pre-launch readiness, observed. Live rollup of every persona \u00d7 journey rehearsal' helping first-time evaluators quickly grasp the product's purpose. | p1-evaluator | `j1-command-center-p1-evaluator-s1-mobile-seed1-loop1` |\n| **D6** | Init wizard offers self-test YAML generation \u2014 The init wizard includes a 'Generate self-test YAML' button, making it easy for new users to get started with configuration. | p1-evaluator | `j4-init-dogfood-p1-evaluator-s1-mobile-seed1-loop1` |\n| **D7** | Init wizard works seamlessly across all devices \u2014 The Init wizard responds to clicks and loads correctly on desktop, tablet, and mobile without any errors. | p2-operator | `j4-init-dogfood-p1-evaluator-s1-mobile-seed1-loop1` |\n\n---\n\n## Run log\n\n| Step | Journey | Action | Outcome | URL |\n|------|---------|--------|---------|-----|\n| `j1-command-center-p1-evaluator-s1-desktop-seed1-loop1` | j1-command-center | navigate | pass | http://127.0.0.1:8081/ |\n| `j1-command-center-p1-evaluator-s2-desktop-seed1-loop1` | j1-command-center | wait | pass | http://127.0.0.1:8081/ |\n| `j1-command-center-p1-evaluator-s1-tablet-seed1-loop1` | j1-command-center | navigate | pass | http://127.0.0.1:8081/ |\n| `j1-command-center-p1-evaluator-s2-tablet-seed1-loop1` | j1-command-center | wait | pass | http://127.0.0.1:8081/ |\n| `j1-command-center-p1-evaluator-s1-mobile-seed1-loop1` | j1-command-center | navigate | pass | http://127.0.0.1:8081/ |\n| `j1-command-center-p1-evaluator-s2-mobile-seed1-loop1` | j1-command-center | wait | pass | http://127.0.0.1:8081/ |\n| `j2-runs-p1-evaluator-s1-desktop-seed1-loop1` | j2-runs | navigate | pass | http://127.0.0.1:8081/runs |\n| `j2-runs-p1-evaluator-s2-desktop-seed1-loop1` | j2-runs | wait | pass | http://127.0.0.1:8081/runs |\n| `j2-runs-p1-evaluator-s1-tablet-seed1-loop1` | j2-runs | navigate | pass | http://127.0.0.1:8081/runs |\n| `j2-runs-p1-evaluator-s2-tablet-seed1-loop1` | j2-runs | wait | pass | http://127.0.0.1:8081/runs |\n| `j2-runs-p1-evaluator-s1-mobile-seed1-loop1` | j2-runs | navigate | pass | http://127.0.0.1:8081/runs |\n| `j2-runs-p1-evaluator-s2-mobile-seed1-loop1` | j2-runs | wait | pass | http://127.0.0.1:8081/runs |\n| `j3-compare-p1-evaluator-s1-desktop-seed1-loop1` | j3-compare | navigate | pass | http://127.0.0.1:8081/compare |\n| `j3-compare-p1-evaluator-s2-desktop-seed1-loop1` | j3-compare | wait | pass | http://127.0.0.1:8081/compare |\n| `j3-compare-p1-evaluator-s1-tablet-seed1-loop1` | j3-compare | navigate | pass | http://127.0.0.1:8081/compare |\n| `j3-compare-p1-evaluator-s2-tablet-seed1-loop1` | j3-compare | wait | pass | http://127.0.0.1:8081/compare |\n| `j3-compare-p1-evaluator-s1-mobile-seed1-loop1` | j3-compare | navigate | pass | http://127.0.0.1:8081/compare |\n| `j3-compare-p1-evaluator-s2-mobile-seed1-loop1` | j3-compare | wait | pass | http://127.0.0.1:8081/compare |\n| `j4-init-dogfood-p1-evaluator-s1-desktop-seed1-loop1` | j4-init-dogfood | navigate | pass | http://127.0.0.1:8081/init |\n| `j4-init-dogfood-p1-evaluator-s2-desktop-seed1-loop1` | j4-init-dogfood | wait | pass | http://127.0.0.1:8081/init |\n| `j4-init-dogfood-p1-evaluator-s3-desktop-seed1-loop1` | j4-init-dogfood | click | pass | http://127.0.0.1:8081/init |\n| `j4-init-dogfood-p1-evaluator-s4-desktop-seed1-loop1` | j4-init-dogfood | click | pass | http://127.0.0.1:8081/init |\n| `j4-init-dogfood-p1-evaluator-s5-desktop-seed1-loop1` | j4-init-dogfood | wait | pass | http://127.0.0.1:8081/init |\n| `j4-init-dogfood-p1-evaluator-s1-tablet-seed1-loop1` | j4-init-dogfood | navigate | pass | http://127.0.0.1:8081/init |\n| `j4-init-dogfood-p1-evaluator-s2-tablet-seed1-loop1` | j4-init-dogfood | wait | pass | http://127.0.0.1:8081/init |\n| `j4-init-dogfood-p1-evaluator-s3-tablet-seed1-loop1` | j4-init-dogfood | click | pass | http://127.0.0.1:8081/init |\n| `j4-init-dogfood-p1-evaluator-s4-tablet-seed1-loop1` | j4-init-dogfood | click | pass | http://127.0.0.1:8081/init |\n| `j4-init-dogfood-p1-evaluator-s5-tablet-seed1-loop1` | j4-init-dogfood | wait | pass | http://127.0.0.1:8081/init |\n| `j4-init-dogfood-p1-evaluator-s1-mobile-seed1-loop1` | j4-init-dogfood | navigate | pass | http://127.0.0.1:8081/init |\n| `j4-init-dogfood-p1-evaluator-s2-mobile-seed1-loop1` | j4-init-dogfood | wait | pass | http://127.0.0.1:8081/init |\n| `j4-init-dogfood-p1-evaluator-s3-mobile-seed1-loop1` | j4-init-dogfood | click | pass | http://127.0.0.1:8081/init |\n| `j4-init-dogfood-p1-evaluator-s4-mobile-seed1-loop1` | j4-init-dogfood | click | pass | http://127.0.0.1:8081/init |\n| `j4-init-dogfood-p1-evaluator-s5-mobile-seed1-loop1` | j4-init-dogfood | wait | pass | http://127.0.0.1:8081/init |\n| `j5-runner-selftest-p1-evaluator-s1-desktop-seed1-loop1` | j5-runner-selftest | navigate | pass | http://127.0.0.1:8081/runner |\n| `j5-runner-selftest-p1-evaluator-s2-desktop-seed1-loop1` | j5-runner-selftest | wait | pass | http://127.0.0.1:8081/runner |\n| `j5-runner-selftest-p1-evaluator-s3-desktop-seed1-loop1` | j5-runner-selftest | click | pass | http://127.0.0.1:8081/runner |\n| `j5-runner-selftest-p1-evaluator-s4-desktop-seed1-loop1` | j5-runner-selftest | wait | pass | http://127.0.0.1:8081/runner |\n| `j5-runner-selftest-p1-evaluator-s1-tablet-seed1-loop1` | j5-runner-selftest | navigate | pass | http://127.0.0.1:8081/runner |\n| `j5-runner-selftest-p1-evaluator-s2-tablet-seed1-loop1` | j5-runner-selftest | wait | pass | http://127.0.0.1:8081/runner |\n| `j5-runner-selftest-p1-evaluator-s3-tablet-seed1-loop1` | j5-runner-selftest | click | pass | http://127.0.0.1:8081/runner |\n| `j5-runner-selftest-p1-evaluator-s4-tablet-seed1-loop1` | j5-runner-selftest | wait | pass | http://127.0.0.1:8081/runner |\n| `j5-runner-selftest-p1-evaluator-s1-mobile-seed1-loop1` | j5-runner-selftest | navigate | pass | http://127.0.0.1:8081/runner |\n| `j5-runner-selftest-p1-evaluator-s2-mobile-seed1-loop1` | j5-runner-selftest | wait | pass | http://127.0.0.1:8081/runner |\n| `j5-runner-selftest-p1-evaluator-s3-mobile-seed1-loop1` | j5-runner-selftest | click | pass | http://127.0.0.1:8081/runner |\n| `j5-runner-selftest-p1-evaluator-s4-mobile-seed1-loop1` | j5-runner-selftest | wait | pass | http://127.0.0.1:8081/runner |\n| `j6-trends-p1-evaluator-s1-desktop-seed1-loop1` | j6-trends | navigate | pass | http://127.0.0.1:8081/trends |\n| `j6-trends-p1-evaluator-s2-desktop-seed1-loop1` | j6-trends | wait | pass | http://127.0.0.1:8081/trends |\n| `j6-trends-p1-evaluator-s1-tablet-seed1-loop1` | j6-trends | navigate | pass | http://127.0.0.1:8081/trends |\n| `j6-trends-p1-evaluator-s2-tablet-seed1-loop1` | j6-trends | wait | pass | http://127.0.0.1:8081/trends |\n| `j6-trends-p1-evaluator-s1-mobile-seed1-loop1` | j6-trends | navigate | pass | http://127.0.0.1:8081/trends |\n| `j6-trends-p1-evaluator-s2-mobile-seed1-loop1` | j6-trends | wait | pass | http://127.0.0.1:8081/trends |\n| `auto-j1-dashboard-p1-evaluator-s1-desktop-seed1-loop1` | auto-j1-dashboard | navigate | pass | http://127.0.0.1:8081/config |\n| `auto-j1-dashboard-p1-evaluator-s1-tablet-seed1-loop1` | auto-j1-dashboard | navigate | pass | http://127.0.0.1:8081/config |\n| `auto-j1-dashboard-p1-evaluator-s1-mobile-seed1-loop1` | auto-j1-dashboard | navigate | pass | http://127.0.0.1:8081/config |\n| `auto-j3-explore-p1-evaluator-s1-desktop-seed1-loop1` | auto-j3-explore | navigate | pass | http://127.0.0.1:8081/recommendations |\n| `auto-j3-explore-p1-evaluator-s1-tablet-seed1-loop1` | auto-j3-explore | navigate | pass | http://127.0.0.1:8081/recommendations |\n| `auto-j3-explore-p1-evaluator-s1-mobile-seed1-loop1` | auto-j3-explore | navigate | pass | http://127.0.0.1:8081/recommendations |\n| `auto-j5-explore-p1-evaluator-s1-desktop-seed1-loop1` | auto-j5-explore | navigate | pass | http://127.0.0.1:8081/library |\n| `auto-j5-explore-p1-evaluator-s1-tablet-seed1-loop1` | auto-j5-explore | navigate | pass | http://127.0.0.1:8081/library |\n| `auto-j5-explore-p1-evaluator-s1-mobile-seed1-loop1` | auto-j5-explore | navigate | pass | http://127.0.0.1:8081/library |\n\n---\n\n*Generated by Launch Rehearsal CLI \u2014 product-agnostic heuristics. Findings require human review before production decisions.*\n",
@@ -2675,302 +2705,842 @@
     {
       "path": "artifacts/lr-self-20260531-181428/j1-command-center-p1-evaluator-s1-desktop-seed1-loop1.png",
       "stepId": "j1-command-center-p1-evaluator-s1-desktop-seed1-loop1",
-      "label": "Command center"
+      "label": "Command center \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "navigate",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Command center",
+      "durationMs": 1150,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j1-command-center-p1-evaluator-s2-desktop-seed1-loop1.png",
       "stepId": "j1-command-center-p1-evaluator-s2-desktop-seed1-loop1",
-      "label": "Command center"
+      "label": "Command center \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "wait",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Command center",
+      "durationMs": 2623,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j1-command-center-p1-evaluator-s1-tablet-seed1-loop1.png",
       "stepId": "j1-command-center-p1-evaluator-s1-tablet-seed1-loop1",
-      "label": "Command center"
+      "label": "Command center \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "navigate",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Command center",
+      "durationMs": 839,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j1-command-center-p1-evaluator-s2-tablet-seed1-loop1.png",
       "stepId": "j1-command-center-p1-evaluator-s2-tablet-seed1-loop1",
-      "label": "Command center"
+      "label": "Command center \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "wait",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Command center",
+      "durationMs": 2688,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j1-command-center-p1-evaluator-s1-mobile-seed1-loop1.png",
       "stepId": "j1-command-center-p1-evaluator-s1-mobile-seed1-loop1",
-      "label": "Command center"
+      "label": "Command center \u2014 Run rehearsal Command center Pre-launch readiness,",
+      "action": "navigate",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Command center",
+      "durationMs": 941,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j1-command-center-p1-evaluator-s2-mobile-seed1-loop1.png",
       "stepId": "j1-command-center-p1-evaluator-s2-mobile-seed1-loop1",
-      "label": "Command center"
+      "label": "Command center \u2014 Run rehearsal Command center Pre-launch readiness,",
+      "action": "wait",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Command center",
+      "durationMs": 2579,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j2-runs-p1-evaluator-s1-desktop-seed1-loop1.png",
       "stepId": "j2-runs-p1-evaluator-s1-desktop-seed1-loop1",
-      "label": "Runs list"
+      "label": "Runs list \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "navigate",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/runs",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Runs list",
+      "durationMs": 882,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j2-runs-p1-evaluator-s2-desktop-seed1-loop1.png",
       "stepId": "j2-runs-p1-evaluator-s2-desktop-seed1-loop1",
-      "label": "Runs list"
+      "label": "Runs list \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "wait",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/runs",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Runs list",
+      "durationMs": 2135,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j2-runs-p1-evaluator-s1-tablet-seed1-loop1.png",
       "stepId": "j2-runs-p1-evaluator-s1-tablet-seed1-loop1",
-      "label": "Runs list"
+      "label": "Runs list \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "navigate",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/runs",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Runs list",
+      "durationMs": 769,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j2-runs-p1-evaluator-s2-tablet-seed1-loop1.png",
       "stepId": "j2-runs-p1-evaluator-s2-tablet-seed1-loop1",
-      "label": "Runs list"
+      "label": "Runs list \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "wait",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/runs",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Runs list",
+      "durationMs": 2118,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j2-runs-p1-evaluator-s1-mobile-seed1-loop1.png",
       "stepId": "j2-runs-p1-evaluator-s1-mobile-seed1-loop1",
-      "label": "Runs list"
+      "label": "Runs list \u2014 Run rehearsal runs Run history Every",
+      "action": "navigate",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/runs",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Runs list",
+      "durationMs": 784,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j2-runs-p1-evaluator-s2-mobile-seed1-loop1.png",
       "stepId": "j2-runs-p1-evaluator-s2-mobile-seed1-loop1",
-      "label": "Runs list"
+      "label": "Runs list \u2014 Run rehearsal runs Run history Every",
+      "action": "wait",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/runs",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Runs list",
+      "durationMs": 2096,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j3-compare-p1-evaluator-s1-desktop-seed1-loop1.png",
       "stepId": "j3-compare-p1-evaluator-s1-desktop-seed1-loop1",
-      "label": "Compare runs"
+      "label": "Compare runs \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "navigate",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/compare",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Compare runs",
+      "durationMs": 896,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j3-compare-p1-evaluator-s2-desktop-seed1-loop1.png",
       "stepId": "j3-compare-p1-evaluator-s2-desktop-seed1-loop1",
-      "label": "Compare runs"
+      "label": "Compare runs \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "wait",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/compare",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Compare runs",
+      "durationMs": 2086,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j3-compare-p1-evaluator-s1-tablet-seed1-loop1.png",
       "stepId": "j3-compare-p1-evaluator-s1-tablet-seed1-loop1",
-      "label": "Compare runs"
+      "label": "Compare runs \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "navigate",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/compare",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Compare runs",
+      "durationMs": 766,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j3-compare-p1-evaluator-s2-tablet-seed1-loop1.png",
       "stepId": "j3-compare-p1-evaluator-s2-tablet-seed1-loop1",
-      "label": "Compare runs"
+      "label": "Compare runs \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "wait",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/compare",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Compare runs",
+      "durationMs": 2082,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j3-compare-p1-evaluator-s1-mobile-seed1-loop1.png",
       "stepId": "j3-compare-p1-evaluator-s1-mobile-seed1-loop1",
-      "label": "Compare runs"
+      "label": "Compare runs \u2014 Run rehearsal monitor Run diff Side-by-side",
+      "action": "navigate",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/compare",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Compare runs",
+      "durationMs": 682,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j3-compare-p1-evaluator-s2-mobile-seed1-loop1.png",
       "stepId": "j3-compare-p1-evaluator-s2-mobile-seed1-loop1",
-      "label": "Compare runs"
+      "label": "Compare runs \u2014 Run rehearsal monitor Run diff Side-by-side",
+      "action": "wait",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/compare",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Compare runs",
+      "durationMs": 2065,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s1-desktop-seed1-loop1.png",
       "stepId": "j4-init-dogfood-p1-evaluator-s1-desktop-seed1-loop1",
-      "label": "Init dogfood flow"
+      "label": "Init dogfood flow \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "navigate",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/init",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Init dogfood flow",
+      "durationMs": 774,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s2-desktop-seed1-loop1.png",
       "stepId": "j4-init-dogfood-p1-evaluator-s2-desktop-seed1-loop1",
-      "label": "Init dogfood flow"
+      "label": "Init dogfood flow \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "wait",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/init",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Init dogfood flow",
+      "durationMs": 1603,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s3-desktop-seed1-loop1.png",
       "stepId": "j4-init-dogfood-p1-evaluator-s3-desktop-seed1-loop1",
-      "label": "Init dogfood flow"
+      "label": "Init dogfood flow \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "click",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/init",
+      "outcome": "pass",
+      "note": "resolved=getByRole(button)('Use http://127.0.0.1:8081')",
+      "personaId": "p1-evaluator",
+      "journeyName": "Init dogfood flow",
+      "durationMs": 213,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s4-desktop-seed1-loop1.png",
       "stepId": "j4-init-dogfood-p1-evaluator-s4-desktop-seed1-loop1",
-      "label": "Init dogfood flow"
+      "label": "Init dogfood flow \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "click",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/init",
+      "outcome": "pass",
+      "note": "resolved=getByRole(button)('Preflight HEAD')",
+      "personaId": "p1-evaluator",
+      "journeyName": "Init dogfood flow",
+      "durationMs": 101,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s5-desktop-seed1-loop1.png",
       "stepId": "j4-init-dogfood-p1-evaluator-s5-desktop-seed1-loop1",
-      "label": "Init dogfood flow"
+      "label": "Init dogfood flow \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "wait",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/init",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Init dogfood flow",
+      "durationMs": 1627,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s1-tablet-seed1-loop1.png",
       "stepId": "j4-init-dogfood-p1-evaluator-s1-tablet-seed1-loop1",
-      "label": "Init dogfood flow"
+      "label": "Init dogfood flow \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "navigate",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/init",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Init dogfood flow",
+      "durationMs": 783,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s2-tablet-seed1-loop1.png",
       "stepId": "j4-init-dogfood-p1-evaluator-s2-tablet-seed1-loop1",
-      "label": "Init dogfood flow"
+      "label": "Init dogfood flow \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "wait",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/init",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Init dogfood flow",
+      "durationMs": 1595,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s3-tablet-seed1-loop1.png",
       "stepId": "j4-init-dogfood-p1-evaluator-s3-tablet-seed1-loop1",
-      "label": "Init dogfood flow"
+      "label": "Init dogfood flow \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "click",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/init",
+      "outcome": "pass",
+      "note": "resolved=getByRole(button)('Use http://127.0.0.1:8081')",
+      "personaId": "p1-evaluator",
+      "journeyName": "Init dogfood flow",
+      "durationMs": 105,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s4-tablet-seed1-loop1.png",
       "stepId": "j4-init-dogfood-p1-evaluator-s4-tablet-seed1-loop1",
-      "label": "Init dogfood flow"
+      "label": "Init dogfood flow \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "click",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/init",
+      "outcome": "pass",
+      "note": "resolved=getByRole(button)('Preflight HEAD')",
+      "personaId": "p1-evaluator",
+      "journeyName": "Init dogfood flow",
+      "durationMs": 91,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s5-tablet-seed1-loop1.png",
       "stepId": "j4-init-dogfood-p1-evaluator-s5-tablet-seed1-loop1",
-      "label": "Init dogfood flow"
+      "label": "Init dogfood flow \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "wait",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/init",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Init dogfood flow",
+      "durationMs": 1598,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s1-mobile-seed1-loop1.png",
       "stepId": "j4-init-dogfood-p1-evaluator-s1-mobile-seed1-loop1",
-      "label": "Init dogfood flow"
+      "label": "Init dogfood flow \u2014 Run rehearsal configure rehearse init wizard",
+      "action": "navigate",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/init",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Init dogfood flow",
+      "durationMs": 713,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s2-mobile-seed1-loop1.png",
       "stepId": "j4-init-dogfood-p1-evaluator-s2-mobile-seed1-loop1",
-      "label": "Init dogfood flow"
+      "label": "Init dogfood flow \u2014 Run rehearsal configure rehearse init wizard",
+      "action": "wait",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/init",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Init dogfood flow",
+      "durationMs": 1569,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s3-mobile-seed1-loop1.png",
       "stepId": "j4-init-dogfood-p1-evaluator-s3-mobile-seed1-loop1",
-      "label": "Init dogfood flow"
+      "label": "Init dogfood flow \u2014 Run rehearsal configure rehearse init wizard",
+      "action": "click",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/init",
+      "outcome": "pass",
+      "note": "resolved=getByRole(button)('Use http://127.0.0.1:8081')",
+      "personaId": "p1-evaluator",
+      "journeyName": "Init dogfood flow",
+      "durationMs": 79,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s4-mobile-seed1-loop1.png",
       "stepId": "j4-init-dogfood-p1-evaluator-s4-mobile-seed1-loop1",
-      "label": "Init dogfood flow"
+      "label": "Init dogfood flow \u2014 Run rehearsal configure rehearse init wizard",
+      "action": "click",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/init",
+      "outcome": "pass",
+      "note": "resolved=getByRole(button)('Preflight HEAD')",
+      "personaId": "p1-evaluator",
+      "journeyName": "Init dogfood flow",
+      "durationMs": 67,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j4-init-dogfood-p1-evaluator-s5-mobile-seed1-loop1.png",
       "stepId": "j4-init-dogfood-p1-evaluator-s5-mobile-seed1-loop1",
-      "label": "Init dogfood flow"
+      "label": "Init dogfood flow \u2014 Run rehearsal configure rehearse init wizard",
+      "action": "wait",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/init",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Init dogfood flow",
+      "durationMs": 1580,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s1-desktop-seed1-loop1.png",
       "stepId": "j5-runner-selftest-p1-evaluator-s1-desktop-seed1-loop1",
-      "label": "Runner self-test trigger"
+      "label": "Runner self-test trigger \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "navigate",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/runner",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Runner self-test trigger",
+      "durationMs": 834,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s2-desktop-seed1-loop1.png",
       "stepId": "j5-runner-selftest-p1-evaluator-s2-desktop-seed1-loop1",
-      "label": "Runner self-test trigger"
+      "label": "Runner self-test trigger \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "wait",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/runner",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Runner self-test trigger",
+      "durationMs": 1612,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s3-desktop-seed1-loop1.png",
       "stepId": "j5-runner-selftest-p1-evaluator-s3-desktop-seed1-loop1",
-      "label": "Runner self-test trigger"
+      "label": "Runner self-test trigger \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "click",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/runner",
+      "outcome": "pass",
+      "note": "resolved=getByRole(button)('Run self-test (this UI)')",
+      "personaId": "p1-evaluator",
+      "journeyName": "Runner self-test trigger",
+      "durationMs": 122,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s4-desktop-seed1-loop1.png",
       "stepId": "j5-runner-selftest-p1-evaluator-s4-desktop-seed1-loop1",
-      "label": "Runner self-test trigger"
+      "label": "Runner self-test trigger \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "wait",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/runner",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Runner self-test trigger",
+      "durationMs": 2393,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s1-tablet-seed1-loop1.png",
       "stepId": "j5-runner-selftest-p1-evaluator-s1-tablet-seed1-loop1",
-      "label": "Runner self-test trigger"
+      "label": "Runner self-test trigger \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "navigate",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/runner",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Runner self-test trigger",
+      "durationMs": 1243,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s2-tablet-seed1-loop1.png",
       "stepId": "j5-runner-selftest-p1-evaluator-s2-tablet-seed1-loop1",
-      "label": "Runner self-test trigger"
+      "label": "Runner self-test trigger \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "wait",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/runner",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Runner self-test trigger",
+      "durationMs": 1682,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s3-tablet-seed1-loop1.png",
       "stepId": "j5-runner-selftest-p1-evaluator-s3-tablet-seed1-loop1",
-      "label": "Runner self-test trigger"
+      "label": "Runner self-test trigger \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "click",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/runner",
+      "outcome": "pass",
+      "note": "resolved=getByRole(button)('Run self-test (this UI)')",
+      "personaId": "p1-evaluator",
+      "journeyName": "Runner self-test trigger",
+      "durationMs": 243,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s4-tablet-seed1-loop1.png",
       "stepId": "j5-runner-selftest-p1-evaluator-s4-tablet-seed1-loop1",
-      "label": "Runner self-test trigger"
+      "label": "Runner self-test trigger \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "wait",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/runner",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Runner self-test trigger",
+      "durationMs": 2224,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s1-mobile-seed1-loop1.png",
       "stepId": "j5-runner-selftest-p1-evaluator-s1-mobile-seed1-loop1",
-      "label": "Runner self-test trigger"
+      "label": "Runner self-test trigger \u2014 Run rehearsal monitor Run & crawl",
+      "action": "navigate",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/runner",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Runner self-test trigger",
+      "durationMs": 1750,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s2-mobile-seed1-loop1.png",
       "stepId": "j5-runner-selftest-p1-evaluator-s2-mobile-seed1-loop1",
-      "label": "Runner self-test trigger"
+      "label": "Runner self-test trigger \u2014 Run rehearsal monitor Run & crawl",
+      "action": "wait",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/runner",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Runner self-test trigger",
+      "durationMs": 1577,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s3-mobile-seed1-loop1.png",
       "stepId": "j5-runner-selftest-p1-evaluator-s3-mobile-seed1-loop1",
-      "label": "Runner self-test trigger"
+      "label": "Runner self-test trigger \u2014 Run rehearsal monitor Run & crawl",
+      "action": "click",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/runner",
+      "outcome": "pass",
+      "note": "resolved=getByRole(button)('Run self-test (this UI)')",
+      "personaId": "p1-evaluator",
+      "journeyName": "Runner self-test trigger",
+      "durationMs": 149,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j5-runner-selftest-p1-evaluator-s4-mobile-seed1-loop1.png",
       "stepId": "j5-runner-selftest-p1-evaluator-s4-mobile-seed1-loop1",
-      "label": "Runner self-test trigger"
+      "label": "Runner self-test trigger \u2014 Run rehearsal monitor Run & crawl",
+      "action": "wait",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/runner",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Runner self-test trigger",
+      "durationMs": 2185,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j6-trends-p1-evaluator-s1-desktop-seed1-loop1.png",
       "stepId": "j6-trends-p1-evaluator-s1-desktop-seed1-loop1",
-      "label": "Trends monitoring"
+      "label": "Trends monitoring \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "navigate",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/trends",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Trends monitoring",
+      "durationMs": 2806,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j6-trends-p1-evaluator-s2-desktop-seed1-loop1.png",
       "stepId": "j6-trends-p1-evaluator-s2-desktop-seed1-loop1",
-      "label": "Trends monitoring"
+      "label": "Trends monitoring \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "wait",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/trends",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Trends monitoring",
+      "durationMs": 2150,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j6-trends-p1-evaluator-s1-tablet-seed1-loop1.png",
       "stepId": "j6-trends-p1-evaluator-s1-tablet-seed1-loop1",
-      "label": "Trends monitoring"
+      "label": "Trends monitoring \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "navigate",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/trends",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Trends monitoring",
+      "durationMs": 3205,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j6-trends-p1-evaluator-s2-tablet-seed1-loop1.png",
       "stepId": "j6-trends-p1-evaluator-s2-tablet-seed1-loop1",
-      "label": "Trends monitoring"
+      "label": "Trends monitoring \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "wait",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/trends",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Trends monitoring",
+      "durationMs": 2236,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j6-trends-p1-evaluator-s1-mobile-seed1-loop1.png",
       "stepId": "j6-trends-p1-evaluator-s1-mobile-seed1-loop1",
-      "label": "Trends monitoring"
+      "label": "Trends monitoring \u2014 Run rehearsal monitor Trends & monitoring",
+      "action": "navigate",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/trends",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Trends monitoring",
+      "durationMs": 2487,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/j6-trends-p1-evaluator-s2-mobile-seed1-loop1.png",
       "stepId": "j6-trends-p1-evaluator-s2-mobile-seed1-loop1",
-      "label": "Trends monitoring"
+      "label": "Trends monitoring \u2014 Run rehearsal monitor Trends & monitoring",
+      "action": "wait",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/trends",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Trends monitoring",
+      "durationMs": 2249,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/auto-j1-dashboard-p1-evaluator-s1-desktop-seed1-loop1.png",
       "stepId": "auto-j1-dashboard-p1-evaluator-s1-desktop-seed1-loop1",
-      "label": "Auto: Dashboard"
+      "label": "Auto: Dashboard \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "navigate",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/config",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Auto: Dashboard",
+      "durationMs": 1340,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/auto-j1-dashboard-p1-evaluator-s1-tablet-seed1-loop1.png",
       "stepId": "auto-j1-dashboard-p1-evaluator-s1-tablet-seed1-loop1",
-      "label": "Auto: Dashboard"
+      "label": "Auto: Dashboard \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "navigate",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/config",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Auto: Dashboard",
+      "durationMs": 1199,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/auto-j1-dashboard-p1-evaluator-s1-mobile-seed1-loop1.png",
       "stepId": "auto-j1-dashboard-p1-evaluator-s1-mobile-seed1-loop1",
-      "label": "Auto: Dashboard"
+      "label": "Auto: Dashboard \u2014 Run rehearsal configure Workspace \u00b7 rehearse.yaml",
+      "action": "navigate",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/config",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Auto: Dashboard",
+      "durationMs": 1229,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/auto-j3-explore-p1-evaluator-s1-desktop-seed1-loop1.png",
       "stepId": "auto-j3-explore-p1-evaluator-s1-desktop-seed1-loop1",
-      "label": "Auto: Explore /recommendations"
+      "label": "Auto: Explore /recommendations \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "navigate",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/recommendations",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Auto: Explore /recommendations",
+      "durationMs": 1886,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/auto-j3-explore-p1-evaluator-s1-tablet-seed1-loop1.png",
       "stepId": "auto-j3-explore-p1-evaluator-s1-tablet-seed1-loop1",
-      "label": "Auto: Explore /recommendations"
+      "label": "Auto: Explore /recommendations \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "navigate",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/recommendations",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Auto: Explore /recommendations",
+      "durationMs": 1634,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/auto-j3-explore-p1-evaluator-s1-mobile-seed1-loop1.png",
       "stepId": "auto-j3-explore-p1-evaluator-s1-mobile-seed1-loop1",
-      "label": "Auto: Explore /recommendations"
+      "label": "Auto: Explore /recommendations \u2014 Run rehearsal analysis Recommendations & backlog",
+      "action": "navigate",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/recommendations",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Auto: Explore /recommendations",
+      "durationMs": 1592,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/auto-j5-explore-p1-evaluator-s1-desktop-seed1-loop1.png",
       "stepId": "auto-j5-explore-p1-evaluator-s1-desktop-seed1-loop1",
-      "label": "Auto: Explore /library"
+      "label": "Auto: Explore /library \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "navigate",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/library",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Auto: Explore /library",
+      "durationMs": 2042,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/auto-j5-explore-p1-evaluator-s1-tablet-seed1-loop1.png",
       "stepId": "auto-j5-explore-p1-evaluator-s1-tablet-seed1-loop1",
-      "label": "Auto: Explore /library"
+      "label": "Auto: Explore /library \u2014 Rehearsal Monitor Faculty-Dashboard-Eight Workspace 127.0.0.1:8081 Monitor",
+      "action": "navigate",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/library",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Auto: Explore /library",
+      "durationMs": 2330,
+      "consoleErrors": []
     },
     {
       "path": "artifacts/lr-self-20260531-181428/auto-j5-explore-p1-evaluator-s1-mobile-seed1-loop1.png",
       "stepId": "auto-j5-explore-p1-evaluator-s1-mobile-seed1-loop1",
-      "label": "Auto: Explore /library"
+      "label": "Auto: Explore /library \u2014 Run rehearsal map Journey library &",
+      "action": "navigate",
+      "intent": null,
+      "url": "http://127.0.0.1:8081/library",
+      "outcome": "pass",
+      "note": null,
+      "personaId": "p1-evaluator",
+      "journeyName": "Auto: Explore /library",
+      "durationMs": 3666,
+      "consoleErrors": []
     }
   ],
   "annotations": [],
@@ -3115,6 +3685,46 @@
     "source": "template",
     "readinessBand": "Green",
     "issueCount": 2,
-    "delightCount": 3
-  }
+    "delightCount": 3,
+    "layer1Verdict": {
+      "decision": "ship",
+      "headline": "Ready to ship.",
+      "reason": "100% of canonical steps passed with no journey-breaking failures. Polish opportunity: Console noise spike across run.",
+      "band": "Green"
+    },
+    "layer2Story": "TryLapse sent 3 AI personas through 6 product journeys and scored **20/20** steps as passing. All journeys completed successfully across all tested personas. 3 genuine product strength(s) found: Clear navigation structure.",
+    "layer3FixHierarchy": [
+      {
+        "priority": "P2",
+        "title": "Console noise spike across run",
+        "detail": "Captured 0 console error(s) and 8 warning(s) across canonical steps \u2014 review network-log and step artifacts.",
+        "effort": "small",
+        "action": "Fix before GA \u2014 noticeable but not blocking.",
+        "step_id": "auto-j1-dashboard-p1-evaluator-s1-desktop-seed1-loop1",
+        "confidence": "high"
+      },
+      {
+        "priority": "P3",
+        "title": "Console warnings on page",
+        "detail": "8 warning(s): Generated path \"/runs/\" for route \"/runs/$runId\" matched route \"/runs/\" instead. This can happen when multiple route tem",
+        "effort": "tiny",
+        "action": "Track in backlog \u2014 polish item.",
+        "step_id": "j3-compare-p1-evaluator-s1-desktop-seed1-loop1",
+        "confidence": "high"
+      }
+    ],
+    "layer4Forward": [
+      "Expand coverage: add edge-case journeys for error states and empty states.",
+      "Double down on strength: Clear navigation structure \u2014 amplify in onboarding.",
+      "Run again after fixes to confirm the score moved \u2014 track trend across builds."
+    ],
+    "layer5Trend": {
+      "available": false,
+      "note": "Run a second build to see score trajectory."
+    }
+  },
+  "productModel": null,
+  "interactionMap": null,
+  "behavioralJourneys": null,
+  "parallelErrors": []
 }
