@@ -9,6 +9,18 @@
     <meta property="og:description" content="Observe, don't modify. Persona × journey, evidence-bound, multi-agent." />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary" />
+    <script>
+      let hydrationErrorCount = 0;
+      window.addEventListener('error', (event) => {
+        if (event.message && event.message.includes('Invariant failed')) {
+          hydrationErrorCount++;
+          console.log('Hydration error:', event.message);
+          if (hydrationErrorCount >= 2) {
+            console.log('Multiple hydration errors, this may be a configuration issue');
+          }
+        }
+      }, true);
+    </script>
   </head>
   <body>
     <div id="app"></div>
