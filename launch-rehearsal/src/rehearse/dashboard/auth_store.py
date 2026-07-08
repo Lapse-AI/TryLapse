@@ -47,10 +47,13 @@ def _connect(artifacts_root: Path) -> sqlite3.Connection:
     if key not in _local.auth_conns:
         db_path = artifacts_root / "jobs.db"
         db_path.parent.mkdir(parents=True, exist_ok=True)
-        conn = sqlite3.connect(str(db_path), check_same_thread=False, timeout=10)
+        # Longer timeout (30s) for concurrent write operations
+        conn = sqlite3.connect(str(db_path), check_same_thread=False, timeout=30)
         conn.row_factory = sqlite3.Row
         conn.execute("PRAGMA journal_mode=WAL")
         conn.execute("PRAGMA synchronous=NORMAL")
+        # Allow readers to run alongside writers (WAL mode)
+        conn.execute("PRAGMA query_only=OFF")
         _local.auth_conns[key] = conn
     return _local.auth_conns[key]
 
@@ -160,18 +163,27 @@ def create_user(
     uid = str(uuid.uuid4())
     now = datetime.datetime.now(datetime.timezone.utc).isoformat()
     pw_hash = _hash_password(password)
-    try:
-        conn = _connect(artifacts_root)
-        with _write_lock:
-            conn.execute(
-                "INSERT INTO users (id, email, name, pw_hash, created_at)"
-                " VALUES (?, ?, ?, ?, ?)",
-                (uid, email_clean, name_clean, pw_hash, now),
-            )
-            conn.commit()
-        return {"id": uid, "email": email_clean, "name": name_clean}
-    except sqlite3.IntegrityError:
-        return None  # email already taken
+
+    # Retry up to 3 times on database lock
+    max_retries = 3
+    for attempt in range(max_retries):
+        try:
+            conn = _connect(artifacts_root)
+            with _write_lock:
+                conn.execute(
+                    "INSERT INTO users (id, email, name, pw_hash, created_at)"
+                    " VALUES (?, ?, ?, ?, ?)",
+                    (uid, email_clean, name_clean, pw_hash, now),
+                )
+                conn.commit()
+            return {"id": uid, "email": email_clean, "name": name_clean}
+        except sqlite3.IntegrityError:
+            return None  # email already taken
+        except sqlite3.OperationalError as e:
+            if "database is locked" in str(e) and attempt < max_retries - 1:
+                time.sleep(0.1 * (attempt + 1))  # Exponential backoff
+                continue
+            raise
 
 
 def authenticate_user(
