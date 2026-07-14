@@ -60,8 +60,14 @@ def create_reset_token(artifacts_root: Path, user_id: str, email: str) -> str:
         conn.commit()
     conn.close()
 
-    # Log token for console/testing (in production, send via email)
-    print(f"\n🔐 PASSWORD RESET TOKEN\n   Email: {email}\n   Token: {token}\n   Expires: {expires.strftime('%Y-%m-%d %H:%M:%S UTC')}\n")
+    # Log token for console/testing (in production, send via email).
+    # flush=True so it appears in Railway/container logs immediately
+    # (stdout is block-buffered when not a TTY).
+    print(
+        f"\n🔐 PASSWORD RESET TOKEN\n   Email: {email}\n   Token: {token}\n"
+        f"   Expires: {expires.strftime('%Y-%m-%d %H:%M:%S UTC')}\n",
+        flush=True,
+    )
 
     return token
 

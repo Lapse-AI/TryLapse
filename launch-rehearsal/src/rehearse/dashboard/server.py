@@ -1096,12 +1096,17 @@ class _Handler(BaseHTTPRequestHandler):
                 return
             ensure_reset_tokens_table(root)
             token = create_reset_token(root, user["id"], email)
-            # Mock email mode: token returned in response + logged to console.
-            # In production, send via email provider and remove token from response.
-            self._send_json({
-                "message": "Password reset link sent (check console for token)",
-                "token": token,
-            })
+            # SECURITY: the token must never be returned over HTTP in production —
+            # anyone could take over any account. It is only echoed when
+            # REHEARSE_DEV_RESET_TOKENS=1 (local dev / testing). In all other
+            # environments it is delivered out-of-band (server log now; email
+            # provider when configured).
+            resp: dict = {
+                "message": "If an account exists with this email, a reset link will be sent."
+            }
+            if os.environ.get("REHEARSE_DEV_RESET_TOKENS") == "1":
+                resp["token"] = token
+            self._send_json(resp)
             return
 
         if path == "/auth/reset-password":

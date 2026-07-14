@@ -1,0 +1,34 @@
+run:
+  target_url: https://example.com
+  run_id_prefix: loop-test-two
+  product_name: P2
+  viewports:
+  - desktop
+  - tablet
+  - mobile
+  allow_localhost: false
+  persona_lens: true
+crawl:
+  enabled: true
+  max_depth: 2
+  max_pages: 24
+  supplement_journeys: true
+personas:
+- id: p1-new-signup
+  name: New signup
+  role: first-time user
+  goals:
+  - Complete signup and understand the product value
+  - Find the key feature fast
+- id: p2-power-user
+  name: Power user
+  role: experienced user
+  goals:
+  - Complete core tasks efficiently
+  - Explore advanced features
+- id: p3-enterprise
+  name: Enterprise evaluator
+  role: buyer / evaluator
+  goals:
+  - Assess security, compliance and team management
+  - Evaluate pricing and integrations
