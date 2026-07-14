@@ -1080,6 +1080,60 @@ class _Handler(BaseHTTPRequestHandler):
             self._send_json({"token": issue_token(user), "user": user})
             return
 
+        if path == "/auth/forgot-password":
+            body = self._read_json_body()
+            from rehearse.dashboard.auth_store import get_user
+            from rehearse.dashboard.password_reset import create_reset_token, ensure_reset_tokens_table
+            email = str(body.get("email") or "").strip().lower()
+            if not email:
+                self._send_json({"error": "Email is required"}, status=400)
+                return
+            # Find user by email (we need to query users table)
+            conn = sqlite3.connect(str(root / "jobs.db"), check_same_thread=False)
+            user_row = conn.execute(
+                "SELECT id, email FROM users WHERE email = ?", (email,)
+            ).fetchone()
+            conn.close()
+            if not user_row:
+                # For security, don't reveal if email exists
+                self._send_json({"message": "If an account exists with this email, a reset link will be sent."})
+                return
+            ensure_reset_tokens_table(root)
+            token = create_reset_token(root, user_row[0], email)
+            # In production, send via email; for now, return token in response for testing
+            self._send_json({
+                "message": "Password reset link sent (check console for token)",
+                "token": token  # Remove in production; only for testing
+            })
+            return
+
+        if path == "/auth/reset-password":
+            body = self._read_json_body()
+            from rehearse.dashboard.password_reset import validate_reset_token, consume_reset_token
+            from rehearse.dashboard.auth_store import update_user
+            token = str(body.get("token") or "").strip()
+            new_password = str(body.get("password") or "")
+            if not token or not new_password:
+                self._send_json({"error": "Token and password are required"}, status=400)
+                return
+            if len(new_password) < 8:
+                self._send_json({"error": "Password must be at least 8 characters"}, status=400)
+                return
+            # Validate token
+            token_data = validate_reset_token(root, token)
+            if not token_data:
+                self._send_json({"error": "Invalid or expired reset token"}, status=401)
+                return
+            # Update password
+            updated = update_user(root, token_data["user_id"], password=new_password)
+            if not updated:
+                self._send_json({"error": "Failed to update password"}, status=500)
+                return
+            # Mark token as used (one-time use)
+            consume_reset_token(root, token)
+            self._send_json({"message": "Password reset successfully. You can now sign in with your new password."})
+            return
+
         if path == "/api/workspaces":
             payload = self._require_jwt()
             if not payload:

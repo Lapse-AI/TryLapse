@@ -125,6 +125,12 @@ function SignInPage() {
               </p>
             )}
 
+            <div className="flex justify-end">
+              <Link to="/forgot-password" className="text-xs text-muted-foreground hover:text-foreground">
+                Forgot password?
+              </Link>
+            </div>
+
             <button
               type="submit"
               disabled={loading}

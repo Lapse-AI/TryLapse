@@ -14,11 +14,13 @@ import { Route as SitemapRouteImport } from './routes/sitemap'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SigninRouteImport } from './routes/signin'
 import { Route as RunnerRouteImport } from './routes/runner'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RecommendationsRouteImport } from './routes/recommendations'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LibraryRouteImport } from './routes/library'
 import { Route as IntegrationsRouteImport } from './routes/integrations'
 import { Route as InitRouteImport } from './routes/init'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as ConfigRouteImport } from './routes/config'
 import { Route as CompareRouteImport } from './routes/compare'
 import { Route as CliRouteImport } from './routes/cli'
@@ -70,6 +72,11 @@ const RunnerRoute = RunnerRouteImport.update({
   path: '/runner',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RecommendationsRoute = RecommendationsRouteImport.update({
   id: '/recommendations',
   path: '/recommendations',
@@ -93,6 +100,11 @@ const IntegrationsRoute = IntegrationsRouteImport.update({
 const InitRoute = InitRouteImport.update({
   id: '/init',
   path: '/init',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConfigRoute = ConfigRouteImport.update({
@@ -230,11 +242,13 @@ export interface FileRoutesByFullPath {
   '/cli': typeof CliRoute
   '/compare': typeof CompareRoute
   '/config': typeof ConfigRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/init': typeof InitRoute
   '/integrations': typeof IntegrationsRoute
   '/library': typeof LibraryRoute
   '/onboarding': typeof OnboardingRoute
   '/recommendations': typeof RecommendationsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/runner': typeof RunnerRoute
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
@@ -267,11 +281,13 @@ export interface FileRoutesByTo {
   '/cli': typeof CliRoute
   '/compare': typeof CompareRoute
   '/config': typeof ConfigRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/init': typeof InitRoute
   '/integrations': typeof IntegrationsRoute
   '/library': typeof LibraryRoute
   '/onboarding': typeof OnboardingRoute
   '/recommendations': typeof RecommendationsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/runner': typeof RunnerRoute
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
@@ -304,11 +320,13 @@ export interface FileRoutesById {
   '/cli': typeof CliRoute
   '/compare': typeof CompareRoute
   '/config': typeof ConfigRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/init': typeof InitRoute
   '/integrations': typeof IntegrationsRoute
   '/library': typeof LibraryRoute
   '/onboarding': typeof OnboardingRoute
   '/recommendations': typeof RecommendationsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/runner': typeof RunnerRoute
   '/signin': typeof SigninRoute
   '/signup': typeof SignupRoute
@@ -343,11 +361,13 @@ export interface FileRouteTypes {
     | '/cli'
     | '/compare'
     | '/config'
+    | '/forgot-password'
     | '/init'
     | '/integrations'
     | '/library'
     | '/onboarding'
     | '/recommendations'
+    | '/reset-password'
     | '/runner'
     | '/signin'
     | '/signup'
@@ -380,11 +400,13 @@ export interface FileRouteTypes {
     | '/cli'
     | '/compare'
     | '/config'
+    | '/forgot-password'
     | '/init'
     | '/integrations'
     | '/library'
     | '/onboarding'
     | '/recommendations'
+    | '/reset-password'
     | '/runner'
     | '/signin'
     | '/signup'
@@ -416,11 +438,13 @@ export interface FileRouteTypes {
     | '/cli'
     | '/compare'
     | '/config'
+    | '/forgot-password'
     | '/init'
     | '/integrations'
     | '/library'
     | '/onboarding'
     | '/recommendations'
+    | '/reset-password'
     | '/runner'
     | '/signin'
     | '/signup'
@@ -454,11 +478,13 @@ export interface RootRouteChildren {
   CliRoute: typeof CliRoute
   CompareRoute: typeof CompareRoute
   ConfigRoute: typeof ConfigRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   InitRoute: typeof InitRoute
   IntegrationsRoute: typeof IntegrationsRoute
   LibraryRoute: typeof LibraryRoute
   OnboardingRoute: typeof OnboardingRoute
   RecommendationsRoute: typeof RecommendationsRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   RunnerRoute: typeof RunnerRoute
   SigninRoute: typeof SigninRoute
   SignupRoute: typeof SignupRoute
@@ -508,6 +534,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RunnerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/recommendations': {
       id: '/recommendations'
       path: '/recommendations'
@@ -541,6 +574,13 @@ declare module '@tanstack/react-router' {
       path: '/init'
       fullPath: '/init'
       preLoaderRoute: typeof InitRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/config': {
@@ -781,11 +821,13 @@ const rootRouteChildren: RootRouteChildren = {
   CliRoute: CliRoute,
   CompareRoute: CompareRoute,
   ConfigRoute: ConfigRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   InitRoute: InitRoute,
   IntegrationsRoute: IntegrationsRoute,
   LibraryRoute: LibraryRoute,
   OnboardingRoute: OnboardingRoute,
   RecommendationsRoute: RecommendationsRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   RunnerRoute: RunnerRoute,
   SigninRoute: SigninRoute,
   SignupRoute: SignupRoute,
