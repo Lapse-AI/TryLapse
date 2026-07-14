@@ -214,6 +214,20 @@ def authenticate_user(
     return {"id": row["id"], "email": row["email"], "name": row["name"]}
 
 
+def get_user_by_email(artifacts_root: Path, email: str) -> dict | None:
+    """Look up a user by email. Returns ``{"id", "email", "name"}`` or ``None``."""
+    if not email:
+        return None
+    conn = _connect(artifacts_root)
+    row = conn.execute(
+        "SELECT id, email, name FROM users WHERE email = ?",
+        (email.strip().lower(),),
+    ).fetchone()
+    if not row:
+        return None
+    return {"id": row["id"], "email": row["email"], "name": row["name"]}
+
+
 def get_user(artifacts_root: Path, user_id: str) -> dict | None:
     """Look up a user by id. Returns ``{"id", "email", "name"}`` or ``None``."""
     conn = _connect(artifacts_root)
@@ -275,6 +289,30 @@ def update_user(
         )
         conn.commit()
     return {"id": user_id, "email": email, "name": new_name}
+
+
+def set_password(artifacts_root: Path, user_id: str, new_password: str) -> dict | None:
+    """Set a user's password without requiring the current one.
+
+    Only for flows where identity was already proven another way (e.g. a
+    validated password-reset token). Returns the user record or ``None`` if
+    the user doesn't exist.
+    """
+    if not new_password:
+        return None
+    conn = _connect(artifacts_root)
+    row = conn.execute(
+        "SELECT id, email, name FROM users WHERE id = ?", (user_id,)
+    ).fetchone()
+    if not row:
+        return None
+    pw_hash = _hash_password(new_password)
+    with _write_lock:
+        conn.execute(
+            "UPDATE users SET pw_hash = ? WHERE id = ?", (pw_hash, user_id)
+        )
+        conn.commit()
+    return {"id": row["id"], "email": row["email"], "name": row["name"]}
 
 
 def issue_token(user: dict) -> str:

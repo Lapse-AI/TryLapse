@@ -65,6 +65,7 @@ _CORS_ORIGINS: set[str] = set(
 # Paths that bypass auth (always public)
 _PUBLIC_PATHS = {
     "/api/health", "/", "/auth/login", "/auth/signup", "/auth/me",
+    "/auth/forgot-password", "/auth/reset-password",
     "/api/billing/webhook",
 }
 
@@ -1082,35 +1083,31 @@ class _Handler(BaseHTTPRequestHandler):
 
         if path == "/auth/forgot-password":
             body = self._read_json_body()
-            from rehearse.dashboard.auth_store import get_user
+            from rehearse.dashboard.auth_store import get_user_by_email
             from rehearse.dashboard.password_reset import create_reset_token, ensure_reset_tokens_table
             email = str(body.get("email") or "").strip().lower()
             if not email:
                 self._send_json({"error": "Email is required"}, status=400)
                 return
-            # Find user by email (we need to query users table)
-            conn = sqlite3.connect(str(root / "jobs.db"), check_same_thread=False)
-            user_row = conn.execute(
-                "SELECT id, email FROM users WHERE email = ?", (email,)
-            ).fetchone()
-            conn.close()
-            if not user_row:
+            user = get_user_by_email(root, email)
+            if not user:
                 # For security, don't reveal if email exists
                 self._send_json({"message": "If an account exists with this email, a reset link will be sent."})
                 return
             ensure_reset_tokens_table(root)
-            token = create_reset_token(root, user_row[0], email)
-            # In production, send via email; for now, return token in response for testing
+            token = create_reset_token(root, user["id"], email)
+            # Mock email mode: token returned in response + logged to console.
+            # In production, send via email provider and remove token from response.
             self._send_json({
                 "message": "Password reset link sent (check console for token)",
-                "token": token  # Remove in production; only for testing
+                "token": token,
             })
             return
 
         if path == "/auth/reset-password":
             body = self._read_json_body()
             from rehearse.dashboard.password_reset import validate_reset_token, consume_reset_token
-            from rehearse.dashboard.auth_store import update_user
+            from rehearse.dashboard.auth_store import set_password
             token = str(body.get("token") or "").strip()
             new_password = str(body.get("password") or "")
             if not token or not new_password:
@@ -1124,8 +1121,8 @@ class _Handler(BaseHTTPRequestHandler):
             if not token_data:
                 self._send_json({"error": "Invalid or expired reset token"}, status=401)
                 return
-            # Update password
-            updated = update_user(root, token_data["user_id"], password=new_password)
+            # Update password (identity proven by the reset token)
+            updated = set_password(root, token_data["user_id"], new_password)
             if not updated:
                 self._send_json({"error": "Failed to update password"}, status=500)
                 return
