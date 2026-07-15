@@ -196,7 +196,15 @@ function OnboardingPage() {
         teamRole: role ?? "other",
       });
       setWorkspace(ws);
-      navigate({ to: "/$workspaceSlug/init", params: { workspaceSlug: ws.slug } });
+      // Kick off the first rehearsal immediately — the user lands on their
+      // dashboard watching it run instead of an empty configuration page.
+      // Best-effort: if the trigger fails they can still run from the dashboard.
+      try {
+        await api.triggerJob({ mode: "run", configPath: ws.configPath });
+      } catch {
+        // non-fatal — dashboard offers a manual Run button
+      }
+      navigate({ to: "/$workspaceSlug/dashboard", params: { workspaceSlug: ws.slug } });
     } catch {
       setCreateError("Failed to create workspace. Please try again.");
       setCreating(false);

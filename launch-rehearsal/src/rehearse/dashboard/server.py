@@ -2187,12 +2187,21 @@ class _Handler(BaseHTTPRequestHandler):
             except Exception:
                 pass  # healing is best-effort; load_config will report clearly
 
+            # LLM defaults ON when the server has keys configured and the
+            # caller didn't say otherwise — hosted runs get persona
+            # narratives without the client needing to know about keys.
+            # An explicit {"llm": false} still opts out.
+            llm_flag = body.get("llm")
+            if llm_flag is None:
+                from rehearse.llm import llm_enabled
+                llm_flag = llm_enabled()
+
             job = enqueue_run(
                 root,
                 config_path=config_path,
                 output_dir=root,
                 mode=body.get("mode", "run"),
-                use_llm=bool(body.get("llm")),
+                use_llm=bool(llm_flag),
                 no_crawl=bool(body.get("noCrawl")),
             )
             self._send_json(job, status=202)
