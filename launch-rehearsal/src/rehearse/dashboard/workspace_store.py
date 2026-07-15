@@ -190,10 +190,15 @@ def _connect(artifacts_root: Path) -> sqlite3.Connection:
     if key not in _local.ws_conns:
         db_path = artifacts_root / "jobs.db"
         db_path.parent.mkdir(parents=True, exist_ok=True)
-        conn = sqlite3.connect(str(db_path), check_same_thread=False, timeout=10)
-        conn.row_factory = sqlite3.Row
-        conn.execute("PRAGMA journal_mode=WAL")
-        conn.execute("PRAGMA synchronous=NORMAL")
+        # Serialize connection setup — the WAL journal-mode switch takes an
+        # exclusive lock and races between threads creating their first
+        # connection can crash with "database is locked".
+        with _write_lock:
+            conn = sqlite3.connect(str(db_path), check_same_thread=False, timeout=30)
+            conn.row_factory = sqlite3.Row
+            conn.execute("PRAGMA busy_timeout=30000")
+            conn.execute("PRAGMA journal_mode=WAL")
+            conn.execute("PRAGMA synchronous=NORMAL")
         _local.ws_conns[key] = conn
     return _local.ws_conns[key]
 

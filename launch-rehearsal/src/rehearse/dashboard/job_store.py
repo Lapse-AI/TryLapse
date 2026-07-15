@@ -205,22 +205,28 @@ def _connect(artifacts_root: Path) -> sqlite3.Connection:
     if key not in _local.conns:
         path = _db_path(artifacts_root)
         path.parent.mkdir(parents=True, exist_ok=True)
-        conn = sqlite3.connect(str(path), check_same_thread=False, timeout=10)
-        conn.execute("PRAGMA journal_mode=WAL")
-        conn.execute("PRAGMA synchronous=NORMAL")
-        conn.execute("""
-            CREATE TABLE IF NOT EXISTS jobs (
-                id          TEXT PRIMARY KEY,
-                status      TEXT NOT NULL DEFAULT 'queued',
-                job_type    TEXT NOT NULL DEFAULT 'run',
-                started_at  TEXT,
-                finished_at TEXT,
-                data        TEXT NOT NULL DEFAULT '{}'
-            )
-        """)
-        conn.execute("CREATE INDEX IF NOT EXISTS idx_jobs_status ON jobs(status)")
-        conn.execute("CREATE INDEX IF NOT EXISTS idx_jobs_started ON jobs(started_at DESC)")
-        conn.commit()
+        # Serialize connection setup: the WAL journal-mode switch takes an
+        # exclusive lock and does not reliably honor the busy timeout, so
+        # threads racing to create the first connections to a fresh DB can
+        # crash with "database is locked".
+        with _db_lock:
+            conn = sqlite3.connect(str(path), check_same_thread=False, timeout=30)
+            conn.execute("PRAGMA busy_timeout=30000")
+            conn.execute("PRAGMA journal_mode=WAL")
+            conn.execute("PRAGMA synchronous=NORMAL")
+            conn.execute("""
+                CREATE TABLE IF NOT EXISTS jobs (
+                    id          TEXT PRIMARY KEY,
+                    status      TEXT NOT NULL DEFAULT 'queued',
+                    job_type    TEXT NOT NULL DEFAULT 'run',
+                    started_at  TEXT,
+                    finished_at TEXT,
+                    data        TEXT NOT NULL DEFAULT '{}'
+                )
+            """)
+            conn.execute("CREATE INDEX IF NOT EXISTS idx_jobs_status ON jobs(status)")
+            conn.execute("CREATE INDEX IF NOT EXISTS idx_jobs_started ON jobs(started_at DESC)")
+            conn.commit()
         _local.conns[key] = conn
     return _local.conns[key]
 
