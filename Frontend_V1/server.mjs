@@ -1,16 +1,16 @@
-import http from 'http';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-import fs from 'fs';
+import http from "http";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+import fs from "fs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Import the TanStack Start server handler
-const serverEntryPath = join(__dirname, 'dist/server/server.js');
+const serverEntryPath = join(__dirname, "dist/server/server.js");
 const { default: serverHandler } = await import(serverEntryPath);
 
-const staticDir = join(__dirname, 'dist/client');
+const staticDir = join(__dirname, "dist/client");
 const port = process.env.PORT || 8080;
 
 // Serve static assets
@@ -20,7 +20,7 @@ function serveStatic(pathname, res) {
   // Prevent directory traversal
   if (!filePath.startsWith(staticDir)) {
     res.writeHead(404);
-    res.end('Not found');
+    res.end("Not found");
     return true;
   }
 
@@ -29,27 +29,27 @@ function serveStatic(pathname, res) {
     return false;
   }
 
-  const ext = filePath.split('.').pop();
+  const ext = filePath.split(".").pop();
   const mimeTypes = {
-    js: 'application/javascript',
-    css: 'text/css',
-    html: 'text/html',
-    json: 'application/json',
-    png: 'image/png',
-    jpg: 'image/jpeg',
-    jpeg: 'image/jpeg',
-    gif: 'image/gif',
-    svg: 'image/svg+xml',
-    woff: 'font/woff',
-    woff2: 'font/woff2',
+    js: "application/javascript",
+    css: "text/css",
+    html: "text/html",
+    json: "application/json",
+    png: "image/png",
+    jpg: "image/jpeg",
+    jpeg: "image/jpeg",
+    gif: "image/gif",
+    svg: "image/svg+xml",
+    woff: "font/woff",
+    woff2: "font/woff2",
   };
 
-  const contentType = mimeTypes[ext] || 'application/octet-stream';
+  const contentType = mimeTypes[ext] || "application/octet-stream";
   const data = fs.readFileSync(filePath);
 
   res.writeHead(200, {
-    'Content-Type': contentType,
-    'Content-Length': data.length,
+    "Content-Type": contentType,
+    "Content-Length": data.length,
   });
   res.end(data);
   return true;
@@ -61,18 +61,18 @@ const server = http.createServer(async (req, res) => {
   const pathname = url.pathname;
 
   // CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
-  if (req.method === 'OPTIONS') {
+  if (req.method === "OPTIONS") {
     res.writeHead(200);
     res.end();
     return;
   }
 
   // Try to serve static files
-  if (pathname.startsWith('/assets/') || pathname === '/favicon.ico') {
+  if (pathname.startsWith("/assets/") || pathname === "/favicon.ico") {
     if (serveStatic(pathname, res)) {
       return;
     }
@@ -84,18 +84,18 @@ const server = http.createServer(async (req, res) => {
       new Request(url, {
         method: req.method,
         headers: Object.fromEntries(
-          Object.entries(req.headers).map(([k, v]) => [k, Array.isArray(v) ? v[0] : v])
+          Object.entries(req.headers).map(([k, v]) => [k, Array.isArray(v) ? v[0] : v]),
         ),
-        body: req.method !== 'GET' && req.method !== 'HEAD' ? req : undefined,
-      })
+        body: req.method !== "GET" && req.method !== "HEAD" ? req : undefined,
+      }),
     );
 
     res.writeHead(response.status, Object.fromEntries(response.headers));
     res.end(await response.text());
   } catch (error) {
-    console.error('Server error:', error);
+    console.error("Server error:", error);
     res.writeHead(500);
-    res.end('Internal server error');
+    res.end("Internal server error");
   }
 });
 

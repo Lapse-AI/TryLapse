@@ -19,11 +19,11 @@
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 
   /* 5-step semantic type scale (product register: fixed rem, 1.18 ratio) */
-  --text-label: 0.6875rem;   /* 11px — chips, badges, metadata labels */
-  --text-meta:  0.8125rem;   /* 13px — secondary UI, table cells, hints */
-  --text-body:  0.9375rem;   /* 15px — body copy, form inputs, card content */
-  --text-sub:   1.125rem;    /* 18px — section headings, subheadings */
-  --text-head:  1.5rem;      /* 24px — page titles */
+  --text-label: 0.6875rem; /* 11px — chips, badges, metadata labels */
+  --text-meta: 0.8125rem; /* 13px — secondary UI, table cells, hints */
+  --text-body: 0.9375rem; /* 15px — body copy, form inputs, card content */
+  --text-sub: 1.125rem; /* 18px — section headings, subheadings */
+  --text-head: 1.5rem; /* 24px — page titles */
 
   --radius-sm: 6px;
   --radius-md: 8px;
@@ -73,27 +73,27 @@
 
 :root {
   /* Warm parchment palette — ElevenLabs-inspired tactile restraint */
-  --background: oklch(0.993 0.003 90);     /* #fdfcfc — parchment canvas */
-  --foreground: oklch(0.15 0.010 72);      /* near-black, warm undertone */
-  --surface: #ffffff;                       /* white elevated cards */
-  --surface-2: oklch(0.966 0.008 80);      /* #f5f3f1 warm sand — card surfaces */
-  --surface-3: oklch(0.946 0.012 78);      /* deeper warm sand */
+  --background: oklch(0.993 0.003 90); /* #fdfcfc — parchment canvas */
+  --foreground: oklch(0.15 0.01 72); /* near-black, warm undertone */
+  --surface: #ffffff; /* white elevated cards */
+  --surface-2: oklch(0.966 0.008 80); /* #f5f3f1 warm sand — card surfaces */
+  --surface-3: oklch(0.946 0.012 78); /* deeper warm sand */
   --card: #ffffff;
-  --card-foreground: oklch(0.15 0.010 72);
+  --card-foreground: oklch(0.15 0.01 72);
   --popover: #ffffff;
-  --popover-foreground: oklch(0.15 0.010 72);
+  --popover-foreground: oklch(0.15 0.01 72);
 
-  --primary: oklch(0.52 0.18 265);         /* indigo — data/interactive only */
+  --primary: oklch(0.52 0.18 265); /* indigo — data/interactive only */
   --primary-foreground: oklch(0.99 0.003 260);
   --secondary: oklch(0.966 0.008 80);
-  --secondary-foreground: oklch(0.26 0.010 72);
+  --secondary-foreground: oklch(0.26 0.01 72);
   --muted: oklch(0.966 0.008 80);
-  --muted-foreground: oklch(0.49 0.014 74);  /* #777169 driftwood */
-  --accent: oklch(0.955 0.010 78);
-  --accent-foreground: oklch(0.22 0.010 72);
+  --muted-foreground: oklch(0.49 0.014 74); /* #777169 driftwood */
+  --accent: oklch(0.955 0.01 78);
+  --accent-foreground: oklch(0.22 0.01 72);
   --destructive: oklch(0.58 0.22 25);
   --destructive-foreground: oklch(0.99 0.003 260);
-  --border: oklch(0.906 0.003 88);           /* #e5e5e5 ash border */
+  --border: oklch(0.906 0.003 88); /* #e5e5e5 ash border */
   --border-strong: oklch(0.862 0.005 82);
   --input: oklch(0.906 0.003 88);
   --ring: oklch(0.52 0.18 265);
@@ -104,40 +104,33 @@
   --info: oklch(0.56 0.14 235);
   --violet: oklch(0.54 0.18 295);
 
-  --sidebar: oklch(0.972 0.006 82);         /* warm sand sidebar */
+  --sidebar: oklch(0.972 0.006 82); /* warm sand sidebar */
   --sidebar-foreground: oklch(0.22 0.012 74);
   --sidebar-primary: oklch(0.52 0.18 265);
   --sidebar-primary-foreground: oklch(0.99 0.003 260);
-  --sidebar-accent: oklch(0.958 0.010 80);
-  --sidebar-accent-foreground: oklch(0.22 0.010 72);
-  --sidebar-border: oklch(0.900 0.003 85);
+  --sidebar-accent: oklch(0.958 0.01 80);
+  --sidebar-accent-foreground: oklch(0.22 0.01 72);
+  --sidebar-border: oklch(0.9 0.003 85);
   --sidebar-ring: oklch(0.52 0.18 265);
 
   --grid-line: color-mix(in oklab, var(--foreground) 3.5%, transparent);
 
   /* Shadow system — ElevenLabs sub-pixel hairline vocabulary */
-  --shadow-xs:
-    rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
-  --shadow-sm:
-    rgba(0, 0, 0, 0.06) 0px 0px 0px 1px,
-    rgba(0, 0, 0, 0.04) 0px 1px 2px 0px;
+  --shadow-xs: rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+  --shadow-sm: rgba(0, 0, 0, 0.06) 0px 0px 0px 1px, rgba(0, 0, 0, 0.04) 0px 1px 2px 0px;
   --shadow-md:
-    rgba(0, 0, 0, 0.06) 0px 0px 0px 1px,
-    rgba(0, 0, 0, 0.04) 0px 1px 2px 0px,
+    rgba(0, 0, 0, 0.06) 0px 0px 0px 1px, rgba(0, 0, 0, 0.04) 0px 1px 2px 0px,
     rgba(0, 0, 0, 0.04) 0px 2px 4px 0px;
   --shadow-primary:
-    rgba(0, 0, 0, 0.40) 0px 0px 1px 0px,
-    rgba(0, 0, 0, 0.04) 0px 1px 1px 0px,
+    rgba(0, 0, 0, 0.4) 0px 0px 1px 0px, rgba(0, 0, 0, 0.04) 0px 1px 1px 0px,
     rgba(0, 0, 0, 0.04) 0px 2px 4px 0px;
-  --shadow-soft:
-    rgba(0, 0, 0, 0.06) 0px 0px 0px 1px,
-    rgba(0, 0, 0, 0.04) 0px 1px 2px 0px;
+  --shadow-soft: rgba(0, 0, 0, 0.06) 0px 0px 0px 1px, rgba(0, 0, 0, 0.04) 0px 1px 2px 0px;
 
   /* Glow tokens — softened for warm parchment context */
   --glow-ready: 0 0 22px -4px color-mix(in oklab, var(--ready) 32%, transparent);
-  --glow-warn:  0 0 22px -4px color-mix(in oklab, var(--warn)  32%, transparent);
-  --glow-danger:0 0 22px -4px color-mix(in oklab, var(--danger) 32%, transparent);
-  --glow-primary:0 0 22px -4px color-mix(in oklab, var(--primary) 28%, transparent);
+  --glow-warn: 0 0 22px -4px color-mix(in oklab, var(--warn) 32%, transparent);
+  --glow-danger: 0 0 22px -4px color-mix(in oklab, var(--danger) 32%, transparent);
+  --glow-primary: 0 0 22px -4px color-mix(in oklab, var(--primary) 28%, transparent);
 }
 
 .dark {
@@ -155,7 +148,7 @@
     background-color: var(--color-background);
     /* Subtle warm atmosphere — just enough depth without the heavy purple orbs */
     background-image:
-      radial-gradient(ellipse 60% 50% at 0% 0%, oklch(0.93 0.012 80 / 0.30), transparent 60%),
+      radial-gradient(ellipse 60% 50% at 0% 0%, oklch(0.93 0.012 80 / 0.3), transparent 60%),
       radial-gradient(ellipse 45% 40% at 100% 100%, oklch(0.91 0.014 78 / 0.18), transparent 55%);
     color: var(--color-foreground);
     font-family: var(--font-sans);
@@ -168,7 +161,7 @@
   h4 {
     font-family: var(--font-display);
     letter-spacing: -0.02em;
-    font-weight: 400;   /* restraint over mass — heavier weights applied inline when needed */
+    font-weight: 400; /* restraint over mass — heavier weights applied inline when needed */
     text-wrap: balance;
   }
   ::selection {
@@ -241,10 +234,18 @@
 }
 
 /* Status glow utilities */
-@utility glow-ready   { box-shadow: var(--glow-ready);   }
-@utility glow-warn    { box-shadow: var(--glow-warn);    }
-@utility glow-danger  { box-shadow: var(--glow-danger);  }
-@utility glow-primary { box-shadow: var(--glow-primary); }
+@utility glow-ready {
+  box-shadow: var(--glow-ready);
+}
+@utility glow-warn {
+  box-shadow: var(--glow-warn);
+}
+@utility glow-danger {
+  box-shadow: var(--glow-danger);
+}
+@utility glow-primary {
+  box-shadow: var(--glow-primary);
+}
 
 /* Pulse reserved for warn/danger — healthy state is silent */
 @keyframes pulse-warn {

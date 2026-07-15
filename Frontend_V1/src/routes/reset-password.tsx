@@ -125,7 +125,9 @@ function ResetPasswordPage() {
         </div>
 
         <div className="rounded-2xl border border-border bg-surface shadow-xl shadow-black/5 p-8">
-          <h1 className="font-display text-2xl font-semibold text-center mb-1">Create new password</h1>
+          <h1 className="font-display text-2xl font-semibold text-center mb-1">
+            Create new password
+          </h1>
           <p className="text-sm text-muted-foreground text-center mb-6">
             Enter a strong password to secure your account
           </p>

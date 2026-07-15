@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { ShieldCheck, Loader2, CheckCircle2 } from "lucide-react";
 import { api } from "@/lib/api/client";
@@ -8,7 +8,6 @@ export const Route = createFileRoute("/forgot-password")({
 });
 
 function ForgotPasswordPage() {
-  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -23,10 +22,9 @@ function ForgotPasswordPage() {
     setLoading(true);
     setError(null);
     try {
-      const result = await api.forgotPassword(email);
+      await api.forgotPassword(email);
       setSubmitted(true);
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "";
+    } catch {
       setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
@@ -52,11 +50,10 @@ function ForgotPasswordPage() {
             </div>
             <h1 className="font-display text-2xl font-semibold mb-2">Check your email</h1>
             <p className="text-sm text-muted-foreground mb-6">
-              We've sent a password reset link to <span className="font-medium">{email}</span>. Click the link to create a new password.
+              We've sent a password reset link to <span className="font-medium">{email}</span>.
+              Click the link to create a new password.
             </p>
-            <p className="text-xs text-muted-foreground mb-6">
-              The link expires in 24 hours.
-            </p>
+            <p className="text-xs text-muted-foreground mb-6">The link expires in 24 hours.</p>
             <div className="space-y-3">
               <button
                 onClick={() => {
@@ -98,7 +95,9 @@ function ForgotPasswordPage() {
         </div>
 
         <div className="rounded-2xl border border-border bg-surface shadow-xl shadow-black/5 p-8">
-          <h1 className="font-display text-2xl font-semibold text-center mb-1">Reset your password</h1>
+          <h1 className="font-display text-2xl font-semibold text-center mb-1">
+            Reset your password
+          </h1>
           <p className="text-sm text-muted-foreground text-center mb-6">
             Enter your email to receive a password reset link
           </p>

@@ -126,7 +126,10 @@ function SignInPage() {
             )}
 
             <div className="flex justify-end">
-              <Link to="/forgot-password" className="text-xs text-muted-foreground hover:text-foreground">
+              <Link
+                to="/forgot-password"
+                className="text-xs text-muted-foreground hover:text-foreground"
+              >
                 Forgot password?
               </Link>
             </div>

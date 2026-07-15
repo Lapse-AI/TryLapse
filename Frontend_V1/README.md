@@ -2,9 +2,9 @@
 
 **Dev and Vision both ship the same newest (Vision-level) UI** at http://127.0.0.1:8081/
 
-| Command | Badge | Use |
-|---------|-------|-----|
-| `npm run dev` | Dev | Daily development |
+| Command              | Badge  | Use                                 |
+| -------------------- | ------ | ----------------------------------- |
+| `npm run dev`        | Dev    | Daily development                   |
 | `npm run dev:vision` | Vision | Same UI — reference / design builds |
 
 See [`UI_PRODUCT_LINES.md`](../enterprise_work_env_simulator_2026/UI_PRODUCT_LINES.md).
