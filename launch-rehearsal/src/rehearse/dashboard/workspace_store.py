@@ -40,8 +40,53 @@ _PERSONAS_BY_ROLE: dict[str, list[dict]] = {
          "goals": ["Complete signup and understand the product value", "Find the key feature fast"]},
         {"id": "p2-power-user", "name": "Power user", "role": "experienced user",
          "goals": ["Complete core tasks efficiently", "Explore advanced features"]},
+        {"id": "p3-casual-visitor", "name": "Casual visitor", "role": "low-intent browser",
+         "goals": ["Understand what the product does in under a minute", "Find pricing or contact info"]},
     ],
 }
+
+# Universal starter journeys — work on any public website. Persona-agnostic
+# (no persona_ids) so crawl-based supplement_journeys still adds discovered
+# journeys on top. dsl.MIN_JOURNEYS requires >= 5 at config load time, which
+# happens BEFORE the crawl can supplement — a generated config with zero
+# journeys can never run.
+_STARTER_JOURNEYS: list[dict] = [
+    {"id": "j1-first-impression", "name": "First impression — homepage loads and renders",
+     "steps": [
+         {"action": "navigate", "url": "{target_url}/"},
+         {"action": "wait", "value": "3000"},
+         {"action": "scroll"},
+     ]},
+    {"id": "j2-explore-navigation", "name": "Explore primary navigation",
+     "steps": [
+         {"action": "navigate", "url": "{target_url}/"},
+         {"action": "wait", "value": "2000"},
+         {"action": "click", "intent": "main navigation menu item"},
+         {"action": "wait", "value": "2000"},
+     ]},
+    {"id": "j3-find-value-proposition", "name": "Find pricing or product information",
+     "steps": [
+         {"action": "navigate", "url": "{target_url}/"},
+         {"action": "wait", "value": "2000"},
+         {"action": "click", "intent": "pricing, product, or features link"},
+         {"action": "wait", "value": "2000"},
+     ]},
+    {"id": "j4-primary-cta", "name": "Follow the primary call to action",
+     "steps": [
+         {"action": "navigate", "url": "{target_url}/"},
+         {"action": "wait", "value": "2000"},
+         {"action": "click", "intent": "primary call to action button"},
+         {"action": "wait", "value": "2000"},
+     ]},
+    {"id": "j5-footer-and-trust", "name": "Scroll to footer and check trust signals",
+     "steps": [
+         {"action": "navigate", "url": "{target_url}/"},
+         {"action": "scroll"},
+         {"action": "wait", "value": "1500"},
+         {"action": "click", "intent": "about, contact, or footer link"},
+         {"action": "wait", "value": "2000"},
+     ]},
+]
 
 
 def _generate_config_yaml(
@@ -84,10 +129,55 @@ def _generate_config_yaml(
         for g in p["goals"]:
             lines.append(f"  - {g}")
 
+    lines.append("journeys:")
+    for j in _STARTER_JOURNEYS:
+        lines.append(f"- id: {j['id']}")
+        lines.append(f"  name: {j['name']}")
+        lines.append("  steps:")
+        for s in j["steps"]:
+            lines.append(f"  - action: {s['action']}")
+            if s.get("url"):
+                lines.append(f"    url: '{s['url']}'")
+            if s.get("intent"):
+                lines.append(f"    intent: {s['intent']}")
+            if s.get("value"):
+                lines.append(f"    value: '{s['value']}'")
+
     configs_dir.mkdir(parents=True, exist_ok=True)
     config_path = configs_dir / f"{slug}.yaml"
     config_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return config_path
+
+def ensure_starter_journeys(config_path: Path) -> bool:
+    """Heal a config that has no journeys by appending the universal starters.
+
+    Workspace configs generated before starter journeys existed fail
+    load_config (MIN_JOURNEYS) on every run. Returns True if the file was
+    patched, False if it already had journeys (or can't be parsed).
+    """
+    import yaml
+    try:
+        data = yaml.safe_load(config_path.read_text(encoding="utf-8")) or {}
+    except Exception:
+        return False
+    if data.get("journeys"):
+        return False
+    lines = [config_path.read_text(encoding="utf-8").rstrip("\n"), "journeys:"]
+    for j in _STARTER_JOURNEYS:
+        lines.append(f"- id: {j['id']}")
+        lines.append(f"  name: {j['name']}")
+        lines.append("  steps:")
+        for s in j["steps"]:
+            lines.append(f"  - action: {s['action']}")
+            if s.get("url"):
+                lines.append(f"    url: '{s['url']}'")
+            if s.get("intent"):
+                lines.append(f"    intent: {s['intent']}")
+            if s.get("value"):
+                lines.append(f"    value: '{s['value']}'")
+    config_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return True
+
 
 _local = threading.local()
 _write_lock = threading.Lock()

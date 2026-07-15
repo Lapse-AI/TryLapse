@@ -2178,6 +2178,15 @@ class _Handler(BaseHTTPRequestHandler):
                     )
                     return
 
+            # Self-heal: workspace configs generated before starter journeys
+            # existed have zero journeys and fail load_config on every run.
+            from rehearse.dashboard.workspace_store import ensure_starter_journeys
+            try:
+                if ensure_starter_journeys(config_path):
+                    print(f"[jobs] healed 0-journey config: {config_path}", flush=True)
+            except Exception:
+                pass  # healing is best-effort; load_config will report clearly
+
             job = enqueue_run(
                 root,
                 config_path=config_path,

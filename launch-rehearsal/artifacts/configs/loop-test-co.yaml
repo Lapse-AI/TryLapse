@@ -32,3 +32,57 @@ personas:
   goals:
   - Assess security, compliance and team management
   - Evaluate pricing and integrations
+journeys:
+- id: j1-first-impression
+  name: First impression — homepage loads and renders
+  steps:
+  - action: navigate
+    url: '{target_url}/'
+  - action: wait
+    value: '3000'
+  - action: scroll
+- id: j2-explore-navigation
+  name: Explore primary navigation
+  steps:
+  - action: navigate
+    url: '{target_url}/'
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: main navigation menu item
+  - action: wait
+    value: '2000'
+- id: j3-find-value-proposition
+  name: Find pricing or product information
+  steps:
+  - action: navigate
+    url: '{target_url}/'
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: pricing, product, or features link
+  - action: wait
+    value: '2000'
+- id: j4-primary-cta
+  name: Follow the primary call to action
+  steps:
+  - action: navigate
+    url: '{target_url}/'
+  - action: wait
+    value: '2000'
+  - action: click
+    intent: primary call to action button
+  - action: wait
+    value: '2000'
+- id: j5-footer-and-trust
+  name: Scroll to footer and check trust signals
+  steps:
+  - action: navigate
+    url: '{target_url}/'
+  - action: scroll
+  - action: wait
+    value: '1500'
+  - action: click
+    intent: about, contact, or footer link
+  - action: wait
+    value: '2000'
