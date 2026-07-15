@@ -1,7 +1,6 @@
-# Launch Rehearsal — dashboard-only image for Railway / Coolify / Render
-# Does NOT include Playwright/Chromium — use for "rehearse serve" only.
-# Triggers new rehearsal runs locally; this image serves the dashboard UI,
-# API (summaries, bundles, compare, chat, config) and pre-seeded demo data.
+# Launch Rehearsal — full image for Railway / Coolify / Render
+# Includes Playwright + Chromium so hosted users can trigger real
+# rehearsal runs from the dashboard, not just browse pre-seeded data.
 
 FROM python:3.12-slim
 
@@ -22,6 +21,14 @@ RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
 COPY launch-rehearsal/ ./launch-rehearsal/
 RUN mkdir -p launch-rehearsal/src/rehearse/dashboard/static
 RUN pip install --no-cache-dir -e ./launch-rehearsal
+
+# Chromium for Playwright — hosted runs launch real browsers.
+# --with-deps pulls the system libraries Chromium needs on debian-slim.
+# Pinned browser path so the binary survives user/home changes.
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+RUN apt-get update \
+    && playwright install --with-deps chromium \
+    && rm -rf /var/lib/apt/lists/*
 
 # Build the frontend and copy dist directly into the source static dir.
 # Because we used -e above, the running package already resolves to this path.
