@@ -742,7 +742,24 @@ class _Handler(BaseHTTPRequestHandler):
         if path == "/api/digest":
             n = int((qs.get("n") or ["7"])[0])
             refresh = (qs.get("refresh") or [""])[0].lower() in ("1", "true", "yes")
-            self._send_json(get_command_digest(root, limit=max(1, min(n, 20)), refresh=refresh))
+            # Same workspace scoping as /api/trends: authenticated users only
+            # see their own workspace's runs in the Situation Report.
+            payload = self._require_jwt()
+            config_prefix: str | None = None
+            if payload:
+                from rehearse.dashboard.workspace_store import get_workspaces_for_user
+                workspaces = get_workspaces_for_user(root, payload["sub"])
+                if workspaces:
+                    cp = workspaces[0].get("configPath") or workspaces[0].get("config_path") or ""
+                    if cp:
+                        config_prefix = _config_prefix_from_path(cp)
+            else:
+                config_prefix = (qs.get("configPrefix") or [""])[0].strip() or None
+            self._send_json(
+                get_command_digest(
+                    root, limit=max(1, min(n, 20)), refresh=refresh, config_prefix=config_prefix
+                )
+            )
             return
 
         if path == "/api/search":

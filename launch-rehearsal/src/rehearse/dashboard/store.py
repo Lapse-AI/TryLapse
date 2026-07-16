@@ -534,7 +534,13 @@ def get_trends(artifacts_root: Path, *, refresh: bool = False, config_prefix: st
     return payload
 
 
-def get_command_digest(artifacts_root: Path, *, limit: int = 7, refresh: bool = False) -> dict[str, Any]:
+def get_command_digest(
+    artifacts_root: Path,
+    *,
+    limit: int = 7,
+    refresh: bool = False,
+    config_prefix: str | None = None,
+) -> dict[str, Any]:
     from rehearse.dashboard.narrative_cache import (
         digest_fingerprint,
         load_cached,
@@ -543,7 +549,9 @@ def get_command_digest(artifacts_root: Path, *, limit: int = 7, refresh: bool = 
     from rehearse.llm import llm_enabled
     from rehearse.narrative import build_command_digest
 
-    summaries = list_run_summaries(artifacts_root)[:limit]
+    # config_prefix scopes the digest to one workspace's runs — without it a
+    # workspace's Situation Report narrates other tenants' run IDs and scores.
+    summaries = list_run_summaries(artifacts_root, config_prefix=config_prefix)[:limit]
     fp = digest_fingerprint(summaries, limit=limit)
     if not refresh:
         cached = load_cached(artifacts_root, "command-digest", fp)
