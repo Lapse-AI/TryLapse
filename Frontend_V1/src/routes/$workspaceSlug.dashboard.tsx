@@ -97,6 +97,8 @@ function Index() {
       <NoRunsEmptyState
         onRun={() => trigger.mutate({ mode: "run" })}
         isPending={trigger.isPending}
+        jobRunning={jobsRunning}
+        workspaceSlug={workspaceSlug}
       />
     );
   }
@@ -617,9 +619,53 @@ function Index() {
   );
 }
 
-function NoRunsEmptyState({ onRun, isPending }: { onRun: () => void; isPending: boolean }) {
+function NoRunsEmptyState({
+  onRun,
+  isPending,
+  jobRunning,
+  workspaceSlug,
+}: {
+  onRun: () => void;
+  isPending: boolean;
+  jobRunning?: boolean;
+  workspaceSlug?: string;
+}) {
   const ws = getWorkspace();
   const hasJourneys = !!ws?.configPath;
+
+  // A rehearsal is already in flight (e.g. auto-triggered by onboarding) —
+  // show live progress instead of a CTA that would start a duplicate run.
+  if (jobRunning) {
+    return (
+      <div className="flex-1 flex items-center justify-center p-12">
+        <div className="max-w-md w-full text-center">
+          <div className="size-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-5">
+            <Loader2 className="size-8 text-primary animate-spin" />
+          </div>
+          <h2 className="font-display text-2xl font-semibold mb-2">
+            Your first rehearsal is running
+          </h2>
+          <p className="text-sm text-muted-foreground mb-8">
+            Synthetic personas are working through{" "}
+            <span className="font-mono text-foreground text-xs">
+              {ws?.targetUrl ?? "your product"}
+            </span>{" "}
+            right now. Your readiness scorecard lands here in about 5 minutes.
+          </p>
+          {workspaceSlug && (
+            <Link
+              to="/$workspaceSlug/runner"
+              params={{ workspaceSlug }}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-border text-sm hover:bg-surface-2 transition-colors"
+            >
+              Watch live progress →
+            </Link>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex-1 flex items-center justify-center p-12">
       <div className="max-w-md w-full text-center">
