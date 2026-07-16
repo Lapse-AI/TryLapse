@@ -94,14 +94,25 @@ def llm_provider() -> str:
 
 
 def _api_key() -> str | None:
+    """API key matching the provider that _base_url() selects.
+
+    The key MUST follow the base-URL provider: when both NIM and DeepSeek
+    keys are set, preferring one key unconditionally sends it to the other
+    provider's endpoint and every call 401s (then silently falls back to
+    template narratives).
+    """
     explicit = os.environ.get("REHEARSE_LLM_API_KEY")
     if explicit:
         return explicit
-    # Prefer NIM key; fall back to DeepSeek then OpenAI
+    base = _base_url().lower()
+    if "deepseek.com" in base:
+        return _deepseek_api_key()
+    if "nvidia" in base:
+        return _nim_api_key()
     return (
-        _nim_api_key()
+        os.environ.get("OPENAI_API_KEY")
         or _deepseek_api_key()
-        or os.environ.get("OPENAI_API_KEY")
+        or _nim_api_key()
     )
 
 
