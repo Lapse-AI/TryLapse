@@ -1,9 +1,13 @@
 # TryLapse — Launch Rehearsal
 
 [![CI](https://github.com/Lapse-AI/TryLapse/actions/workflows/ci.yml/badge.svg)](https://github.com/Lapse-AI/TryLapse/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/github/license/Lapse-AI/TryLapse)](LICENSE)
+[![License: PolyForm Noncommercial 1.0.0](https://img.shields.io/badge/license-PolyForm%20Noncommercial%201.0.0-blue)](LICENSE)
 
 Enterprise-agnostic **monitoring, feedback, and testing** for web apps before launch. Observe and score only — no auto-fix, no deploy.
+
+## License
+
+Source-available under the [PolyForm Noncommercial License 1.0.0](LICENSE). You may use, run, and modify this code for noncommercial purposes. **Commercial use requires a separate license** — contact Lapse AI to discuss commercial terms.
 
 **Org:** https://github.com/Lapse-AI · **Contributing:** [CONTRIBUTING.md](CONTRIBUTING.md) · **Changelog:** [CHANGES.md](CHANGES.md)
 
