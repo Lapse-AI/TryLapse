@@ -41,9 +41,18 @@ from rehearse.dashboard.store import (
 _STATIC_DIR = Path(__file__).resolve().parent / "static"
 
 # --- Auth -------------------------------------------------------------------
-# Set REHEARSE_API_TOKEN in .env or environment to require a bearer token on
-# every API request. Leave unset for local dev (no auth enforced).
+# A valid user JWT (from signup/login) is REQUIRED on every non-public API
+# request by default — this is not conditional on REHEARSE_API_TOKEN being
+# set. REHEARSE_API_TOKEN, if set, is an *additional* accepted credential for
+# scripts/CI that don't want to go through user signup.
+#
+# REHEARSE_DISABLE_AUTH=1 is a separate, explicit opt-out for a fully open
+# local dev server. It must be a deliberate choice, not a side effect of
+# forgetting to set an unrelated token — the previous behavior ("no token
+# configured" silently meant "no auth enforced") left a hosted deployment
+# with zero authentication until this was caught and fixed.
 _API_TOKEN: str | None = os.environ.get("REHEARSE_API_TOKEN") or None
+_AUTH_DISABLED: bool = os.environ.get("REHEARSE_DISABLE_AUTH") == "1"
 
 # Guards os.environ mutation in /api/product/analyze so per-request API keys
 # don't leak into concurrent background job threads.
@@ -248,21 +257,21 @@ class _Handler(BaseHTTPRequestHandler):
 
     def _check_auth(self, path: str) -> bool:
         """Return True if request is authorised. Sends 401 and returns False otherwise."""
-        if not _API_TOKEN:
-            return True  # auth disabled — local dev
         if path in _PUBLIC_PATHS or path.startswith("/static") or not path.startswith("/api"):
             return True
-        # Accept static API token or a valid user JWT
+        if _AUTH_DISABLED:
+            return True  # explicit local-dev opt-out only — see REHEARSE_DISABLE_AUTH above
+        # Accept a valid user JWT, or the static API token if one is configured
         auth_header = self.headers.get("Authorization", "")
         if auth_header.startswith("Bearer "):
             token = auth_header[7:]
-            if token == _API_TOKEN:
+            if _API_TOKEN and token == _API_TOKEN:
                 return True
             from rehearse.dashboard.auth_store import decode_token
             if decode_token(token) is not None:
                 return True
         qs = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
-        if (qs.get("token") or [""])[0] == _API_TOKEN:
+        if _API_TOKEN and (qs.get("token") or [""])[0] == _API_TOKEN:
             return True
         self._send_json(
             {"error": "Unauthorized — sign in at /auth/login or set Authorization: Bearer <REHEARSE_API_TOKEN>"},
@@ -2176,10 +2185,24 @@ class _Handler(BaseHTTPRequestHandler):
             # known workspace (config filename stem == workspace slug, the
             # auto-generated convention). Configs with no matching workspace
             # (dogfood/demo/internal configs) are never quota-limited.
-            from rehearse.dashboard.workspace_store import get_workspace_by_slug
+            from rehearse.dashboard.workspace_store import get_workspace_by_slug, get_member_role
             from rehearse.dashboard.billing import check_quota
             ws_guess = get_workspace_by_slug(root, config_path.stem)
             if ws_guess:
+                # Authorization, not just authentication: a signed-in user
+                # from a DIFFERENT workspace must not be able to trigger runs
+                # against (and burn the quota/LLM budget of) a config they
+                # don't belong to just by knowing/guessing its path. A request
+                # authenticated only via the static REHEARSE_API_TOKEN has no
+                # associated user (trusted script/CI context) and is exempt.
+                jwt_payload = self._require_jwt()
+                if jwt_payload and get_member_role(root, ws_guess["id"], jwt_payload["sub"]) is None:
+                    self._send_json(
+                        {"error": "You are not a member of the workspace that owns this config"},
+                        status=403,
+                    )
+                    return
+
                 quota = check_quota(root, config_path.stem, ws_guess.get("plan"))
                 if not quota["allowed"]:
                     self._send_json(
