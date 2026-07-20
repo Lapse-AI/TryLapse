@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 import subprocess
 import threading
@@ -18,7 +19,15 @@ from rehearse.dashboard.job_store import (
     mark_stale_running as _db_mark_stale,
 )
 
-_run_serial_lock = threading.Lock()
+# A single global threading.Lock() here previously serialized every rehearsal
+# run across the ENTIRE deployment — two unrelated workspaces triggering runs
+# at the same time meant one queued behind the other with zero actual resource
+# contention reason to do so. A bounded Semaphore keeps the real constraint
+# (don't launch unbounded concurrent Chromium subprocesses on one container)
+# without forcing unrelated workspaces to serialize behind each other.
+# Override via REHEARSE_MAX_CONCURRENT_RUNS for larger hosts.
+_MAX_CONCURRENT_RUNS = max(1, int(os.environ.get("REHEARSE_MAX_CONCURRENT_RUNS", "3")))
+_run_serial_lock = threading.Semaphore(_MAX_CONCURRENT_RUNS)
 
 
 def _try_salvage_partial_run(artifacts_root: Path, run_id_or_prefix: str | None, output_dir: Path) -> None:

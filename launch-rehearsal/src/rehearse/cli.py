@@ -311,5 +311,57 @@ def diff_cmd(output: Path, run_a: str, run_b: str) -> None:
     click.echo(json.dumps(result, indent=2))
 
 
+@main.command("capture-session")
+@click.option("--url", "-u", required=True, help="Login URL to open (SSO/SAML/MFA all work — you complete it by hand)")
+@click.option("--output", "-o", required=True, type=click.Path(path_type=Path), help="Where to save the session JSON")
+@click.option("--timeout-minutes", default=10, show_default=True, help="How long to wait for you to finish logging in")
+def capture_session_cmd(url: str, output: Path, timeout_minutes: int) -> None:
+    """Capture a logged-in browser session for apps rehearse can't log into itself.
+
+    Opens a real, visible browser window. Log in by hand — SSO redirect, MFA
+    prompt, whatever your app requires — then come back to this terminal and
+    press Enter. The session (cookies + localStorage) is saved to --output.
+
+    Reference it from a config's auth block:
+
+      auth:
+        storage_state_path: auth/session.json
+
+    Rehearsal runs will reuse this session instead of trying to fill a login
+    form. Re-run this command to refresh the session once it expires.
+    """
+    from playwright.sync_api import sync_playwright
+
+    output.parent.mkdir(parents=True, exist_ok=True)
+
+    with sync_playwright() as pw:
+        browser = pw.chromium.launch(headless=False)
+        context = browser.new_context()
+        page = context.new_page()
+        page.goto(url, wait_until="domcontentloaded")
+
+        click.echo("")
+        click.echo("A browser window has opened. Complete login there — including")
+        click.echo("any SSO redirect or MFA step — until you land on a logged-in page.")
+        click.echo(f"Then come back here and press Enter (waiting up to {timeout_minutes} min)...")
+        click.echo("")
+
+        import select
+        import sys as _sys
+
+        ready, _, _ = select.select([_sys.stdin], [], [], timeout_minutes * 60)
+        if not ready:
+            browser.close()
+            click.echo("Timed out waiting for Enter — no session saved.", err=True)
+            sys.exit(1)
+        input()
+
+        context.storage_state(path=str(output))
+        browser.close()
+
+    click.echo(f"Session saved: {output.resolve()}")
+    click.echo("Add `auth: {storage_state_path: " + str(output) + "}` to your config to use it.")
+
+
 if __name__ == "__main__":
     main()

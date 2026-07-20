@@ -23,14 +23,9 @@ jobs:
         id: rehearsal
         with:
           config: rehearsal.yaml
+          comment-on-pr: "true"   # posts/updates a PR comment with gate + score + verdict
         env:
           DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}   # optional — omit to run heuristics-only
-
-      - name: Comment gate result on PR
-        if: always()
-        run: |
-          echo "Gate: ${{ steps.rehearsal.outputs.launch-gate }}"
-          echo "Readiness: ${{ steps.rehearsal.outputs.readiness }}"
 ```
 
 The job fails (blocking merge if you've set it as a required check) when the gate is `CAUTION` or `BLOCKED`. Set `fail-on-gate: false` to record the result without blocking.
@@ -46,6 +41,8 @@ The job fails (blocking merge if you've set it as a required check) when the gat
 | `output-dir` | no | `artifacts` | Where rehearsal artifacts are written |
 | `use-llm` | no | `false` | Pass `--llm` to enable persona LLM analysis (needs an LLM API key env var) |
 | `fail-on-gate` | no | `true` | Fail the step when the gate is `CAUTION`/`BLOCKED` |
+| `comment-on-pr` | no | `false` | Post (or update) a PR comment with the gate, score, and verdict — only applies on `pull_request` events. Needs `permissions: pull-requests: write` on the job. |
+| `github-token` | no | `${{ github.token }}` | Token used to post the PR comment |
 
 ## Outputs
 
@@ -60,5 +57,6 @@ The job fails (blocking merge if you've set it as a required check) when the gat
 ## Notes
 
 - This installs `rehearse` directly from the `launch-rehearsal` subdirectory of this monorepo via `pip install git+...#subdirectory=launch-rehearsal`, since the package isn't on PyPI yet. Once it is, this action will switch to a plain `pip install rehearse` and the `repo`/`ref` inputs will become irrelevant (kept for backwards compatibility).
+- `comment-on-pr` updates its own prior comment on re-runs instead of piling up a new one every push.
 - Without an LLM API key, the rehearsal still runs — findings come from the heuristic engine only. The Gate is computed the same way either way.
 - A tool crash (bad config, preflight failure, browser crash) exits non-zero regardless of `fail-on-gate` — that's a setup problem, not a verdict, and should always break the build.

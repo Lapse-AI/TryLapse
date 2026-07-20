@@ -90,6 +90,13 @@ class AuthConfig:
     email_label: str = "Email"
     password_label: str = "Password"
     submit_label: str = "Login"
+    # Path to a Playwright storage_state JSON (cookies + localStorage) captured
+    # out-of-band via `rehearse capture-session`. Lets a human complete an
+    # SSO/SAML/MFA login once in a real browser; the rehearsal run then reuses
+    # that session instead of needing to automate a login form that doesn't
+    # exist for SSO-only apps. Falls back to email/password form-fill if the
+    # captured session has expired.
+    storage_state_path: str | None = None
 
 
 @dataclass
@@ -241,6 +248,9 @@ def load_config(path: Path) -> RunConfig:
             email_label=str(auth_raw.get("email_label", "Email")),
             password_label=str(auth_raw.get("password_label", "Password")),
             submit_label=str(auth_raw.get("submit_label", "Login")),
+            storage_state_path=(
+                str(auth_raw["storage_state_path"]) if auth_raw.get("storage_state_path") else None
+            ),
         )
 
     crawl_raw = data.get("crawl")

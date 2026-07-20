@@ -30,6 +30,14 @@ inputs:
     description: "Fail this step when the launch gate is CAUTION or BLOCKED"
     required: false
     default: "true"
+  comment-on-pr:
+    description: "Post (or update) a PR comment with the gate, score, and verdict"
+    required: false
+    default: "false"
+  github-token:
+    description: "Token used to post the PR comment (only used if comment-on-pr is true)"
+    required: false
+    default: ${{ github.token }}
 
 outputs:
   launch-gate:
@@ -122,3 +130,46 @@ runs:
           exit 1
         fi
         exit 0
+
+    - name: Comment on PR
+      if: always() && inputs.comment-on-pr == 'true' && github.event_name == 'pull_request'
+      uses: actions/github-script@v8
+      with:
+        github-token: ${{ inputs.github-token }}
+        script: |
+          const gate = `${{ steps.run.outputs.launch-gate }}` || 'UNKNOWN';
+          const readiness = `${{ steps.run.outputs.readiness }}`;
+          const verdict = `${{ steps.run.outputs.verdict }}`;
+          const runId = `${{ steps.run.outputs.run-id }}`;
+          const emoji = { PASS: '✅', REVIEW: '🟡', CAUTION: '🟠', BLOCKED: '🔴' }[gate] || '⚪';
+          const body = [
+            `### ${emoji} Launch Rehearsal — ${gate}`,
+            '',
+            `**Readiness:** ${readiness || 'n/a'}/100`,
+            '',
+            verdict,
+            '',
+            `Run ID: \`${runId || 'unknown'}\``,
+          ].join('\n');
+
+          const { data: comments } = await github.rest.issues.listComments({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+          });
+          const prior = comments.find(c => c.user.type === 'Bot' && c.body.includes('Launch Rehearsal —'));
+          if (prior) {
+            await github.rest.issues.updateComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: prior.id,
+              body,
+            });
+          } else {
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body,
+            });
+          }

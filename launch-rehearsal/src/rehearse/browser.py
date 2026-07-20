@@ -722,6 +722,10 @@ class BrowserSession:
             video_dir.mkdir(parents=True, exist_ok=True)
             context_opts["record_video_dir"] = str(video_dir)
 
+        state_path = getattr(self.config.auth, "storage_state_path", None) if self.config.auth else None
+        if state_path and Path(state_path).is_file():
+            context_opts["storage_state"] = state_path
+
         self._context = self._browser.new_context(**context_opts)
         _block_analytics_routes(self._context)
         self.page = self._context.new_page()
@@ -941,13 +945,33 @@ class BrowserSession:
     def perform_auth(self, auth: AuthConfig) -> str:
         import os
 
+        page = self.page
+        assert page is not None
+
+        # A pre-captured session (SSO/SAML/MFA — completed once by a human via
+        # `rehearse capture-session`, not something we can automate) was loaded
+        # into this context's cookies/localStorage at context-creation time.
+        # Navigate to the target and check whether it's actually still valid
+        # before touching a login form that may not even exist for SSO-only apps.
+        if getattr(auth, "storage_state_path", None):
+            try:
+                page.goto(self.config.target_url, wait_until="domcontentloaded", timeout=self.config.budgets.step_timeout_ms)
+                page.wait_for_load_state("networkidle", timeout=15000)
+            except Exception:
+                pass
+            if self._auth_session_ok():
+                return "success_from_storage_state"
+            # Session expired — fall through to email/password automation only
+            # if that fallback is actually configured; otherwise fail clearly
+            # rather than pretend a login form we can't find will work.
+            if not (os.environ.get(auth.email_env) and os.environ.get(auth.password_env)):
+                return "failed_storage_state_expired_no_fallback"
+
         email = os.environ.get(auth.email_env)
         password = os.environ.get(auth.password_env)
         if not email or not password:
             return "skipped_missing_credentials"
 
-        page = self.page
-        assert page is not None
         login_url = self.config.login_url()
         assert login_url
 
