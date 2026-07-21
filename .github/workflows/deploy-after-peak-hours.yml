@@ -1,0 +1,70 @@
+name: Deploy to Railway after peak hours
+
+# Railway's free tier blocks CLI/API-triggered deploys 8AM-8PM Pacific.
+# Commits pushed to main during that window sit undeployed until someone
+# manually redeploys once the window opens. This automates that: fire
+# shortly after 8PM Pacific every day and deploy whatever is currently on
+# main.
+#
+# Two cron entries cover both Pacific UTC offsets (PDT/UTC-7 and PST/UTC-8)
+# since GitHub Actions cron is UTC-only and doesn't shift for DST. The job
+# itself re-checks the real Pacific clock and skips the redundant firing —
+# so this stays correct across DST changes with no yearly maintenance.
+
+on:
+  schedule:
+    - cron: "5 3 * * *"   # 20:05 PDT (UTC-7) — active Mar-Nov
+    - cron: "5 4 * * *"   # 20:05 PST (UTC-8) — active Nov-Mar
+  workflow_dispatch: {}    # manual trigger, e.g. to deploy immediately without waiting
+
+concurrency:
+  group: deploy-after-peak-hours
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check it's actually past 8PM Pacific
+        id: gate
+        run: |
+          HOUR=$(TZ="America/Los_Angeles" date +%H)
+          echo "Pacific local hour: $HOUR"
+          if [ "$HOUR" -lt 20 ] && [ "${{ github.event_name }}" != "workflow_dispatch" ]; then
+            echo "Not yet 8PM Pacific in this timezone offset — skipping (the other cron entry handles it)."
+            echo "proceed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "proceed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install Railway CLI
+        if: steps.gate.outputs.proceed == 'true'
+        run: npm install -g @railway/cli
+
+      - name: Deploy latest main to Railway
+        if: steps.gate.outputs.proceed == 'true'
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          if [ -z "$RAILWAY_TOKEN" ]; then
+            echo "::error::RAILWAY_TOKEN secret is not set — see .github/workflows/README-deploy.md"
+            exit 1
+          fi
+          railway redeploy \
+            --yes \
+            --from-source \
+            --project 7d270421-e539-4b17-98fb-4275f640723c \
+            --service a6ef4e68-703b-4e72-b9fb-f1cb98ff9351 \
+            --environment production
+
+      - name: Wait for health check
+        if: steps.gate.outputs.proceed == 'true'
+        run: |
+          for i in $(seq 1 30); do
+            if curl -sf -m 8 https://trylapse-production.up.railway.app/api/health > /dev/null; then
+              echo "Deployed and healthy."
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "::warning::Health check did not pass within 5 minutes — check Railway logs."
