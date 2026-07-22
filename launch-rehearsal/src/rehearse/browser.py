@@ -20,6 +20,18 @@ from rehearse.web_vitals import collect_web_vitals
 
 NETWORK_LOG_MAX = 500
 
+
+def _launch_browser(pw: Any, engine: str, *, headless: bool = True) -> Any:
+    """Launch the configured Playwright browser engine.
+
+    Centralizes engine selection so "chromium-only" isn't hardcoded at every
+    call site — journey_agent.py's parallel worker uses this too.
+    """
+    browser_type = getattr(pw, engine, None)
+    if browser_type is None:
+        raise ConfigError(f"Unknown browser engine: {engine!r}")
+    return browser_type.launch(headless=headless)
+
 # ── Flake-rate mitigations ────────────────────────────────────────────────────
 # Injected as CSS on every page after navigation to eliminate timing-based
 # flakes caused by click targets moving during CSS transitions.
@@ -708,7 +720,7 @@ class BrowserSession:
     def __enter__(self) -> BrowserSession:
         self.artifacts_dir.mkdir(parents=True, exist_ok=True)
         self._pw = sync_playwright().start()
-        self._browser = self._pw.chromium.launch(headless=True)
+        self._browser = _launch_browser(self._pw, self.config.browser_engine)
         first = normalize_viewports(self.config.viewports)[0]
 
         context_opts: dict[str, Any] = {
@@ -806,12 +818,12 @@ class BrowserSession:
                 self._context.close()
         except Exception:
             pass
-        # Restart the browser process to release accumulated V8 heap between personas
+        # Restart the browser process to release accumulated JS-engine heap between personas
         try:
             if self._browser:
                 self._browser.close()
             if self._pw:
-                self._browser = self._pw.chromium.launch(headless=True)
+                self._browser = _launch_browser(self._pw, self.config.browser_engine)
         except Exception:
             pass
         # Reset accumulated run errors so per-persona signals are clean

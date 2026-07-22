@@ -8,7 +8,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 from rehearse.agents.base import BaseAgent
-from rehearse.browser import BrowserSession
+from rehearse.browser import BrowserSession, _launch_browser
 from rehearse.context import AgentReport, RunContext
 from rehearse.dsl import Journey, Step, active_personas
 from rehearse.errors import RunBudgetExceeded
@@ -362,7 +362,7 @@ class JourneyAgent(BaseAgent):
                         try:
                             from playwright.sync_api import sync_playwright
                             with sync_playwright() as pw:
-                                browser = pw.chromium.launch(headless=True)
+                                browser = _launch_browser(pw, ctx.config.browser_engine)
                                 context_opts: dict = {
                                     "viewport": {"width": 1280, "height": 800},
                                     "service_workers": "block",  # B2: prevent cross-run cache bleed

@@ -155,6 +155,12 @@ class RunConfig:
     execute_all_personas_in_browser: bool = False
     persona_lens: bool = True
     product_type: str = "b2b_saas"
+    # "chromium" | "firefox" | "webkit". Chromium-only was a known gap: a
+    # "mobile Safari" persona was actually desktop Chromium with a mobile
+    # viewport, never real WebKit — meaningfully different rendering/JS/CSS
+    # behavior real iOS Safari users hit. Requires the engine's browser
+    # binary to be installed (`playwright install <engine>`).
+    browser_engine: str = "chromium"
 
     def materialize_steps(self) -> None:
         base = self.target_url.rstrip("/")
@@ -288,6 +294,12 @@ def load_config(path: Path) -> RunConfig:
             ).strip(),
         )
 
+    browser_engine = str(run.get("browser_engine", "chromium")).strip().lower()
+    if browser_engine not in ("chromium", "firefox", "webkit"):
+        raise ConfigError(
+            f"run.browser_engine must be one of chromium, firefox, webkit — got {browser_engine!r}"
+        )
+
     cfg = RunConfig(
         target_url=str(target_url).rstrip("/"),
         run_id_prefix=str(run_id_prefix),
@@ -303,6 +315,7 @@ def load_config(path: Path) -> RunConfig:
         execute_all_personas_in_browser=bool(run.get("execute_all_personas_in_browser", False)),
         persona_lens=bool(run.get("persona_lens", True)),
         product_type=str(run.get("product_type", "b2b_saas")),
+        browser_engine=browser_engine,
     )
     cfg.materialize_steps()
     return cfg

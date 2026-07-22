@@ -22,12 +22,15 @@ COPY launch-rehearsal/ ./launch-rehearsal/
 RUN mkdir -p launch-rehearsal/src/rehearse/dashboard/static
 RUN pip install --no-cache-dir -e ./launch-rehearsal
 
-# Chromium for Playwright — hosted runs launch real browsers.
-# --with-deps pulls the system libraries Chromium needs on debian-slim.
-# Pinned browser path so the binary survives user/home changes.
+# Chromium + WebKit + Firefox for Playwright — hosted runs can rehearse
+# against any of the three engines a config's run.browser_engine selects.
+# Chromium-only was a real gap: a "mobile Safari" persona was actually
+# desktop Chromium with a mobile viewport, never real WebKit rendering.
+# --with-deps pulls the system libraries each engine needs on debian-slim.
+# Pinned browser path so the binaries survive user/home changes.
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 RUN apt-get update \
-    && playwright install --with-deps chromium \
+    && playwright install --with-deps chromium webkit firefox \
     && rm -rf /var/lib/apt/lists/*
 
 # Build the frontend and copy dist directly into the source static dir.

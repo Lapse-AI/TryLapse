@@ -148,6 +148,7 @@ run:
   target_url: "https://staging.my-app.com"
   product_name: "my-saas"
   viewports: [desktop, tablet, mobile]
+  browser_engine: webkit   # chromium (default) | firefox | webkit — real Safari/iOS rendering, not a Chromium viewport pretending to be mobile
 
 crawl:
   enabled: true
