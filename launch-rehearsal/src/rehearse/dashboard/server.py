@@ -549,6 +549,42 @@ class _Handler(BaseHTTPRequestHandler):
                 self._send_json(load_chat_thread(root, run_id))
                 return
 
+        if path.startswith("/api/runs/") and (path.endswith("/export.pdf") or path.endswith("/export.csv")):
+            parts = path.split("/")
+            if len(parts) != 5:
+                self.send_error(404)
+                return
+            try:
+                run_id = _safe_id(parts[3], "runId")
+            except ValueError as exc:
+                self._send_json({"error": str(exc)}, status=400)
+                return
+            bundle = load_bundle(root, run_id)
+            if not bundle:
+                self._send_json({"error": "not found"}, status=404)
+                return
+
+            fmt = "pdf" if path.endswith("/export.pdf") else "csv"
+            from rehearse.dashboard.scorecard_export import generate_scorecard_csv, generate_scorecard_pdf
+            if fmt == "pdf":
+                data = generate_scorecard_pdf(bundle)
+                content_type = "application/pdf"
+            else:
+                data = generate_scorecard_csv(bundle).encode("utf-8")
+                content_type = "text/csv"
+
+            self.send_response(200)
+            self.send_header("Content-Type", content_type)
+            self.send_header("Content-Length", str(len(data)))
+            self.send_header(
+                "Content-Disposition", f'attachment; filename="{run_id}-scorecard.{fmt}"'
+            )
+            for k, v in _cors_headers(self._origin).items():
+                self.send_header(k, v)
+            self.end_headers()
+            self._write(data)
+            return
+
         if path.startswith("/api/runs/"):
             run_id = path.split("/")[-1]
             if run_id.endswith("/graphml"):

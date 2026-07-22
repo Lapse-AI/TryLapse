@@ -10,7 +10,7 @@ import type {
   StepSnapshot,
 } from "@/lib/mock-data";
 import { formatDurationMs } from "@/lib/mock-data";
-import { artifactUrl } from "@/lib/api/client";
+import { artifactUrl, downloadScorecardExport } from "@/lib/api/client";
 import {
   useAddAnnotation,
   useRunDiff,
@@ -1093,6 +1093,44 @@ export function ExportMenu({ runId, bundle }: { runId: string; bundle: RunBundle
               className="w-full text-left px-3 py-2 rounded-md border border-primary/40 bg-primary/5 hover:bg-primary/10 text-primary font-mono text-sm disabled:opacity-50 mt-1.5"
             >
               Print / Save as PDF ↗
+            </button>
+            <button
+              type="button"
+              disabled={busy !== null}
+              onClick={async () => {
+                setBusy("scorecard.pdf");
+                try {
+                  await downloadScorecardExport(runId, "pdf");
+                  toast.success("Scorecard PDF downloaded");
+                } catch {
+                  toast.error("Could not download scorecard PDF");
+                } finally {
+                  setBusy(null);
+                }
+              }}
+              className="w-full text-left px-3 py-2 rounded-md border border-border hover:bg-surface-2 font-mono text-sm disabled:opacity-50 mt-1.5"
+            >
+              {busy === "scorecard.pdf" ? "Downloading…" : "scorecard.pdf — shareable one-pager"}
+            </button>
+            <button
+              type="button"
+              disabled={busy !== null}
+              onClick={async () => {
+                setBusy("scorecard.csv");
+                try {
+                  await downloadScorecardExport(runId, "csv");
+                  toast.success("Scorecard CSV downloaded");
+                } catch {
+                  toast.error("Could not download scorecard CSV");
+                } finally {
+                  setBusy(null);
+                }
+              }}
+              className="w-full text-left px-3 py-2 rounded-md border border-border hover:bg-surface-2 font-mono text-sm disabled:opacity-50 mt-1.5"
+            >
+              {busy === "scorecard.csv"
+                ? "Downloading…"
+                : "scorecard.csv — all issues for spreadsheets"}
             </button>
           </div>
           {EXPORT_ITEMS.map(({ kind, label }) => (

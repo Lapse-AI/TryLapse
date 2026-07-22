@@ -84,6 +84,29 @@ export function artifactUrl(relPath: string): string {
   return `${API_BASE}/files/${clean}`;
 }
 
+/** Download a scorecard export (PDF/CSV) — unlike /files/, these are
+ * JWT-gated (same as /api/bundle/), so a plain <a href> or unauthenticated
+ * fetch would 401. */
+export async function downloadScorecardExport(runId: string, format: "pdf" | "csv"): Promise<void> {
+  const bearer = API_TOKEN || getStoredJwt();
+  const res = await fetch(`${API_BASE}/api/runs/${encodeURIComponent(runId)}/export.${format}`, {
+    headers: bearer ? { Authorization: `Bearer ${bearer}` } : {},
+  });
+  if (!res.ok) {
+    throw new Error(`Export failed (${res.status})`);
+  }
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = `${runId}-scorecard.${format}`;
+  anchor.rel = "noopener";
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(url);
+}
+
 export async function checkApiHealth(): Promise<boolean> {
   try {
     await apiFetch<{ ok: boolean }>("/api/health");

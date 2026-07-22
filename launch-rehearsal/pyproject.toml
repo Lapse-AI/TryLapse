@@ -9,6 +9,7 @@ dependencies = [
   "httpx>=0.27",
   "click>=8.1",
   "playwright>=1.49",
+  "fpdf2>=2.7",
 ]
 
 [project.scripts]
