@@ -24,6 +24,7 @@ from pathlib import Path
 from typing import Any
 
 _FILENAME = "outcomes.json"
+_REMINDERS_FILENAME = "outcome_reminders_sent.json"
 
 _ALLOWED_KEYS = {
     "runId",
@@ -111,3 +112,30 @@ def follow_up_due(artifacts_root: Path, now: datetime | None = None) -> list[dic
         return due
     except Exception:
         return []
+
+
+def _reminders_path(artifacts_root: Path) -> Path:
+    return artifacts_root / _REMINDERS_FILENAME
+
+
+def _load_reminders_sent(artifacts_root: Path) -> set[str]:
+    p = _reminders_path(artifacts_root)
+    if not p.exists():
+        return set()
+    try:
+        data = json.loads(p.read_text())
+        return set(data) if isinstance(data, list) else set()
+    except Exception:
+        return set()
+
+
+def was_follow_up_sent(artifacts_root: Path, run_id: str) -> bool:
+    return run_id in _load_reminders_sent(artifacts_root)
+
+
+def mark_follow_up_sent(artifacts_root: Path, run_id: str) -> None:
+    """Record that a T+7 outcome-reminder email was sent for this run, so the
+    daily scheduler doesn't re-send one every day a run stays unrecorded."""
+    sent = _load_reminders_sent(artifacts_root)
+    sent.add(run_id)
+    _reminders_path(artifacts_root).write_text(json.dumps(sorted(sent), indent=2))

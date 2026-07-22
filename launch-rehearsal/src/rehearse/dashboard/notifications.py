@@ -103,9 +103,9 @@ def format_email_message(bundle: dict[str, Any]) -> tuple[str, str]:
     return subject, body
 
 
-def send_email_notification(to_email: str, bundle: dict[str, Any]) -> bool:
-    """Send a run-complete email via SMTP. stdlib only (smtplib), matching the
-    rest of the auth/notification stack's no-external-dependencies approach.
+def _send_email(to_email: str, subject: str, body: str) -> bool:
+    """Send via SMTP. stdlib only (smtplib), matching the rest of the
+    auth/notification stack's no-external-dependencies approach.
 
     Requires SMTP_HOST/SMTP_PORT/SMTP_USER/SMTP_PASSWORD/SMTP_FROM in the
     environment. Without SMTP_HOST configured, this logs the message to the
@@ -115,7 +115,6 @@ def send_email_notification(to_email: str, bundle: dict[str, Any]) -> bool:
     environment yet."
     """
     host = os.environ.get("SMTP_HOST")
-    subject, body = format_email_message(bundle)
 
     if not host:
         print(f"\n📧 EMAIL NOTIFICATION (SMTP_HOST not set — logging instead)\n"
@@ -142,6 +141,38 @@ def send_email_notification(to_email: str, bundle: dict[str, Any]) -> bool:
         return True
     except Exception:
         return False
+
+
+def send_email_notification(to_email: str, bundle: dict[str, Any]) -> bool:
+    """Send a run-complete email."""
+    subject, body = format_email_message(bundle)
+    return _send_email(to_email, subject, body)
+
+
+def format_outcome_follow_up_message(run_id: str, target_url: str, dashboard_url: str) -> tuple[str, str]:
+    """(subject, body) for the T+7 "did this launch actually go well?" prompt.
+
+    This is the piece that was missing for the calibration loop to ever
+    accrue real data: outcome_store.py could record an outcome and
+    follow_up_due() could compute which runs needed one, but nothing ever
+    asked. Every "vs. industry benchmark" number stayed permanently
+    hand-estimated (lr-beta-v1) without this.
+    """
+    subject = f"Did {target_url} launch okay? (7 days since your rehearsal)"
+    body = (
+        f"A week ago, TryLapse rehearsed {target_url} (run {run_id}).\n\n"
+        f"If you've since launched (or decided not to), we'd like to know how it went — "
+        f"it takes 30 seconds and helps calibrate readiness scores against real outcomes, "
+        f"not just heuristics.\n\n"
+        f"Record the outcome: {dashboard_url}\n\n"
+        f"If you haven't launched yet, no action needed — we'll ask again later."
+    )
+    return subject, body
+
+
+def send_outcome_follow_up_email(to_email: str, run_id: str, target_url: str, dashboard_url: str) -> bool:
+    subject, body = format_outcome_follow_up_message(run_id, target_url, dashboard_url)
+    return _send_email(to_email, subject, body)
 
 
 def notify_run_complete(artifacts_root: Path, run_id: str) -> dict[str, bool]:

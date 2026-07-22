@@ -2550,6 +2550,14 @@ def serve_dashboard(artifacts_root: Path, host: str = "127.0.0.1", port: int = 8
     rebuilt = backfill_all(artifacts_root)
     if rebuilt:
         print(f"Backfilled analysis.json for {len(rebuilt)} run(s).")
+
+    # T+7 outcome-follow-up reminders — without this, the industry-benchmark
+    # calibration loop (outcome_store.py) never accrues real data because
+    # nothing ever prompts a user to record what happened after launch.
+    from rehearse.dashboard.outcome_scheduler import start_background_scheduler
+    _dashboard_base_url = (os.environ.get("REHEARSE_CORS_ORIGIN") or "").split(",")[0].strip()
+    start_background_scheduler(artifacts_root, dashboard_base_url=_dashboard_base_url)
+
     server, bound_port = _bind_server(host, port, artifacts_root)
     url = f"http://{host}:{bound_port}"
     if bound_port != port:

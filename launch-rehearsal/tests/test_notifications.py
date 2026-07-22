@@ -14,10 +14,12 @@ from unittest.mock import patch
 
 from rehearse.dashboard.notifications import (
     format_email_message,
+    format_outcome_follow_up_message,
     format_slack_message,
     notify_run_complete,
     send_email_notification,
     send_generic_webhook,
+    send_outcome_follow_up_email,
     send_slack_notification,
 )
 from rehearse.dashboard.store import get_alerts, get_workspace, save_workspace, update_alert
@@ -267,3 +269,22 @@ def test_workspace_has_notify_email_field(tmp_path: Path):
     ws = get_workspace(tmp_path)
     assert "notifyEmail" in ws
     assert ws["notifyEmail"] is None
+
+
+# ── T+7 outcome follow-up email ──────────────────────────────────────────────
+
+
+def test_outcome_follow_up_message_includes_run_and_link():
+    subject, body = format_outcome_follow_up_message(
+        "run-1", "https://example.com", "https://dash.example.com/runs/run-1"
+    )
+    assert "run-1" in body or "run-1" in subject
+    assert "https://example.com" in subject
+    assert "https://dash.example.com/runs/run-1" in body
+
+
+def test_send_outcome_follow_up_email_without_smtp_logs_instead(monkeypatch, capsys):
+    monkeypatch.delenv("SMTP_HOST", raising=False)
+    ok = send_outcome_follow_up_email("owner@acme.com", "run-1", "https://example.com", "https://dash/x")
+    assert ok is False
+    assert "owner@acme.com" in capsys.readouterr().out
