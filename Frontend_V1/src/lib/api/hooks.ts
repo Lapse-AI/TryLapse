@@ -329,7 +329,7 @@ export function useWorkspaceInvites(slug: string) {
 export function useInviteToWorkspace(slug: string) {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ email, role }: { email: string; role: "owner" | "member" }) =>
+    mutationFn: ({ email, role }: { email: string; role: "owner" | "member" | "viewer" }) =>
       api.inviteToWorkspace(slug, email, role),
     onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.workspaceInvites(slug) }),
   });

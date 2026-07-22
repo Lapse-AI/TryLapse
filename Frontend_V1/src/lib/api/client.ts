@@ -627,13 +627,23 @@ export const api = {
   // Workspace membership
   workspaceMembers: (slug: string) =>
     apiFetch<
-      { userId: string; role: "owner" | "member"; joinedAt: string; email: string; name: string }[]
+      {
+        userId: string;
+        role: "owner" | "member" | "viewer";
+        joinedAt: string;
+        email: string;
+        name: string;
+      }[]
     >(`/api/workspaces/${encodeURIComponent(slug)}/members`),
   workspaceInvites: (slug: string) =>
-    apiFetch<{ token: string; email: string; role: "owner" | "member"; createdAt: string }[]>(
-      `/api/workspaces/${encodeURIComponent(slug)}/invites`,
-    ),
-  inviteToWorkspace: (slug: string, email: string, role: "owner" | "member" = "member") =>
+    apiFetch<
+      { token: string; email: string; role: "owner" | "member" | "viewer"; createdAt: string }[]
+    >(`/api/workspaces/${encodeURIComponent(slug)}/invites`),
+  inviteToWorkspace: (
+    slug: string,
+    email: string,
+    role: "owner" | "member" | "viewer" = "member",
+  ) =>
     apiFetch<{
       token: string;
       workspaceId: string;

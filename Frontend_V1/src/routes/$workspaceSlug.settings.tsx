@@ -160,7 +160,7 @@ function TeamSection({ workspaceSlug }: { workspaceSlug: string }) {
   const removeMember = useRemoveWorkspaceMember(workspaceSlug);
 
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState<"owner" | "member">("member");
+  const [role, setRole] = useState<"owner" | "member" | "viewer">("member");
 
   const myMembership = members.find((m) => m.userId === me?.id);
   const isOwner = myMembership?.role === "owner";
@@ -269,10 +269,11 @@ function TeamSection({ workspaceSlug }: { workspaceSlug: string }) {
           </div>
           <select
             value={role}
-            onChange={(e) => setRole(e.target.value as "owner" | "member")}
+            onChange={(e) => setRole(e.target.value as "owner" | "member" | "viewer")}
             className="h-9 rounded-md border border-border bg-background px-2 text-sm"
           >
             <option value="member">Member</option>
+            <option value="viewer">Viewer (read-only)</option>
             <option value="owner">Owner</option>
           </select>
           <Button

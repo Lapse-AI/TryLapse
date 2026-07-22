@@ -279,6 +279,31 @@ class _Handler(BaseHTTPRequestHandler):
         )
         return False
 
+    def _forbid_if_viewer(self, root: Path, config_path: Path) -> bool:
+        """Block run-triggering by a 'viewer' — a read-only stakeholder role
+        that can see scorecards/dashboards but must not be able to burn a
+        workspace's LLM budget or run quota. Returns True (and has already
+        sent a 403) if blocked; False if the caller should proceed.
+
+        A request authenticated only via the static REHEARSE_API_TOKEN has no
+        associated user (trusted script/CI context) and is exempt, matching
+        the cross-workspace membership check this sits alongside.
+        """
+        from rehearse.dashboard.workspace_store import get_workspace_by_slug, get_member_role
+        ws_guess = get_workspace_by_slug(root, config_path.stem)
+        if not ws_guess:
+            return False
+        payload = self._require_jwt()
+        if not payload:
+            return False
+        role = get_member_role(root, ws_guess["id"], payload["sub"])
+        if role == "viewer":
+            self._send_json(
+                {"error": "Viewers have read-only access and cannot trigger runs"}, status=403
+            )
+            return True
+        return False
+
     def do_OPTIONS(self) -> None:  # noqa: N802
         self.send_response(204)
         for k, v in _cors_headers(self._origin).items():
@@ -1207,8 +1232,8 @@ class _Handler(BaseHTTPRequestHandler):
                 self._send_json({"error": "email is required"}, status=400)
                 return
             role = str(body.get("role") or "member")
-            if role not in ("owner", "member"):
-                self._send_json({"error": "role must be 'owner' or 'member'"}, status=400)
+            if role not in ("owner", "member", "viewer"):
+                self._send_json({"error": "role must be 'owner', 'member', or 'viewer'"}, status=400)
                 return
             invite = create_invite(root, ws["id"], email, role, payload["sub"])
             self._send_json(invite, status=201)
@@ -1298,11 +1323,14 @@ class _Handler(BaseHTTPRequestHandler):
             body = self._read_json_body()
             from rehearse.dashboard.config_yaml import save_config_yaml
 
+            config_id = body.get("configId")
+            if config_id and self._forbid_if_viewer(root, root / "configs" / f"{config_id}.yaml"):
+                return
             try:
                 result = save_config_yaml(
                     root,
                     body.get("yaml") or "",
-                    config_id=body.get("configId"),
+                    config_id=config_id,
                 )
             except ValueError as exc:
                 self._send_json({"error": str(exc)}, status=400)
@@ -2127,6 +2155,8 @@ class _Handler(BaseHTTPRequestHandler):
             if not cfg.is_file():
                 self._send_json({"error": "configPath required"}, status=400)
                 return
+            if self._forbid_if_viewer(root, cfg):
+                return
             job = enqueue_cohort_run(
                 root,
                 config_path=cfg,
@@ -2151,6 +2181,8 @@ class _Handler(BaseHTTPRequestHandler):
                 return
             if not config_a.is_file() or not config_b.is_file():
                 self._send_json({"error": "configAPath and configBPath must be valid files"}, status=400)
+                return
+            if self._forbid_if_viewer(root, config_a):
                 return
             job = enqueue_variant_run(
                 root,
@@ -2196,10 +2228,16 @@ class _Handler(BaseHTTPRequestHandler):
                 # authenticated only via the static REHEARSE_API_TOKEN has no
                 # associated user (trusted script/CI context) and is exempt.
                 jwt_payload = self._require_jwt()
-                if jwt_payload and get_member_role(root, ws_guess["id"], jwt_payload["sub"]) is None:
+                member_role = get_member_role(root, ws_guess["id"], jwt_payload["sub"]) if jwt_payload else None
+                if jwt_payload and member_role is None:
                     self._send_json(
                         {"error": "You are not a member of the workspace that owns this config"},
                         status=403,
+                    )
+                    return
+                if member_role == "viewer":
+                    self._send_json(
+                        {"error": "Viewers have read-only access and cannot trigger runs"}, status=403
                     )
                     return
 
