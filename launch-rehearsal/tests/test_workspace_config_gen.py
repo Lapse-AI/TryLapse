@@ -84,3 +84,19 @@ def test_heal_unparseable_file_returns_false(tmp_path: Path):
     bad = tmp_path / "bad.yaml"
     bad.write_text("run: [unclosed", encoding="utf-8")
     assert ensure_starter_journeys(bad) is False
+
+
+def test_generated_config_uses_real_parallelism_by_default(tmp_path: Path):
+    """Onboarding-generated configs never set a budgets: block, so every
+    hosted user's first run relies entirely on load_config's own fallback.
+    That fallback previously hardcoded parallel_journeys=1 (fully
+    sequential) regardless of the Budgets dataclass default — this pins the
+    real end-to-end value so the two can't silently drift apart again."""
+    p = _generate_config_yaml(tmp_path, "ws-parallel", "https://example.com", "P", "founder")
+    cfg = load_config(p)
+    assert cfg.budgets.parallel_journeys == 2
+
+
+def test_bare_budgets_dataclass_default_matches_parsed_default():
+    from rehearse.dsl import Budgets
+    assert Budgets().parallel_journeys == 2

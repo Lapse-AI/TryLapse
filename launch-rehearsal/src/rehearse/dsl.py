@@ -127,7 +127,16 @@ class Budgets:
     parallel_seeds: int = 1
     repeat_micro_loop: int = 1
     explore_max_rounds: int = 3
-    parallel_journeys: int = 1  # concurrent journey workers (each gets own browser context)
+    # Concurrent journey workers — each spins up its own full Chromium process
+    # (agents/journey_agent.py: pw.chromium.launch() per worker, not a shared
+    # browser with lightweight contexts), so this is a real resource cost, not
+    # a free knob. Was 1 (fully sequential) by default, meaning even the
+    # out-of-box experience never used the parallelism the config already
+    # supports. 2 is a conservative default: real speedup without stacking too
+    # aggressively against dashboard/jobs.py's run-level concurrency semaphore
+    # (REHEARSE_MAX_CONCURRENT_RUNS, default 3) — worst case ~6 concurrent
+    # Chromium processes on one host, not 30. Raise via config for larger hosts.
+    parallel_journeys: int = 2
 
 
 @dataclass
@@ -235,7 +244,7 @@ def load_config(path: Path) -> RunConfig:
         parallel_seeds=max(1, int(b.get("parallel_seeds", 1))),
         repeat_micro_loop=max(1, int(b.get("repeat_micro_loop", 1))),
         explore_max_rounds=max(1, int(b.get("explore_max_rounds", 3))),
-        parallel_journeys=max(1, min(10, int(b.get("parallel_journeys", 1)))),
+        parallel_journeys=max(1, min(10, int(b.get("parallel_journeys", 2)))),
     )
 
     auth_raw = data.get("auth")
