@@ -55,3 +55,8 @@ launch-rehearsal/artifacts/sitemaps/*-20[0-9][0-9][01][0-9][0-3][0-9]-*
 launch-rehearsal/artifacts/jobs.db
 launch-rehearsal/artifacts/jobs.db-shm
 launch-rehearsal/artifacts/jobs.db-wal
+
+# Internal strategy docs — competitor weaknesses, churn analysis, scoring
+# trust roadmap. Repo is public; this content is not meant to be.
+launch-rehearsal/competitive-intel/
+scoring_trust_mechanisms/
