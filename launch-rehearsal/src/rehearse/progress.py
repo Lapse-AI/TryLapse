@@ -46,6 +46,8 @@ class RunProgress:
     product_name: str = ""
     target_url: str = ""
     phase: str = "starting"   # starting | crawling | discovering | executing | done | failed
+    pages_crawled: int = 0
+    pages_budget: int = 0
     started_at: float = field(default_factory=time.time)
     personas: list[PersonaProgress] = field(default_factory=list)
     total_journeys: int = 0
@@ -75,6 +77,11 @@ class ProgressTracker:
 
     def set_phase(self, phase: str) -> None:
         self._progress.phase = phase
+        self._flush()
+
+    def set_crawl_progress(self, pages_crawled: int, pages_budget: int) -> None:
+        self._progress.pages_crawled = pages_crawled
+        self._progress.pages_budget = pages_budget
         self._flush()
 
     def set_personas(self, personas: list[dict[str, Any]], journeys_per_persona: dict[str, list[dict[str, Any]]]) -> None:

@@ -19,6 +19,14 @@ from rehearse.viewports import normalize_viewports
 _results_lock = threading.Lock()
 
 
+def _video_dir_for_run(artifacts_root: Path) -> Path:
+    """Videos directory for a run — artifacts_root is already output_dir/artifacts/run_id
+    (see orchestrator.py), so this must match BrowserSession's own "videos/" convention
+    and NOT re-append artifacts/run_id (a past bug wrote videos to a doubled-nested path
+    that the recordings API could never find)."""
+    return artifacts_root / "videos"
+
+
 def _replay_journey_from_start(
     session: BrowserSession,
     journey: Journey,
@@ -371,9 +379,7 @@ class JourneyAgent(BaseAgent):
                                 record = getattr(self.session, "record_video", False)
                                 video_dir: "Path | None" = None
                                 if record and run_id:
-                                    # Place under artifacts/{run_id}/videos/ so
-                                    # recording.get_video_path() can find by journey_id
-                                    video_dir = self.artifacts_root / "artifacts" / run_id / "videos"
+                                    video_dir = _video_dir_for_run(self.artifacts_root)
                                     video_dir.mkdir(parents=True, exist_ok=True)
                                     context_opts["record_video_dir"] = str(video_dir)
                                 # Apply persona-specific browser modifiers (locale, a11y)

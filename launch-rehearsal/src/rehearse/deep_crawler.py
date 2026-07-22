@@ -1022,6 +1022,7 @@ def run_deep_crawl(
     screenshots_dir: Path | None = None,
     max_samples_per_pattern: int = 2,
     graph_output_path: Path | None = None,
+    progress_tracker: Any = None,
 ) -> InteractionMap:
     """
     Deep exhaustive crawl — same capability as a human manually exploring.
@@ -1127,6 +1128,11 @@ def run_deep_crawl(
         imap.url_patterns[pattern] = sampled + 1
         imap.node_status[url] = "visiting"
         _flush_graph()
+        if progress_tracker is not None:
+            try:
+                progress_tracker.set_crawl_progress(len(visited), max_pages)
+            except Exception:
+                pass
 
         # 1. Navigate + wait
         try:

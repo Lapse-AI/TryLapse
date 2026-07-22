@@ -1005,7 +1005,8 @@ class _Handler(BaseHTTPRequestHandler):
                         if phase and phase not in ("done", "failed", "complete"):
                             job["phase"] = phase
                         # Surface journey progress counts for the live table
-                        for key in ("completed_journeys", "total_journeys", "total_personas"):
+                        for key in ("completed_journeys", "total_journeys", "total_personas",
+                                    "pages_crawled", "pages_budget"):
                             if prog_data.get(key) is not None:
                                 job[key] = prog_data[key]
                 except Exception:

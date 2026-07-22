@@ -99,6 +99,7 @@ class AgentOrchestrator:
                 use_vision=True,
                 screenshots_dir=screenshots_dir,
                 graph_output_path=graph_path,
+                progress_tracker=self.ctx.metadata.get("progress_tracker"),
             )
             imap_dict = interaction_map_to_dict(imap)
             save_interaction_map(self.artifacts_root, self.ctx.evidence.run_id, imap)
