@@ -527,11 +527,13 @@ function NotificationsSection() {
   const saveWorkspace = useSaveWorkspace();
   const [slackUrl, setSlackUrl] = useState("");
   const [webhookUrl, setWebhookUrl] = useState("");
+  const [notifyEmail, setNotifyEmail] = useState("");
 
   useEffect(() => {
     setSlackUrl(workspace?.slackWebhookUrl ?? "");
     setWebhookUrl(workspace?.webhookUrl ?? "");
-  }, [workspace?.slackWebhookUrl, workspace?.webhookUrl]);
+    setNotifyEmail(workspace?.notifyEmail ?? "");
+  }, [workspace?.slackWebhookUrl, workspace?.webhookUrl, workspace?.notifyEmail]);
 
   async function save() {
     try {
@@ -539,6 +541,7 @@ function NotificationsSection() {
         ...workspace,
         slackWebhookUrl: slackUrl.trim() || null,
         webhookUrl: webhookUrl.trim() || null,
+        notifyEmail: notifyEmail.trim() || null,
       });
       toast.success("Notification settings saved");
     } catch {
@@ -574,6 +577,16 @@ function NotificationsSection() {
             value={webhookUrl}
             onChange={(e) => setWebhookUrl(e.target.value)}
             placeholder="https://your-service.com/hooks/launch-rehearsal"
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="notify-email">Notify email</Label>
+          <Input
+            id="notify-email"
+            type="email"
+            value={notifyEmail}
+            onChange={(e) => setNotifyEmail(e.target.value)}
+            placeholder="team@yourcompany.com"
           />
         </div>
         <Button onClick={save} disabled={saveWorkspace.isPending} size="sm" className="w-fit">

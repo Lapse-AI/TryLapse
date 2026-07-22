@@ -13,8 +13,10 @@ from pathlib import Path
 from unittest.mock import patch
 
 from rehearse.dashboard.notifications import (
+    format_email_message,
     format_slack_message,
     notify_run_complete,
+    send_email_notification,
     send_generic_webhook,
     send_slack_notification,
 )
@@ -193,3 +195,75 @@ def test_notify_run_complete_missing_bundle_does_not_raise(tmp_path: Path):
     _setup_workspace_with_slack(tmp_path, al_ws_enabled=True)
     results = notify_run_complete(tmp_path, "nonexistent-run")
     assert results == {}
+
+
+# ── email ─────────────────────────────────────────────────────────────────────
+
+
+def test_email_message_includes_gate_readiness_verdict():
+    subject, body = format_email_message(_bundle("BLOCKED"))
+    assert "BLOCKED" in subject
+    assert "Test Product" in subject
+    assert "verdict for BLOCKED" in body
+    assert "run-1" in body
+
+
+def test_send_email_without_smtp_host_logs_instead_of_sending(monkeypatch, capsys):
+    monkeypatch.delenv("SMTP_HOST", raising=False)
+    ok = send_email_notification("team@example.com", _bundle())
+    assert ok is False
+    captured = capsys.readouterr()
+    assert "team@example.com" in captured.out
+
+
+def test_send_email_with_smtp_configured_sends_via_smtplib(monkeypatch):
+    monkeypatch.setenv("SMTP_HOST", "smtp.example.com")
+    monkeypatch.setenv("SMTP_PORT", "587")
+    monkeypatch.setenv("SMTP_USER", "bot@example.com")
+    monkeypatch.setenv("SMTP_PASSWORD", "secret")
+
+    with patch("rehearse.dashboard.notifications.smtplib.SMTP") as mock_smtp_cls:
+        mock_smtp = mock_smtp_cls.return_value.__enter__.return_value
+        ok = send_email_notification("team@example.com", _bundle("BLOCKED"))
+
+    assert ok is True
+    mock_smtp.starttls.assert_called_once()
+    mock_smtp.login.assert_called_once_with("bot@example.com", "secret")
+    mock_smtp.send_message.assert_called_once()
+    sent_msg = mock_smtp.send_message.call_args.args[0]
+    assert sent_msg["To"] == "team@example.com"
+
+
+def test_send_email_returns_false_on_smtp_exception(monkeypatch):
+    monkeypatch.setenv("SMTP_HOST", "smtp.example.com")
+    with patch("rehearse.dashboard.notifications.smtplib.SMTP", side_effect=Exception("connection refused")):
+        ok = send_email_notification("team@example.com", _bundle())
+    assert ok is False
+
+
+def test_notify_run_complete_fires_email_when_notify_email_set(tmp_path: Path, monkeypatch):
+    monkeypatch.setenv("SMTP_HOST", "smtp.example.com")
+    ws = get_workspace(tmp_path)
+    ws["notifyEmail"] = "stakeholder@example.com"
+    save_workspace(tmp_path, ws)
+    update_alert(tmp_path, "al_ws", True)
+    _write_analysis_bundle(tmp_path, "run-email", "BLOCKED")
+
+    with patch("rehearse.dashboard.notifications.smtplib.SMTP") as mock_smtp_cls:
+        mock_smtp_cls.return_value.__enter__.return_value
+        results = notify_run_complete(tmp_path, "run-email")
+
+    assert results.get("email") is True
+
+
+def test_notify_run_complete_skips_email_when_not_configured(tmp_path: Path):
+    update_alert(tmp_path, "al_ws", True)
+    _write_analysis_bundle(tmp_path, "run-noemail", "BLOCKED")
+    results = notify_run_complete(tmp_path, "run-noemail")
+    assert "email" not in results
+
+
+def test_workspace_has_notify_email_field(tmp_path: Path):
+    ws = get_workspace(tmp_path)
+    assert "notifyEmail" in ws
+    assert ws["notifyEmail"] is None

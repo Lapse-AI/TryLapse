@@ -429,6 +429,7 @@ export type Workspace = {
   env?: EnvId;
   slackWebhookUrl?: string | null;
   webhookUrl?: string | null;
+  notifyEmail?: string | null;
   guardrails?: { extraBlockedKeywords: string[] };
 };
 

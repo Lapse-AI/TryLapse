@@ -1,4 +1,4 @@
-"""Real outbound notification dispatch — Slack + generic webhook.
+"""Real outbound notification dispatch — Slack, generic webhook, and email.
 
 The settings UI has advertised Slack/webhook alerts since the integration
 catalog was first seeded (store.py get_integrations/get_alerts), but nothing
@@ -8,6 +8,9 @@ delivery, triggered when a run finishes.
 
 from __future__ import annotations
 
+import os
+import smtplib
+from email.message import EmailMessage
 from pathlib import Path
 from typing import Any
 
@@ -78,6 +81,69 @@ def send_generic_webhook(webhook_url: str, bundle: dict[str, Any]) -> bool:
     return _post_json(webhook_url, payload)
 
 
+def format_email_message(bundle: dict[str, Any]) -> tuple[str, str]:
+    """Build (subject, body) for a run-complete email — stdlib-only, plain text."""
+    summary = bundle.get("summary", {})
+    gate = summary.get("launchGate", "REVIEW")
+    emoji = _GATE_EMOJI.get(gate, "")
+    product = summary.get("productName", "Unknown product")
+    readiness = summary.get("readiness")
+    verdict = summary.get("verdict", "")
+    run_id = summary.get("id", "")
+    target_url = summary.get("targetUrl", "")
+
+    subject = f"{emoji} {gate} — {product} readiness {readiness}"
+    body = (
+        f"{product} — {gate}\n"
+        f"Readiness: {readiness}\n"
+        f"Target: {target_url}\n\n"
+        f"{verdict}\n\n"
+        f"Run: {run_id}"
+    )
+    return subject, body
+
+
+def send_email_notification(to_email: str, bundle: dict[str, Any]) -> bool:
+    """Send a run-complete email via SMTP. stdlib only (smtplib), matching the
+    rest of the auth/notification stack's no-external-dependencies approach.
+
+    Requires SMTP_HOST/SMTP_PORT/SMTP_USER/SMTP_PASSWORD/SMTP_FROM in the
+    environment. Without SMTP_HOST configured, this logs the message to the
+    console instead of sending (same mock-mode pattern as password reset)
+    and returns False — the caller should not treat that as a delivery
+    failure worth surfacing, just as "email isn't wired up in this
+    environment yet."
+    """
+    host = os.environ.get("SMTP_HOST")
+    subject, body = format_email_message(bundle)
+
+    if not host:
+        print(f"\n📧 EMAIL NOTIFICATION (SMTP_HOST not set — logging instead)\n"
+              f"   To: {to_email}\n   Subject: {subject}\n   {body}\n", flush=True)
+        return False
+
+    port = int(os.environ.get("SMTP_PORT", "587"))
+    user = os.environ.get("SMTP_USER")
+    password = os.environ.get("SMTP_PASSWORD")
+    from_addr = os.environ.get("SMTP_FROM", user or "noreply@trylapse.dev")
+
+    msg = EmailMessage()
+    msg["Subject"] = subject
+    msg["From"] = from_addr
+    msg["To"] = to_email
+    msg.set_content(body)
+
+    try:
+        with smtplib.SMTP(host, port, timeout=_TIMEOUT_S) as smtp:
+            smtp.starttls()
+            if user and password:
+                smtp.login(user, password)
+            smtp.send_message(msg)
+        return True
+    except Exception:
+        return False
+
+
 def notify_run_complete(artifacts_root: Path, run_id: str) -> dict[str, bool]:
     """Dispatch all enabled alerts for a completed run. Returns {channel: delivered}.
 
@@ -103,10 +169,15 @@ def notify_run_complete(artifacts_root: Path, run_id: str) -> dict[str, bool]:
 
         slack_url = ws.get("slackWebhookUrl")
         webhook_url = ws.get("webhookUrl")
+        notify_email = ws.get("notifyEmail")
 
         should_slack = run_complete_enabled or (red_alert_enabled and gate in ("BLOCKED", "CAUTION"))
         if slack_url and should_slack:
             results["slack"] = send_slack_notification(slack_url, bundle)
+
+        should_email = run_complete_enabled or (red_alert_enabled and gate in ("BLOCKED", "CAUTION"))
+        if notify_email and should_email:
+            results["email"] = send_email_notification(notify_email, bundle)
 
         flake_rate = bundle.get("summary", {}).get("flakeRate", 0) or 0
         should_webhook = flake_alert_enabled and flake_rate > 0.05

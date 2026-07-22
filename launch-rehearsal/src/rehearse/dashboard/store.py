@@ -64,6 +64,7 @@ def _default_workspace(artifacts_root: Path) -> dict[str, Any]:
         "env": "staging",
         "slackWebhookUrl": None,
         "webhookUrl": None,
+        "notifyEmail": None,
         "guardrails": {"extraBlockedKeywords": []},
     }
 
